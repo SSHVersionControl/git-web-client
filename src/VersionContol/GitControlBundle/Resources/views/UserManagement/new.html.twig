@@ -1,5 +1,9 @@
 {% extends "VersionContolGitControlBundle::layout.html.twig" %}
 
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Admin/sidemenu.html.twig'  %}
+{% endblock %}
+
 {% block content -%}
 <div class="container">
     <h1 class="page-header">
