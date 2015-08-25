@@ -1,0 +1,96 @@
+<?php
+
+namespace VersionContol\GitControlBundle\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityRepository;
+
+class UserProjectsType extends AbstractType
+{
+    
+    /**
+     * Project Id. Used in query to select all user not apart of this project already
+     * 
+     * @var integer 
+     */
+    protected $projectId;
+    
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $projectId = $this->getProjectId();
+        $builder
+            ->add('roles','choice', array(
+                    'label' => 'User Role'
+                    ,'choices'  => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master')
+                    ,'required' => false
+                    ,'empty_value' => 'Please select a role'
+                ))
+            ->add('user','entity', array(
+                    'class' => 'VersionContol\GitControlBundle\Entity\User\User',
+                    'choice_label' => 'username',
+                    'empty_value' => 'Please select a user',
+                    'query_builder' => function(EntityRepository $er) use($projectId) {
+                        $qb = $er->createQueryBuilder('a');
+
+                        $nots = $qb
+                                ->join('VersionContolGitControlBundle:UserProjects', 'b')
+                                ->where('a.id = b.user AND b.project = :id')
+                                ->setParameter('id', $projectId)
+                                ->getQuery()
+                                ->getResult();
+
+                        return $er->createQueryBuilder('u')
+                            ->where($qb->expr()->notIn('u.username', $nots))
+                            ->orderBy('u.username', 'ASC');
+                    },
+                ))
+            ->add('project', 'hidden_entity',array(
+                    'class' => 'VersionContol\GitControlBundle\Entity\Project'
+                ))
+        ;
+    }
+    
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function configureOptions(OptionsResolver  $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'VersionContol\GitControlBundle\Entity\UserProjects'
+        ));
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'versioncontol_gitcontrolbundle_userprojects';
+    }
+    
+    /**
+     * Gets the project Id
+     * @return integer
+     */
+    public function getProjectId() {
+        return $this->projectId;
+    }
+
+    /**
+     * Sets the project Id
+     * @param integer $projectId
+     * @return \VersionContol\GitControlBundle\Form\UserProjectsType
+     */
+    public function setProjectId($projectId) {
+        $this->projectId = $projectId;
+        return $this;
+    }
+
+
+}

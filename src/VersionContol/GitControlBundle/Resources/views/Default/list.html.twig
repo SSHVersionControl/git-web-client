@@ -1,0 +1,60 @@
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+
+{% block content -%}
+
+    <h1 class="page-header">
+           Projects
+          <small>Your Git Projects</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file"></i> Projects
+        </li>
+    </ol>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+            <div class="col-lg-10">
+                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Projects</h3>
+            </div>
+            <div class="col-lg-2">
+                <a class="btn btn-primary" href="{{ path('project_new') }}">
+                    New Project
+                </a>
+            </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            
+
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Access</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                       {% for userProject in userProjects %}
+                        <tr>
+                          <th scope="row">{{loop.index}}</th>
+                          <td>{{userProject.project.title}}</td>
+                          <td>{{userProject.project.description}}</td>
+                           <td>{{userProject.roles}}</td>
+                          <td><a href="{{ path('project_log', { 'id': userProject.project.id }) }}" class="btn btn-default">Open</a></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+         </div>
+    </div>
+          
+{% endblock %}

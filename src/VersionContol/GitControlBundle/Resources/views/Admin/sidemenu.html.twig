@@ -1,0 +1,8 @@
+
+<div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav side-nav">
+        <li {% if app.request.attributes.get('_route') == 'usermanagement' %}class="active"{% endif %}>
+            <a href="{{ path('project_log', { 'id': project.id }) }}"><i class="fa fa-fw fa-users"></i>User Management</a>
+        </li>
+    </ul>
+</div>

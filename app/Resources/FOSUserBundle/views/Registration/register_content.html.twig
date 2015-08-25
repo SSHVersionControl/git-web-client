@@ -1,0 +1,47 @@
+{% trans_default_domain 'FOSUserBundle' %}
+<div class="container">
+    <div class="row">
+             <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3>Create New User</h3>
+                </div>
+                <div class="panel-body">
+                    {{ form_start(form) }}
+                        <div class="form-group">
+
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.username) }}
+                            {{ form_errors(form.username) }}
+                            {{ form_widget(form.username,{ 'attr': { 'class': 'form-control', 'placeholder':'Please enter a username'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.name) }}
+                            {{ form_errors(form.name) }}
+                            {{ form_widget(form.name,{ 'attr': { 'class': 'form-control', 'placeholder':'Please enter your name'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.email) }}
+                            {{ form_errors(form.email) }}
+                            {{ form_widget(form.email,{ 'attr': { 'class': 'form-control', 'placeholder':'Please enter an email address'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.plainPassword.first) }}
+                            {{ form_errors(form.plainPassword.first) }}
+                            {{ form_widget(form.plainPassword.first,{ 'attr': { 'class': 'form-control', 'placeholder':'Please enter a password'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.plainPassword.second) }}
+                            {{ form_errors(form.plainPassword.second) }}
+                            {{ form_widget(form.plainPassword.second,{ 'attr': { 'class': 'form-control', 'placeholder':'Please repeat password'}}) }}
+                        </div>
+                        <div class="text-right">
+                            <input type="submit" value="{{ 'registration.submit'|trans }}" class="btn btn-success"/>
+                        </div>
+
+                        
+                    {{ form_end(form) }}
+                </div>
+             </div>
+    </div>
+</div>

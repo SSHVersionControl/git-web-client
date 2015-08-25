@@ -1,0 +1,23 @@
+services:
+    version_control.git_command:
+        class: VersionContol\GitControlBundle\Utility\GitCommands
+        arguments:
+            - @security.token_storage
+            
+    lrotherfield.form.type.hidden_entity:
+        class: Lrotherfield\Component\Form\Type\HiddenEntityType
+        arguments:
+            - @doctrine.orm.entity_manager
+        tags:
+            - { name: form.type, alias: hidden_entity }
+            
+    version_control.subscriberACL:
+        class: VersionContol\GitControlBundle\EventListener\ProjectAccessControlList
+        arguments: [@service_container]
+        tags:
+            - { name: doctrine.event_subscriber }
+
+    version_control.form.registration:
+        class: VersionContol\GitControlBundle\Form\RegistrationType
+        tags:
+            - { name: form.type, alias: version_control_user_registration }

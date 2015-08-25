@@ -1,0 +1,95 @@
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/modifiySideMenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+    <h1 class="page-header">
+       Edit Project
+      <small>
+          {{ project.title }} 
+      </small>
+          {% if (is_granted('MASTER', project)) %}
+          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
+        {% endif %}
+    </h1>
+    
+    <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i>  <a href="index.html">Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file"></i> Edit
+        </li>
+    </ol>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            
+        </div>
+        <div class="panel-body">
+            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
+                {{ form_start(edit_form,{ 'attr': { 'class': 'form'}}) }}
+
+                    {{ form_errors(edit_form) }}                
+                     <div class="form-group">
+                         {{ form_label(edit_form.title) }}
+                         {{ form_errors(edit_form.title) }}           
+                         {{ form_widget(edit_form.title,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for your project'}}) }}
+                     </div>
+                     <div class="form-group">
+                         {{ form_label(edit_form.description) }}
+                         {{ form_errors(edit_form.description) }}
+                         {{ form_widget(edit_form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
+                     </div>
+                     <div class="form-group">
+                         {{ form_label(edit_form.path) }}
+                         {{ form_errors(edit_form.path) }}
+                         {{ form_widget(edit_form.path,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a full path to the project folder'}}) }}
+                     </div>
+                     <div class="form-group">
+                         {{ form_label(edit_form.ssh) }}
+                         {{ form_errors(edit_form.ssh) }}
+                         {{ form_widget(edit_form.ssh) }}
+                     </div>
+                     <fieldset>
+                         <legend>SSH Details:</legend>
+                             <div class="form-group">
+                                 {{ form_label(edit_form.host) }}
+                                 {{ form_errors(edit_form.host) }}
+                                 {{ form_widget(edit_form.host,{ 'attr': { 'class': 'form-control', 'placeholder':'Name or IP address of the server host.'}}) }}
+                             </div>
+                             <div class="form-group">
+                                 {{ form_label(edit_form.username) }}
+                                 {{ form_errors(edit_form.username) }}
+                                 {{ form_widget(edit_form.username,{ 'attr': { 'class': 'form-control', 'placeholder':'Name of user to connect with.'}}) }}
+                             </div>
+                             <div class="form-group">
+                                 {{ form_label(edit_form.password) }}
+                                 {{ form_errors(edit_form.password) }}
+                                 {{ form_widget(edit_form.password,{ 'attr': { 'class': 'form-control', 'placeholder':'The users password'}}) }}
+                             </div>
+                     </fieldset>
+                     <div class="text-right">
+                         <a href="{{ path('project_log',{ 'id': project.id }) }}" class="btn btn-default">
+                             Cancel
+                         </a>
+                         {{ form_widget(edit_form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
+                     </div>
+                 {{ form_end(edit_form) }}
+             </div>
+             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+                 <div class="panel panel-default">
+                     <div class="panel-heading">
+                         <h4>Instructions</h4>
+                     </div>
+                     <div class="panel-body">
+                         <p>Description</p>
+                     </div>
+
+                 </div>
+             </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+
+{% block content -%}
+    <h1>Create New Project</h1>
+    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
+        {{ form_start(form,{ 'attr': { 'class': 'form'}}) }}
+
+               {{ form_errors(form) }}                
+                <div class="form-group">
+                    {{ form_label(form.title) }}
+                    {{ form_errors(form.title) }}           
+                    {{ form_widget(form.title,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for your project'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_errors(form.description) }}
+                    {{ form_widget(form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.path) }}
+                    {{ form_errors(form.path) }}
+                    {{ form_widget(form.path,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a full path to the project folder'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.ssh) }}
+                    {{ form_errors(form.ssh) }}
+                    {{ form_widget(form.ssh) }}
+                </div>
+                <fieldset>
+                    <legend>SSH Details:</legend>
+                        <div class="form-group">
+                            {{ form_label(form.host) }}
+                            {{ form_errors(form.host) }}
+                            {{ form_widget(form.host,{ 'attr': { 'class': 'form-control', 'placeholder':'Name or IP address of the server host.'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.username) }}
+                            {{ form_errors(form.username) }}
+                            {{ form_widget(form.username,{ 'attr': { 'class': 'form-control', 'placeholder':'Name of user to connect with.'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.password) }}
+                            {{ form_errors(form.password) }}
+                            {{ form_widget(form.password,{ 'attr': { 'class': 'form-control', 'placeholder':'The user\'s password'}}) }}
+                        </div>
+                </fieldset>
+                <div class="text-right">
+                    <a href="{{ path('home') }}" class="btn btn-default">
+                        Cancel
+                    </a>
+                    {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
+                </div>
+            {{ form_end(form) }}
+        </div>
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>Instructions</h4>
+            </div>
+            <div class="panel-body">
+                <p>Description</p>
+            </div>
+            
+        </div>
+    </div>
+{% endblock %}
