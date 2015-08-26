@@ -29,6 +29,14 @@ class GitCommands
      * @var Project
      */
     protected $project;
+    
+    /**
+     *
+     * @var type Git Status Hash.
+     * Used to make sure no changes has occurred since last check 
+     * @var string hash
+     */
+    protected $statusHash;
 
     /**
      * 
@@ -223,6 +231,7 @@ class GitCommands
      */
     public function getFilesToCommit(){
         $stausData = $this->getStatus();
+        $this->statusHash = hash('md5',$stausData);
         $files = $this->processStatus($stausData);
         return $files;
     }
@@ -454,9 +463,17 @@ class GitCommands
         }
     }
 
-
-
-
+    /**
+     * Get hash of git status
+     * @return String hash
+     */
+    public function getStatusHash() {
+        if(!$this->statusHash){
+            $stausData = $this->getStatus();
+            $this->statusHash = hash('md5',$stausData);
+        }
+        return $this->statusHash;
+    }
 
     
 }

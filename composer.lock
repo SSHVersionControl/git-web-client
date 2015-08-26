@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "242172aed83137d39562db633c8c95cc",
+    "hash": "acf06c57d37c30bb855262225adf41e8",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -778,7 +778,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/3906465fbaa9d71de3404b8c3667e451d07f9984",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/336d9cd8ba0c5a462b3e70be144a7bef5377b219",
                 "reference": "3906465fbaa9d71de3404b8c3667e451d07f9984",
                 "shasum": ""
             },
@@ -1794,6 +1794,51 @@
                 "templating"
             ],
             "time": "2015-07-31 13:45:26"
+        },
+        {
+            "name": "vmelnik/doctrine-encrypt-bundle",
+            "version": "2.0.1",
+            "target-dir": "VMelnik/DoctrineEncryptBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vmelnik-ukraine/DoctrineEncryptBundle.git",
+                "reference": "eedfd91ecdd46fd4c8db040e3704af31832ee39c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vmelnik-ukraine/DoctrineEncryptBundle/zipball/eedfd91ecdd46fd4c8db040e3704af31832ee39c",
+                "reference": "eedfd91ecdd46fd4c8db040e3704af31832ee39c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mcrypt": "*",
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": ">=2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "VMelnik\\DoctrineEncryptBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Victor Melnik",
+                    "email": "melnikvictorl@gmail.com"
+                }
+            ],
+            "description": "Symfony 2 bundle which allows to encrypt data in database with some encrypt algorithm",
+            "keywords": [
+                "aes256",
+                "decrypt",
+                "doctrine",
+                "encrypt"
+            ],
+            "time": "2013-01-05 22:57:52"
         }
     ],
     "packages-dev": [

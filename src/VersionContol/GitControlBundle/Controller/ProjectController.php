@@ -106,10 +106,18 @@ class ProjectController extends Controller
         if(!trim($comment)){
             throw $this->createNotFoundException('Please add comment');
         }
+        
         $selectedFiles = $this->get('request')->request->get('files');
         if($selectedFiles && is_array($selectedFiles) && ($selectedFiles) > 0){
-            //$gitPath = $project->getPath();
+
             $gitCommands = $this->get('version_control.git_command')->setProject($project);
+            
+            //Check if the 
+            $gitStatusHash = $gitCommands->getStatusHash();
+            $statusHash = $this->get('request')->request->get('statushash');
+            if($gitStatusHash !== $statusHash){
+                throw new \Exception('The git status has changed. Please refresh the page and retry the commit');
+            }
             //$gitCommands = new GitCommands($gitPath);
             
             foreach($selectedFiles as $file){
@@ -192,11 +200,13 @@ class ProjectController extends Controller
         
        $branchName = $gitCommands->getCurrentBranch();
        $files =  $gitCommands->getFilesToCommit();
-
+       $statusHash = $gitCommands->getStatusHash();
+       
         return array(
             'project'      => $project,
             'branchName' => $branchName,
-            'files' => $files
+            'files' => $files,
+            'statusHash' => $statusHash
         );
     }
 

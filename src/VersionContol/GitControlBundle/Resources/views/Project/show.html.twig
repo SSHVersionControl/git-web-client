@@ -30,6 +30,7 @@
         <div class="panel-body">
 
             <form action="{{ path('project_commit', { 'id': project.id }) }}" method="POST" class="commit">
+                <input type="hidden" name="statushash" value="{{statusHash}}" />
                 <div class="list-group">
                 {% for file in files %}
 

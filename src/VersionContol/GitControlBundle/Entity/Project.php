@@ -2,6 +2,7 @@
 
 namespace VersionContol\GitControlBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use VMelnik\DoctrineEncryptBundle\Configuration\Encrypted;
 
 /**
  * @ORM\Entity
@@ -55,7 +56,8 @@ class Project
     
     /**
      * @var string
-     * @ORM\Column(name="password", type="string", length=225, nullable=true)
+     * @ORM\Column(name="password", type="string", nullable=true)
+     * @Encrypted
      */
     private $password;
     
