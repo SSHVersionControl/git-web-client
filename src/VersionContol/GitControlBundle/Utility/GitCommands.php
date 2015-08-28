@@ -158,6 +158,45 @@ class GitCommands
         return $this->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));
         
     }
+    
+    /**
+     * Deletes Branch with branch name
+     * 
+     * @param string $branchName Name of branch to delete
+     * @return string command response
+     */
+    public function deleteBranch($branchName){
+        $currentBranch = $this->getCurrentBranch();
+        if($branchName === $currentBranch){
+            throw new \Exception('You cannot delete the current branch. Please checkout a different branch before deleting.');
+        }
+        return $this->runCommand(sprintf('git branch -d %s 2>&1',  escapeshellarg($branchName)));
+    }
+    
+    /**
+     * Merges current branch with branch of name
+     * 
+     * @param string $branchName Name of branch to delete
+     * @return string command response
+     */
+    public function mergeBranch($branchName){
+        $currentBranch = $this->getCurrentBranch();
+        if($branchName === $currentBranch){
+            throw new \Exception('You cannot merge a branch with itself. Please checkout a different branch before trying to merge.');
+        }
+        return $this->runCommand(sprintf('git merge %s 2>&1',  escapeshellarg($branchName)));
+    }
+    
+    /**
+     * Find the last commit that both branches contain
+     * 
+     * @param string $branchName1
+     * @param string $branchName2
+     * @return string The commit id (Long)
+     */
+    public function lastCommitBothContains($branchName1,$branchName2){
+        return $this->runCommand(sprintf('git merge-base %s %s 2>&1',  escapeshellarg($branchName1),  escapeshellarg($branchName2)));
+    }
 
 
     /**
