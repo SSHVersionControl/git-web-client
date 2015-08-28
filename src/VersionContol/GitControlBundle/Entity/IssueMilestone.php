@@ -71,9 +71,9 @@ class IssueMilestone
     private $id;
 
     /**
-     * @var \VersionContol\GitControlBundle\Entity\VerUser
+     * @var \VersionContol\GitControlBundle\Entity\User\User
      *
-     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\VerUser")
+     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\User\User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ver_user_id", referencedColumnName="id")
      * })
@@ -263,11 +263,11 @@ class IssueMilestone
     /**
      * Set verUser
      *
-     * @param \VersionContol\GitControlBundle\Entity\VerUser $verUser
+     * @param \VersionContol\GitControlBundle\Entity\User\User $verUser
      *
      * @return IssueMilestone
      */
-    public function setVerUser(\VersionContol\GitControlBundle\Entity\VerUser $verUser = null)
+    public function setVerUser(\VersionContol\GitControlBundle\Entity\User\User $verUser = null)
     {
         $this->verUser = $verUser;
 
@@ -277,7 +277,7 @@ class IssueMilestone
     /**
      * Get verUser
      *
-     * @return \VersionContol\GitControlBundle\Entity\VerUser
+     * @return \VersionContol\GitControlBundle\Entity\User\User
      */
     public function getVerUser()
     {

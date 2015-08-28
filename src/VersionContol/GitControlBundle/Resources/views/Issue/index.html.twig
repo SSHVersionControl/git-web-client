@@ -1,0 +1,62 @@
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+    <h1 class="page-header">
+       Issues
+      <small>
+          {{ project.title }} 
+      </small>
+          {% if (is_granted('MASTER', project)) %}
+          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
+        {% endif %}
+    </h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+            </li>
+            <li class="active">
+                <i class="fa fa-file"></i> Issues
+            </li>
+        </ol>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i> Issues: 
+                <span class="open"><i class="fa fa-exclamation-circle fa-fw"></i> 2 open</span>
+                <span class="close"><i class="fa fa-check fa-fw"></i> 3 closed</span>
+            </h3>
+        </div>
+        <div class="panel-body">
+                <div class="list-group">
+                 {% for issue in entities %}
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <strong class="str-truncated"><a href="{{ path('issue_show', { 'id': entity.id }) }}">{{ issue.title }}</strong>
+                            </div>
+                            <div class="col-md-2">
+                                <i class="fa fa-comment-o fa-fw"></i>0
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-10">
+                                <small>#{{issue.id}} opened by </small>
+                            </div>
+                            <div class="col-md-2">
+                                .
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

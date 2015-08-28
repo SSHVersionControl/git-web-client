@@ -43,9 +43,9 @@ class IssueComment
     private $id;
 
     /**
-     * @var \VersionContol\GitControlBundle\Entity\VerUser
+     * @var \VersionContol\GitControlBundle\Entity\User\User
      *
-     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\VerUser")
+     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\User\User")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="ver_user_id", referencedColumnName="id")
      * })
@@ -139,11 +139,11 @@ class IssueComment
     /**
      * Set verUser
      *
-     * @param \VersionContol\GitControlBundle\Entity\VerUser $verUser
+     * @param \VersionContol\GitControlBundle\Entity\User\User $verUser
      *
      * @return IssueComment
      */
-    public function setVerUser(\VersionContol\GitControlBundle\Entity\VerUser $verUser = null)
+    public function setVerUser(\VersionContol\GitControlBundle\Entity\User\User $verUser = null)
     {
         $this->verUser = $verUser;
 
@@ -153,7 +153,7 @@ class IssueComment
     /**
      * Get verUser
      *
-     * @return \VersionContol\GitControlBundle\Entity\VerUser
+     * @return \VersionContol\GitControlBundle\Entity\User\User
      */
     public function getVerUser()
     {

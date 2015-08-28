@@ -1,0 +1,53 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>IssueMilestone list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>State</th>
+                <th>Dueon</th>
+                <th>Createdat</th>
+                <th>Updatedat</th>
+                <th>Closedat</th>
+                <th>Id</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for entity in entities %}
+            <tr>
+                <td><a href="{{ path('issuemilestone_show', { 'id': entity.id }) }}">{{ entity.title }}</a></td>
+                <td>{{ entity.description }}</td>
+                <td>{{ entity.state }}</td>
+                <td>{% if entity.dueOn %}{{ entity.dueOn|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if entity.closedAt %}{{ entity.closedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ entity.id }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('issuemilestone_show', { 'id': entity.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('issuemilestone_edit', { 'id': entity.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('issuemilestone_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

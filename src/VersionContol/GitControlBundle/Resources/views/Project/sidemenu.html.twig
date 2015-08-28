@@ -22,5 +22,8 @@
         <li {% if app.request.attributes.get('_route') == 'project_branches' %}class="active"{% endif %}>
             <a href="{{ path('project_branches', { 'id': project.id }) }}"><i class="fa fa-fw fa-code-fork"></i>Branches</a>
         </li>
+        <li {% if app.request.attributes.get('_route') == 'project_branches' %}class="active"{% endif %}>
+            <a href="{{ path('issues', { 'id': project.id }) }}"><i class="fa fa-fw fa-bug"></i>Issues</a>
+        </li>
     </ul>
 </div>

@@ -1,0 +1,36 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>IssueLabel</h1>
+
+    <table class="record_properties">
+        <tbody>
+            <tr>
+                <th>Title</th>
+                <td>{{ entity.title }}</td>
+            </tr>
+            <tr>
+                <th>Hexcolor</th>
+                <td>{{ entity.hexColor }}</td>
+            </tr>
+            <tr>
+                <th>Id</th>
+                <td>{{ entity.id }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+        <ul class="record_actions">
+    <li>
+        <a href="{{ path('issuelabel') }}">
+            Back to the list
+        </a>
+    </li>
+    <li>
+        <a href="{{ path('issuelabel_edit', { 'id': entity.id }) }}">
+            Edit
+        </a>
+    </li>
+    <li>{{ form(delete_form) }}</li>
+</ul>
+{% endblock %}
