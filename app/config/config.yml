@@ -32,6 +32,8 @@ twig:
     strict_variables: "%kernel.debug%"
     globals:
         enable_registration: %enable_registration%
+    form:
+        resources: ['bootstrap_3_layout.html.twig']
 
 # Assetic Configuration
 assetic:

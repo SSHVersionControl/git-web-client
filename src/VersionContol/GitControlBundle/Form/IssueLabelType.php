@@ -17,7 +17,6 @@ class IssueLabelType extends AbstractType
         $builder
             ->add('title')
             ->add('hexColor')
-            ->add('issue')
         ;
     }
     

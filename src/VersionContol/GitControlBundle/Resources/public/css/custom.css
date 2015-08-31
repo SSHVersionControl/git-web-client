@@ -1,0 +1,52 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 31, 2015, 3:59:57 PM
+    Author     : fr_user
+*/
+
+#commit ::-webkit-input-placeholder {
+    margin-top: 30px;
+    text-align: center;
+}
+#commit :-moz-placeholder {
+    /* Firefox 18- */
+    margin-top: 30px;
+    text-align: center;
+}
+#commit ::-moz-placeholder {
+    /* Firefox 19+ */
+    margin-top: 30px;
+    text-align: center;
+}
+#commit :-ms-input-placeholder {
+    margin-top: 30px;
+    text-align: center;
+}
+
+h1 span.edit{
+        font-size: 35%;
+}
+
+.diff-number{
+    border-right: 2px solid #ddd;
+    background-color: #f5f5f5;
+    width: 60px;
+    text-align: right;
+    color: #00907c;
+    padding-right:10px !important;
+    
+}
+table.diff >tbody>tr>td{
+    border-top:none !important;
+}
+table.diff >tbody>tr.diff-type-1>td{
+    background-color: #dff0d8;
+}
+
+table.diff >tbody>tr.diff-type-2>td{
+    background-color: #f2dede;
+}

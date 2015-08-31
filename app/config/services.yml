@@ -21,3 +21,14 @@ services:
         class: VersionContol\GitControlBundle\Form\RegistrationType
         tags:
             - { name: form.type, alias: version_control_user_registration }
+            
+    salavert.twig.time_ago:
+        class: Salavert\Twig\Extension\TimeAgoExtension
+        arguments: [@translator]
+        tags:
+        - { name: twig.extension }
+        
+    version_control.twig.versioncontrol_textcolor:
+        class: VersionContol\GitControlBundle\Twig\Extension\TextColorExtension
+        tags:
+            - { name: twig.extension }

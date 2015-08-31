@@ -17,14 +17,16 @@ class IssueType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('status')
-            ->add('closedAt')
-            ->add('createdAt')
-            ->add('updatedAt')
-            ->add('githubNumber')
+            //->add('status')
+            //->add('closedAt')
+            //->add('createdAt')
+            //->add('updatedAt')
+            //->add('githubNumber')
             ->add('issueMilestone')
-            ->add('project')
-            ->add('verUser')
+            ->add('project', 'hidden_entity',array(
+                    'class' => 'VersionContol\GitControlBundle\Entity\Project'
+                ))
+            //->add('verUser')
             ->add('issueLabel')
         ;
     }

@@ -21,11 +21,11 @@ class IssueMilestoneController extends Controller
     /**
      * Lists all IssueMilestone entities.
      *
-     * @Route("/", name="issuemilestone")
+     * @Route("s/{id}", name="issuemilestones")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction($id)
     {
         $em = $this->getDoctrine()->getManager();
 

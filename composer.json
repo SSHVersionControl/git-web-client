@@ -20,7 +20,8 @@
         "incenteev/composer-parameter-handler": "~2.0",
 	"friendsofsymfony/user-bundle": "~2.0@dev",
         "lrotherfield/form": "1.1.x-dev",
-        "vmelnik/doctrine-encrypt-bundle": "~2.0"
+        "vmelnik/doctrine-encrypt-bundle": "~2.0",
+        "salavert/time-ago-in-words": "1.*"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

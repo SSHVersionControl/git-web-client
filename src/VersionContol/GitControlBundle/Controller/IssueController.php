@@ -9,6 +9,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionContol\GitControlBundle\Entity\Issue;
 use VersionContol\GitControlBundle\Form\IssueType;
+use VersionContol\GitControlBundle\Form\IssueEditType;
+
+use VersionContol\GitControlBundle\Entity\IssueComment;
+use VersionContol\GitControlBundle\Form\IssueCommentType;
 
 /**
  * Issue controller.
@@ -21,7 +25,7 @@ class IssueController extends Controller
     /**
      * Lists all Issue entities.
      *
-     * @Route("/{id}", name="issues")
+     * @Route("s/{id}", name="issues")
      * @Method("GET")
      * @Template()
      */
@@ -29,7 +33,7 @@ class IssueController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         
-         $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
 
         if (!$project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
@@ -38,13 +42,19 @@ class IssueController extends Controller
         //$this->checkProjectAuthorization($project,'EDIT');
         
 
-        $entities = $em->getRepository('VersionContolGitControlBundle:Issue')->findAll();
-
+        $entities = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProject($project);
+        $openIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'open');
+        $closedIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'closed');
+        
         return array(
             'entities' => $entities,
-            'project' => $project
+            'project' => $project,
+            'openIssuesCount' => $openIssuesCount,
+            'closedIssuesCount' => $closedIssuesCount,
+            
         );
     }
+    
     /**
      * Creates a new Issue entity.
      *
@@ -60,15 +70,21 @@ class IssueController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            
+            //Set User
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $entity->setVerUser($user);
+            
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('issue_show', array('id' => $entity->getId())));
+            return $this->redirect($this->generateUrl('issue_show', array('id' => $entity->getProject())));
         }
 
         return array(
             'entity' => $entity,
             'form'   => $form->createView(),
+            'project'   => $entity->getProject(),
         );
     }
 
@@ -94,18 +110,29 @@ class IssueController extends Controller
     /**
      * Displays a form to create a new Issue entity.
      *
-     * @Route("/new", name="issue_new")
+     * @Route("/new/{id}", name="issue_new")
      * @Method("GET")
      * @Template()
      */
-    public function newAction()
+    public function newAction($id)
     {
+        $em = $this->getDoctrine()->getManager();
+        
+        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+
+        if (!$project) {
+            throw $this->createNotFoundException('Unable to find Project entity.');
+        }
+        
+        
         $entity = new Issue();
+        $entity->setProject($project);
         $form   = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
             'form'   => $form->createView(),
+            'project' => $project
         );
     }
 
@@ -127,10 +154,16 @@ class IssueController extends Controller
         }
 
         $deleteForm = $this->createDeleteForm($id);
+        
+        $issueComment = new IssueComment();
+        $issueComment->setIssue($entity);
+        $commentForm = $this->createCommentForm($issueComment);
 
         return array(
             'entity'      => $entity,
             'delete_form' => $deleteForm->createView(),
+            'project' => $entity->getProject(),
+            'comment_form' => $commentForm->createView(),
         );
     }
 
@@ -145,19 +178,20 @@ class IssueController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($id);
+        $issue = $em->getRepository('VersionContolGitControlBundle:Issue')->find($id);
 
-        if (!$entity) {
+        if (!$issue) {
             throw $this->createNotFoundException('Unable to find Issue entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($issue);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'issue'      => $issue,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
+            'project' => $issue->getProject(),
         );
     }
 
@@ -170,7 +204,7 @@ class IssueController extends Controller
     */
     private function createEditForm(Issue $entity)
     {
-        $form = $this->createForm(new IssueType(), $entity, array(
+        $form = $this->createForm(new IssueEditType(), $entity, array(
             'action' => $this->generateUrl('issue_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
@@ -253,5 +287,58 @@ class IssueController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
+    }
+    
+    
+    /**
+     * Creates a new Issue comment entity.
+     *
+     * @Route("/comment/", name="issuecomment_create")
+     * @Method("POST")
+     * @Template("VersionContolGitControlBundle:Issue:show.html.twig")
+     */
+    public function createCommentAction(Request $request)
+    {
+        $entity = new IssueComment();
+        $form = $this->createCommentForm($entity);
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            
+            //Set User
+            $user = $this->get('security.token_storage')->getToken()->getUser();
+            $entity->setVerUser($user);
+            
+            $em->persist($entity);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('issue_show', array('id' => $entity->getIssue()->getId())));
+        }
+
+        return array(
+            'entity' => $entity,
+            'form'   => $form->createView(),
+            'project'   => $entity->getIssue()->getProject(),
+        );
+    }
+    
+    /**
+     * Creates a form to create a Issue entity.
+     *
+     * @param Issue $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createCommentForm(IssueComment $entity)
+    {
+        $form = $this->createForm(new IssueCommentType(), $entity, array(
+            'action' => $this->generateUrl('issuecomment_create'),
+            'method' => 'POST',
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Create'));
+
+        return $form;
     }
 }

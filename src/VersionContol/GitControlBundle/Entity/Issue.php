@@ -8,7 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
  * Issue
  *
  * @ORM\Table(name="issue", indexes={@ORM\Index(name="fk_issue_ver_user1_idx", columns={"ver_user_id"}), @ORM\Index(name="fk_issue_project1_idx", columns={"project_id"}), @ORM\Index(name="fk_issue_issue_milestone1_idx", columns={"issue_milestone_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\IssueRepository")
+ * @ORM\HasLifecycleCallbacks
  */
 class Issue
 {
@@ -114,6 +115,14 @@ class Issue
      * )
      */
     private $issueLabel;
+    
+    /**
+     * Issue comments
+     * @var \Doctrine\Common\Collections\Collection
+     * 
+     * @ORM\OneToMany(targetEntity="VersionContol\GitControlBundle\Entity\IssueComment", mappedBy="issue", fetch="EXTRA_LAZY") 
+     */
+    private $issueComments;
 
     /**
      * Constructor
@@ -121,6 +130,9 @@ class Issue
     public function __construct()
     {
         $this->issueLabel = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->issueComments = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->setCreatedAt(new \DateTime());
+        $this->setStatus('open');
     }
 
 
@@ -407,4 +419,37 @@ class Issue
     {
         return $this->issueLabel;
     }
+    
+    /**
+     * Get Issue Comments
+     * @return \Doctrine\Common\Collections\Collection of \VersionContol\GitControlBundle\Entity\IssueComment
+     */
+    public function getIssueComments() {
+        return $this->issueComments;
+    }
+
+    /**
+     * Set Issue Comments
+     * @param \Doctrine\Common\Collections\Collection $issueComments
+     * @return \VersionContol\GitControlBundle\Entity\Issue
+     */
+    public function setIssueComments(\Doctrine\Common\Collections\Collection $issueComments) {
+        $this->issueComments = $issueComments;
+        return $this;
+    }
+
+        
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function updateModifiedDatetime() {
+        // update the modified time
+        //$this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
+        if($this->getStatus() === 'closed'){
+            $this->setClosedAt(new \DateTime());
+        }
+    }
+
 }

@@ -22,13 +22,32 @@
                 <i class="fa fa-file"></i> Issues
             </li>
         </ol>
+    
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="{{ path('issues', { 'id': project.id }) }}" >Issues</a>
+        </li>
+        <li>
+            <a href="{{path('issuelabels', { 'project': project.id }) }}" >Labels</a>
+        </li>
+        <li>
+            <a href="{{path('issuemilestones', { 'id': project.id }) }}" >Milestones</a>
+        </li>
+    </ul>
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i> Issues: 
-                <span class="open"><i class="fa fa-exclamation-circle fa-fw"></i> 2 open</span>
-                <span class="close"><i class="fa fa-check fa-fw"></i> 3 closed</span>
-            </h3>
+            <div class="row">
+                 <div class="col-lg-10">
+                    <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i> Issues: 
+                        <span class="open"><i class="fa fa-exclamation-circle fa-fw"></i> {{openIssuesCount}} open</span>
+                        <span class="closed"><i class="fa fa-check fa-fw"></i> {{closedIssuesCount}} closed</span>
+                    </h3>
+                 </div>
+                 <div class="col-lg-2">
+                     <a href="{{ path('issue_new',{ 'id': project.id }) }}" class="btn btn-primary btn-sm">New Issue</a>
+                 </div>
+            </div>
         </div>
         <div class="panel-body">
                 <div class="list-group">
@@ -37,16 +56,16 @@
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-md-10">
-                                <strong class="str-truncated"><a href="{{ path('issue_show', { 'id': entity.id }) }}">{{ issue.title }}</strong>
+                                <strong class="str-truncated"><a href="{{ path('issue_show', { 'id': issue.id }) }}">{{ issue.title }}</a></strong>
                             </div>
                             <div class="col-md-2">
-                                <i class="fa fa-comment-o fa-fw"></i>0
+                                <i class="fa fa-comment-o fa-fw"></i>{{issue.issueComments|length}}
                             </div>
                         </div>
                         
                         <div class="row">
                             <div class="col-md-10">
-                                <small>#{{issue.id}} opened by </small>
+                                <small>#{{issue.id}} opened by {{issue.verUser.name}} {{issue.createdAt|time_ago_in_words}}</small>
                             </div>
                             <div class="col-md-2">
                                 .

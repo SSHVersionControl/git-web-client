@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="issue_comment", indexes={@ORM\Index(name="fk_issue_comment_ver_user1_idx", columns={"ver_user_id"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class IssueComment
 {
@@ -51,8 +52,22 @@ class IssueComment
      * })
      */
     private $verUser;
+    
+    /**
+     * @var \VersionContol\GitControlBundle\Entity\Issue
+     *
+     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\Issue")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="issue_id", referencedColumnName="id")
+     * })
+     */
+    private $issue;
 
 
+
+    public function __construct() {
+        $this->setCreatedAt(new \DateTime());
+    }
 
     /**
      * Set comment
@@ -159,4 +174,36 @@ class IssueComment
     {
         return $this->verUser;
     }
+    /**
+     * Sets issue
+     * @param \VersionContol\GitControlBundle\Entity\Issue $issue
+     * @return \VersionContol\GitControlBundle\Entity\IssueComment
+     */
+    public function setIssue(\VersionContol\GitControlBundle\Entity\Issue $issue) {
+        $this->issue = $issue;
+        return $this;
+    }
+    
+    /**
+     * Gets issue
+     * @return \VersionContol\GitControlBundle\Entity\Issue
+     */
+    public function getIssue() {
+        return $this->issue;
+    }
+    
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function updateModifiedDatetime() {
+        // update the modified time
+        //$this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
+
+    }
+
+    
+
+
 }

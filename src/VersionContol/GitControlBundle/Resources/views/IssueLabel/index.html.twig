@@ -1,43 +1,80 @@
-{% extends '::base.html.twig' %}
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
 
-{% block body -%}
-    <h1>IssueLabel list</h1>
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+{% endblock %}
 
-    <table class="records_list">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Hexcolor</th>
-                <th>Id</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('issuelabel_show', { 'id': entity.id }) }}">{{ entity.title }}</a></td>
-                <td>{{ entity.hexColor }}</td>
-                <td>{{ entity.id }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('issuelabel_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('issuelabel_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-        <ul>
+{% block content -%}
+    <h1 class="page-header">
+       Issues
+      <small>
+          {{ project.title }} 
+      </small>
+          {% if (is_granted('MASTER', project)) %}
+          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
+        {% endif %}
+    </h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+            </li>
+            <li class="active">
+                <i class="fa fa-file"></i> Issues
+            </li>
+            <li class="active">
+                <i class="fa fa-file"></i> Labels
+            </li>
+        </ol>
+    
+    <ul class="nav nav-tabs">
+        <li >
+            <a href="{{ path('issues', { 'id': project.id }) }}" >Issues</a>
+        </li>
+        <li class="active">
+            <a href="{{path('issuelabels', { 'project': project.id }) }}" >Labels</a>
+        </li>
         <li>
-            <a href="{{ path('issuelabel_new') }}">
-                Create a new entry
-            </a>
+            <a href="{{path('issuemilestones', { 'id': project.id }) }}" >Milestones</a>
         </li>
     </ul>
-    {% endblock %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                 <div class="col-lg-10">
+                    <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i> Labels 
+                    </h3>
+                 </div>
+                 <div class="col-lg-2">
+                     <a href="{{ path('issuelabel_new',{ 'project': project.id }) }}" class="btn btn-primary btn-sm">New Label</a>
+                 </div>
+            </div>
+        </div>
+        <div class="panel-body">
+                <div class="list-group">
+                 {% for label in entities %}
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-10">
+                                <div style="background-color:#{{ label.hexColor }};" class="issue-label">
+                                    <a href="{{ path('issuelabel_edit', { 'id': label.id, 'project': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
+                                         <i class="fa fa-tag fa-fw"></i>
+                                        {{ label.title }}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="" class="btn btn-danger">Delete</a>
+                                <a href="{{ path('issuelabel_edit', { 'id': label.id, 'project': project.id }) }}" class="btn btn-default">Edit</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
