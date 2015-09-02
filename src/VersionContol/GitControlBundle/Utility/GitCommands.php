@@ -248,7 +248,9 @@ class GitCommands
      */
     public function getCommitLog($commitHash, $branch = 'master'){
         $log = null;
-        $logData = $this->runCommand('git \'--no-pager log\' \'--pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s"\' -1 \''.$commitHash.'\' \''.$branch.'\'');
+        $logData = $this->runCommand('git --no-pager log "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -1 '.escapeshellarg($commitHash).' '.escapeshellarg(trim($branch)));
+
+        //$logData = $this->runCommand('git \'--no-pager log\' \'--pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s"\' -1 \''.$commitHash.'\' \''.$branch.'\'');
         $lines = $this->splitOnNewLine($logData);
 
         if(is_array($lines) && count($lines) > 0){
