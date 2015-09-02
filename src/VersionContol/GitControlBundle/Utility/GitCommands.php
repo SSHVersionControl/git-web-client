@@ -4,6 +4,7 @@ namespace VersionContol\GitControlBundle\Utility;
 
 
 use Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 use VersionContol\GitControlBundle\Entity\GitFile;
 use VersionContol\GitControlBundle\Entity\GitLog;
 
@@ -107,8 +108,9 @@ class GitCommands
      * @return type
      */
     public function getLocalBranches(){
-         $localBranches = $this->runCommand("git for-each-ref --format='%(refname:short)'  refs/heads/");
-         return $this->splitOnNewLine($localBranches);
+         $localBranches = $this->runCommand('git for-each-ref "--format=\'%(refname:short)\'"  '.escapeshellarg("refs/heads/"));
+         
+         return $this->splitOnNewLine($localBranches,true);
     }
     
     /**
@@ -206,8 +208,16 @@ class GitCommands
      */
     public function getLog($count = 20, $branch = 'master'){
         $logs = array();
+        $logData = '';
         try{
-            $logData = $this->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -'.intval($count).' '.$branch);
+            //$logData = $this->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -'.intval($count).' '.$branch);
+            $logData = $this->runCommand('git --no-pager log "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' '.trim($branch));
+            /*$logData = $this->runCommand(array('git',
+                                        '--no-pager log', 
+                                        //'--pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s"',
+                                        '-'.intval($count),
+                                        $branch));*/
+            print_r($logData);
         }catch(\RuntimeException $e){
             if($this->getObjectCount() == 0){
                 return $logs;
@@ -238,7 +248,7 @@ class GitCommands
      */
     public function getCommitLog($commitHash, $branch = 'master'){
         $log = null;
-        $logData = $this->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -1 '.$commitHash.' '.$branch);
+        $logData = $this->runCommand('git \'--no-pager log\' \'--pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s"\' -1 \''.$commitHash.'\' \''.$branch.'\'');
         $lines = $this->splitOnNewLine($logData);
 
         if(is_array($lines) && count($lines) > 0){
@@ -371,7 +381,7 @@ class GitCommands
         $user = $this->securityContext->getToken()->getUser();
         $author = $user->getName().' <'.$user->getEmail().'>';
         
-        return $this->runCommand('git commit -m '.escapeshellarg($message).' --author='.escapeshellarg($author).''); 
+        return $this->runCommand('git commit -m '.escapeshellarg($message).' --author='.escapeshellarg($author)); 
         
     }
     
@@ -407,17 +417,32 @@ class GitCommands
      */
     protected function runCommand($command){
         
-        $fullCommand = sprintf('cd %s ; %s',$this->gitPath,$command);
+       
+        
+        
         if($this->project->getSsh() === true){
+             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
             $sshProcess = new SshProcess();
             $sshProcess->run(array($fullCommand),$this->project->getHost(),$this->project->getUsername(),22,$this->project->getPassword());
             return $sshProcess->getStdout();
         }else{
-            $process = new Process($fullCommand);
+            if(is_array($command)){
+                //$finalCommands = array_merge(array('cd',$this->gitPath,'&&'),$command);
+                $builder = new ProcessBuilder($command);
+                $builder->setPrefix('cd '.$this->gitPath.' && ');
+                $process = $builder->getProcess();
+                
+            }else{
+                $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
+                $process = new Process($fullCommand);
+            }
+            //return exec($fullCommand);
+            print_r($process->getCommandLine());
             $process->run();
 
             // executes after the command finishes
             if (!$process->isSuccessful()) {
+                
                 throw new \RuntimeException($process->getErrorOutput());
             }
             
@@ -496,10 +521,14 @@ class GitCommands
         }
         $lines = preg_split('/$\R?^/m', $text);
         if($trimSpaces){
-            return array_map('trim',$lines); 
+            return array_map(array($this,'trimSpaces'),$lines); 
         }else{
             return $lines; 
         }
+    }
+    
+    public function trimSpaces($value){
+        return trim(trim($value),'\'');
     }
 
     /**
