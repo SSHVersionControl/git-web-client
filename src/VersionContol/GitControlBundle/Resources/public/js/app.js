@@ -25,5 +25,16 @@ $(function(){
             $submitButton.text(loadingText).attr("disabled", true);
         }
     });
+    
+    $("#versioncontol_gitcontrolbundle_issuelabel_hexColor").pickAColor({
+            showSpectrum            : true,
+            showSavedColors         : true,
+            saveColorsPerElement    : false,
+            fadeMenuToggle          : true,
+            showHexInput            : true,
+            showBasicColors         : true,
+            allowBlank              : false,
+            inlineDropdown          : true
+      });
 
 });
