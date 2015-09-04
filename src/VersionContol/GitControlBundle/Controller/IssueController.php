@@ -78,7 +78,7 @@ class IssueController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('issue_show', array('id' => $entity->getProject())));
+            return $this->redirect($this->generateUrl('issues', array('id' => $entity->getProject()->getId())));
         }
 
         return array(
