@@ -57,7 +57,7 @@ class IssueLabelController extends Controller
             $em->persist($issue);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('issuelabels', array('project' => $issue->getId())));
+            return $this->redirect($this->generateUrl('issuelabels', array('project' => $project->getId())));
         }
 
         return array(
