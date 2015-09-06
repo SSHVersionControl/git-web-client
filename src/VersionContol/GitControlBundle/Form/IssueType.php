@@ -27,7 +27,12 @@ class IssueType extends AbstractType
                     'class' => 'VersionContol\GitControlBundle\Entity\Project'
                 ))
             //->add('verUser')
-            ->add('issueLabel')
+            ->add('issueLabel','entity',array(
+                    'multiple' => true,   // Multiple selection allowed
+                    'expanded' => true,   // Render as checkboxes
+                    'property' => 'title', // Assuming that the entity has a "name" property
+                    'class' => 'VersionContol\GitControlBundle\Entity\IssueLabel'
+                ))
         ;
     }
     
