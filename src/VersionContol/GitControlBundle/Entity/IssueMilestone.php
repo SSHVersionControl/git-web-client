@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="issue_milestone", indexes={@ORM\Index(name="fk_issue_milestone_ver_user1_idx", columns={"ver_user_id"})})
  * @ORM\Entity
+ * @ORM\HasLifecycleCallbacks
  */
 class IssueMilestone
 {
@@ -79,8 +80,27 @@ class IssueMilestone
      * })
      */
     private $verUser;
+    
+    /**
+     * @var \VersionContol\GitControlBundle\Entity\Project
+     *
+     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\Project")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * })
+     */
+    private $project;
 
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->setCreatedAt(new \DateTime());
+        $this->setState('open');
+    }
+    
 
     /**
      * Set title
@@ -282,5 +302,42 @@ class IssueMilestone
     public function getVerUser()
     {
         return $this->verUser;
+    }
+    
+    /**
+     * Set project
+     *
+     * @param \VersionContol\GitControlBundle\Entity\Project $project
+     *
+     * @return IssueMilestone
+     */
+    public function setProject(\VersionContol\GitControlBundle\Entity\Project $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \VersionContol\GitControlBundle\Entity\Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+    
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function updateModifiedDatetime() {
+        // update the modified time
+        //$this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
+        if($this->getState() === 'closed'){
+            $this->setClosedAt(new \DateTime());
+        }
     }
 }

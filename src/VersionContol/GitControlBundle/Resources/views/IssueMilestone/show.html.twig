@@ -1,56 +1,65 @@
-{% extends '::base.html.twig' %}
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
 
-{% block body -%}
-    <h1>IssueMilestone</h1>
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+{% endblock %}
 
-    <table class="record_properties">
-        <tbody>
-            <tr>
-                <th>Title</th>
-                <td>{{ entity.title }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ entity.description }}</td>
-            </tr>
-            <tr>
-                <th>State</th>
-                <td>{{ entity.state }}</td>
-            </tr>
-            <tr>
-                <th>Dueon</th>
-                <td>{{ entity.dueOn|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Createdat</th>
-                <td>{{ entity.createdAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Updatedat</th>
-                <td>{{ entity.updatedAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Closedat</th>
-                <td>{{ entity.closedAt|date('Y-m-d H:i:s') }}</td>
-            </tr>
-            <tr>
-                <th>Id</th>
-                <td>{{ entity.id }}</td>
-            </tr>
-        </tbody>
-    </table>
+{% block content -%}
+    <h1 class="page-header">
+        Milestone #{{ entity.id }} <small>{{ entity.title }}</small> {{ entity.state }}
+    </h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+            </li>
+            <li >
+                <i class="fa fa-file"></i> <a href="{{path('issues', { 'id': project.id }) }}">Issues</a>
+            </li>
+            <li class="active">
+                <i class="fa fa-file"></i> {{ entity.title }} 
+            </li>
+        </ol>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                 <div class="col-lg-8">
+                    <h3 class="panel-title">
+                        <div class="issue-state issue-state-{{ entity.state }}"> 
+                            {{ entity.state|capitalize }} 
+                        </div>
+                        <strong>{{entity.verUser.name}}</strong> created this Milestone {{ entity.createdAt|time_ago_in_words }}
+                          
+                    </h3>
+                 </div>
+                 <div class="col-lg-4 text-right">
+                     <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
+                     <a href="{{ path('issuemilestone_edit',{ 'id': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-edit fa-fw"></i>Edit</a>
+                     <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Issue</a>
+                 </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            <ul class="timeline">
+                <li class="timeline-inverted">
+                    <div class="timeline-badge success">
+                        <i class="fa fa-check"></i>
+                    </div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{ entity.createdAt|time_ago_in_words }}</small>
+                            </p>
+                        </div>
+                        <div class="timeline-body">
+                            <p>{{ entity.description }}</p>
+                        </div>
+                    </div>
+                    
+                </li>
+                Need to show issues
+            </ul>
+            
+        </div>
+    </div>
 
-        <ul class="record_actions">
-    <li>
-        <a href="{{ path('issuemilestone') }}">
-            Back to the list
-        </a>
-    </li>
-    <li>
-        <a href="{{ path('issuemilestone_edit', { 'id': entity.id }) }}">
-            Edit
-        </a>
-    </li>
-    <li>{{ form(delete_form) }}</li>
-</ul>
 {% endblock %}

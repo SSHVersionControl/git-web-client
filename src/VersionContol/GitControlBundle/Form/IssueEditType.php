@@ -22,7 +22,7 @@ class IssueEditType extends AbstractType
                     ,'required' => false
                     ,'empty_value' => 'Please select a State')
                     )
-            ->add('issueMilestone')
+            ->add('issueMilestone','entity')
             ->add('project', 'hidden_entity',array(
                     'class' => 'VersionContol\GitControlBundle\Entity\Project'
                 ))

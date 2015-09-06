@@ -1,53 +1,84 @@
-{% extends '::base.html.twig' %}
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
 
-{% block body -%}
-    <h1>IssueMilestone list</h1>
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+{% endblock %}
 
-    <table class="records_list">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>State</th>
-                <th>Dueon</th>
-                <th>Createdat</th>
-                <th>Updatedat</th>
-                <th>Closedat</th>
-                <th>Id</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for entity in entities %}
-            <tr>
-                <td><a href="{{ path('issuemilestone_show', { 'id': entity.id }) }}">{{ entity.title }}</a></td>
-                <td>{{ entity.description }}</td>
-                <td>{{ entity.state }}</td>
-                <td>{% if entity.dueOn %}{{ entity.dueOn|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if entity.createdAt %}{{ entity.createdAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if entity.updatedAt %}{{ entity.updatedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if entity.closedAt %}{{ entity.closedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{{ entity.id }}</td>
-                <td>
-                <ul>
-                    <li>
-                        <a href="{{ path('issuemilestone_show', { 'id': entity.id }) }}">show</a>
-                    </li>
-                    <li>
-                        <a href="{{ path('issuemilestone_edit', { 'id': entity.id }) }}">edit</a>
-                    </li>
-                </ul>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-        <ul>
-        <li>
-            <a href="{{ path('issuemilestone_new') }}">
-                Create a new entry
-            </a>
+{% block content -%}
+    <h1 class="page-header">
+       Milestones
+      <small>
+          {{ project.title }} 
+      </small>
+          {% if (is_granted('MASTER', project)) %}
+          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
+        {% endif %}
+    </h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+            </li>
+            <li>
+                <i class="fa fa-file"></i> <a href="{{ path('issues', { 'id': project.id }) }}" title="issues">Issues</a>
+            </li>
+            <li class="active">
+                <i class="fa fa-file"></i> Milestones
+            </li>
+        </ol>
+    
+    <ul class="nav nav-tabs">
+        <li >
+            <a href="{{ path('issues', { 'id': project.id }) }}" >Issues</a>
+        </li>
+        <li >
+            <a href="{{path('issuemilestones', { 'project': project.id }) }}" >Labels</a>
+        </li>
+        <li  class="active">
+            <a href="{{path('issuemilestones', { 'project': project.id }) }}" >Milestones</a>
         </li>
     </ul>
-    {% endblock %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                 <div class="col-lg-10">
+                    <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i> Milestones 
+                    </h3>
+                 </div>
+                 <div class="col-lg-2">
+                     <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-primary btn-sm">New Milestone</a>
+                 </div>
+            </div>
+        </div>
+        <div class="panel-body">
+                <div class="list-group">
+                 {% for milestone in entities %}
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-10">
+                                    <a href="{{ path('issuemilestone_edit', { 'id': milestone.id, 'project': project.id }) }}" >
+                                         <i class="fa fa-tag fa-fw"></i>
+                                        {{ milestone.title }}
+                                        {{ milestone.description }}
+                                        {{ milestone.state }}
+                                        {% if milestone.dueOn %}{{ milestone.dueOn|date('Y-m-d H:i:s') }}{% endif %}
+                                        {% if milestone.createdAt %}{{ milestone.createdAt|date('Y-m-d H:i:s') }}{% endif %}
+                                        {% if milestone.updatedAt %}{{ milestone.updatedAt|date('Y-m-d H:i:s') }}{% endif %}
+                                        {% if milestone.closedAt %}{{ milestone.closedAt|date('Y-m-d H:i:s') }}{% endif %}
+                                    </a>
+                            </div>
+                            <div class="col-md-2">
+                                <a href="" class="btn btn-danger">Delete</a>
+                                <a href="{{ path('issuemilestone_edit', { 'id': milestone.id, 'project': project.id }) }}" class="btn btn-default">Edit</a>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

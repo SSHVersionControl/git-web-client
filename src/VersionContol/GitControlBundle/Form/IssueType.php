@@ -22,7 +22,14 @@ class IssueType extends AbstractType
             //->add('createdAt')
             //->add('updatedAt')
             //->add('githubNumber')
-            ->add('issueMilestone')
+            ->add('issueMilestone','entity',array(
+                    'multiple' => false,   // Multiple selection allowed
+                    //'expanded' => true,   // Render as checkboxes
+                    'placeholder' => 'Choose a milestone',
+                    'required' => false,
+                    'property' => 'title', // Assuming that the entity has a "name" property
+                    'class' => 'VersionContol\GitControlBundle\Entity\IssueMilestone'
+                ))
             ->add('project', 'hidden_entity',array(
                     'class' => 'VersionContol\GitControlBundle\Entity\Project'
                 ))
@@ -31,7 +38,8 @@ class IssueType extends AbstractType
                     'multiple' => true,   // Multiple selection allowed
                     'expanded' => true,   // Render as checkboxes
                     'property' => 'title', // Assuming that the entity has a "name" property
-                    'class' => 'VersionContol\GitControlBundle\Entity\IssueLabel'
+                    'class' => 'VersionContol\GitControlBundle\Entity\IssueLabel',
+                    'required' => false
                 ))
         ;
     }
