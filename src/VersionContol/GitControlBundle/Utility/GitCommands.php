@@ -395,7 +395,7 @@ class GitCommands
      * @return string command response
      */
     public function push($remote,$branch){
-        return $this->runCommand(sprintf('git push %s %s 2>&1',$remote,$branch));
+        return $this->runCommand(sprintf('git push %s %s "2>&1"',escapeshellarg($remote),escapeshellarg($branch)));
     }
     
     /**
@@ -406,7 +406,7 @@ class GitCommands
      * @return string command response
      */
     public function pull($remote,$branch){
-        return $this->runCommand(sprintf('git pull %s %s 2>&1',$remote,$branch));
+        return $this->runCommand(sprintf('git pull %s %s "2>&1"',escapeshellarg($remote),escapeshellarg($branch)));
     }
     
     /**
@@ -418,9 +418,6 @@ class GitCommands
      * @throws \RuntimeException
      */
     protected function runCommand($command){
-        
-       
-        
         
         if($this->project->getSsh() === true){
              $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
