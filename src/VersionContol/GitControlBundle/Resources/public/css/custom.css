@@ -277,3 +277,10 @@ table.diff >tbody>tr.diff-type-2>td{
     background-color: #fff;
     border-color: #ccc;
 } 
+
+.issue-label.btn-xs{
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+}   
