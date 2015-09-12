@@ -769,6 +769,40 @@ class ProjectController extends Controller
         );
     }
     
+    /**
+     * Show Git commit diff
+     *
+     * @Route("filediff/{id}/{difffile}", name="project_filediff")
+     * @Method("GET")
+     * @Template()
+     */
+    public function fileDiffAction($id,$difffile){
+        $em = $this->getDoctrine()->getManager();
+
+        $difffile = urldecode($difffile);
+       
+        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+
+        if (!$project) {
+            throw $this->createNotFoundException('Unable to find Project entity.');
+        }
+        
+        $this->checkProjectAuthorization($project,'VIEW');
+        
+        $gitCommands = $this->get('version_control.git_command')->setProject($project);
+        
+        $branchName = $gitCommands->getCurrentBranch();
+       // $gitLog = $gitCommands->getCommitLog($commitHash,$branchName);
+        
+        $gitDiffs = $gitCommands->getDiffFile($difffile);
+   
+        return array(
+            'project'      => $project,
+            'branchName' => $branchName,
+            'diffs' => $gitDiffs,
+        );
+    }
+    
     
     /**
      * 

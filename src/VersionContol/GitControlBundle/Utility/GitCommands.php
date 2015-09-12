@@ -276,6 +276,17 @@ class GitCommands
     }
     
     /**
+     * Array of local branches
+     * @return type
+     */
+    public function getDiffFile($filename){
+         $diffString = $this->runCommand("git --no-pager diff  --oneline ".escapeshellarg($filename)." 2>&1");
+         $diffParser = new GitDiffParser($diffString);
+         $diffs = $diffParser->parse(); 
+         return $diffs;
+    }
+    
+    /**
      * Gets all files that need to be commited
      * 
      * @return array Array of GitFile objects
