@@ -407,7 +407,7 @@ class GitCommands
      */
     public function pull($remote,$branch){
         //return $this->runCommand(sprintf('git pull %s %s "2>&1"',escapeshellarg($remote),escapeshellarg($branch)));
-        return $this->runCommand(sprintf('git pull %s %s ',escapeshellarg($remote),escapeshellarg($branch)));
+        return $this->runCommand(sprintf('git pull %s %s 2>&1',escapeshellarg($remote),escapeshellarg($branch)));
     }
     
     /**
@@ -437,7 +437,7 @@ class GitCommands
                 $process = new Process($fullCommand);
             }
             //return exec($fullCommand);
-            print_r($process->getCommandLine());
+            //print_r($process->getCommandLine());
             $process->run();
 
             // executes after the command finishes
