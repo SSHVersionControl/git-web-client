@@ -206,18 +206,19 @@ class GitCommands
      * Currenly limits to the last 20 commits.
      * @return GitLog|array
      */
-    public function getLog($count = 20, $branch = 'master'){
+    public function getLog($count = 20, $branch = 'master', $fileName = false){
         $logs = array();
         $logData = '';
         try{
             //$logData = $this->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -'.intval($count).' '.$branch);
-            $logData = $this->runCommand('git --no-pager log "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' '.trim($branch));
-            /*$logData = $this->runCommand(array('git',
-                                        '--no-pager log', 
-                                        //'--pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s"',
-                                        '-'.intval($count),
-                                        $branch));*/
-            print_r($logData);
+            $command = 'git --no-pager log "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' '.escapeshellarg(trim($branch));
+            
+            if($fileName !== false){
+                $command .= ' '.escapeshellarg($fileName);
+            }
+            $logData = $this->runCommand($command);
+            
+     
         }catch(\RuntimeException $e){
             if($this->getObjectCount() == 0){
                 return $logs;
@@ -248,11 +249,12 @@ class GitCommands
      */
     public function getCommitLog($commitHash, $branch = 'master'){
         $log = null;
-        $logData = $this->runCommand('git --no-pager log "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -1 '.escapeshellarg($commitHash).' '.escapeshellarg(trim($branch)));
-
+   
+        $logData = $this->runCommand('git --no-pager log "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -1 '.escapeshellarg($commitHash));
+//print_r($logData);
         //$logData = $this->runCommand('git \'--no-pager log\' \'--pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s"\' -1 \''.$commitHash.'\' \''.$branch.'\'');
         $lines = $this->splitOnNewLine($logData);
-
+//print_r($lines);
         if(is_array($lines) && count($lines) > 0){
             foreach($lines as $line){
                 if(trim($line)){
@@ -260,7 +262,7 @@ class GitCommands
                 }
             }
         }
-        
+        //print_r($log);
         return $log;
     }
     
@@ -276,7 +278,7 @@ class GitCommands
     }
     
     /**
-     * Array of local branches
+     * Get diff on a file
      * @return type
      */
     public function getDiffFile($filename){
@@ -284,6 +286,31 @@ class GitCommands
          $diffParser = new GitDiffParser($diffString);
          $diffs = $diffParser->parse(); 
          return $diffs;
+    }
+    
+    /**
+     * 
+     * @param type $filename
+     * @return type
+     */
+    public function listFiles($dir,$branch="master"){
+        $files = array();
+         $fileList = $this->getFilesInDirectory($dir);
+    
+         foreach($fileList as $filename){
+             $fileLastLog = $this->getLog(1,$branch,$filename);
+    
+             if(count($fileLastLog) > 0){
+                 $log = $fileLastLog[0];
+                 $log->setFileName($filename);
+             }else{
+                 $log = new GitLog('');
+                 $log->setFileName($filename);
+             }
+             $files[] = $log;
+         }
+          
+         return $files;
     }
     
     /**
@@ -432,7 +459,7 @@ class GitCommands
     protected function runCommand($command){
         
         if($this->project->getSsh() === true){
-             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
+            $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
             $sshProcess = new SshProcess();
             $sshProcess->run(array($fullCommand),$this->project->getHost(),$this->project->getUsername(),22,$this->project->getPassword());
             return $sshProcess->getStdout();
@@ -459,6 +486,45 @@ class GitCommands
             
             return $process->getOutput();
         }
+    }
+    
+    /**
+     * Get files in directory
+     * 
+     * @param string $dir full path to directory
+     * @return array of files
+     */
+    protected function getFilesInDirectory($dir){
+         $files = array();
+         if($this->project->getSsh() === true){
+            $connection = ssh2_connect($this->project->getHost(), 22);
+            ssh2_auth_password($connection, $this->project->getUsername(), $this->project->getPassword());
+
+            $sftp = ssh2_sftp($connection);
+
+            $handle = opendir("ssh2.sftp://$sftp$dir");
+            //echo "Directory handle: $handle\n";
+            //echo "Entries:\n";
+            while (($entry = readdir($handle) !== false)){
+                if($entry !== '..' || $entry !== '.'){
+                    $files[] = $entry;
+                }
+            }
+            closedir($handle);
+         }else{
+            if (is_dir($dir)) {
+                if ($handle = opendir($dir)) {
+                    while (($entry = readdir($handle)) !== false){
+                        if($entry !== '..' && $entry !== '.' && $entry !== '.git'){
+                            $files[] = $entry;
+                        }
+                    }
+                }
+                closedir($handle);
+            }
+         }
+         
+         return $files;
     }
     
     /**

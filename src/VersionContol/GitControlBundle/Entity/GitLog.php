@@ -119,6 +119,12 @@ class GitLog
      * @var string 
      */
     protected $subject;
+    
+    /**
+     * File name. Used only on single log entires
+     * @var string 
+     */
+    protected $fileName;
 
     public function __construct($line){
         $logData = explode('|',$line);
@@ -275,6 +281,17 @@ class GitLog
         $this->subject = $subject;
         return $this;
     }
+    
+    public function getFileName() {
+        return $this->fileName;
+    }
+
+    public function setFileName($fileName) {
+        $this->fileName = $fileName;
+        return $this;
+    }
+
+
 
     
 }
