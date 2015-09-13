@@ -806,11 +806,11 @@ class ProjectController extends Controller
     /**
      * Show Git commit diff
      *
-     * @Route("filediff/{id}", name="project_filelist")
+     * @Route("/filediff/{id}/{currentDir}",defaults={"$currentDir" = ""}, name="project_filelist")
      * @Method("GET")
      * @Template()
      */
-    public function fileListAction($id){
+    public function fileListAction($id,$currentDir = ''){
         $em = $this->getDoctrine()->getManager();
 
        
@@ -826,6 +826,9 @@ class ProjectController extends Controller
         
         $branchName = $gitCommands->getCurrentBranch();
         $dir = $project->getPath();
+        if($currentDir){
+            $dir = urldecode($currentDir);
+        }
         $files = $gitCommands->listFiles($dir, $branchName);
        // $gitLog = $gitCommands->getCommitLog($commitHash,$branchName);
         

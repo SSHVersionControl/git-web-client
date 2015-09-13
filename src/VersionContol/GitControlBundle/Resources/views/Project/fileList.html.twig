@@ -46,25 +46,41 @@
                             </div> 
                         </div>
                     </div>
-                {% for filelog in files %}
+                {% for fileInfo in files %}
 
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-md-3">
-                                <strong class="str-truncated">{{filelog.fileName}}</strong>
+                                {% if(fileInfo.type == 'dir') %}
+                                    <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': fileInfo.fullPath| url_encode()})}}"><i class="fa fa-folder"></i><strong class="str-truncated">{{fileInfo.name}}</strong></a>
+                                {% else %}
+                                    <i class="fa fa-file-text-o"></i><strong class="str-truncated">{{fileInfo.name}}</strong>
+                                {% endif %}
                             </div>
+                            {% if (fileInfo.gitLog)%}
                             <div class="col-md-2">
-                                {{filelog.authorName}}
+                                {{fileInfo.gitLog.authorName}}
                             </div>
                             <div class="col-md-5">
-                                {% if(filelog.abbrHash) %}
-                                    <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': filelog.abbrHash})}}">{{filelog.subject}}</a>
+                                {% if(fileInfo.gitLog.abbrHash) %}
+                                    <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': fileInfo.gitLog.abbrHash})}}">{{fileInfo.gitLog.subject}}</a>
                                 {% endif %}
              
                             </div>
                             <div class="col-md-2">
-                                {{filelog.authorRelative}}
+                                {{fileInfo.gitLog.authorRelative}}
                             </div> 
+                            {% else%}
+                                <div class="col-md-2">
+              
+                                </div>
+                                <div class="col-md-5">
+                                    File not commited
+                                </div>
+                                <div class="col-md-2">
+
+                                </div> 
+                            {% endif %}
                         </div>
                     </div>
 

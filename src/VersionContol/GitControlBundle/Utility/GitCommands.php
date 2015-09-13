@@ -7,6 +7,7 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 use VersionContol\GitControlBundle\Entity\GitFile;
 use VersionContol\GitControlBundle\Entity\GitLog;
+use VersionContol\GitControlBundle\Entity\FileInfo;
 
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 Use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -295,19 +296,19 @@ class GitCommands
      */
     public function listFiles($dir,$branch="master"){
         $files = array();
-         $fileList = $this->getFilesInDirectory($dir);
-    
-         foreach($fileList as $filename){
-             $fileLastLog = $this->getLog(1,$branch,$filename);
+        $fileList = $this->getFilesInDirectory($dir);
+
+         foreach($fileList as $fileInfo){
+             
+             $fileLastLog = $this->getLog(1,$branch,$fileInfo->getPath());
     
              if(count($fileLastLog) > 0){
-                 $log = $fileLastLog[0];
-                 $log->setFileName($filename);
+                 $fileInfo->setGitLog($fileLastLog[0]);
+                
              }else{
-                 $log = new GitLog('');
-                 $log->setFileName($filename);
+                 
              }
-             $files[] = $log;
+             $files[] = $fileInfo;
          }
           
          return $files;
@@ -496,6 +497,7 @@ class GitCommands
      */
     protected function getFilesInDirectory($dir){
          $files = array();
+         $relativePath = substr($dir, strlen($this->project->getPath()) );
          if($this->project->getSsh() === true){
             $connection = ssh2_connect($this->project->getHost(), 22);
             ssh2_auth_password($connection, $this->project->getUsername(), $this->project->getPassword());
@@ -506,8 +508,16 @@ class GitCommands
             //echo "Directory handle: $handle\n";
             //echo "Entries:\n";
             while (($entry = readdir($handle) !== false)){
-                if($entry !== '..' || $entry !== '.'){
-                    $files[] = $entry;
+                if($entry !== '..' || $entry !== '.' && $entry !== '.git'){
+                    
+                    $fullpath = rtrim($dir,'/').'/'.$entry;
+                    $fileInfo = new FileInfo($entry);
+                    $fileInfo->setPath($fullpath);
+                    $fileInfo->setType(filetype($fullpath));
+                    if(is_file($fullpath)){
+                        $fileInfo->setExtension(pathinfo($fullpath, PATHINFO_EXTENSION));
+                    }
+                    $files[] = $fileInfo;
                 }
             }
             closedir($handle);
@@ -516,7 +526,17 @@ class GitCommands
                 if ($handle = opendir($dir)) {
                     while (($entry = readdir($handle)) !== false){
                         if($entry !== '..' && $entry !== '.' && $entry !== '.git'){
-                            $files[] = $entry;
+                            
+                            $fullpath = rtrim($dir,'/').'/'.$entry;
+                            $relativeFilePath = $relativePath.$entry;
+                            $fileInfo = new FileInfo($entry);
+                            $fileInfo->setPath($relativeFilePath);
+                            $fileInfo->setFullPath($fullpath);
+                            $fileInfo->setType(filetype($fullpath));
+                            if(is_file($fullpath)){
+                                $fileInfo->setExtension(pathinfo($fullpath, PATHINFO_EXTENSION));
+                            }
+                            $files[] = $fileInfo;
                         }
                     }
                 }
