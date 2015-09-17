@@ -523,25 +523,39 @@ class GitCommands
             closedir($handle);
          }else{
             if (is_dir($dir)) {
-                if ($handle = opendir($dir)) {
-                    while (($entry = readdir($handle)) !== false){
-                        if($entry !== '..' && $entry !== '.' && $entry !== '.git'){
-                            
+                foreach (new \DirectoryIterator($dir) as $fileInfo) {
+                //if ($handle = opendir($dir)) {
+                   // while (($entry = readdir($handle)) !== false){
+                       // if($entry !== '..' && $entry !== '.' && $entry !== '.git'){
+                        $entry = $fileInfo->getFilename();
+                        if(!$fileInfo->isDot() && $entry !== '.git'){
+                            //$entry = $fileInfo->getFilename();
                             $fullpath = rtrim($dir,'/').'/'.$entry;
                             $relativeFilePath = $relativePath.$entry;
-                            $fileInfo = new FileInfo($entry);
-                            $fileInfo->setPath($relativeFilePath);
-                            $fileInfo->setFullPath($fullpath);
-                            $fileInfo->setType(filetype($fullpath));
-                            if(is_file($fullpath)){
-                                $fileInfo->setExtension(pathinfo($fullpath, PATHINFO_EXTENSION));
+                            $gitFileInfo = new FileInfo($entry);
+                            $gitFileInfo->setPath($relativeFilePath);
+                            $gitFileInfo->setFullPath($fullpath);
+                            $gitFileInfo->setType(filetype($fullpath));
+                            if($fileInfo->isFile() ||$fileInfo->isLink() ){
+                                $gitFileInfo->setExtension($fileInfo->getExtension());
                             }
-                            $files[] = $fileInfo;
+                            $files[] = $gitFileInfo;
                         }
-                    }
+                    //}
                 }
-                closedir($handle);
+                //closedir($handle);
+                usort($files, function($a, $b){
+
+                    $result = strcmp(strtolower($a->getName()), strtolower($b->getName()));
+                    if($a->getType() == 'dir'){
+                         $result = -1;
+                    }elseif($b->getType() == 'dir'){
+                        $result = 1;
+                    }
+                    return $result;
+                });
             }
+            
          }
          
          return $files;
