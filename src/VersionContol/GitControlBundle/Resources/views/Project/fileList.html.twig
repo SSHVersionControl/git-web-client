@@ -1,0 +1,92 @@
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+    <h1 class="page-header">
+       Files
+      <small>
+          {{ project.title }} 
+      </small>
+          {% if (is_granted('MASTER', project)) %}
+          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
+        {% endif %}
+    </h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+            </li>
+            <li class="active">
+                <i class="fa fa-file"></i> Projects
+            </li>
+        </ol>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
+        </div>
+        <div class="panel-body">
+                
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                 <strong class="str-truncated">File Name</strong>
+                            </div>
+                            <div class="col-md-2">
+                                 <strong class="str-truncated">Author</strong>
+                            </div>
+                            <div class="col-md-5">
+                                <strong class="str-truncated">Last Commit</strong>
+                            </div>
+                            <div class="col-md-2">
+                                 <strong class="str-truncated">Last Update</strong>
+                            </div> 
+                        </div>
+                    </div>
+                {% for fileInfo in files %}
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-3">
+                                {% if(fileInfo.type == 'dir') %}
+                                    <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': fileInfo.fullPath| url_encode()})}}"><i class="fa fa-folder"></i><strong class="str-truncated">{{fileInfo.name}}</strong></a>
+                                {% else %}
+                                    <i class="fa fa-file-text-o"></i><strong class="str-truncated">{{fileInfo.name}}</strong>
+                                {% endif %}
+                            </div>
+                            {% if (fileInfo.gitLog)%}
+                            <div class="col-md-2">
+                                {{fileInfo.gitLog.authorName}}
+                            </div>
+                            <div class="col-md-5">
+                                {% if(fileInfo.gitLog.abbrHash) %}
+                                    <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': fileInfo.gitLog.abbrHash})}}">{{fileInfo.gitLog.subject}}</a>
+                                {% endif %}
+             
+                            </div>
+                            <div class="col-md-2">
+                                {{fileInfo.gitLog.authorRelative}}
+                            </div> 
+                            {% else%}
+                                <div class="col-md-2">
+              
+                                </div>
+                                <div class="col-md-5">
+                                    File not commited
+                                </div>
+                                <div class="col-md-2">
+
+                                </div> 
+                            {% endif %}
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

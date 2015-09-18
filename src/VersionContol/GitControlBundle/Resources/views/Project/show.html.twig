@@ -45,7 +45,7 @@
                                 {{file.workTreeStatus}}
                             </div>
                             <div class="col-md-10">
-                                {{file.path1}}
+                                <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff">{{file.path1}}</a>
                             </div>
                         </div>
                     </div>
@@ -76,5 +76,28 @@
         </div>
     </div>
             
+    <!-- Modal -->
+    <div class="modal fade" id="diff" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">Loading...</div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+            
 
 {% endblock %}
+
+ {% block footerJS %}
+     <script>
+     $(function(){
+        $(document).on("hidden.bs.modal", ".modal:not(.local-modal)", function (e) {
+            $(e.target).removeData("bs.modal").find(".modal-content").empty().html('<div class="modal-body">Loading...</div>');
+        });
+     });
+     </script>
+     
+{% endblock %} 
