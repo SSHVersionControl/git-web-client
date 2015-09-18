@@ -507,13 +507,15 @@ class GitCommands
             $handle = opendir("ssh2.sftp://$sftp$dir");
             //echo "Directory handle: $handle\n";
             //echo "Entries:\n";
-            while (($entry = readdir($handle) !== false)){
-                if($entry !== '..' || $entry !== '.' && $entry !== '.git'){
-                    
+            while (($entry = readdir($handle)) !== false){
+                if($entry !== '..' && $entry !== '.' && $entry !== '.git'){
+                    print_r($entry);
                     $fullpath = rtrim($dir,'/').'/'.$entry;
+                    $file = new \SplFileObject("ssh2.sftp://$sftp$fullpath");
+                    
                     $fileInfo = new FileInfo($entry);
                     $fileInfo->setPath($fullpath);
-                    $fileInfo->setType(filetype($fullpath));
+                    //$fileInfo->setType(filetype($fullpath));
                     if(is_file($fullpath)){
                         $fileInfo->setExtension(pathinfo($fullpath, PATHINFO_EXTENSION));
                     }
