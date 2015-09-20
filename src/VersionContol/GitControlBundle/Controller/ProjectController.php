@@ -827,17 +827,16 @@ class ProjectController extends Controller
         $branchName = $gitCommands->getCurrentBranch();
         $dir = $project->getPath();
         if($currentDir){
-            $dir = urldecode($currentDir);
+            $dir .= trim(urldecode($currentDir));
         }
         $files = $gitCommands->listFiles($dir, $branchName);
-       // $gitLog = $gitCommands->getCommitLog($commitHash,$branchName);
-        
-        //$gitDiffs = $gitCommands->getDiffFile($difffile);
+       
    
         return array(
             'project'      => $project,
             'branchName' => $branchName,
             'files' => $files,
+            'currentDir' => $currentDir
         );
     }
     

@@ -8,11 +8,14 @@ use Symfony\Component\Process\ProcessBuilder;
 use VersionContol\GitControlBundle\Entity\GitFile;
 use VersionContol\GitControlBundle\Entity\GitLog;
 use VersionContol\GitControlBundle\Entity\FileInfo;
+use VersionContol\GitControlBundle\Entity\RemoteFileInfo;
 
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 Use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use VersionContol\GitControlBundle\Entity\Project;
 use VersionContol\GitControlBundle\Utility\SshProcess;
+
+use phpseclib\Net\SFTP;
 
 /**
  */
@@ -290,17 +293,16 @@ class GitCommands
     }
     
     /**
-     * 
-     * @param type $filename
-     * @return type
+     * List files in directory with git log
+     * @param string $dir
+     * @return array remoteFileInfo/fileInfo
      */
     public function listFiles($dir,$branch="master"){
         $files = array();
         $fileList = $this->getFilesInDirectory($dir);
 
          foreach($fileList as $fileInfo){
-             
-             $fileLastLog = $this->getLog(1,$branch,$fileInfo->getPath());
+             $fileLastLog = $this->getLog(1,$branch,$fileInfo->getGitPath());
     
              if(count($fileLastLog) > 0){
                  $fileInfo->setGitLog($fileLastLog[0]);
@@ -490,76 +492,53 @@ class GitCommands
     }
     
     /**
-     * Get files in directory
+     * Get files in directory locally and remotely 
      * 
      * @param string $dir full path to directory
      * @return array of files
      */
     protected function getFilesInDirectory($dir){
          $files = array();
-         $relativePath = substr($dir, strlen($this->project->getPath()) );
-         if($this->project->getSsh() === true){
-            $connection = ssh2_connect($this->project->getHost(), 22);
-            ssh2_auth_password($connection, $this->project->getUsername(), $this->project->getPassword());
-
-            $sftp = ssh2_sftp($connection);
-
-            $handle = opendir("ssh2.sftp://$sftp$dir");
-            //echo "Directory handle: $handle\n";
-            //echo "Entries:\n";
-            while (($entry = readdir($handle)) !== false){
-                if($entry !== '..' && $entry !== '.' && $entry !== '.git'){
-                    print_r($entry);
-                    $fullpath = rtrim($dir,'/').'/'.$entry;
-                    $file = new \SplFileObject("ssh2.sftp://$sftp$fullpath");
-                    
-                    $fileInfo = new FileInfo($entry);
-                    $fileInfo->setPath($fullpath);
-                    //$fileInfo->setType(filetype($fullpath));
-                    if(is_file($fullpath)){
-                        $fileInfo->setExtension(pathinfo($fullpath, PATHINFO_EXTENSION));
-                    }
-                    $files[] = $fileInfo;
-                }
-            }
-            closedir($handle);
-         }else{
-            if (is_dir($dir)) {
-                foreach (new \DirectoryIterator($dir) as $fileInfo) {
-                //if ($handle = opendir($dir)) {
-                   // while (($entry = readdir($handle)) !== false){
-                       // if($entry !== '..' && $entry !== '.' && $entry !== '.git'){
-                        $entry = $fileInfo->getFilename();
-                        if(!$fileInfo->isDot() && $entry !== '.git'){
-                            //$entry = $fileInfo->getFilename();
-                            $fullpath = rtrim($dir,'/').'/'.$entry;
-                            $relativeFilePath = $relativePath.$entry;
-                            $gitFileInfo = new FileInfo($entry);
-                            $gitFileInfo->setPath($relativeFilePath);
-                            $gitFileInfo->setFullPath($fullpath);
-                            $gitFileInfo->setType(filetype($fullpath));
-                            if($fileInfo->isFile() ||$fileInfo->isLink() ){
-                                $gitFileInfo->setExtension($fileInfo->getExtension());
-                            }
-                            $files[] = $gitFileInfo;
-                        }
-                    //}
-                }
-                //closedir($handle);
-                usort($files, function($a, $b){
-
-                    $result = strcmp(strtolower($a->getName()), strtolower($b->getName()));
-                    if($a->getType() == 'dir'){
-                         $result = -1;
-                    }elseif($b->getType() == 'dir'){
-                        $result = 1;
-                    }
-                    return $result;
-                });
-            }
-            
-         }
          
+         $relativePath = substr($dir, strlen($this->project->getPath()));
+         if($relativePath){
+              $relativePath = $this->addEndingSlash($relativePath);
+         }
+        
+         if($this->project->getSsh() === true){
+             //Remote Directory Listing
+            $sftp = new SFTP($this->project->getHost(), 22);
+            if (!$sftp->login($this->project->getUsername(), $this->project->getPassword())) {
+                exit('Login Failed');
+            }
+
+            foreach($sftp->rawlist($dir) as $filename => $fileData) {
+                if($filename !== '.' && $filename !== '..' && $filename !== '.git'){
+                    $fileData['fullPath'] = rtrim($dir,'/').'/'.$filename;
+                    $fileData['gitPath'] = $relativePath.$filename;
+                    $remoteFileInfo = new RemoteFileInfo($fileData);
+                    $files[] = $remoteFileInfo;
+                }
+            }
+
+         }else{
+             //Local Directory Listing
+            $directoryIterator = new \DirectoryIterator($dir);
+            $directoryIterator->setInfoClass('\VersionContol\GitControlBundle\Entity\FileInfo');
+
+            foreach ($directoryIterator as $fileInfo) {
+                if(!$fileInfo->isDot() && $fileInfo->getFilename() !== '.git'){
+
+                    $newFileInfo = $fileInfo->getFileInfo();
+                    $newFileInfo->setGitPath($relativePath.$fileInfo->getFilename());
+
+                    $files[] = $newFileInfo;
+                }
+            }
+        }
+        
+        $this->sortFilesByDirectoryThenName($files);
+
          return $files;
     }
     
@@ -655,6 +634,46 @@ class GitCommands
         }
         return $this->statusHash;
     }
+    
+    /**
+     * Adds Ending slash where needed for unix and windows paths
+     * 
+     * @param string $path
+     * @return string
+     */
+    protected function addEndingSlash($path){
+ 
+        $slash_type = (strpos($path, '\\')===0) ? 'win' : 'unix'; 
+        $last_char = substr($path, strlen($path)-1, 1);
+        if ($last_char != '/' and $last_char != '\\') {
+            // no slash:
+            $path .= ($slash_type == 'win') ? '\\' : '/';
+        }
+
+        return $path;
+    }
+    
+    /**
+     * Sort files by directory then name
+     * @param array $fileArray
+     */
+    protected function sortFilesByDirectoryThenName(array &$fileArray){
+         usort($fileArray, function($a, $b){
+            if($a->isDir()){
+                if($b->isDir()){
+                    return strnatcasecmp ($a->getFilename(), $b->getFilename());
+                }else{
+                    return -1;
+                }
+            }else{
+                if($b->isDir()){
+                    return 1;
+                }else{
+                    return strnatcasecmp ($a->getFilename(), $b->getFilename());
+                }
+            }
+        });
+    } 
 
     
 }

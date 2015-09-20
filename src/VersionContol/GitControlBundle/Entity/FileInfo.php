@@ -13,94 +13,35 @@ namespace VersionContol\GitControlBundle\Entity;
  *
  * @author paul
  */
-class FileInfo {
+class FileInfo extends \SplFileInfo{
     
-    /**
-     * File name
-     * @var string 
-     */
-    protected $name;
-    
-   /**
-     * File path related to git directory
-     * @var string 
-     */
-    protected $path;
-
-
     /**
      * File full path to file
      * @var string 
      */
     protected $fullPath;
-    
+   
     /**
-     * File type 
-     * Possible values are fifo, char, dir, block, link, file, socket and unknown.
+     * File full path to file
      * @var string 
      */
-    protected $type;
-    
-    /**
-     * Extenstion type
-     * @var string 
-     */
-    protected $extension;
+    protected $gitPath;
     
     /**
      * Git log Entity
      * @var GitLog 
      */
     protected $gitLog;
-    
-    public function __construct($name) {
-        $this->setName($name);
-    }
-    
-    public function getName() {
-        return $this->name;
-    }
 
-    public function getPath() {
-        return $this->path;
-    }
-
-    public function getType() {
-        return $this->type;
-    }
 
     public function getGitLog() {
         return $this->gitLog;
     }
 
-    public function setName($name) {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function setPath($path) {
-        $this->path = $path;
-        return $this;
-    }
-
-    public function setType($type) {
-        $this->type = $type;
-        return $this;
-    }
-
     public function setGitLog(GitLog $gitLog) {
         $this->gitLog = $gitLog;
         return $this;
-    }
-
-    public function getExtension() {
-        return $this->extension;
-    }
-
-    public function setExtension($extension) {
-        $this->extension = $extension;
-        return $this;
-    }
+    }  
     
     public function getFullPath() {
         return $this->fullPath;
@@ -111,11 +52,14 @@ class FileInfo {
         return $this;
     }
 
+        
+    public function getGitPath() {
+        return $this->gitPath;
+    }
 
-
-
-
-    
-    
+    public function setGitPath($gitPath) {
+        $this->gitPath = $gitPath;
+        return $this;
+    }
     
 }

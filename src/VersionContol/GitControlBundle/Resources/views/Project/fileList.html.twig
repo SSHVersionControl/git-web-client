@@ -46,15 +46,28 @@
                             </div> 
                         </div>
                     </div>
+                {% if(currentDir) %}
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-12">
+                                
+                                <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': currentDir| url_encode()})}}">
+                                    <strong class="str-truncated">..</strong></a>
+                                
+                            </div> 
+                         </div>
+                    </div>
+                {% endif %}
+
                 {% for fileInfo in files %}
 
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-md-3">
-                                {% if(fileInfo.type == 'dir') %}
-                                    <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': fileInfo.fullPath| url_encode()})}}"><i class="fa fa-folder"></i><strong class="str-truncated">{{fileInfo.name}}</strong></a>
+                                {% if(fileInfo.isDir()) %}
+                                    <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': fileInfo.gitPath| url_encode()})}}"><i class="fa fa-folder"></i><strong class="str-truncated">{{fileInfo.filename}}</strong></a>
                                 {% else %}
-                                    <i class="fa fa-file-text-o"></i><strong class="str-truncated">{{fileInfo.name}}</strong>
+                                    <i class="fa fa-file-text-o"></i><strong class="str-truncated">{{fileInfo.filename}}</strong>
                                 {% endif %}
                             </div>
                             {% if (fileInfo.gitLog)%}
