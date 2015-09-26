@@ -516,6 +516,7 @@ class GitCommands
                 if($filename !== '.' && $filename !== '..' && $filename !== '.git'){
                     $fileData['fullPath'] = rtrim($dir,'/').'/'.$filename;
                     $fileData['gitPath'] = $relativePath.$filename;
+
                     $remoteFileInfo = new RemoteFileInfo($fileData);
                     $files[] = $remoteFileInfo;
                 }
@@ -540,6 +541,26 @@ class GitCommands
         $this->sortFilesByDirectoryThenName($files);
 
          return $files;
+    }
+    
+    public function readFile($file){
+   
+        $fileContents = '';
+        
+         if($this->project->getSsh() === true){
+             //Remote Directory Listing
+            $sftp = new SFTP($this->project->getHost(), 22);
+            if (!$sftp->login($this->project->getUsername(), $this->project->getPassword())) {
+                exit('Login Failed');
+            }
+            
+            $fileContents = $sftp->get($file->getFullPath());
+
+         }else{
+            $fileContents = file_get_contents($file->getFullPath());
+         }
+         
+         return $fileContents;
     }
     
     /**

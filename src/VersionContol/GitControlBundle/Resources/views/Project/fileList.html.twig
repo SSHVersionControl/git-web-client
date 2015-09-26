@@ -100,6 +100,14 @@
                 {% endfor %}
             </div>
         </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% if(readme) %}
+                {{ readme|markdown }}
+            {% endif %}
+        </div>
     </div>
 
 {% endblock %}

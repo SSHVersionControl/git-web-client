@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new VersionContol\GitControlBundle\VersionContolGitControlBundle(),
             new VMelnik\DoctrineEncryptBundle\VMelnikDoctrineEncryptBundle(),
+            new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

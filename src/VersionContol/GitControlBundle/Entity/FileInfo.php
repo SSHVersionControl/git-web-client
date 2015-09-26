@@ -15,11 +15,6 @@ namespace VersionContol\GitControlBundle\Entity;
  */
 class FileInfo extends \SplFileInfo{
     
-    /**
-     * File full path to file
-     * @var string 
-     */
-    protected $fullPath;
    
     /**
      * File full path to file
@@ -44,14 +39,8 @@ class FileInfo extends \SplFileInfo{
     }  
     
     public function getFullPath() {
-        return $this->fullPath;
+        return $this->getRealPath();
     }
-
-    public function setFullPath($fullPath) {
-        $this->fullPath = $fullPath;
-        return $this;
-    }
-
         
     public function getGitPath() {
         return $this->gitPath;

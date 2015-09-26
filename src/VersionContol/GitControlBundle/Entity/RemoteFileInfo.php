@@ -129,7 +129,9 @@ class RemoteFileInfo{
     public function setFilename($filename) {
         $this->filename = $filename;
         $pathParts = pathinfo($filename);
-        $this->setExtension($pathParts);
+        if(key_exists('extension', $pathParts)){
+            $this->setExtension($pathParts['extension']);
+        }
         
         return $this;
     }

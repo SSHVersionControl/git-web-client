@@ -830,13 +830,21 @@ class ProjectController extends Controller
             $dir .= trim(urldecode($currentDir));
         }
         $files = $gitCommands->listFiles($dir, $branchName);
-       
+        
+        $readme = '';
+        foreach($files as $file){
+            if(strtolower($file->getExtension()) == 'md' || strtolower($file->getExtension()) == 'markdown'){
+                $readme = $gitCommands->readFile($file);
+                break;
+            }
+        }
    
         return array(
             'project'      => $project,
             'branchName' => $branchName,
             'files' => $files,
-            'currentDir' => $currentDir
+            'currentDir' => $currentDir,
+            'readme' => $readme
         );
     }
     
