@@ -5,6 +5,10 @@
 {% endblock %}
 
 {% block content -%}
+    
+    {% set route = app.request.get('_route') %}
+    {% set params = app.request.get('_route_params') | merge(app.request.query.all) %}
+    
     <h1 class="page-header">
        Issues
       <small>
@@ -22,26 +26,39 @@
                 <i class="fa fa-file"></i> Issues
             </li>
         </ol>
-    
-    <ul class="nav nav-tabs">
-        <li class="active">
-            <a href="{{ path('issues', { 'id': project.id }) }}" >Issues</a>
-        </li>
-        <li>
-            <a href="{{path('issuelabels', { 'project': project.id }) }}" >Labels</a>
-        </li>
-        <li>
-            <a href="{{path('issuemilestones', { 'project': project.id }) }}" >Milestones</a>
-        </li>
-    </ul>
-
+    <div class="row">
+        <div class="col-md-9">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="{{ path('issues', { 'id': project.id }) }}" >Issues</a>
+                </li>
+                <li>
+                    <a href="{{path('issuelabels', { 'project': project.id }) }}" >Labels</a>
+                </li>
+                <li>
+                    <a href="{{path('issuemilestones', { 'project': project.id }) }}" >Milestones</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-3">
+             <form action="{{ path('issues', { 'id': project.id }) }}" method="GET">
+                <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." name="keyword">
+                        <span class="input-group-btn">
+                          <button class="btn btn-default" type="submit">Go!</button>
+                        </span>
+                 </div><!-- /input-group -->
+             </form>
+        </div>
+    </div>
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
                  <div class="col-lg-10">
                     <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i> Issues: 
-                        <span class="open"><i class="fa fa-exclamation-circle fa-fw"></i> {{openIssuesCount}} open</span>
-                        <span class="closed"><i class="fa fa-check fa-fw"></i> {{closedIssuesCount}} closed</span>
+                        <span class="all"><a  href="{{ path(route, params |craue_removeKey('filter')|craue_removeKey('page')) }}">{{ pagination.getTotalItemCount }}</a></span>
+                        <span class="open"><i class="fa fa-exclamation-circle fa-fw"></i><a  href="{{ path(route, params | merge({ 'filter': 'open' })|craue_removeKey('page')) }}">{{openIssuesCount}} open</a></span>
+                        <span class="closed"><i class="fa fa-check fa-fw"></i><a  href="{{ path(route, params | merge({ 'filter': 'closed' })|craue_removeKey('page')) }}">{{closedIssuesCount}} closed</a></span>
                     </h3>
                  </div>
                  <div class="col-lg-2">
@@ -51,7 +68,7 @@
         </div>
         <div class="panel-body">
                 <div class="list-group">
-                 {% for issue in entities %}
+                 {% for issue in pagination %}
 
                     <div class="list-group-item">
                         <div class="row">
@@ -87,6 +104,12 @@
                     </div>
 
                 {% endfor %}
+            </div>
+            <div class="count">
+                {{ pagination.getTotalItemCount }}
+            </div>
+            <div class="navigation">
+                {{ knp_pagination_render(pagination) }}
             </div>
         </div>
     </div>

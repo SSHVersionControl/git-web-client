@@ -51,7 +51,7 @@
                             </p>
                         </div>
                         <div class="timeline-body">
-                            <p>{{ entity.description }}</p>
+                            <p>{{ entity.description | markdown }}</p>
                         </div>
                     </div>
                     
@@ -67,7 +67,7 @@
                                 </p>
                             </div>
                             <div class="timeline-body">
-                                <p>{{ comment.comment }}</p>
+                                <p>{{ comment.comment | markdown }}</p>
                             </div>
                         </div>
 

@@ -29,7 +29,7 @@ class IssueController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction($id)
+    public function indexAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         
@@ -42,15 +42,28 @@ class IssueController extends Controller
         //$this->checkProjectAuthorization($project,'EDIT');
         
 
-        $entities = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProject($project);
-        $openIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'open');
-        $closedIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'closed');
+        //$entities = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProject($project);
+        $keyword = $request->query->get('keyword', false);
+        $filter = $request->query->get('filter', false);
+        
+        $query = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($project,$filter,$keyword,true)->getQuery();
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1)/*page number*/,
+            5/*limit per page*/
+        );
+
+    
+        $openIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'open',$keyword);
+        $closedIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'closed',$keyword);
         
         return array(
-            'entities' => $entities,
+            //'entities' => $entities,
             'project' => $project,
             'openIssuesCount' => $openIssuesCount,
             'closedIssuesCount' => $closedIssuesCount,
+            'pagination' => $pagination
             
         );
     }

@@ -32,3 +32,4 @@ services:
         class: VersionContol\GitControlBundle\Twig\Extension\TextColorExtension
         tags:
             - { name: twig.extension }
+            

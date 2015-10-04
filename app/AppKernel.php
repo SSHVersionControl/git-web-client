@@ -20,6 +20,8 @@ class AppKernel extends Kernel
             new VersionContol\GitControlBundle\VersionContolGitControlBundle(),
             new VMelnik\DoctrineEncryptBundle\VMelnikDoctrineEncryptBundle(),
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
