@@ -119,10 +119,7 @@ class ProjectController extends Controller
                 throw new \Exception('The git status has changed. Please refresh the page and retry the commit');
             }
             //$gitCommands = new GitCommands($gitPath);
-            
-            foreach($selectedFiles as $file){
-                $gitCommands->stageFile($file);
-            }
+            $gitCommands->stageFiles($selectedFiles);
             
             $gitCommands->commit($comment);
             

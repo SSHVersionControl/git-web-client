@@ -380,24 +380,26 @@ class GitCommands
     }
     
     /**
-     * Stages the file to be committed. 
-     * Currently supports adding and removing file.
-     * 
-     * @TODO Make it more effecient
-     * @param string $file path to file to commit
+     * Stage files for commit.
+     * @param array $files
      */
-    public function stageFile($file){
+    public function stageFiles(array $files){
          $gitFiles = $this->getFilesToCommit();
          
          //Validated that this status is same as previous
          $deleteFiles = array();
          $addFiles = array();
+          
+         $flippedFiles = array_flip($files);
+         
          foreach($gitFiles as $fileEntity){
-             if($fileEntity->getPath1() == $file){
-                 if($fileEntity->getWorkTreeStatus() == 'D' ){
-                     $deleteFiles[] = escapeshellarg($file);
+             if(isset($flippedFiles[$fileEntity->getPath1()])){
+                 if($fileEntity->getWorkTreeStatus() == '!' || $fileEntity->getWorkTreeStatus() == '!' ){
+                     //do Nothing
+                 }elseif($fileEntity->getWorkTreeStatus() == 'D' ){
+                     $deleteFiles[] = escapeshellarg($fileEntity->getPath1());
                  }else{
-                     $addFiles[] = escapeshellarg($file);
+                     $addFiles[] = escapeshellarg($fileEntity->getPath1());
                  }
              }
          }
@@ -409,9 +411,18 @@ class GitCommands
          
          if(count($addFiles) > 0){
              $this->runCommand('git add '.implode(' ',$addFiles));
-         }
-         
-         
+         }        
+    }
+    
+    /**
+     * Stages the file to be committed. 
+     * Currently supports adding and removing file.
+     * 
+     * @TODO Make it more effecient
+     * @param string $file path to file to commit
+     */
+    public function stageFile($file){
+         $this->stageFiles(array($file));
     }
     
     /**
@@ -449,6 +460,67 @@ class GitCommands
     public function pull($remote,$branch){
         //return $this->runCommand(sprintf('git pull %s %s "2>&1"',escapeshellarg($remote),escapeshellarg($branch)));
         return $this->runCommand(sprintf('git pull %s %s 2>&1',escapeshellarg($remote),escapeshellarg($branch)));
+    }
+    
+    /**
+     * 
+     * @return string command response
+     */
+    public function resetPullRequest(){
+        return $this->runCommand('git reset --hard ORIG_HEAD');
+    }
+    
+    /**
+     * Reverts commit but keeps the files unchanged.
+     * @return string command response
+     */
+    public function undoCommit(){
+        return $this->runCommand('git reset --soft HEAD~1');
+    }
+    
+    /**
+     * 
+     * @return string command response
+     */
+    public function undoCommitHard(){
+        return $this->runCommand('git reset --hard HEAD~1');
+    }
+    
+    /**
+     * Changes the message of the last commit.
+     * @param String $message
+     * @return string command response
+     */
+    public function updateLastCommitMessage($message){
+        $user = $this->securityContext->getToken()->getUser();
+        $author = $user->getName().' <'.$user->getEmail().'>';
+        
+        return $this->runCommand('git commit -m '.escapeshellarg($message).' --author='.escapeshellarg($author));
+    }
+    
+    /**
+     * # This will create three separate revert commits:
+        git revert a867b4af 25eee4ca 0766c053
+
+        # It also takes ranges. This will revert the last two commits:
+        git revert HEAD~2..HEAD
+
+        # Reverting a merge commit
+        git revert -m 1 <merge_commit_sha>
+
+        # To get just one, you could use `rebase -i` to squash them afterwards
+        # Or, you could do it manually (be sure to do this at top level of the repo)
+        # get your index and work tree into the desired state, without changing HEAD:
+        git checkout 0d1d7fc32 .
+
+        # Then commit. Be sure and write a good message describing what you just did
+        git commit
+     * 
+     * git revert --no-commit 0766c053..HEAD
+        git commit
+     */
+    public function revert($commitId){
+       $this->runCommand('git revert -m --no-commit '.escapeshellarg($commitId).' HEAD');
     }
     
     /**
