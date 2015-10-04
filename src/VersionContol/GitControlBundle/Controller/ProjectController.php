@@ -30,14 +30,23 @@ class ProjectController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entities = $em->getRepository('VersionContolGitControlBundle:Project')->findAll();
+        //$entities = $em->getRepository('VersionContolGitControlBundle:Project')->findAll();
+        $keyword = $request->query->get('keyword', false);
+        
+        $query = $em->getRepository('VersionContolGitControlBundle:Project')->findByKeyword($keyword,true)->getQuery();
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1)/*page number*/,
+            5/*limit per page*/
+        );
 
         return array(
-            'entities' => $entities,
+            'pagination' => $pagination,
         );
     }
     

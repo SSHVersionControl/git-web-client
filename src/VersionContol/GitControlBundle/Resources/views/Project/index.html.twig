@@ -14,19 +14,19 @@
             </tr>
         </thead>
         <tbody>
-        {% for entity in entities %}
+        {% for project in pagination %}
             <tr>
-                <td><a href="{{ path('project_show', { 'id': entity.id }) }}">{{ entity.title }}</a></td>
-                <td>{{ entity.description }}</td>
-                <td>{{ entity.path }}</td>
-                <td>{{ entity.id }}</td>
+                <td><a href="{{ path('project_show', { 'id': project.id }) }}">{{ project.title }}</a></td>
+                <td>{{ project.description }}</td>
+                <td>{{ project.path }}</td>
+                <td>{{ project.id }}</td>
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('project_show', { 'id': entity.id }) }}">show</a>
+                        <a href="{{ path('project_show', { 'id': project.id }) }}">show</a>
                     </li>
                     <li>
-                        <a href="{{ path('project_edit', { 'id': entity.id }) }}">edit</a>
+                        <a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a>
                     </li>
                 </ul>
                 </td>

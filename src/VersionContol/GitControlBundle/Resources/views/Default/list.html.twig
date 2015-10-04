@@ -14,11 +14,23 @@
             <i class="fa fa-file"></i> Projects
         </li>
     </ol>
+    <div class="row">
+        <div class="col-md-offset-9 col-md-3">
+             <form action="{{ path('home') }}" method="GET">
+                <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." name="keyword">
+                        <span class="input-group-btn">
+                          <button class="btn btn-default" type="submit">Go!</button>
+                        </span>
+                 </div><!-- /input-group -->
+             </form>
+        </div>
+    </div>
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
             <div class="col-lg-10">
-                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Projects</h3>
+                <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Projects: {{ userProjects.getTotalItemCount }}</h3>
             </div>
             <div class="col-lg-2">
                 <a class="btn btn-primary" href="{{ path('project_new') }}">
@@ -53,6 +65,13 @@
                       {% endfor %}
                     </tbody>
                 </table>
+            </div>
+            
+            <div class="count">
+                
+            </div>
+            <div class="navigation">
+                {{ knp_pagination_render(userProjects) }}
             </div>
          </div>
     </div>

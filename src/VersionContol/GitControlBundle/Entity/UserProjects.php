@@ -5,6 +5,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\UserProjectsRepository")
  * @ORM\Table(name="user_projects")
  */
 class UserProjects

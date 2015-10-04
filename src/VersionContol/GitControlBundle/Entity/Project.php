@@ -6,6 +6,7 @@ use VMelnik\DoctrineEncryptBundle\Configuration\Encrypted;
 
 /**
  * @ORM\Entity
+ * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\ProjectRepository")
  * @ORM\Table(name="project")
  */
 class Project
