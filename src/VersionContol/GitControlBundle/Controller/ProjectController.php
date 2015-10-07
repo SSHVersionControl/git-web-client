@@ -409,11 +409,14 @@ class ProjectController extends Controller
 
         $pullForm = $this->createPushPullForm($project,$gitCommands,"project_pulllocal");
         $pullForm->add('submit', 'submit', array('label' => 'Pull'));
+        $pullForm->add('viewDiff', 'submit', array('label' => 'View Diff'));
+        
         
         return array(
             'project'      => $project,
             'remoteVersions' => $gitRemoteVersions,
-            'pull_form' => $pullForm->createView()
+            'pull_form' => $pullForm->createView(),
+            'diffs' => array()
         );
     }
     
@@ -422,10 +425,11 @@ class ProjectController extends Controller
      *
      * @Route("pulllocal/{id}", name="project_pulllocal")
      * @Method("POST")
-     * @Template("VersionContolGitControlBundle:Project:push.html.twig")
+     * @Template("VersionContolGitControlBundle:Project:pull.html.twig")
      */
     public function pullToLocalAction(Request $request,$id)
     {
+        $diffs = array();
         $em = $this->getDoctrine()->getManager();
 
         $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
@@ -440,23 +444,37 @@ class ProjectController extends Controller
         
         $pullForm = $this->createPushPullForm($project,$gitCommands,"project_pulllocal");
         $pullForm->add('submit', 'submit', array('label' => 'Pull'));
+        $pullForm->add('viewDiff', 'submit', array('label' => 'View Diff'));
         $pullForm->handleRequest($request);
 
         if ($pullForm->isValid()) {
             $data = $pullForm->getData();
             $remote = $data['remote'];
             $branch = $data['branch'];
-            $response = $gitCommands->pull($remote,$branch);
             
-            $this->get('session')->getFlashBag()->add('notice', $response);
+            if($pullForm->get('viewDiff')->isClicked()){
+
+                $response = $gitCommands->fetch($remote,$branch);
+                $this->get('session')->getFlashBag()->add('notice', $response);
+                
+                $diffs = $gitCommands->getDiffRemoteBranch($remote,$branch);
+                
+            }elseif($pullForm->get('submit')->isClicked()){
+                
+                $response = $gitCommands->pull($remote,$branch);
+
+                $this->get('session')->getFlashBag()->add('notice', $response);
+
+                return $this->redirect($this->generateUrl('project_pull', array('id' => $id)));
+            }
             
-            return $this->redirect($this->generateUrl('project_pull', array('id' => $id)));
         }
 
         return array(
             'project'      => $project,
             'remoteVersions' => $gitRemoteVersions,
-            'pull_form' => $pullForm->createView()
+            'pull_form' => $pullForm->createView(),
+            'diffs' => $diffs
         );
     }
     

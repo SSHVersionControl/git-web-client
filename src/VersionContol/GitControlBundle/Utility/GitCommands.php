@@ -128,7 +128,7 @@ class GitCommands
             $output = $this->runCommand(sprintf('git branch "%s"',$branchName));
 
             if($switchToBranch){
-                $output .= $this->runCommand(sprintf('git checkout "%s"',$branchName));
+                $output .= $this->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));;
             }
         }else{
             throw new \Exception('This is not a valid branch name');
@@ -290,6 +290,19 @@ class GitCommands
          $diffParser = new GitDiffParser($diffString);
          $diffs = $diffParser->parse(); 
          return $diffs;
+    }
+    
+    /**
+     * 
+     * @param String $remote
+     * @param String $branch
+     * @return type
+     */
+    public function getDiffRemoteBranch($remote,$branch){
+        $diffString = $this->runCommand("git --no-pager diff  --oneline ".escapeshellarg($branch)." ".escapeshellarg($remote)."/".escapeshellarg($branch)." 2>&1");
+        $diffParser = new GitDiffParser($diffString);
+        $diffs = $diffParser->parse(); 
+        return $diffs;
     }
     
     /**
@@ -460,6 +473,18 @@ class GitCommands
     public function pull($remote,$branch){
         //return $this->runCommand(sprintf('git pull %s %s "2>&1"',escapeshellarg($remote),escapeshellarg($branch)));
         return $this->runCommand(sprintf('git pull %s %s 2>&1',escapeshellarg($remote),escapeshellarg($branch)));
+    }
+    
+    /**
+     * Fetch changes from the remote server
+     * 
+     * @param remote $remote The remote server to push to eg origin
+     * @param string $branch The branch to push to the remote server eg master
+     * @return string command response
+     */
+    public function fetch($remote,$branch){
+        //return $this->runCommand(sprintf('git pull %s %s "2>&1"',escapeshellarg($remote),escapeshellarg($branch)));
+        return $this->runCommand(sprintf('git fetch %s %s 2>&1',escapeshellarg($remote),escapeshellarg($branch)));
     }
     
     /**
