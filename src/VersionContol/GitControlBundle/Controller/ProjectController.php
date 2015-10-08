@@ -456,13 +456,11 @@ class ProjectController extends Controller
 
                 $response = $gitCommands->fetch($remote,$branch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
-                
                 $diffs = $gitCommands->getDiffRemoteBranch($remote,$branch);
                 
             }elseif($pullForm->get('submit')->isClicked()){
                 
                 $response = $gitCommands->pull($remote,$branch);
-
                 $this->get('session')->getFlashBag()->add('notice', $response);
 
                 return $this->redirect($this->generateUrl('project_pull', array('id' => $id)));

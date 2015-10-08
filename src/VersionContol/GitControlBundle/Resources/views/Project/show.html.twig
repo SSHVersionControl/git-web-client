@@ -42,10 +42,18 @@
                                     </label>
                             </div>
                             <div class="col-md-1">
+                                {{file.indexStatus}}
+                            </div>
+                            <div class="col-md-1">
                                 {{file.workTreeStatus}}
                             </div>
-                            <div class="col-md-10">
-                                <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff">{{file.path1}}</a>
+                            <div class="col-md-9">
+                                <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff">
+                                    {{file.path1}}
+                                    {% if(file.path2) %}
+                                        -> {{file.path2}}
+                                    {% endif %}
+                                </a>
                             </div>
                         </div>
                     </div>
