@@ -300,9 +300,11 @@ class GitCommands
      */
     public function getDiffRemoteBranch($remote,$branch){
         $diffString = $this->runCommand("git --no-pager diff  --oneline ".escapeshellarg($branch)." ".escapeshellarg($remote)."/".escapeshellarg($branch)." 2>&1");
+
         $diffParser = new GitDiffParser($diffString);
         $diffs = $diffParser->parse(); 
         return $diffs;
+        //return array();
     }
     
     /**
