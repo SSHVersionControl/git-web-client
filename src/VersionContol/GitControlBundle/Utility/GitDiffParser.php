@@ -33,7 +33,7 @@ class GitDiffParser {
         $diffs     = array();
         $diff      = null;
         $collected = array();
-        
+
         for ($i = 0; $i < $this->lineCount; ++$i) {
             if (preg_match('(^---\\s+(?P<file>\\S+))', $this->lines[$i], $matchFileA) &&
                 preg_match('(^\\+\\+\\+\\s+(?P<file>\\S+))', $this->lines[$i + 1], $matchFileB)) {
@@ -55,6 +55,10 @@ class GitDiffParser {
                 $collected = array();
                 
                 ++$i;
+                
+                if($i >= 300000){
+                    break;
+                }
             } else {
                 if (preg_match('/^(?:diff --git |index [\da-f\.]+|[+-]{3} [ab])/', $this->lines[$i])) {
                     continue;
