@@ -264,16 +264,16 @@ class ProjectController extends Controller
         if (!$project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        
-        $pushForm = $this->createPushPullForm($project,$gitCommands);
-        $pushForm->add('push', 'submit', array('label' => 'Push'));
-        
+
         $this->checkProjectAuthorization($project,'EDIT');
 
         $gitCommands = $this->get('version_control.git_command')->setProject($project);
         
         //Remote Server choice 
         $gitRemoteVersions = $gitCommands->getRemoteVersions();
+        
+        $pushForm = $this->createPushPullForm($project,$gitCommands);
+        $pushForm->add('push', 'submit', array('label' => 'Push'));
 
         return array(
             'project'      => $project,
