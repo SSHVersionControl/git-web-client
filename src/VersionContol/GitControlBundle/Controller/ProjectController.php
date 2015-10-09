@@ -265,6 +265,9 @@ class ProjectController extends Controller
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
         
+        $pushForm = $this->createPushPullForm($project,$gitCommands);
+        $pushForm->add('push', 'submit', array('label' => 'Push'));
+        
         $this->checkProjectAuthorization($project,'EDIT');
 
         $gitCommands = $this->get('version_control.git_command')->setProject($project);
@@ -275,7 +278,7 @@ class ProjectController extends Controller
         return array(
             'project'      => $project,
             'remoteVersions' => $gitRemoteVersions,
-            'push_form' => $this->createPushPullForm($project,$gitCommands)->createView()
+            'push_form' => $pushForm->createView()
         );
     }
     
@@ -302,6 +305,7 @@ class ProjectController extends Controller
         $gitRemoteVersions = $gitCommands->getRemoteVersions();
         
         $pushForm = $this->createPushPullForm($project,$gitCommands);
+        $pushForm->add('push', 'submit', array('label' => 'Push'));
         $pushForm->handleRequest($request);
 
         if ($pushForm->isValid()) {
@@ -377,7 +381,7 @@ class ProjectController extends Controller
             )   
             ->getForm();
 
-        $form->add('submit', 'submit', array('label' => 'Push'));
+        //$form->add('submitMain', 'submit', array('label' => 'Push'));
         return $form;
     }
     
@@ -408,7 +412,7 @@ class ProjectController extends Controller
         $gitRemoteVersions = $gitCommands->getRemoteVersions();
 
         $pullForm = $this->createPushPullForm($project,$gitCommands,"project_pulllocal");
-        $pullForm->add('submit', 'submit', array('label' => 'Pull'));
+        $pullForm->add('pull', 'submit', array('label' => 'Pull'));
         $pullForm->add('viewDiff', 'submit', array('label' => 'View Diff'));
         
         
@@ -443,7 +447,7 @@ class ProjectController extends Controller
         $gitRemoteVersions = $gitCommands->getRemoteVersions();
         
         $pullForm = $this->createPushPullForm($project,$gitCommands,"project_pulllocal");
-        $pullForm->add('submit', 'submit', array('label' => 'Pull'));
+        $pullForm->add('pull', 'submit', array('label' => 'Pull'));
         $pullForm->add('viewDiff', 'submit', array('label' => 'View Diff'));
         $pullForm->handleRequest($request);
 
@@ -451,15 +455,13 @@ class ProjectController extends Controller
             $data = $pullForm->getData();
             $remote = $data['remote'];
             $branch = $data['branch'];
-            
+             //die('form valid');
             if($pullForm->get('viewDiff')->isClicked()){
-
                 $response = $gitCommands->fetch($remote,$branch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
                 $diffs = $gitCommands->getDiffRemoteBranch($remote,$branch);
                 
-            }elseif($pullForm->get('submit')->isClicked()){
-                
+            }elseif($pullForm->get('pull')->isClicked()){
                 $response = $gitCommands->pull($remote,$branch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
 

@@ -50,13 +50,13 @@
                      </div>
                      <div class="row">
                          <div class="col-md-6">
-                            {{ form_widget(pull_form.viewDiff, { 'attr': {'class': 'btn-default'} }) }}
+                            {{ form_widget(pull_form.viewDiff, { 'attr': {'class': 'btn-default submit'} }) }}
                          </div>
                         <div class="col-md-6 text-right">
                             <a href="{{ path('project_log',{ 'id': project.id }) }}" class="btn btn-default">
                                 Cancel
                             </a>
-                            {{ form_widget(pull_form.submit, { 'attr': {'class': 'btn btn-success submit'} }) }}
+                            {{ form_widget(pull_form.pull, { 'attr': {'class': ' btn-success submit'} }) }}
                         </div>
                      </div>
                  {{ form_end(pull_form) }}
