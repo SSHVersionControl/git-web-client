@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="{{ app.request.get('_locale') }}" > 
 
@@ -36,7 +37,8 @@
     {% endblock %}    
 </head>
 <body>
-        
+        {% set route = app.request.get('_route') %}
+        {% set params = app.request.get('_route_params') | merge(app.request.query.all) %}
         {% block body %}
             <div id="wrapper">
              <!-- Navigation -->
@@ -181,7 +183,8 @@
             <div id="page-wrapper">
 
                 <div class="container-fluid">
-
+                    {% block topcontent %}{% endblock %} 
+                    
                     <!-- Page Heading -->
                     <div class="row">
                         <div class="col-lg-12">

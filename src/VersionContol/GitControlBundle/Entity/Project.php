@@ -3,6 +3,7 @@
 namespace VersionContol\GitControlBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use VMelnik\DoctrineEncryptBundle\Configuration\Encrypted;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -79,12 +80,26 @@ class Project
      * 
      */
     private $userProjects;
+    
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     * 
+     * @ORM\OneToMany(targetEntity="VersionContol\GitControlBundle\Entity\ProjectEnvironment", mappedBy="project", cascade={"persist"}, orphanRemoval=true )
+     * @Assert\Count( 
+     *   min = "1", 
+     *   minMessage = "validate.resourceCurriculum.min",
+     *   groups={"publish"})
+     */
+    private $projectEnvironment;
+    
+
 
 
      public function __construct()
     {
 
         $this->userProjects = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->projectEnvironment = new \Doctrine\Common\Collections\ArrayCollection();
     }
     /**
      * Set title
@@ -291,6 +306,50 @@ class Project
     public function setUserProjects(\Doctrine\Common\Collections\Collection $userProjects) {
         $this->userProjects = $userProjects;
     }
+    
+    /**
+     * Get array of project enviroments
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProjectEnvironment() {
+        return $this->projectEnvironment;
+    }
+
+    /**
+     * Set array of project enviroments
+     * @param \Doctrine\Common\Collections\Collection $projectEnvironment
+     * @return \VersionContol\GitControlBundle\Entity\Project
+     */
+    public function setProjectEnvironment(\Doctrine\Common\Collections\Collection $projectEnvironment) {
+        $this->projectEnvironment = $projectEnvironment;
+        return $this;
+    }
+    
+    /**
+     * Add project environment
+     *
+     * @param \VersionContol\GitControlBundle\Entity\ProjectEnvironment $projectEnvironment
+     * @return Resource
+     */
+    public function addProjectEnvironment(\VersionContol\GitControlBundle\Entity\ProjectEnvironment $projectEnvironment)
+    {
+        $projectEnvironment->setProject($this);
+        $this->projectEnvironment[] = $projectEnvironment;
+    
+        return $this;
+    }
+
+    /**
+     * Remove project environment
+     *
+     * @param \VersionContol\GitControlBundle\Entity\ProjectEnvironment $projectEnvironment
+     */
+    public function removeProjectEnvironment(\VersionContol\GitControlBundle\Entity\ProjectEnvironment $projectEnvironment)
+    {
+        $this->projectEnvironment->removeElement($projectEnvironment);
+    }
+
+
 
 
 }

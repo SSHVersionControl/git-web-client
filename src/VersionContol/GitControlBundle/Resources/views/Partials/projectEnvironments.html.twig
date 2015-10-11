@@ -1,0 +1,11 @@
+<div class="row">
+    <ul class="nav navbar-nav environment-selection">
+        <li><span class="title">Project Environments:</span></li>
+        {% set currentEnvironment = currentprojectenvironmnent(project) %}
+        {% for projectEnvironment in project.projectEnvironment %}
+            <li {% if(projectEnvironment.id == currentEnvironment.id) %} class="active"{%endif%}>
+                <a href="{{ path(route, params | merge({ 'projenv': projectEnvironment.id })) }}">{{projectEnvironment.title}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

@@ -4,6 +4,10 @@
  {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
 {% endblock %}
 
+{% block topcontent %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %} 
+
 {% block content -%}
     <h1 class="page-header">
        Commit
