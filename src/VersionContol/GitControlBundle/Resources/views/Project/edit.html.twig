@@ -1,3 +1,4 @@
+{% form_theme edit_form 'VersionContolGitControlBundle::FormTheme/_field-prototype.html.twig' %}
 {% extends "VersionContolGitControlBundle::layout.html.twig" %}
 
 {% block sidemenu -%}
@@ -44,33 +45,9 @@
                          {{ form_widget(edit_form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
                      </div>
                      <div class="form-group">
-                         {{ form_label(edit_form.path) }}
-                         {{ form_errors(edit_form.path) }}
-                         {{ form_widget(edit_form.path,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a full path to the project folder'}}) }}
+                        {{ form_errors(edit_form.projectEnvironment) }}
+                        {{ form_widget(edit_form.projectEnvironment,{'attr': {'class': 'curriculum'}}) }}
                      </div>
-                     <div class="form-group">
-                         {{ form_label(edit_form.ssh) }}
-                         {{ form_errors(edit_form.ssh) }}
-                         {{ form_widget(edit_form.ssh) }}
-                     </div>
-                     <fieldset>
-                         <legend>SSH Details:</legend>
-                             <div class="form-group">
-                                 {{ form_label(edit_form.host) }}
-                                 {{ form_errors(edit_form.host) }}
-                                 {{ form_widget(edit_form.host,{ 'attr': { 'class': 'form-control', 'placeholder':'Name or IP address of the server host.'}}) }}
-                             </div>
-                             <div class="form-group">
-                                 {{ form_label(edit_form.username) }}
-                                 {{ form_errors(edit_form.username) }}
-                                 {{ form_widget(edit_form.username,{ 'attr': { 'class': 'form-control', 'placeholder':'Name of user to connect with.'}}) }}
-                             </div>
-                             <div class="form-group">
-                                 {{ form_label(edit_form.password) }}
-                                 {{ form_errors(edit_form.password) }}
-                                 {{ form_widget(edit_form.password,{ 'attr': { 'class': 'form-control', 'placeholder':'The users password'}}) }}
-                             </div>
-                     </fieldset>
                      <div class="text-right">
                          <a href="{{ path('project_log',{ 'id': project.id }) }}" class="btn btn-default">
                              Cancel

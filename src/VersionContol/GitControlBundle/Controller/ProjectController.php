@@ -886,4 +886,5 @@ class ProjectController extends Controller
             throw new AccessDeniedException();
         }
     }
+
 }

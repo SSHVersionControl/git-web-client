@@ -30,10 +30,10 @@ class GitCommands
     protected $securityContext;
     
     /**
-     * The git project entity
+     * The git projectEnvironment entity
      * @var Project
      */
-    protected $project;
+    protected $projectEnvironment;
     
     /**
      *
@@ -42,14 +42,20 @@ class GitCommands
      * @var string hash
      */
     protected $statusHash;
+    
+    /**
+     * @var ProjectEnvironmentStorage
+     */
+    protected $projectEnvironmentStorage;
 
     /**
      * 
      * @param AuthorizationChecker $securityContext
      */
-    public function __construct($securityContext)
+    public function __construct($securityContext, ProjectEnvironmentStorage $projectEnvironmentStorage)
     {
         $this->securityContext = $securityContext;
+        $this->projectEnvironmentStorage = $projectEnvironmentStorage;
         
     }
     
@@ -611,7 +617,7 @@ class GitCommands
     
     /**
      * Wrapper function to run shell commands. Supports local and remote commands
-     * depending on the project details
+     * depending on the projectEnvironment details
      * 
      * @param string $command command to run
      * @return string Result of command
@@ -619,10 +625,10 @@ class GitCommands
      */
     protected function runCommand($command){
         
-        if($this->project->getSsh() === true){
+        if($this->projectEnvironment->getSsh() === true){
             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
             $sshProcess = new SshProcess();
-            $sshProcess->run(array($fullCommand),$this->project->getHost(),$this->project->getUsername(),22,$this->project->getPassword());
+            $sshProcess->run(array($fullCommand),$this->projectEnvironment->getHost(),$this->projectEnvironment->getUsername(),22,$this->projectEnvironment->getPassword());
             return $sshProcess->getStdout();
         }else{
             if(is_array($command)){
@@ -657,16 +663,17 @@ class GitCommands
      */
     protected function getFilesInDirectory($dir){
          $files = array();
-         
-         $relativePath = substr($dir, strlen($this->project->getPath()));
+         $basePath = $this->addEndingSlash($this->projectEnvironment->getPath());
+         $relativePath = substr($dir, strlen($basePath));
          if($relativePath){
               $relativePath = $this->addEndingSlash($relativePath);
          }
+         
         
-         if($this->project->getSsh() === true){
+         if($this->projectEnvironment->getSsh() === true){
              //Remote Directory Listing
-            $sftp = new SFTP($this->project->getHost(), 22);
-            if (!$sftp->login($this->project->getUsername(), $this->project->getPassword())) {
+            $sftp = new SFTP($this->projectEnvironment->getHost(), 22);
+            if (!$sftp->login($this->projectEnvironment->getUsername(), $this->projectEnvironment->getPassword())) {
                 exit('Login Failed');
             }
 
@@ -682,7 +689,7 @@ class GitCommands
 
          }else{
              //Local Directory Listing
-            $directoryIterator = new \DirectoryIterator($dir);
+            $directoryIterator = new \DirectoryIterator($basePath.$dir);
             $directoryIterator->setInfoClass('\VersionContol\GitControlBundle\Entity\FileInfo');
 
             foreach ($directoryIterator as $fileInfo) {
@@ -705,10 +712,10 @@ class GitCommands
    
         $fileContents = '';
         
-         if($this->project->getSsh() === true){
+         if($this->projectEnvironment->getSsh() === true){
              //Remote Directory Listing
-            $sftp = new SFTP($this->project->getHost(), 22);
-            if (!$sftp->login($this->project->getUsername(), $this->project->getPassword())) {
+            $sftp = new SFTP($this->projectEnvironment->getHost(), 22);
+            if (!$sftp->login($this->projectEnvironment->getUsername(), $this->projectEnvironment->getPassword())) {
                 exit('Login Failed');
             }
             
@@ -774,8 +781,10 @@ class GitCommands
      * @param Project $project
      */
     public function setProject(Project $project) {
-        $this->project = $project;
-        $this->setGitPath($project->getPath());
+        
+        //$this->project = $project;
+        $this->projectEnvironment = $this->projectEnvironmentStorage->getProjectEnviromment($project);
+        $this->setGitPath($this->projectEnvironment->getPath());
         return $this;
     }
     

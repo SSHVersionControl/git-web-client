@@ -3,6 +3,7 @@ services:
         class: VersionContol\GitControlBundle\Utility\GitCommands
         arguments:
             - @security.token_storage
+            - @version_control.project_environmnent_storage
             
     lrotherfield.form.type.hidden_entity:
         class: Lrotherfield\Component\Form\Type\HiddenEntityType
@@ -32,4 +33,24 @@ services:
         class: VersionContol\GitControlBundle\Twig\Extension\TextColorExtension
         tags:
             - { name: twig.extension }
+            
+    version_control.project_environmnent_storage:
+        class: VersionContol\GitControlBundle\Utility\ProjectEnvironmentStorage
+        arguments:
+            - @session
+            - @doctrine.orm.entity_manager
+            
+    version_control.twig.versioncontrol_project_environmnent_storage:
+        class: VersionContol\GitControlBundle\Twig\Extension\ProjectEnvironmnentStorageExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @version_control.project_environmnent_storage
+            
+    version_control.beforecontoller.action_listener:
+        class: VersionContol\GitControlBundle\EventListener\ProjectEnviromentBeforeListener
+        arguments: 
+            - @version_control.project_environmnent_storage
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
             
