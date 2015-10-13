@@ -35,6 +35,7 @@ class ProjectEnvironmentType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionContol\GitControlBundle\Entity\ProjectEnvironment'
+            ,'cascade_validation' => true
         ));
     }
 

@@ -4,6 +4,10 @@ services:
         arguments:
             - @security.token_storage
             - @version_control.project_environmnent_storage
+     
+    version_control.ssh_process:
+        class: VersionContol\GitControlBundle\Utility\SshProcess
+     
             
     lrotherfield.form.type.hidden_entity:
         class: Lrotherfield\Component\Form\Type\HiddenEntityType
@@ -53,4 +57,11 @@ services:
             - @version_control.project_environmnent_storage
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+            
+    version_control.validator.ssh_details_validator:
+        class: VersionContol\GitControlBundle\Validator\Constraints\SshDetailsValidator
+        tags:
+            - { name: validator.constraint_validator, alias: ssh_details_validator }
+        arguments: 
+            - @version_control.ssh_process
             

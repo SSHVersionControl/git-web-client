@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" target-language="en" datatype="plaintext" original="messsages">
+        <body>
+            <trans-unit id="resource.title">
+                <source>validate.constraint.SshDetails.error</source>
+                <target>Unable to connect using these SFTP Details.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
