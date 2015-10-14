@@ -3,11 +3,14 @@
 namespace VersionContol\GitControlBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use VMelnik\DoctrineEncryptBundle\Configuration\Encrypted;
+use Symfony\Component\Validator\Constraints as Assert;
+use VersionContol\GitControlBundle\Validator\Constraints as VersionContolAssert;
 
 /**
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\ProjectEnvironmentRepository")
  * @ORM\Table(name="project_environment")
+ * @VersionContolAssert\SshDetails
  */
 class ProjectEnvironment
 {
@@ -22,6 +25,7 @@ class ProjectEnvironment
     /**
      * @var string
      * @ORM\Column(name="title", type="string", length=80, nullable=true)
+     * @Assert\NotBlank()
      */
     private $title;
 

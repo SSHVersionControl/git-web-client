@@ -284,3 +284,31 @@ table.diff >tbody>tr.diff-type-2>td{
     line-height: 1.5;
     border-radius: 3px;
 }   
+
+.environment-selection{
+    width:100%;
+    background: #9fccea;
+    color: #fff;
+}
+.environment-selection a {
+    color: #fff;
+    text-decoration: none;
+    background: #133d58;
+    border-left: 1px solid #9fccea;
+}
+
+.environment-selection li.active a {
+    background:#1e5c86;
+}
+
+.environment-selection .title{
+    position: relative;
+    display: block;
+    padding: 15px 15px;
+    line-height: 20px;
+    background: #133d58;
+}
+
+#page-wrapper{
+    padding: 0;
+}

@@ -550,12 +550,14 @@ class ProjectController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
+            
+            $this->get('session')->getFlashBag()->add('notice',"Project record updated");
 
             return $this->redirect($this->generateUrl('project_edit', array('id' => $id)));
         }
 
         return array(
-            'entity'      => $project,
+            'project'      => $project,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );

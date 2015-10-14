@@ -23,6 +23,7 @@ class Project
     /**
      * @var string
      * @ORM\Column(name="title", type="string", length=80, nullable=true)
+     * @Assert\NotBlank()
      */
     private $title;
 
@@ -85,6 +86,7 @@ class Project
      * @var \Doctrine\Common\Collections\Collection
      * 
      * @ORM\OneToMany(targetEntity="VersionContol\GitControlBundle\Entity\ProjectEnvironment", mappedBy="project", cascade={"persist"}, orphanRemoval=true )
+     * @Assert\Valid 
      * @Assert\Count( 
      *   min = "1", 
      *   minMessage = "validate.resourceCurriculum.min",
