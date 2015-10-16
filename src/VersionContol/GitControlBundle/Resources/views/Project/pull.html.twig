@@ -82,7 +82,18 @@
                 </div>
                 <div id="diffPanel{{loop.index}}" class="panel-collapse collapse" role="tabpanel">
                     <div class="panel-body">
-                        
+                        <table class="table diff table-condensed">
+                            {% for diffLine in diff.diffLines %}
+                                <tr class="diff-type-{{diffLine.type}}">
+                                    <td class="diff-number">
+                                        {{diffLine.lineNumber}}
+                                    </td>
+                                    <td class="diff-line-content">
+                                        {{diffLine.line}}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
                     </div>
                 </div>
             </div> 

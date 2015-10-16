@@ -18,11 +18,13 @@ $(function(){
         
         var $submitButton = $('button.submit');
         if($submitButton.length > 0){
-            var loadingText = $submitButton.data('loading-text');
-            if(!loadingText){
-                loadingText  = 'Loading...';
-            }
-            $submitButton.text(loadingText).attr("disabled", true);
+            $submitButton.each(function(){
+                var loadingText = $(this).data('loading-text');
+                if(!loadingText){
+                    loadingText  = 'Loading...';
+                }
+                $(this).text(loadingText)//.attr("disabled", true);
+            });
         }
     });
     
@@ -77,9 +79,6 @@ $(function(){
         var $newFormLi = $('<div class="box curriculumbox" data-index="'+index+'"></div>').append(newForm);
         //$collectionHolder.append($newFormLi);
         $newLink.before($newFormLi);
-        $newFormLi.find('.discipline,.topic,.subtopic').html('');
-        $newFormLi.find('.contentobjectives-wrapper').hide();
-        $newFormLi.find('.curriculum-text-language').val(resourceLanguage);
         
     }
     
