@@ -17,12 +17,8 @@ class ProjectRepository extends EntityRepository
 
       //If keyword is set 
       if($keyword){
-        $qb->andWhere(
-            $qb->expr()->like('a.title', ':keyword')
-        )->setParameter('keyword', '%'.$keyword.'%')
-        ->andWhere(
-            $qb->expr()->like('a.description', ':keyword')
-        )->setParameter('keyword', '%'.$keyword.'%');
+         $qb->andWhere('a.title LIKE :keyword OR a.title LIKE :keyword')
+          ->setParameter('keyword', '%'.$keyword.'%');
       }
     
      if($queryOnly === true){
