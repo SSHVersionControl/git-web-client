@@ -43,7 +43,6 @@
                                 <strong class="str-truncated">{{log.subject}}</strong>
                             </div>
                             <div class="col-md-2">
-       
                                 <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}">{{log.abbrHash}}</a>
                             </div>
                         </div>
@@ -52,8 +51,18 @@
                                 <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
                             </div>
                             <div class="col-md-2">
-                                show files..
+                                <a href="#options{{ loop.index }}" data-toggle="collapse" class="btn btn-link">more options...</a>
                             </div>
+                        </div>
+                        <div id="options{{ loop.index }}" class="row collapse">
+                             <div class="col-md-offset-6 col-md-6 text-right">
+                                {% if(loop.first) %}
+                                    <a href="{{ path('undocommit_soft', { 'id': project.id}) }}" class="btn btn-default btn-small" >Undo Soft</a>
+                                {% endif %}
+                                 <a href="" class="btn btn-default btn-small" >Undo Hard</a>
+                                 <a href="" class="btn btn-default btn-small" >Revert To</a>
+                                 <a href="" class="btn btn-default btn-small" >Show files</a>
+                             </div>
                         </div>
                     </div>
 

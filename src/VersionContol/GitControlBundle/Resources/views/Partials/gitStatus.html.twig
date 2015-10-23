@@ -1,0 +1,17 @@
+{% if(status == 'M') %}
+    <span class="status status-modified">{{status}}</span>
+{% elseif(status == 'A') %}
+     <span class="status status-added">{{status}}</span>
+{% elseif(status == 'U') %}
+    <span class="status status-unmerged">{{status}}</span>
+{% elseif(status == 'D') %}
+    <span class="status status-deleted">{{status}}</span>
+{% elseif(status == 'C') %}
+    <span class="status status-copied">{{status}}</span>
+{% elseif(status == '?') %}
+    <span class="status status-untracked">{{status}}</span>
+{% elseif(status == '!') %}
+    <span class="status status-ignore">{{status}}</span>
+{% else %}
+    <span class="status">{{status}}</span>
+{% endif %} 
