@@ -312,3 +312,48 @@ table.diff >tbody>tr.diff-type-2>td{
 #page-wrapper{
     padding: 0;
 }
+
+
+.index-status{
+    display:inline-block;
+    width: 40px;
+}
+
+.work-tree-status{
+    display:inline-block;
+    width: 40px;
+}
+
+.status{
+    padding:5px;
+    color: #fff;
+}
+
+
+.status.status-modified{
+    background: #23b7e5;
+}
+
+.status.status-added{
+    background: #27c24c;
+}
+
+.status.status-deleted{
+    background: #f05050;
+}
+
+.status.status-untracked{
+    background: #3a3f51;
+}
+
+.status.status-unmerged{
+    background: #ff902b;
+}
+
+.status.status-copied{
+    background: #929292;
+}
+
+.status.status-ignore{
+    background: #929292;
+}
