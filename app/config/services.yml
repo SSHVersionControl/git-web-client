@@ -65,3 +65,10 @@ services:
         arguments: 
             - @version_control.ssh_process
             
+    version_control.api_user_provider:
+        class: VersionContol\GitControlBundle\Security\Authentication\FOSVersionUserProvider
+        #this is the place where the properties are passed to the UserProvider - see config.yml
+        arguments: 
+            - @fos_user.user_manager
+            - {github:githubId}
+            

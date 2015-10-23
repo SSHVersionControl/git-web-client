@@ -66,6 +66,29 @@
                      </div>
 
                  </div>
+                {% set user = app.security.getToken().getUser() %}
+                {% if(user.githubId) %}
+                    <div class="panel panel-default">
+                       <div class="panel-heading">
+                           <h4>Connect</h4>
+                       </div>
+                       <div class="panel-body"> 
+                          <p>You are already connected to a Github Account</p>
+                       </div>
+                   </div>
+                {% else %}
+                   <div class="panel panel-default">
+                       <div class="panel-heading">
+                           <h4>Connect</h4>
+                       </div>
+                       <div class="panel-body"> 
+                          <p>Connect to other accounts for issue tracking</p>
+                          {% for owner in hwi_oauth_resource_owners() %}
+                              <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-success small">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
+                          {% endfor %}
+                       </div>
+                   </div>
+                {% endif %}
              </div>
         </div>
     </div>

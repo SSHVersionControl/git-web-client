@@ -21,6 +21,16 @@ security:
             form_login:
                 provider: fos_userbundle
                 csrf_provider: security.csrf.token_manager
+            oauth:
+                resource_owners:
+                    github:           "/login/check-github"
+                login_path:        /apilogin
+                failure_path:      /apilogin
+
+                oauth_user_provider:
+                    #this is my custom user provider, created from FOSUBUserProvider - will manage the
+                    #automatic user registration on your site, with data from the provider (facebook. google, etc.)
+                    service: version_control.api_user_provider
             logout:       true
             anonymous:    true
             remember_me:
@@ -50,3 +60,18 @@ vmelnik_doctrine_encrypt:
     #encryptor_service:    ~
     #  Now it's only one db driver is supported - orm
     db_driver:            orm 
+
+hwi_oauth:
+    # list of names of the firewalls in which this bundle is active, this setting MUST be set
+    connect:
+        account_connector: version_control.api_user_provider
+    firewall_name: main
+    fosub:
+        username_iterations: 30
+        properties:
+            github: githubId
+    resource_owners:
+        github:
+            type:                github
+            client_id:           b22364a603f32101e207
+            client_secret:       0d4e305fae37d8d84a2ad4272bfe88308e00432d

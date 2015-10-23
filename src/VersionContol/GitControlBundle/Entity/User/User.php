@@ -50,6 +50,15 @@ class User extends BaseUser
      */
     private $admin;
     
+     /** 
+      * @ORM\Column(name="github_id", type="string", length=255, nullable=true) 
+      */
+    protected $githubId;
+    
+    /** @ORM\Column(name="github_access_token", type="string", length=255, nullable=true) */
+    protected $githubAccessToken;
+    
+    
     public function __construct()
     {
         parent::__construct();
@@ -114,6 +123,24 @@ class User extends BaseUser
     public function setAdmin($admin) {
         $this->admin = $admin;
         $this->setRoles(array('ROLE_ADMIN'));
+        return $this;
+    }
+
+    public function getGithubId() {
+        return $this->githubId;
+    }
+
+    public function getGithubAccessToken() {
+        return $this->githubAccessToken;
+    }
+
+    public function setGithubId($githubId) {
+        $this->githubId = $githubId;
+        return $this;
+    }
+
+    public function setGithubAccessToken($githubAccessToken) {
+        $this->githubAccessToken = $githubAccessToken;
         return $this;
     }
 
