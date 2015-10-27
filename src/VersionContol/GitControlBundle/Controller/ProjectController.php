@@ -858,9 +858,9 @@ class ProjectController extends Controller
         $gitCommands = $this->get('version_control.git_command')->setProject($project);
         
         $branchName = $gitCommands->getCurrentBranch();
-        $dir = $project->getPath();
+        $dir = '';
         if($currentDir){
-            $dir .= trim(urldecode($currentDir));
+            $dir = trim(urldecode($currentDir));
         }
         $files = $gitCommands->listFiles($dir, $branchName);
         
@@ -876,7 +876,7 @@ class ProjectController extends Controller
             'project'      => $project,
             'branchName' => $branchName,
             'files' => $files,
-            'currentDir' => $currentDir,
+            'currentDir' => $dir,
             'readme' => $readme
         );
     }

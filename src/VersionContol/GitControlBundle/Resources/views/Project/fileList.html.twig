@@ -36,6 +36,13 @@
                 <div class="list-group">
                     <div class="list-group-item">
                         <div class="row">
+                            <div class="col-md-12">
+                                {{currentDir}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="list-group-item">
+                        <div class="row">
                             <div class="col-md-3">
                                  <strong class="str-truncated">File Name</strong>
                             </div>
@@ -55,9 +62,9 @@
                         <div class="row">
                             <div class="col-md-12">
                                 
-                                <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': currentDir| url_encode()})}}">
-                                    <strong class="str-truncated">..</strong></a>
-                                
+                                <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': currentDir|parentDir() | url_encode()})}}" title="Back to {{currentDir|parentDir()}}">
+                                    <strong class="str-truncated">..</strong>
+                                </a>   
                             </div> 
                          </div>
                     </div>

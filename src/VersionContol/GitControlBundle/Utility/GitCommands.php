@@ -662,9 +662,14 @@ class GitCommands
      * @return array of files
      */
     protected function getFilesInDirectory($dir){
+        
+         if($this->validPathStr($dir) === false){
+             throw new \Exception('Directory path is not valid. Possible security issue.');
+         }
+         
          $files = array();
          $basePath = $this->addEndingSlash($this->projectEnvironment->getPath());
-         $relativePath = substr($dir, strlen($basePath));
+         $relativePath = $dir;
          if($relativePath){
               $relativePath = $this->addEndingSlash($relativePath);
          }
@@ -677,9 +682,9 @@ class GitCommands
                 exit('Login Failed');
             }
 
-            foreach($sftp->rawlist($dir) as $filename => $fileData) {
+            foreach($sftp->rawlist($basePath.$relativePath) as $filename => $fileData) {
                 if($filename !== '.' && $filename !== '..' && $filename !== '.git'){
-                    $fileData['fullPath'] = rtrim($dir,'/').'/'.$filename;
+                    $fileData['fullPath'] = rtrim($relativePath,'/').'/'.$filename;
                     $fileData['gitPath'] = $relativePath.$filename;
 
                     $remoteFileInfo = new RemoteFileInfo($fileData);
@@ -862,6 +867,25 @@ class GitCommands
             }
         });
     } 
+    
+    /**
+	 * Checks for malicious file paths.
+	 *
+	 * Returns TRUE if no '//', '..', '\' or control characters are found in the $theFile.
+	 * This should make sure that the path is not pointing 'backwards' and further doesn't contain double/back slashes.
+	 * So it's compatible with the UNIX style path strings valid for TYPO3 internally.
+	 *
+	 * @param string $theFile File path to evaluate
+	 * @return boolean TRUE, $theFile is allowed path string, FALSE otherwise
+	 * @see http://php.net/manual/en/security.filesystem.nullbytes.php
+	 * @todo Possible improvement: Should it rawurldecode the string first to check if any of these characters is encoded?
+	 */
+	public function validPathStr($theFile) {
+		if (strpos($theFile, '//') === FALSE && strpos($theFile, '\\') === FALSE && !preg_match('#(?:^\\.\\.|/\\.\\./|[[:cntrl:]])#u', $theFile)) {
+			return TRUE;
+		}
+		return FALSE;
+	}
 
     
 }

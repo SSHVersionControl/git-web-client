@@ -51,6 +51,11 @@ services:
         arguments:
             - @version_control.project_environmnent_storage
             
+    version_control.twig.versioncontrol_parentdirectory:
+        class: VersionContol\GitControlBundle\Twig\Extension\ParentDirectoryExtension
+        tags:
+            - { name: twig.extension }        
+           
     version_control.beforecontoller.action_listener:
         class: VersionContol\GitControlBundle\EventListener\ProjectEnviromentBeforeListener
         arguments: 
