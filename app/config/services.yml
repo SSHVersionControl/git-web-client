@@ -54,7 +54,13 @@ services:
     version_control.twig.versioncontrol_parentdirectory:
         class: VersionContol\GitControlBundle\Twig\Extension\ParentDirectoryExtension
         tags:
-            - { name: twig.extension }        
+            - { name: twig.extension }  
+            
+     
+    version_control.twig.versioncontrol_pagination:
+        class: VersionContol\GitControlBundle\Twig\Extension\PaginationExtension
+        tags:
+            - { name: twig.extension }
            
     version_control.beforecontoller.action_listener:
         class: VersionContol\GitControlBundle\EventListener\ProjectEnviromentBeforeListener

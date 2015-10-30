@@ -277,6 +277,42 @@ class GitCommands
     }
     
     /**
+     * Gets the git log (history) of commits
+     * Currenly limits to the last 20 commits.
+     * @return GitLog|array
+     */
+    public function getLogNotRemote($count = 20, $branch = 'master'){
+        $logs = array();
+
+        try{
+            //$logData = $this->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -'.intval($count).' '.$branch);
+            $command = 'git --no-pager log -m "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' '.escapeshellarg(trim($branch)).' --not --remotes';
+            
+            
+            $logData = $this->runCommand($command);
+            
+        }catch(\RuntimeException $e){
+            if($this->getObjectCount() == 0){
+                return $logs;
+            }else{
+                //Throw exception
+            }
+        }
+
+        $lines = $this->splitOnNewLine($logData);
+
+        if(is_array($lines) && count($lines) > 0){
+            foreach($lines as $line){
+                if(trim($line)){
+                    $logs[] = new GitLog($line);
+                }
+            }
+        }
+        
+        return $logs;
+    }
+    
+    /**
      * Array of local branches
      * @return type
      */
@@ -613,6 +649,13 @@ class GitCommands
      */
     public function revert($commitId){
        $this->runCommand('git revert -m --no-commit '.escapeshellarg($commitId).' HEAD');
+    }
+    
+    /**
+     * Gets total count of commits
+     */
+    public function commitCount(){
+        $this->runCommand('git rev-list HEAD --count');
     }
     
     /**

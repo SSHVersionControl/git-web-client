@@ -216,37 +216,6 @@ class ProjectController extends Controller
         );
     }
 
-    /**
-     * Finds and displays a Project entity.
-     *
-     * @Route("history/{id}", name="project_log")
-     * @Method("GET")
-     * @Template()
-     */
-    public function historyAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($project,'VIEW');
-
-        $gitCommands = $this->get('version_control.git_command')->setProject($project);
-        $branchName = $gitCommands->getCurrentBranch();
-        $gitLogs = $gitCommands->getLog(20,$branchName);
-
-        
-        
-        return array(
-            'project'      => $project,
-            'branchName' => $branchName,
-            'gitLogs' => $gitLogs,
-        );
-    }
     
     /**
      * Finds and displays a Project entity.
