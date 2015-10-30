@@ -89,5 +89,14 @@ $(function(){
         event.preventDefault();
         $(this).closest('.box').remove();
     });
+    
+    
+     $('.search-panel .dropdown-menu').find('a').click(function(e) {
+        e.preventDefault();
+        var param = $(this).attr("href").replace("#","");
+        var concept = $(this).text();
+        $('#search_concept').text(concept);
+        $('#filter').val(param);
+    });
 
 });
