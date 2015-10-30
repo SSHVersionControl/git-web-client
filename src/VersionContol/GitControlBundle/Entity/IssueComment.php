@@ -56,7 +56,7 @@ class IssueComment
     /**
      * @var \VersionContol\GitControlBundle\Entity\Issue
      *
-     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\Issue")
+     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\Issue", inversedBy="issueComments")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="issue_id", referencedColumnName="id")
      * })
