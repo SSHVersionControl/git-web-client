@@ -8,3 +8,7 @@ services:
     version_control.git_log:
         class:  VersionContol\GitControlBundle\Utility\GitCommands\GitLogCommand
         parent: version_control.git_command_base
+        
+    version_control.git_sync:
+        class:  VersionContol\GitControlBundle\Utility\GitCommands\GitSyncCommand
+        parent: version_control.git_command_base

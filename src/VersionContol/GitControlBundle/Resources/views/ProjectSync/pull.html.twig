@@ -1,0 +1,111 @@
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block topcontent %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %} 
+
+{% block content -%}
+    <h1 class="page-header">
+       Pull
+      <small>
+          {{ project.title }} 
+      </small>
+          {% if (is_granted('MASTER', project)) %}
+          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
+        {% endif %}
+    </h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+            </li>
+            <li class="active">
+                <i class="fa fa-file"></i> Pull
+            </li>
+        </ol>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="{{ path('project_listremote', { 'id': project.id})}}" class="btn btn-info btn-sm pull-right" >
+                        Manage Remote Repositories
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+            {% if(remoteVersions|length == 0)%}
+                <div class="alert alert-warning" role="alert">You do not have any remote servers set up for this repository. 
+                    <a href="{{ path('project_newremote', { 'id': project.id})}}" title="Manage Remote Repositories">Click here to add a remote repository</a></div>
+            {% else %}
+                <p>Pull remote changes to a local repository.</p>
+
+                {{ form_start(pull_form,{ 'attr': { 'class': 'form'}}) }}
+
+                    {{ form_errors(pull_form) }} 
+                    
+                    <div class="form-group">
+                         {{ form_label(pull_form.remote) }}
+                         {{ form_errors(pull_form.remote) }}
+                         {{ form_widget(pull_form.remote,{ 'attr': { 'class': 'form-control', 'placeholder':'Please a remote server repository'}}) }}
+                    </div>
+                     
+                     <div class="form-group">
+                         {{ form_label(pull_form.branch) }}
+                         {{ form_errors(pull_form.branch) }}
+                         {{ form_widget(pull_form.branch,{ 'attr': { 'class': 'form-control', 'placeholder':'Please select a branch'}}) }}
+                     </div>
+                     <div class="row">
+                         <div class="col-md-6">
+                            {{ form_widget(pull_form.viewDiff, { 'attr': {'class': 'btn-default submit'} }) }}
+                         </div>
+                        <div class="col-md-6 text-right">
+                            <a href="{{ path('project_log',{ 'id': project.id }) }}" class="btn btn-default">
+                                Cancel
+                            </a>
+                            {{ form_widget(pull_form.pull, { 'attr': {'class': ' btn-success submit'} }) }}
+                        </div>
+                     </div>
+                 {{ form_end(pull_form) }}
+             {% endif %}
+
+        </div>
+    </div>
+             
+    {% if (diffs|length > 0) %}
+     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        {% for diff in diffs %}
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab">
+                  <h4 class="panel-title">
+                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#diffPanel{{loop.index}}" aria-expanded="true" aria-controls="collapseOne">
+                       {{diff.getFileName}} ({{diff.status}})
+                    </a>
+                  </h4>
+                </div>
+                <div id="diffPanel{{loop.index}}" class="panel-collapse collapse" role="tabpanel">
+                    <div class="panel-body">
+                        <table class="table diff table-condensed">
+                            {% for diffLine in diff.diffLines %}
+                                <tr class="diff-type-{{diffLine.type}}">
+                                    <td class="diff-number">
+                                        {{diffLine.lineNumber}}
+                                    </td>
+                                    <td class="diff-line-content">
+                                        {{diffLine.line}}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div> 
+        {% endfor %}
+    </div>
+    {% endif %}
+
+{% endblock %}

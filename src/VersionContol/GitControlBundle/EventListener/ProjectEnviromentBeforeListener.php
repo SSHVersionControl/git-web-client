@@ -5,6 +5,7 @@ namespace VersionContol\GitControlBundle\EventListener;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use VersionContol\GitControlBundle\Utility\ProjectEnvironmentStorage;
 use VersionContol\GitControlBundle\Controller\ProjectController;
+use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
 
 class ProjectEnviromentBeforeListener
 {
@@ -31,7 +32,7 @@ class ProjectEnviromentBeforeListener
             }
 
             $controllerObject = $controller[0];
-            if ($controllerObject instanceof ProjectController) {
+            if ($controllerObject instanceof ProjectController || $controllerObject instanceof BaseProjectController) {
              
                 $params = $event->getRequest()->attributes->get('_route_params');
  
