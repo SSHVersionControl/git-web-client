@@ -130,6 +130,12 @@ class PaginationExtension extends \Twig_Extension {
             return $listPages; 
         }
         
+        /**
+         * Gerenates a url
+         * 
+         * @param integer $value Page paramater value
+         * @return string Url
+         */
         protected function generateUrl($value){
             $request = $this->requestStack->getCurrentRequest();
             
