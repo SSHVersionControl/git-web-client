@@ -2,6 +2,9 @@
 
 namespace VersionContol\GitControlBundle\Twig\Extension;
 
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+
 /**
  * Twig extension providing filters for locale-aware formatting of numbers and currencies.
  *
@@ -19,6 +22,22 @@ class PaginationExtension extends \Twig_Extension {
         protected $currentPage = 0;
         
         protected $pageIdentifier = 'page';
+        
+        private $generator;
+        
+        private $routeName;
+        
+        private $routeParameters;
+        
+        private $routeRelative;
+
+        private $requestStack;
+
+        public function __construct(UrlGeneratorInterface $generator, RequestStack $requestStack)
+        {
+            $this->generator = $generator;
+            $this->requestStack = $requestStack;
+        }
         
 	/**
 	 * {@inheritDoc}
@@ -43,8 +62,11 @@ class PaginationExtension extends \Twig_Extension {
 	 * @return string Text with trailing dot added if there was none before.
 	 * @throws \InvalidArgumentException If {@code $value} is not a string.
 	 */
-	public function paginationFilter($totalRecords, $currentPage, $recordsPerPage = 30) {
-
+	public function paginationFilter($totalRecords, $currentPage, $recordsPerPage = 30, $routeName=false, $routeParameters = array(), $routeRelative = false) {
+            $this->routeName = $routeName;
+            $this->routeParameters = $routeParameters;
+            $this->routeRelative = $routeRelative;
+            
                 if($totalRecords > 0){
                     $this->numPages = ceil($totalRecords / $recordsPerPage);
                     $this->currentPage = $currentPage;
@@ -109,14 +131,20 @@ class PaginationExtension extends \Twig_Extension {
         }
         
         protected function generateUrl($value){
-            $params = $_GET;
-            if(key_exists('searchstate',$params)){
-                unset($params['searchstate']);
-            }
-            $params[$this->pageIdentifier] = $value;
-            $paramString = http_build_query($params);
+            $request = $this->requestStack->getCurrentRequest();
             
-            return $_SERVER['DOCUMENT_URI'].'?'.$paramString;
+            $routeName = $this->routeName? $this->routeName: $request->attributes->get('_route');
+            $routeParameters = $request->attributes->get('_route_params');
+
+            if(key_exists('searchstate',$routeParameters)){
+                unset($routeParameters['searchstate']);
+            }
+            //Adds page param
+            $routeParameters[$this->pageIdentifier] = $value;
+            
+            
+            $parameters = array_merge($routeParameters,$this->routeParameters);
+            return $this->generator->generate($routeName, $parameters, $this->routeRelative);
         }
 
 }
