@@ -98,5 +98,20 @@ $(function(){
         $('#search_concept').text(concept);
         $('#filter').val(param);
     });
+    
+    
+    /**
+     * Used on the Remote Brnaches page.
+     * Sets the correct values in the New Branch form when the 
+     * checkout button is clicked
+     */
+    $(".checkout-remote").on('click',function(){
+        var button = $(this)
+            ,remoteName = button.data('remotename')
+            ,localName = button.data('localname');
+            $('#form_name').val(localName);
+            $('#form_remotename').val(remoteName);
+            $('#remote-branch-label').html(remoteName);
+    });
 
 });

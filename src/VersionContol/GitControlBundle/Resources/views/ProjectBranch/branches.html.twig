@@ -1,0 +1,137 @@
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block topcontent %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %} 
+
+{% block content -%}
+    <h1 class="page-header">
+       Local Branches
+      <small>
+          {{ project.title }} 
+      </small>
+        {% if (is_granted('MASTER', project)) %}
+          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
+        {% endif %}
+    </h1>
+        <ol class="breadcrumb">
+            <li>
+                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+            </li>
+            <li class="active">
+                <i class="fa fa-file"></i> Projects
+            </li>
+        </ol>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-lg-10">
+                    <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
+                </div>
+                <div class="col-lg-2">
+                    {% if (is_granted('OPERATOR', project)) %}
+                        <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#newBranch">
+                            New Branch
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="row spacer-top">
+            <div class="col-md-12 text-right">
+                <a href="{{ path('project_branch_remotes', { 'id': project.id}) }}" type="button" class="btn btn-info btn-sm">Show Remote Branches</a>
+            </div>
+        </div>        
+        <div class="panel-body">
+                
+                <div class="list-group">
+                {% for branch in branches %}
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-8">
+                                
+                                {% if(branch == branchName|trim) %}
+                                    <strong>*</strong>
+                                {% endif %}
+                                <strong class="str-truncated">{{branch}}</strong>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                {% if (is_granted('MASTER', project)) %}
+                                    {% if(branch != branchName|trim) %}
+                                        <a href="{{ path('project_checkoutbranch', { 'id': project.id, 'branchName': branch}) }}" title="Checkout this branch" class="btn btn-default btn-sm">Checkout</a>
+                                    {% endif %}
+                                    <a href="" title="Merge this branch" class="btn btn-default btn-sm">Merge</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+            
+    <!-- Modal -->
+    <div class="modal fade" id="newBranch" tabindex="-1" role="dialog" aria-labelledby="newBranchLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          {{ form_start(form,{ 'attr': { 'class': 'form'}}) }}
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" >New Branch</h4>
+            </div>
+            <div class="modal-body">
+                 {{ form_errors(form) }}                
+                  <div class="form-group">
+                      {{ form_label(form.name) }}
+                      {{ form_errors(form.name) }}           
+                      {{ form_widget(form.name,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for the new branch'}}) }}
+                  </div>
+                  <div class="form-group">
+                      {{ form_label(form.switch) }}
+                      {{ form_errors(form.switch) }}
+                      {{ form_widget(form.switch) }}
+                  </div>
+                  <div class="alert-info">
+                      
+                      <h4>Branching from: {{branchName}}</h4>
+
+                      <div class="list-group">
+                        {% for log in gitLogs %}
+                            <div class="list-group-item">
+                              <div class="row">
+                                  <div class="col-md-10">
+                                      <strong class="str-truncated">{{log.subject}}</strong>
+                                  </div>
+                                  <div class="col-md-2">
+                                      <a href="#">{{log.abbrHash}}</a>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="col-md-12">
+                                      <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
+                                  </div>
+                              </div>
+                          {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
+            </div>
+            {{ form_end(form) }}
+          </div>
+      </div>
+    </div>
+
+{% endblock %}
