@@ -78,7 +78,7 @@ class GitSyncCommand extends GitCommand {
      */
     public function addRemote($remote,$url){
         
-        $remotes = $this->splitOnNewLine($this->runCommand(sprintf('git remote add %s %s 2>&1',escapeshellarg($remote),escapeshellarg($url))));
+        $remotes = $this->runCommand(sprintf('git remote add %s %s 2>&1',escapeshellarg($remote),escapeshellarg($url)));
         return $remotes;
     }
     
@@ -90,7 +90,7 @@ class GitSyncCommand extends GitCommand {
      */
     public function deleteRemote($remote){
         
-        $remotes = $this->splitOnNewLine($this->runCommand(sprintf('git remote rm %s 2>&1',escapeshellarg($remote))));
+        $remotes = $this->runCommand(sprintf('git remote rm %s 2>&1',escapeshellarg($remote)));
         
         return $remotes;
     }
@@ -103,7 +103,7 @@ class GitSyncCommand extends GitCommand {
      */
     public function renameRemote($remote,$newRemote){
         
-        $remotes = $this->splitOnNewLine($this->runCommand(sprintf('git remote rename %s %s 2>&1',escapeshellarg($remote),escapeshellarg($newRemote))));
+        $remotes = $this->runCommand(sprintf('git remote rename %s %s 2>&1',escapeshellarg($remote),escapeshellarg($newRemote)));
         
         return $remotes;
     }

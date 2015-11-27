@@ -59,7 +59,7 @@ class ProjectBranchController extends BaseProjectController
         $branchName = $this->gitBranchCommands->getCurrentBranch();
         //Remote Server choice 
         $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
-        $gitBranches = $gitLocalBranches;
+        /*$gitBranches = $gitLocalBranches;
         $gitAllBranches = $this->gitBranchCommands->getBranches();
         foreach ($gitAllBranches as $branch){
             if(strpos($branch,'/') !== false){
@@ -68,7 +68,7 @@ class ProjectBranchController extends BaseProjectController
                     $gitBranches[] = $branch;
                 }
             }
-        }
+        }*/
         
         $gitLogs = $this->gitCommands->getLog(1,$branchName);
 
@@ -78,7 +78,7 @@ class ProjectBranchController extends BaseProjectController
         
         return array(
             'project'      => $this->project,
-            'branches' => $gitBranches,
+            'branches' => $gitLocalBranches,
             'branchName' => $branchName,
             'form' => $form->createView(),
             'gitLogs' => $gitLogs
