@@ -113,5 +113,33 @@ $(function(){
             $('#form_remotename').val(remoteName);
             $('#remote-branch-label').html(remoteName);
     });
+    
+    /**
+     * Confirm Delete
+     */
+    $('a[data-confirm]').click(function(ev) {
+		var href = $(this).attr('href')
+                ,confirmHeader = $(this).data('confirm-header')?$(this).data('confirm-header'):'Confirm Action?';
+                
+		if (!$('#dataConfirmModal').length) {
+			$('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">\n\
+                            <div class="modal-dialog" role="document">\n\
+                                <div class="modal-content">\n\
+                                    <div class="modal-header">\n\
+                                        <h3 id="dataConfirmLabel">'+confirmHeader+'</h3>\n\
+                                    </div>\n\
+                                    <div class="modal-body"></div>\n\
+                                    <div class="modal-footer">\n\
+                                        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>\n\
+                                        <a class="btn btn-primary" id="dataConfirmOK">OK</a>\n\
+                                    </div>\n\
+                                </div>\n\
+                            </div></div>');
+		} 
+		$('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+		$('#dataConfirmOK').attr('href', href);
+		$('#dataConfirmModal').modal({show:true});
+		return false;
+	});
 
 });

@@ -71,8 +71,12 @@ abstract class GitCommand {
 
             // executes after the command finishes
             if (!$process->isSuccessful()) {
-                
-                throw new \RuntimeException($process->getErrorOutput());
+                if(trim($process->getErrorOutput()) !== ''){
+                    throw new \RuntimeException($process->getErrorOutput());
+                }else{
+                    //Git returns a false with a reponse. So return as if successfull
+                    return $process->getOutput();
+                }
             }
             
             return $process->getOutput();

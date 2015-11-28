@@ -155,10 +155,14 @@ class GitBranchCommand extends GitCommand {
      * @return Boolean true if valid branch name
      */
     public function validateBranchName($branchName){
-        $output = $this->runCommand(sprintf('(git check-ref-format "refs/heads/%s");echo -e "\n$?"',$branchName));
-
-        if(trim($output) == 1){
-            return false;
+        if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
+             return true;
+        } else {
+           $output = $this->runCommand(sprintf('(git check-ref-format "refs/heads/%s");echo -e "\n$?"',$branchName));
+           
+            if(trim($output) == 1){
+                return false;
+            }
         }
 
         return true;
