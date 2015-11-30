@@ -58,6 +58,7 @@ class UserManagementController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $user->setEnabled('true');
             $userManager->updateUser($user);
 
             $this->get('session')->getFlashBag()->add('notice', 'A new user has been created');
