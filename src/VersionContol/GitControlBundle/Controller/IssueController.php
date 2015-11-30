@@ -51,7 +51,7 @@ class IssueController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1)/*page number*/,
-            5/*limit per page*/
+            15/*limit per page*/
         );
 
     
@@ -284,6 +284,58 @@ class IssueController extends Controller
 
         return $this->redirect($this->generateUrl('issue'));
     }
+    
+    /**
+     * Displays a form to edit an existing Issue entity.
+     *
+     * @Route("/{id}/close", name="issue_close")
+     * @Method("GET")
+     */
+    public function closeAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $issue = $em->getRepository('VersionContolGitControlBundle:Issue')->find($id);
+
+        if (!$issue) {
+            throw $this->createNotFoundException('Unable to find Issue entity.');
+        }
+        
+        $issue->setClosed();
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('notice'
+                ,"Issue #".$issue->getId()." has been closed");
+        
+        return $this->redirect($this->generateUrl('issues', array('id' => $issue->getProject()->getId())));
+    }
+    
+     /**
+     * Displays a form to edit an existing Issue entity.
+     *
+     * @Route("/{id}/open", name="issue_open")
+     * @Method("GET")
+     */
+    public function openAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $issue = $em->getRepository('VersionContolGitControlBundle:Issue')->find($id);
+
+        if (!$issue) {
+            throw $this->createNotFoundException('Unable to find Issue entity.');
+        }
+        
+        $issue->setOpen();
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('notice'
+                ,"Issue #".$issue->getId()." has been opened");
+        
+        return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
+
+        
+    }
 
     /**
      * Creates a form to delete a Issue entity by id.
@@ -313,26 +365,34 @@ class IssueController extends Controller
     public function createCommentAction(Request $request)
     {
         $entity = new IssueComment();
-        $form = $this->createCommentForm($entity);
-        $form->handleRequest($request);
+        $commentForm = $this->createCommentForm($entity);
+        $commentForm->handleRequest($request);
 
-        if ($form->isValid()) {
+        if ($commentForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
             
             //Set User
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $entity->setVerUser($user);
             
+            if($commentForm->get('createClose')->isClicked()){
+                $entity->getIssue()->setClosed();
+            }
+            
             $em->persist($entity);
             $em->flush();
 
             return $this->redirect($this->generateUrl('issue_show', array('id' => $entity->getIssue()->getId())));
         }
+        
+        $deleteForm = $this->createDeleteForm($entity->getIssue()->getId());
 
         return array(
-            'entity' => $entity,
-            'form'   => $form->createView(),
-            'project'   => $entity->getIssue()->getProject(),
+            'entity'      => $entity->getIssue(),
+            'delete_form' => $deleteForm->createView(),
+            'project' => $entity->getIssue()->getProject(),
+            'comment_form' => $commentForm->createView(),
+
         );
     }
     
@@ -350,7 +410,8 @@ class IssueController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('create', 'submit', array('label' => 'Create'));
+        $form->add('createClose', 'submit', array('label' => 'Create & Close'));
 
         return $form;
     }

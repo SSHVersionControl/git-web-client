@@ -451,5 +451,37 @@ class Issue
             $this->setClosedAt(new \DateTime());
         }
     }
+    
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return Issue
+     */
+    public function setClosed()
+    {
+        $this->status = 'closed';
+
+        return $this;
+    }
+    
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return Issue
+     */
+    public function setOpen()
+    {
+        $this->status = 'open';
+
+        return $this;
+    }
+    
+    public function isClosed(){
+        return ($this->status === 'closed')?true:false;
+    }
 
 }

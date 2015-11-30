@@ -33,7 +33,12 @@
                     </h3>
                  </div>
                  <div class="col-lg-4 text-right">
-                     <a href="{{ path('issue_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
+                    {% if(entity.closed)%}
+                        <a href="{{ path('issue_open',{ 'id': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Re-Open</a>
+                    {% else %}
+                        <a href="{{ path('issue_close',{ 'id': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
+                    {% endif %}
+                     
                      <a href="{{ path('issue_edit',{ 'id': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-edit fa-fw"></i>Edit</a>
                      <a href="{{ path('issue_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Issue</a>
                  </div>
@@ -83,7 +88,25 @@
             <i class="fa fa-comment fa-fw"></i>Leave a comment
         </div>
         <div class="panel-body">
-            {{ form(comment_form) }}
+
+            {{ form_start(comment_form,{ 'attr': { 'class': 'form'}}) }}
+
+                {{ form_errors(comment_form) }} 
+
+                <div class="form-group">
+                     {{ form_label(comment_form.comment) }}
+                     {{ form_errors(comment_form.comment) }}
+                     {{ form_widget(comment_form.comment,{ 'attr': { 'class': 'form-control', 'placeholder':'Please enter a comment'}}) }}
+                </div>
+
+                 <div class="row">
+                    <div class="col-md-12">
+                        {{ form_widget(comment_form.create, { 'attr': {'class': ' btn-success submit'} }) }}
+                        {{ form_widget(comment_form.createClose, { 'attr': {'class': ' btn-danger submit'} }) }}
+                    </div>
+                 </div>
+             {{ form_end(comment_form) }}
+                 
         </div>
     </div>
 

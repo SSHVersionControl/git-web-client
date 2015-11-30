@@ -32,7 +32,7 @@ class DefaultController extends Controller
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1)/*page number*/,
-            5/*limit per page*/
+            15/*limit per page*/
         );
 
         return array(
