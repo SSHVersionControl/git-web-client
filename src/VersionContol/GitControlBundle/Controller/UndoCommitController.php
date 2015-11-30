@@ -48,7 +48,7 @@ class UndoCommitController extends Controller
         $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
         $this->get('session')->getFlashBag()->add('notice', $response);
         
-        return $this->redirect($this->generateUrl('project_show', array('id' => $project->getId())));
+        return $this->redirect($this->generateUrl('project_commitlist', array('id' => $project->getId())));
     }
     
     /**
@@ -74,7 +74,7 @@ class UndoCommitController extends Controller
         $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
         $this->get('session')->getFlashBag()->add('notice', $response);
         
-        return $this->redirect($this->generateUrl('project_show', array('id' => $project->getId())));
+        return $this->redirect($this->generateUrl('project_commitlist', array('id' => $project->getId())));
     }
     
     /**

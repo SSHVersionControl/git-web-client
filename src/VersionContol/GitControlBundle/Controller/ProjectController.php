@@ -82,7 +82,7 @@ class ProjectController extends Controller
             $em->persist($project);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('project_show', array('id' => $project->getId())));
+            return $this->redirect($this->generateUrl('project_commitlist', array('id' => $project->getId())));
         }
 
         return array(
