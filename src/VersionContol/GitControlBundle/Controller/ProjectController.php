@@ -90,59 +90,7 @@ class ProjectController extends Controller
             'form'   => $form->createView(),
         );
     }
-    
-    /**
-     * Creates a new Project entity.
-     *
-     * @Route("/{id}", name="project_commit")
-     * @Method("POST")
-     * @Template("VersionContolGitControlBundle:Project:show.html.twig")
-     */
-    public function commitAction(Request $request,$id)
-    {
-        $em = $this->getDoctrine()->getManager();
 
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        //Checks Permission to project
-        $this->checkProjectAuthorization($project,'EDIT');
-        
-        $comment = $this->get('request')->request->get('comment');
-        if(!trim($comment)){
-            throw $this->createNotFoundException('Please add comment');
-        }
-        
-        $selectedFiles = $this->get('request')->request->get('files');
-        if($selectedFiles && is_array($selectedFiles) && ($selectedFiles) > 0){
-
-            $gitCommands = $this->get('version_control.git_command')->setProject($project);
-            
-            //Check if the 
-            $gitStatusHash = $gitCommands->getStatusHash();
-            $statusHash = $this->get('request')->request->get('statushash');
-            if($gitStatusHash !== $statusHash){
-                throw new \Exception('The git status has changed. Please refresh the page and retry the commit');
-            }
-            //$gitCommands = new GitCommands($gitPath);
-            $gitCommands->stageFiles($selectedFiles);
-            
-            $gitCommands->commit($comment);
-            
-            $this->get('session')->getFlashBag()->add('notice'
-                , count($selectedFiles)." files have been committed");
-        }else{
-            //Error need to select at least on file
-        }
-        
-        return $this->redirect($this->generateUrl('project_show', array('id' => $project->getId())));
-
-    }
-    
-   
 
     /**
      * Creates a form to create a Project entity.
@@ -181,40 +129,6 @@ class ProjectController extends Controller
         );
     }
 
-    /**
-     * Finds and displays a Project entity.
-     *
-     * @Route("/{id}", name="project_show")
-     * @Method("GET")
-     * @Template()
-     */
-    public function showAction($id)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($project,'EDIT');
-        
-        //$gitPath = $project->getPath();
-        //$gitCommands = $this->get('version_control.git_command')->setGitPath($gitPath);
-        $gitCommands = $this->get('version_control.git_command')->setProject($project);
-        
-       $branchName = $gitCommands->getCurrentBranch();
-       $files =  $gitCommands->getFilesToCommit();
-       $statusHash = $gitCommands->getStatusHash();
-       
-        return array(
-            'project'      => $project,
-            'branchName' => $branchName,
-            'files' => $files,
-            'statusHash' => $statusHash
-        );
-    }
 
     
     /**

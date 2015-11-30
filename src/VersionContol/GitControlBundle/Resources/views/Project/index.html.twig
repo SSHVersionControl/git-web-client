@@ -16,14 +16,14 @@
         <tbody>
         {% for project in pagination %}
             <tr>
-                <td><a href="{{ path('project_show', { 'id': project.id }) }}">{{ project.title }}</a></td>
+                <td><a href="{{ path('project_commitlist', { 'id': project.id }) }}">{{ project.title }}</a></td>
                 <td>{{ project.description }}</td>
                 <td>{{ project.path }}</td>
                 <td>{{ project.id }}</td>
                 <td>
                 <ul>
                     <li>
-                        <a href="{{ path('project_show', { 'id': project.id }) }}">show</a>
+                        <a href="{{ path('project_commitlist', { 'id': project.id }) }}">show</a>
                     </li>
                     <li>
                         <a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a>

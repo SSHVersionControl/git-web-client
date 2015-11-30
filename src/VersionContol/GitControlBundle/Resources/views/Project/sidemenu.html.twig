@@ -10,8 +10,8 @@
         </li>
         
         {% if (is_granted('EDIT', project)) %}
-            <li {% if app.request.attributes.get('_route') == 'project_show' %}class="active"{% endif %}>
-                <a href="{{ path('project_show', { 'id': project.id }) }}"><i class="fa fa-fw fa-history"></i>Commit</a>
+            <li {% if app.request.attributes.get('_route') == 'project_commitlist' %}class="active"{% endif %}>
+                <a href="{{ path('project_commitlist', { 'id': project.id }) }}"><i class="fa fa-fw fa-history"></i>Commit</a>
             </li>
         {% endif%}
         {% if (is_granted('EDIT', project)) %}

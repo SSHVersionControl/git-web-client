@@ -1,0 +1,117 @@
+{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block topcontent %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %} 
+
+{% block content -%}
+    <h1 class="page-header">
+       Commit
+      <small>
+          {{ project.title }} 
+      </small>
+          {% if (is_granted('MASTER', project)) %}
+          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
+        {% endif %}
+    </h1>
+        <ol class="breadcrumb">
+        <li>
+            <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file"></i> Projects
+        </li>
+    </ol>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
+        </div>
+        <div class="panel-body">
+
+            <form action="{{ path('project_commit', { 'id': project.id }) }}" method="POST" class="commit">
+                <input type="hidden" name="statushash" value="{{statusHash}}" />
+                <div class="list-group">
+                {% for file in files %}
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-1">
+                                    <label>
+                                      <input type="checkbox" name="files[]" value="{{file.path1}}" class="commit-file"> 
+                                    </label>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="index-status">
+                                {% include 'VersionContolGitControlBundle::Partials/gitStatus.html.twig' with {'status': file.indexStatus} %}
+                                </div>
+                                <div class="work-tree-status">
+                                {% include 'VersionContolGitControlBundle::Partials/gitStatus.html.twig' with {'status': file.workTreeStatus} %}
+                                </div>
+                            </div>
+                            <div class="col-md-9">
+                                <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff">
+                                    {{file.path1}}
+                                    {% if(file.path2) %}
+                                        -> {{file.path2}}
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                {% endfor %}
+                </div>
+                {% if(files|length > 0)%}
+                        
+                    <div class="form-group">
+                        <button id="commit-select-all" type="button" class="btn btn-default btn-sm" >Select All</button>
+                        <button id="commit-deselect-all" type="button" class="btn btn-default btn-sm" >Deselect All</button>
+                    </div>
+                    <div class="form-group">
+                        <textarea class="form-control" rows="3" name="comment" placeholder="Enter a commit message here" id="commit"></textarea>
+                    </div>
+                    <div class="text-right">
+                        <a href="{{ path('home') }}" class="btn btn-default" >Cancel</a>
+                        {% if( files|length > 0)%}
+                            <button type="submit" class="btn btn-success submit" data-loading-text="Committing...">Commit</button>
+                        {% else%}
+                            <button type="submit" class="btn btn-default disabled" disabled>Commit</button>
+                        {% endif%}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">There is nothing to commit in this branch</div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+            
+    <!-- Modal -->
+    <div class="modal fade" id="diff" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">Loading...</div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+            
+
+{% endblock %}
+
+ {% block footerJS %}
+     <script>
+     $(function(){
+        $(document).on("hidden.bs.modal", ".modal:not(.local-modal)", function (e) {
+            $(e.target).removeData("bs.modal").find(".modal-content").empty().html('<div class="modal-body">Loading...</div>');
+        });
+     });
+     </script>
+     
+{% endblock %} 
