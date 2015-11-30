@@ -58,13 +58,15 @@ class ProjectCommitController extends BaseProjectController
        $branchName = $this->gitCommands->getCurrentBranch();
 
        $files =  $this->gitCommands->getFilesToCommit();
-       $statusHash = $this->gitCommands->getStatusHash();
+       //$statusHash = $this->gitCommands->getStatusHash();
+       
+       $commitForm = $this->createCommitForm();
        
         return array(
             'project'      => $this->project,
             'branchName' => $branchName,
             'files' => $files,
-            'statusHash' => $statusHash
+            'commit_form' => $commitForm->createView()
         );
     }
 
@@ -80,32 +82,42 @@ class ProjectCommitController extends BaseProjectController
     {
         $this->initAction($id);
         
-        $comment = $this->get('request')->request->get('comment');
-        if(!trim($comment)){
-            throw $this->createNotFoundException('Please add comment');
-        }
-        
-        $selectedFiles = $this->get('request')->request->get('files');
-        if($selectedFiles && is_array($selectedFiles) && ($selectedFiles) > 0){
+        $commitForm = $this->createCommitForm();
+        $commitForm->handleRequest($request);
 
-            //Check if the 
-            $gitStatusHash = $this->gitCommands->getStatusHash();
-            $statusHash = $this->get('request')->request->get('statushash');
-            if($gitStatusHash !== $statusHash){
-                throw new \Exception('The git status has changed. Please refresh the page and retry the commit');
+        if ($commitForm->isValid()) {
+            $data = $commitForm->getData();
+            $comment = $data['comment'];
+            $statusHash = $data['statushash'];
+       
+            $selectedFiles = $this->get('request')->request->get('files');
+            if($selectedFiles && is_array($selectedFiles) && ($selectedFiles) > 0){
+                //Check if the 
+                $gitStatusHash = $this->gitCommands->getStatusHash();                
+                if($gitStatusHash !== $statusHash){
+                    throw new \Exception('The git status has changed. Please refresh the page and retry the commit');
+                }
+                
+                $this->gitCommands->stageFiles($selectedFiles);
+                $this->gitCommands->commit($comment);
+
+                $this->get('session')->getFlashBag()->add('notice'
+                    , count($selectedFiles)." files have been committed");
+            }else{
+                //Error need to select at least on file
             }
-            //$gitCommands = new GitCommands($gitPath);
-            $this->gitCommands->stageFiles($selectedFiles);
-            
-            $this->gitCommands->commit($comment);
-            
-            $this->get('session')->getFlashBag()->add('notice'
-                , count($selectedFiles)." files have been committed");
-        }else{
-            //Error need to select at least on file
+            return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
         }
         
-        return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
+        $branchName = $this->gitCommands->getCurrentBranch();
+        $files =  $this->gitCommands->getFilesToCommit();
+        
+        return array(
+            'project'      => $this->project,
+            'branchName' => $branchName,
+            'files' => $files,
+            'commit_form' => $commitForm->createView()
+        );
 
     }
     
@@ -130,27 +142,26 @@ class ProjectCommitController extends BaseProjectController
     }
     
     
-    private function createRemoteForm(){
-        $defaultData = array();
+    private function createCommitForm(){
+        $defaultData = array('statushash' => '');
         
         $form = $this->createFormBuilder($defaultData, array(
-            'action' => $this->generateUrl('project_createremote', array('id' => $this->project->getId())),
+            'action' => $this->generateUrl('project_commit', array('id' => $this->project->getId())),
             'method' => 'POST',
         ))
-        ->add('remoteName', 'text', array(
-            'label' => 'Remote Name'
+        ->add('comment', 'textarea', array(
+            'label' => 'Comment'
             ,'required' => false
             ,'constraints' => array(
-                new NotBlank()
+                new NotBlank(array('message'=>'Please add a commit comment.'))
             ))
         )
-        ->add('remoteUrl', 'text', array(
-            'label' => 'Remote Url'
-            ,'required' => false
-            ,'constraints' => array(
+        ->add('statushash', 'hidden', array(
+            'data' => $this->gitCommands->getStatusHash(),
+            'constraints' => array(
                 new NotBlank()
             ))
-        )->add('submit', 'submit', array('label' => 'Add'))
+        )->add('submit', 'submit', array('label' => 'Commit'))
           
         ->getForm();
 
