@@ -14,6 +14,8 @@ use VersionContol\GitControlBundle\Form\IssueEditType;
 use VersionContol\GitControlBundle\Entity\IssueComment;
 use VersionContol\GitControlBundle\Form\IssueCommentType;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 /**
  * Issue controller.
  *
@@ -334,7 +336,35 @@ class IssueController extends Controller
         
         return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
 
+    }
+    
+    /**
+     * Displays a form to edit an existing Issue entity.
+     *
+     * @Route("/hook/", name="issue_hook")
+     * @Method("POST")
+     */
+    public function hookAction()
+    {
+        $request = $this->get('request');
+        //$id = $request->request->get('id');
+
+        /*$em = $this->getDoctrine()->getManager();
+        $issue = $em->getRepository('VersionContolGitControlBundle:Issue')->find($id);
+
+        if (!$issue) {
+            throw $this->createNotFoundException('Unable to find Issue entity.');
+        }
         
+        $issue->setClosed();
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('notice'
+                ,"Issue #".$issue->getId()." has been closed");
+         * 
+         */
+        
+        return new JsonResponse(array('success' => true));
     }
 
     /**
