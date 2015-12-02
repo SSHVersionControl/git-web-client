@@ -929,6 +929,18 @@ class GitCommands
 		}
 		return FALSE;
 	}
+        
+    /**
+     * Gets a commit message
+     * 
+     * @return string
+     */
+    public function getLastMessageLog(){
+        
+        $message = $this->runCommand('git --no-pager log -1 --pretty=%B');
+        
+        return $message;
+    }
 
     
 }

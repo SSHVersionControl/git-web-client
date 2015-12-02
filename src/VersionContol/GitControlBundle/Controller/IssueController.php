@@ -341,28 +341,38 @@ class IssueController extends Controller
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/hook/", name="issue_hook")
-     * @Method("POST")
+     * @Route("/hook/{id}", name="issue_hook")
+     * 
      */
-    public function hookAction()
+    public function hookAction($id)
     {
-        $request = $this->get('request');
-        //$id = $request->request->get('id');
+  
+        $em = $this->getDoctrine()->getManager();
+        $project = $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
 
-        /*$em = $this->getDoctrine()->getManager();
-        $issue = $em->getRepository('VersionContolGitControlBundle:Issue')->find($id);
-
-        if (!$issue) {
-            throw $this->createNotFoundException('Unable to find Issue entity.');
+        if (!$project) {
+            throw $this->createNotFoundException('Unable to find project entity.');
         }
         
-        $issue->setClosed();
-        $em->flush();
+        $this->gitCommands = $this->get('version_control.git_command')->setProject($project);
+        $message = $this->gitCommands->getLastMessageLog();
         
-        $this->get('session')->getFlashBag()->add('notice'
-                ,"Issue #".$issue->getId()." has been closed");
-         * 
-         */
+        //close|closes|closed|fix|fixes|fixed|resolve|resolves|resolved
+        //'/#(\d+)/'
+        $matches = array();
+        if (preg_match('/(close|closes|closed|fix|fixes|fixed|resolve|resolves|resolved) #(\d+)/i', $message, $matches)) {
+            foreach($matches as $issueId){
+                if(is_numeric($issueId)){
+                     $issue = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+                     if($issue){
+                        if($issue->getProject()->getId() === $project->getId()){
+                           $issue->setClosed();
+                        }
+                     }
+                }
+            }
+            $em->flush();
+        }
         
         return new JsonResponse(array('success' => true));
     }

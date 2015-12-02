@@ -41,6 +41,7 @@ security:
                 user_provider: fos_userbundle
 
     access_control:
+        - { path: ^/issue/hook/, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         #- { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
