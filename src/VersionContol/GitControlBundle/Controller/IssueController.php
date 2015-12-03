@@ -14,6 +14,8 @@ use VersionContol\GitControlBundle\Form\IssueEditType;
 use VersionContol\GitControlBundle\Entity\IssueComment;
 use VersionContol\GitControlBundle\Form\IssueCommentType;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 /**
  * Issue controller.
  *
@@ -334,7 +336,45 @@ class IssueController extends Controller
         
         return $this->redirect($this->generateUrl('issue_show', array('id' => $issue->getId())));
 
+    }
+    
+    /**
+     * Displays a form to edit an existing Issue entity.
+     *
+     * @Route("/hook/{id}", name="issue_hook")
+     * 
+     */
+    public function hookAction($id)
+    {
+  
+        $em = $this->getDoctrine()->getManager();
+        $project = $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+
+        if (!$project) {
+            throw $this->createNotFoundException('Unable to find project entity.');
+        }
         
+        $this->gitCommands = $this->get('version_control.git_command')->setProject($project);
+        $message = $this->gitCommands->getLastMessageLog();
+        
+        //close|closes|closed|fix|fixes|fixed|resolve|resolves|resolved
+        //'/#(\d+)/'
+        $matches = array();
+        if (preg_match('/(close|closes|closed|fix|fixes|fixed|resolve|resolves|resolved) #(\d+)/i', $message, $matches)) {
+            foreach($matches as $issueId){
+                if(is_numeric($issueId)){
+                     $issue = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+                     if($issue){
+                        if($issue->getProject()->getId() === $project->getId()){
+                           $issue->setClosed();
+                        }
+                     }
+                }
+            }
+            $em->flush();
+        }
+        
+        return new JsonResponse(array('success' => true));
     }
 
     /**
