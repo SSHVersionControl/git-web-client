@@ -160,8 +160,23 @@ class ProjectCommitController extends BaseProjectController
             'data' => $this->gitCommands->getStatusHash(),
             'constraints' => array(
                 new NotBlank()
-            ))
-        )->add('submit', 'submit', array('label' => 'Commit'))
+            )))
+        ->add('files', 'choice', array(
+            'choices' => $this->gitCommands->getFilesToCommit(),
+            'multiple'     => true,
+            'expanded'  => true,
+            'required'  => false,
+            'choices_as_values' => true,
+            'choice_label' => function($gitFile) {
+                    return $gitFile->getPath1();
+                },
+             'choice_value' => function($gitFile) {
+                    return $gitFile->getPath1();
+                },
+            'constraints' => array(
+                new NotBlank()
+            )))       
+        ->add('submit', 'submit', array('label' => 'Commit'))
           
         ->getForm();
 
