@@ -56,9 +56,7 @@ class ProjectCommitController extends BaseProjectController
        $this->initAction($id);
 
        $branchName = $this->gitCommands->getCurrentBranch();
-
        $files =  $this->gitCommands->getFilesToCommit();
-       //$statusHash = $this->gitCommands->getStatusHash();
        
        $commitForm = $this->createCommitForm();
        
@@ -89,9 +87,16 @@ class ProjectCommitController extends BaseProjectController
             $data = $commitForm->getData();
             $comment = $data['comment'];
             $statusHash = $data['statushash'];
-       
-            $selectedFiles = $this->get('request')->request->get('files');
-            if($selectedFiles && is_array($selectedFiles) && ($selectedFiles) > 0){
+            $selectedGitFiles = $data['files'];
+     
+            //$selectedFiles = $this->get('request')->request->get('files');
+            
+            if($selectedGitFiles && is_array($selectedGitFiles) && ($selectedGitFiles) > 0){
+                $selectedFiles = array();
+                foreach($selectedGitFiles as $gitFile){
+                    $selectedFiles[] = $gitFile->getPath1();
+                }
+                
                 //Check if the 
                 $gitStatusHash = $this->gitCommands->getStatusHash();                
                 if($gitStatusHash !== $statusHash){

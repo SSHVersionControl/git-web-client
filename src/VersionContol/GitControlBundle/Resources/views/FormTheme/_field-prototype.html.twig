@@ -1,3 +1,4 @@
+
 {% block collection_widget %}
 {% spaceless %}
     <div class="wrapper-collection">
@@ -161,4 +162,42 @@
         {% endif %}
     {% endspaceless %}
 {% endblock form_errors %}
-        
+
+{% block _form_files_widget -%}
+    <div class="list-group">
+        {%- for n,child in form %}
+            {% set file = form.vars.choices[n].data %}
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-md-1">
+                            <label>
+                              {{- form_widget(child) -}} 
+                            </label>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="index-status">
+                        {% include 'VersionContolGitControlBundle::Partials/gitStatus.html.twig' with {'status': file.indexStatus} %}
+                        </div>
+                        <div class="work-tree-status">
+                        {% include 'VersionContolGitControlBundle::Partials/gitStatus.html.twig' with {'status': file.workTreeStatus} %}
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff">
+                            {{file.path1}}
+                            {% if(file.path2) %}
+                                -> {{file.path2}}
+                            {% endif %}
+                             
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div> 
+
+{%- endblock _form_files_widget %}  
+
+{%- block checkbox_widget -%}
+    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} class="commit-file"/>
+{%- endblock checkbox_widget -%}

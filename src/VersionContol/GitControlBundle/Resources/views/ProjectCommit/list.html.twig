@@ -1,3 +1,5 @@
+{% form_theme commit_form 'VersionContolGitControlBundle::FormTheme/_field-prototype.html.twig' %}
+
 {% extends "VersionContolGitControlBundle::layout.html.twig" %}
 
 {% block sidemenu -%}
@@ -32,40 +34,16 @@
             <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
         </div>
         <div class="panel-body">
+            
+            
+                        
             {% if(files|length > 0)%}
                 {{ form_start(commit_form,{ 'attr': { 'class': 'form'}}) }}
                     {{ form_errors(commit_form) }} 
 
-                    <div class="list-group">
-                        {% for file in files %}
-
-                            <div class="list-group-item">
-                                <div class="row">
-                                    <div class="col-md-1">
-                                            <label>
-                                              <input type="checkbox" name="files[]" value="{{file.path1}}" class="commit-file"> 
-                                            </label>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="index-status">
-                                        {% include 'VersionContolGitControlBundle::Partials/gitStatus.html.twig' with {'status': file.indexStatus} %}
-                                        </div>
-                                        <div class="work-tree-status">
-                                        {% include 'VersionContolGitControlBundle::Partials/gitStatus.html.twig' with {'status': file.workTreeStatus} %}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff">
-                                            {{file.path1}}
-                                            {% if(file.path2) %}
-                                                -> {{file.path2}}
-                                            {% endif %}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
+                    {{ form_label(commit_form.files) }}
+                    {{ form_errors(commit_form.files) }}
+                    {{ form_widget(commit_form.files,{ 'attr': { 'class': 'form-control'}, 'project':project}) }}
                         
                     <div class="form-group">
                         <button id="commit-select-all" type="button" class="btn btn-default btn-sm" >Select All</button>
