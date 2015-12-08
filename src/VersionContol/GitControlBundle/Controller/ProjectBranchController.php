@@ -42,6 +42,7 @@ class ProjectBranchController extends BaseProjectController
      * @var Project 
      */
     protected $project;
+   
     
     /**
      * List Branches. Not sure how to list remote and local branches.
@@ -54,35 +55,13 @@ class ProjectBranchController extends BaseProjectController
     {
         
         $this->initAction($id);
+        $this->initListingView();
         
-        
-        $branchName = $this->gitBranchCommands->getCurrentBranch();
-        //Remote Server choice 
-        $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
-        /*$gitBranches = $gitLocalBranches;
-        $gitAllBranches = $this->gitBranchCommands->getBranches();
-        foreach ($gitAllBranches as $branch){
-            if(strpos($branch,'/') !== false){
-                $branchParts = explode('/',$branch);
-                if(!in_array($branchParts[1], $gitLocalBranches)){
-                    $gitBranches[] = $branch;
-                }
-            }
-        }*/
-        
-        $gitLogs = $this->gitCommands->getLog(1,$branchName);
-
         $form = $this->createNewBranchForm($this->project);
-        
-
-        
-        return array(
-            'project'      => $this->project,
-            'branches' => $gitLocalBranches,
-            'branchName' => $branchName,
+  
+        return array_merge($this->viewVariables, array(
             'form' => $form->createView(),
-            'gitLogs' => $gitLogs
-        );
+        ));
     }
     
     
@@ -117,17 +96,12 @@ class ProjectBranchController extends BaseProjectController
  
         }
         
-        $branchName = $this->gitBranchCommands->getCurrentBranch();
-        $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
-        $gitLogs = $this->gitCommands->getLog(1,$branchName);
+        $this->initListingView();
 
-        return array(
-           'project'      => $this->project,
-            'branches' => $gitLocalBranches,
-            'branchName' => $branchName,
+        return array_merge($this->viewVariables, array(
             'form' => $form->createView(),
-            'gitLogs' => $gitLogs
-        );
+
+        ));
     }
     
     /**
@@ -273,6 +247,8 @@ class ProjectBranchController extends BaseProjectController
     
     
     
+    
+    
     /**
     * Creates a form to edit a Project entity.
     *
@@ -307,6 +283,69 @@ class ProjectBranchController extends BaseProjectController
     }
     
     /**
+     * Pulls git repository from remote to local.
+     *
+     * @Route("/mergebranch/{id}/{branchName}", name="project_mergebranch" , requirements={"branchName"=".+"})
+     * @Method("GET")
+     * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
+     */
+    public function mergeBranchAction($id,$branchName){
+        
+        $this->initAction($id);
+        
+        $response = $this->gitBranchCommands->mergeBranch($branchName);
+            
+        $this->get('session')->getFlashBag()->add('notice', $response);
+            
+        return $this->redirect($this->generateUrl('project_branches', array('id' => $id)));
+
+    }
+    
+    private function getBranchesToMerge(){
+        
+        $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
+        $currentbranchName = $this->gitBranchCommands->getCurrentBranch();
+        $mergeBranches = array();
+        foreach($gitLocalBranches as $branchName){
+            if($branchName !== $currentbranchName){
+                $mergeBranches[$branchName] = $branchName;
+            }
+        }
+        
+        return $mergeBranches;
+    }
+    
+    /**
+    * Creates a form to edit a Project entity.
+    *
+    * @param Project $entity The entity
+    *
+    * @return \Symfony\Component\Form\Form The form
+    */
+    private function createMergeBranchForm($project,$branches,$formAction = 'project_mergebranch')
+    {
+
+        $defaultData = array();
+        $form = $this->createFormBuilder($defaultData, array(
+                'action' => $this->generateUrl($formAction, array('id' => $project->getId())),
+                'method' => 'POST',
+            ))
+            ->add('branch', 'choice', array(
+                'choices' => $branches
+                ,'label' => 'Branch Name'
+                ,'required' => true
+                ,'choices_as_values' => true
+                ,'constraints' => array(
+                    new NotBlank()
+                ))
+            )   
+            ->getForm();
+
+        $form->add('submit', 'submit', array('label' => 'Merge'));
+        return $form;
+    }
+    
+    /**
      * 
      * @param integer $id
      */
@@ -323,6 +362,25 @@ class ProjectBranchController extends BaseProjectController
         
         $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
         $this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
+        
+        $this->viewVariables = array_merge($this->viewVariables, array(
+            'project'      => $this->project,
+            'branchName' => $this->gitBranchCommands->getCurrentBranch(),
+            ));
+    }
+    
+    protected function initListingView(){
+        
+        $branchName = $this->gitBranchCommands->getCurrentBranch();
+        //Local Server choice 
+        $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
+        
+        $gitLogs = $this->gitCommands->getLog(1,$branchName);
+
+        $this->viewVariables = array_merge($this->viewVariables, array(
+            'branches' => $gitLocalBranches,
+            'gitLogs' => $gitLogs
+        ));
     }
     
     

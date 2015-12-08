@@ -184,4 +184,20 @@ class ProjectCommitController extends BaseProjectController
         return $form;
     }
     
+    /**
+     * Aborts a merge action. Should only be called after a merge.
+     *
+     * @Route("/about-merge/{id}", name="project_commit_abortmerge")
+     * @Method("GET")
+     */
+    public function abortMergeAction($id){
+        
+        $this->initAction($id);
+        
+        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
+        
+        return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
+        
+    }
+    
 }

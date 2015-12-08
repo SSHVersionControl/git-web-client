@@ -23,6 +23,12 @@ abstract class BaseProjectController extends Controller{
     
     
     /**
+     * Array of variables the will be past to the twig templating engine
+     * @var array 
+     */
+    protected $viewVariables = array();
+    
+    /**
      * 
      * @param VersionContol\GitControlBundle\Entity\Project $project
      * @throws AccessDeniedException

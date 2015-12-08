@@ -67,7 +67,7 @@
                                         <a href="{{ path('project_checkoutbranch', { 'id': project.id, 'branchName': branch}) }}" title="Checkout this branch" class="btn btn-default btn-sm">Checkout</a>
                                         
                                     {% endif %}
-                                    <a href="" title="Merge this branch" class="btn btn-default btn-sm">Merge</a>
+                                    <a href="{{ path('project_mergebranch', { 'id': project.id, 'branchName': branch}) }}" title="Merge this branch" class="btn btn-default btn-sm" data-confirm="Are you sure you wish to merge '{{branch}}' into '{{branchName}}'" data-confirm-header="Confirm Merge">Merge</a>
                                     {% if(branch != branchName|trim) %}
                                         <a href="{{ path('project_deletebranch', { 'id': project.id, 'branchName': branch}) }}" title="Delete this branch" class="btn btn-default btn-sm btn-danger" data-confirm="Are you sure you wish to delete this branch?" data-confirm-header="Confirm Delete">Delete</a>
                                     {% endif %}
@@ -137,5 +137,5 @@
           </div>
       </div>
     </div>
-
+          
 {% endblock %}

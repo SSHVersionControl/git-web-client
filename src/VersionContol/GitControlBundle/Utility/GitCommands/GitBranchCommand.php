@@ -230,6 +230,7 @@ class GitBranchCommand extends GitCommand {
     
     /**
      * Merges current branch with branch of name
+     * Merge the specified branch into the current branch, but always generate a merge commit (even if it was a fast-forward merge). This is useful for documenting all merges that occur in your repository.
      * 
      * @param string $branchName Name of branch to delete
      * @return string command response
@@ -239,8 +240,42 @@ class GitBranchCommand extends GitCommand {
         if($branchName === $currentBranch){
             throw new \Exception('You cannot merge a branch with itself. Please checkout a different branch before trying to merge.');
         }
-        return $this->runCommand(sprintf('git merge %s 2>&1',  escapeshellarg($branchName)));
+        return $this->runCommand(sprintf('git merge --no-ff %s 2>&1',  escapeshellarg($branchName)));
     }
+    
+    /**
+     * This attempts to reset your working copy to whatever state it was in before the merge. That means that it should restore any uncommitted changes 
+     * from before the merge, although it cannot always do so reliably. 
+     * Generally you shouldn't merge with uncommitted changes anyway.
+     * 
+     * Prior to version 1.7.4:
+     *
+     *   git reset --merge
+     *   This is older syntax but does the same as the above.
+     *
+     *   Prior to version 1.6.2:
+     *
+     *   git reset --hard
+     *   which removes all uncommitted changes, including the uncommitted merge. Sometimes this behaviour is useful even in newer versions of Git that support the above commands.
+     * 
+     * @param string $branchName Name of branch to delete
+     * @return string command response
+     */
+    public function abortMerge(){
+        
+        return $this->runCommand('git merge --abort 2>&1');
+    }
+    
+    /**
+     * List any files 
+     * @return type
+     */
+    public function listConflictedFiles(){
+        
+        return $this->splitOnNewLine($this->runCommand('git diff --name-only --diff-filter=U 2>&1'));
+    }
+    
+    
     
     /**
      * Fetch all branches from all remote repositories. 

@@ -70,7 +70,7 @@ class UndoCommitController extends Controller
         $this->checkProjectAuthorization($project,'OPERATOR');
 
         $gitCommands = $this->get('version_control.git_command')->setProject($project);
-        $response = $gitCommands->undoCommit();
+        $response = $gitCommands->undoCommitHard();
         $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
         $this->get('session')->getFlashBag()->add('notice', $response);
         
