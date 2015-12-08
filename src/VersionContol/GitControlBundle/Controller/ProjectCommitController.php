@@ -58,7 +58,8 @@ class ProjectCommitController extends BaseProjectController
        $branchName = $this->gitCommands->getCurrentBranch();
        $files =  $this->gitCommands->getFilesToCommit();
        
-       $commitForm = $this->createCommitForm();
+       $defaultData = array('statushash' => $this->gitCommands->getStatusHash());
+       $commitForm = $this->createCommitForm($defaultData);
        
         return array(
             'project'      => $this->project,
@@ -147,8 +148,8 @@ class ProjectCommitController extends BaseProjectController
     }
     
     
-    private function createCommitForm(){
-        $defaultData = array('statushash' => '');
+    private function createCommitForm($defaultData = array()){
+        //$defaultData = array('statushash' => '');
         
         $form = $this->createFormBuilder($defaultData, array(
             'action' => $this->generateUrl('project_commit', array('id' => $this->project->getId())),
@@ -162,7 +163,7 @@ class ProjectCommitController extends BaseProjectController
             ))
         )
         ->add('statushash', 'hidden', array(
-            'data' => $this->gitCommands->getStatusHash(),
+            //'data' => $this->gitCommands->getStatusHash(),
             'constraints' => array(
                 new NotBlank()
             )))
@@ -186,6 +187,22 @@ class ProjectCommitController extends BaseProjectController
         ->getForm();
 
         return $form;
+    }
+    
+    /**
+     * Aborts a merge action. Should only be called after a merge.
+     *
+     * @Route("/about-merge/{id}", name="project_commit_abortmerge")
+     * @Method("GET")
+     */
+    public function abortMergeAction($id){
+        
+        $this->initAction($id);
+        
+        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
+        
+        return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
+        
     }
     
 }
