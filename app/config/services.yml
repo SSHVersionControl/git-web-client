@@ -86,3 +86,16 @@ services:
             - @fos_user.user_manager
             - {github:githubId}
             
+    version_control.validator.status_hash_validator:
+        class: VersionContol\GitControlBundle\Validator\Constraints\StatusHashValidator
+        tags:
+            - { name: validator.constraint_validator, alias: status_hash_validator }
+        arguments: 
+            - @version_control.git_status
+        
+    version_control.form.field.entity_hidden:
+        class: VersionContol\GitControlBundle\Form\Field\EntityHiddenType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+        - { name: form.type, alias: entity_hidden }
+            

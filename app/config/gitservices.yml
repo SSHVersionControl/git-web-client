@@ -16,3 +16,7 @@ services:
     version_control.git_branch:
         class:  VersionContol\GitControlBundle\Utility\GitCommands\GitBranchCommand
         parent: version_control.git_command_base
+        
+    version_control.git_status:
+        class:  VersionContol\GitControlBundle\Utility\GitCommands\GitStatusCommand
+        parent: version_control.git_command_base

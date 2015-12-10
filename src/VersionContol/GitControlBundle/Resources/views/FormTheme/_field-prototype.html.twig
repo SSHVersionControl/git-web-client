@@ -163,7 +163,7 @@
     {% endspaceless %}
 {% endblock form_errors %}
 
-{% block _form_files_widget -%}
+{% block _versioncontol_gitcontrolbundle_commit_files_widget -%}
     <div class="list-group">
         {%- for n,child in form %}
             {% set file = form.vars.choices[n].data %}
@@ -196,7 +196,7 @@
         {% endfor %}
     </div> 
 
-{%- endblock _form_files_widget %}  
+{%- endblock _versioncontol_gitcontrolbundle_commit_files_widget %}  
 
 {%- block checkbox_widget -%}
     <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} class="commit-file"/>

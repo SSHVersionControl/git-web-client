@@ -20,6 +20,12 @@ class SshDetailsValidator extends ConstraintValidator
         $this->sshProcess = $sshProcess;
     }
     
+    /**
+     * Validates Project Enviroment
+     * 
+     * @param VersionContol\GitControlBundle\Entity\ProjectEnvironment $projectEnvironment
+     * @param Constraint $constraint
+     */
     public function validate($projectEnvironment, Constraint $constraint)
     {
         if($projectEnvironment->getSsh() === true){

@@ -15,6 +15,8 @@ use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
+use VersionContol\GitControlBundle\Form\CommitType;
+use VersionContol\GitControlBundle\Entity\Commit;
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
 /**
@@ -58,8 +60,11 @@ class ProjectCommitController extends BaseProjectController
        $branchName = $this->gitCommands->getCurrentBranch();
        $files =  $this->gitCommands->getFilesToCommit();
        
-       $defaultData = array('statushash' => $this->gitCommands->getStatusHash());
-       $commitForm = $this->createCommitForm($defaultData);
+       $commitEntity = new Commit();
+       $commitEntity->setProject($this->project);
+       $commitEntity->setStatusHash($this->gitCommands->getStatusHash());
+       
+       $commitForm = $this->createCommitForm($commitEntity);
        
         return array(
             'project'      => $this->project,
@@ -81,37 +86,26 @@ class ProjectCommitController extends BaseProjectController
     {
         $this->initAction($id);
         
-        $commitForm = $this->createCommitForm();
+        $commitEntity = new Commit();
+        $commitEntity->setProject($this->project);
+        $commitForm = $this->createCommitForm($commitEntity);
         $commitForm->handleRequest($request);
 
         if ($commitForm->isValid()) {
-            $data = $commitForm->getData();
-            $comment = $data['comment'];
-            $statusHash = $data['statushash'];
-            $selectedGitFiles = $data['files'];
+           
+            $selectedGitFiles = $commitEntity->getFiles();
      
-            //$selectedFiles = $this->get('request')->request->get('files');
-            
-            if($selectedGitFiles && is_array($selectedGitFiles) && ($selectedGitFiles) > 0){
-                $selectedFiles = array();
-                foreach($selectedGitFiles as $gitFile){
-                    $selectedFiles[] = $gitFile->getPath1();
-                }
-                
-                //Check if the 
-                $gitStatusHash = $this->gitCommands->getStatusHash();                
-                if($gitStatusHash !== $statusHash){
-                    throw new \Exception('The git status has changed. Please refresh the page and retry the commit');
-                }
-                
-                $this->gitCommands->stageFiles($selectedFiles);
-                $this->gitCommands->commit($comment);
-
-                $this->get('session')->getFlashBag()->add('notice'
-                    , count($selectedFiles)." files have been committed");
-            }else{
-                //Error need to select at least on file
+            $selectedFiles = array();
+            foreach($selectedGitFiles as $gitFile){
+                $selectedFiles[] = $gitFile->getPath1();
             }
+
+            $this->gitCommands->stageFiles($selectedFiles);
+            $this->gitCommands->commit($commitEntity->getComment());
+
+            $this->get('session')->getFlashBag()->add('notice'
+                , count($selectedFiles)." files have been committed");
+
             return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
         }
         
@@ -125,8 +119,7 @@ class ProjectCommitController extends BaseProjectController
             'commit_form' => $commitForm->createView()
         );
 
-    }
-    
+    } 
     
     /**
      * 
@@ -148,45 +141,18 @@ class ProjectCommitController extends BaseProjectController
     }
     
     
-    private function createCommitForm($defaultData = array()){
-        //$defaultData = array('statushash' => '');
-        
-        $form = $this->createFormBuilder($defaultData, array(
+    private function createCommitForm($commitEntity){
+ 
+        $fileChoices = $this->gitCommands->getFilesToCommit();
+        $form = $this->createForm((new CommitType())->setFileChoices($fileChoices), $commitEntity, array(
             'action' => $this->generateUrl('project_commit', array('id' => $this->project->getId())),
             'method' => 'POST',
-        ))
-        ->add('comment', 'textarea', array(
-            'label' => 'Comment'
-            ,'required' => false
-            ,'constraints' => array(
-                new NotBlank(array('message'=>'Please add a commit comment.'))
-            ))
-        )
-        ->add('statushash', 'hidden', array(
-            //'data' => $this->gitCommands->getStatusHash(),
-            'constraints' => array(
-                new NotBlank()
-            )))
-        ->add('files', 'choice', array(
-            'choices' => $this->gitCommands->getFilesToCommit(),
-            'multiple'     => true,
-            'expanded'  => true,
-            'required'  => false,
-            'choices_as_values' => true,
-            'choice_label' => function($gitFile) {
-                    return $gitFile->getPath1();
-                },
-             'choice_value' => function($gitFile) {
-                    return $gitFile->getPath1();
-                },
-            'constraints' => array(
-                new NotBlank()
-            )))       
-        ->add('submit', 'submit', array('label' => 'Commit'))
-          
-        ->getForm();
+        ));
+
+        $form->add('submit', 'submit', array('label' => 'Commit'));
 
         return $form;
+
     }
     
     /**
