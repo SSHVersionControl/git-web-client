@@ -10,6 +10,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use VersionContol\GitControlBundle\Entity\Project;
 use VersionContol\GitControlBundle\Utility\SshProcess;
 use VersionContol\GitControlBundle\Utility\ProjectEnvironmentStorage;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use VersionContol\GitControlBundle\Event\GitAlterFilesEvent;
 
 abstract class GitCommand {
     
@@ -38,6 +40,11 @@ abstract class GitCommand {
      * @var ProjectEnvironmentStorage
      */
     protected $projectEnvironmentStorage;
+    
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+     */
+    protected $dispatcher;
     
     /**
      * Wrapper function to run shell commands. Supports local and remote commands
@@ -153,6 +160,19 @@ abstract class GitCommand {
         $this->projectEnvironmentStorage = $projectEnvironmentStorage;
     }
 
+    public function getDispatcher() {
+        return $this->dispatcher;
+    }
+
+    public function setDispatcher(\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher) {
+        $this->dispatcher = $dispatcher;
+        return $this;
+    }
+
+    public function triggerGitAlterFilesEvent($eventName = 'git.update_files'){
+        $event = new GitAlterFilesEvent($this->projectEnvironment);
+        $this->dispatcher->dispatch($eventName, $event);
+    }
 
     
 }
