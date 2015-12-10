@@ -71,6 +71,13 @@ services:
             - @version_control.project_environmnent_storage
         tags:
             - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+      
+    version_control.gitalterfiles.listener:
+        class: VersionContol\GitControlBundle\EventListener\GitAlterFilesEventListener
+        arguments: 
+            - @version_control.git_files
+        tags:
+            - { name: kernel.event_listener, event: git.alter_files, method: changeFilePermissions }
             
     version_control.validator.ssh_details_validator:
         class: VersionContol\GitControlBundle\Validator\Constraints\SshDetailsValidator

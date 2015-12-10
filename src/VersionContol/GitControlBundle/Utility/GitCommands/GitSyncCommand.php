@@ -4,6 +4,7 @@ namespace VersionContol\GitControlBundle\Utility\GitCommands;
 
 use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 
+
 /**
  * Git uses a collaboration modal,which gives every developer their own copy of the repository, complete with its own 
  * local history and branch structure. Users typically need to share a series of commits rather than a single changeset. 

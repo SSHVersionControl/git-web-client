@@ -198,8 +198,10 @@ class GitBranchCommand extends GitCommand {
      */
     public function checkoutBranch($branchName){
         
-        return $this->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));
+        $response = $this->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName))); 
+        $this->triggerGitAlterFilesEvent();
         
+        return $response;
     }
     
     /**

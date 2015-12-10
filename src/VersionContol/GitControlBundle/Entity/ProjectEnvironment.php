@@ -75,6 +75,16 @@ class ProjectEnvironment
      * })
      */
     private $project;
+    
+    /**
+     * @var \VersionContol\GitControlBundle\Entity\ProjectEnvironmentFilePerm
+     *
+     * @ORM\OneToOne(targetEntity="VersionContol\GitControlBundle\Entity\ProjectEnvironmentFilePerm", inversedBy="projectEnvironment", cascade={"persist"})
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="project_environment_file_perm_id", referencedColumnName="id")
+     * })
+     */
+    private $projectEnvironmentFilePerm;
 
     public function __construct()
     {
@@ -250,6 +260,17 @@ class ProjectEnvironment
     {
         return $this->project;
     }
+    
+    public function getProjectEnvironmentFilePerm() {
+        return $this->projectEnvironmentFilePerm;
+    }
+
+    public function setProjectEnvironmentFilePerm(\VersionContol\GitControlBundle\Entity\ProjectEnvironmentFilePerm $projectEnvironmentFilePerm) {
+        $this->projectEnvironmentFilePerm = $projectEnvironmentFilePerm;
+        return $this;
+    }
+
+
     
 
 }

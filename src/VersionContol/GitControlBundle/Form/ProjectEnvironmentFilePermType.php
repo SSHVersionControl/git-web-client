@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProjectEnvironmentType extends AbstractType
+class ProjectEnvironmentFilePermType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -15,17 +15,12 @@ class ProjectEnvironmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
-            ->add('description')
-            ->add('path')
-            ->add('ssh','checkbox', array(
-                'label'    => 'Use SSH?',
+            ->add('fileOwner')
+            ->add('fileGroup')
+            ->add('enableFilePermissions','checkbox', array(
+                'label'    => 'Update File Permissions When Git Alters Files?',
                 'required' => false,
                 ))
-            ->add('host')
-            ->add('username')
-            ->add('password','password',array('required' => false))
-            ->add('projectEnvironmentFilePerm',  new ProjectEnvironmentFilePermType(), array('required'  => false))
         ;
     }
     
@@ -35,7 +30,7 @@ class ProjectEnvironmentType extends AbstractType
     public function configureOptions(OptionsResolver  $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionContol\GitControlBundle\Entity\ProjectEnvironment'
+            'data_class' => 'VersionContol\GitControlBundle\Entity\ProjectEnvironmentFilePerm'
             ,'cascade_validation' => true
         ));
     }
@@ -45,6 +40,6 @@ class ProjectEnvironmentType extends AbstractType
      */
     public function getName()
     {
-        return 'versioncontol_gitcontrolbundle_projectenvironment';
+        return 'versioncontol_gitcontrolbundle_projectenvironmentfileperm';
     }
 }

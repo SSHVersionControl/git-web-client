@@ -47,6 +47,29 @@ abstract class GitCommand {
     protected $dispatcher;
     
     /**
+     * Get current active Branch Name
+     * If there is no commits (eg new repo) then branch name is 'NEW REPO'
+     * This git command needs at least one commit before if show the correct branch name.
+     *  
+     * @return string The current branch name
+     */
+    public function getCurrentBranch(){
+        $branchName = '';
+        try{
+            //$branchName =  $this->runCommand('git rev-parse --abbrev-ref HEAD');
+            $branchName =  $this->runCommand('git symbolic-ref --short -q HEAD');
+        }catch(\RuntimeException $e){
+            if($this->getObjectCount() == 0){
+                $branchName = 'NEW REPO';
+            }
+        }
+        
+        return $branchName;
+        
+
+    }
+    
+    /**
      * Wrapper function to run shell commands. Supports local and remote commands
      * depending on the projectEnvironment details
      * 
@@ -169,8 +192,8 @@ abstract class GitCommand {
         return $this;
     }
 
-    public function triggerGitAlterFilesEvent($eventName = 'git.update_files'){
-        $event = new GitAlterFilesEvent($this->projectEnvironment);
+    public function triggerGitAlterFilesEvent($eventName = 'git.alter_files'){
+        $event = new GitAlterFilesEvent($this->projectEnvironment,array());
         $this->dispatcher->dispatch($eventName, $event);
     }
 
