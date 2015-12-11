@@ -234,7 +234,9 @@ class ProjectEnvironment
      * @param string $password
      */
     public function setPassword($password) {
-        $this->password = $password;
+        if (!is_null($password)) {
+            $this->password = $password;
+        }
     }
     
     /**

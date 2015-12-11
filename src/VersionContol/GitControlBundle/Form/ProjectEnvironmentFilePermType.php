@@ -18,9 +18,62 @@ class ProjectEnvironmentFilePermType extends AbstractType
             ->add('fileOwner')
             ->add('fileGroup')
             ->add('enableFilePermissions','checkbox', array(
-                'label'    => 'Update File Permissions When Git Alters Files?',
+                'label'    => 'Update file permissions when git alters files?',
                 'required' => false,
                 ))
+            ->add('permissionOwnerRead','checkbox', array(
+                'label'    => 'Read',
+                'required' => false,
+                ))
+            ->add('permissionOwnerWrite','checkbox', array(
+                'label'    => 'Write',
+                'required' => false,
+                ))
+            ->add('permissionOwnerExecute','checkbox', array(
+                'label'    => 'Execute',
+                'required' => false,
+                ))
+            ->add('permissionStickyUid','checkbox', array(
+                'label'    => 'Set UID',
+                'required' => false,
+                ))
+                
+            ->add('permissionGroupRead','checkbox', array(
+                'label'    => 'Read',
+                'required' => false,
+                ))
+            ->add('permissionGroupWrite','checkbox', array(
+                'label'    => 'Write',
+                'required' => false,
+                ))
+            ->add('permissionGroupExecute','checkbox', array(
+                'label'    => 'Execute',
+                'required' => false,
+                ))
+            ->add('permissionStickyGid','checkbox', array(
+                'label'    => 'Set GID',
+                'required' => false,
+                ))
+                
+            ->add('permissionOtherRead','checkbox', array(
+                'label'    => 'Read',
+                'required' => false,
+                ))
+            ->add('permissionOtherWrite','checkbox', array(
+                'label'    => 'Write',
+                'required' => false,
+                ))
+            ->add('permissionOtherExecute','checkbox', array(
+                'label'    => 'Execute',
+                'required' => false,
+                ))
+            ->add('permissionStickyBit','checkbox', array(
+                'label'    => 'Set UID',
+                'required' => false,
+                ))
+                
+            ->add('fileMode')
+            
         ;
     }
     

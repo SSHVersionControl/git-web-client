@@ -176,17 +176,13 @@ class GitFilesCommand extends GitCommand {
     }
         
     
-    public function setFilesPermissions($filePaths, $user = 7,$group = 7,$other= 5){
+    public function setFilesPermissions($filePaths, $mode='0775'){
         $basePath = trim($this->addEndingSlash($this->projectEnvironment->getPath()));
         if($this->projectEnvironment->getSsh() === true){
              //Remote Directory Listing
-            $sftp = $this->connectToSftp();
-
-            $mode= '0'.$user.$group.$other;
             $permissions = octdec($mode);
             foreach($filePaths as $filepath){
                 $this->runCommand(sprintf("chmod -R %s %s",$mode,$basePath.$filepath));
-                //$sftp->chmod($permissions, $basePath.$filepath,true);
             }
 
         }else{
@@ -198,9 +194,16 @@ class GitFilesCommand extends GitCommand {
         $basePath = trim($this->addEndingSlash($this->projectEnvironment->getPath()));
         if($this->projectEnvironment->getSsh() === true){
              //Remote Directory Listing
-            foreach($filePaths as $filepath){
-                $this->runCommand(sprintf("chown -R %s.%s %s",$user,$group,$basePath.$filepath));
-            }  
+            if(trim($user)){ 
+                foreach($filePaths as $filepath){
+                    $this->runCommand(sprintf("chown -R %s %s",$user,$basePath.$filepath));
+                }  
+            }
+            if(trim($group)){ 
+                foreach($filePaths as $filepath){
+                    $this->runCommand(sprintf("chgrp -R %s %s",$group,$basePath.$filepath));
+                }  
+            }
         }else{
             //Run local chmod
         }

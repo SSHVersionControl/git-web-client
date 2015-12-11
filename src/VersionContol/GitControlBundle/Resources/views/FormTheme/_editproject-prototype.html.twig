@@ -1,0 +1,256 @@
+
+{% block collection_widget %}
+{% spaceless %}
+    <div class="wrapper-collection">
+        {% if prototype is defined %}
+
+            {% set attr = attr|merge({'data-prototype': block('collection_item_widget') }) %}
+        {% endif %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ form_errors(form) }}
+            {% set rowNum = 0 %}
+            {% for rows in form %}
+                <div class="box curriculumbox" data-index="{{ rowNum }}">
+                {% set fieldNum = 1 %}
+                {% for row in rows %}
+                    <div class="field{{ fieldNum }}">
+                    {{ form_label(row) }}
+                    {{ form_widget(row) }}
+                    </div>
+                    {% set fieldNum = fieldNum + 1 %}
+                {% endfor %}
+                    <a class="remove right" title="Remove" href="#">
+                        {{'resource.delete'|trans }} <span class="icon icon-remove"></span>
+                    </a>
+                    <div class="clear"></div>
+                </div>
+                {% set rowNum = rowNum + 1 %}
+            {% endfor %}
+            
+            {{ form_rest(form) }}
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+{% endspaceless %}
+{% endblock collection_widget %}
+
+{% block collection_item_widget %}
+{% spaceless %}
+    <div>
+    {% set fieldNum = 1 %}
+    {% for row in prototype %}
+        <div class="field{{ fieldNum }}">
+        {{ form_label(row) }}
+        {{ form_widget(row) }}
+        </div>
+        {% set fieldNum = fieldNum + 1 %}
+    {% endfor %}
+        <a class="remove right" title="Remove" href="#">
+            {{'Delete'|trans }} <span class="icon icon-remove"></span>
+        </a>
+        <div class="clear"></div>
+    </div>
+{% endspaceless %}
+{% endblock collection_item_widget %}
+    
+    
+    
+    
+{% block projectenvironmentembbed_widget %}
+{% spaceless %}
+    <div class="wrapper-collection">
+        {% if prototype is defined %}
+            {% set rowNum = '__name__' %}
+            {% set attr = attr|merge({'data-prototype': block('projectenvironmentembbed_item_widget') }) %}
+        {% endif %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ form_errors(form) }}
+                   
+            {% set rowNum = 0 %}
+            {% for prototype  in form %}
+                <div class="box curriculumbox" data-index="{{ rowNum }}">
+                   {{ block('projectenvironmentembbed_item_widget') }}
+                </div>
+                {% set rowNum = rowNum + 1 %}
+            {% endfor %}
+            
+            {{ form_rest(form) }}
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+{% endspaceless %}
+{% endblock projectenvironmentembbed_widget %}
+    
+    
+{% block projectenvironmentembbed_item_widget %}
+{% spaceless %}
+     <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                {% set panelTitle = "New Project Environment" %}
+                {% if(prototype.vars.value.title is defined) %}
+                    {% set panelTitle = prototype.vars.value.title %}
+                {% endif %}
+                <a data-toggle="collapse" href="#collapse__name__">{{panelTitle}}</a>
+            </h4>
+        </div>
+        <div id="collapse__name__" class="panel-collapse collapse in">
+            <div class="panel-body">
+                {{ form_errors(prototype) }}                
+                <div class="form-group">
+                    {{ form_label(prototype.title) }}
+                    {{ form_errors(prototype.title) }}           
+                    {{ form_widget(prototype.title,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for your project'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(prototype.description) }}
+                    {{ form_errors(prototype.description) }}
+                    {{ form_widget(prototype.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(prototype.path) }}
+                    {{ form_errors(prototype.path) }}
+                    {{ form_widget(prototype.path,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a full path to the project folder'}}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(prototype.ssh) }}
+                    {{ form_errors(prototype.ssh) }}
+                    {{ form_widget(prototype.ssh) }}
+                </div>
+                <fieldset>
+                    <legend>SSH Details:</legend>
+                        <div class="form-group">
+                            {{ form_label(prototype.host) }}
+                            {{ form_errors(prototype.host) }}
+                            {{ form_widget(prototype.host,{ 'attr': { 'class': 'form-control', 'placeholder':'Name or IP address of the server host.'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(prototype.username) }}
+                            {{ form_errors(prototype.username) }}
+                            {{ form_widget(prototype.username,{ 'attr': { 'class': 'form-control', 'placeholder':'Name of user to connect with.'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(prototype.password) }}
+                            {{ form_errors(prototype.password) }}
+                            {{ form_widget(prototype.password,{ 'attr': { 'class': 'form-control', 'placeholder':'The users password'}}) }}
+                        </div>
+                </fieldset>
+                        
+                 <fieldset>
+                    <legend>File Permissons Details:</legend>
+                        <div class="form-group">
+                            {{ form_label(prototype.projectEnvironmentFilePerm.enableFilePermissions) }}
+                            {{ form_errors(prototype.projectEnvironmentFilePerm.enableFilePermissions) }}
+                            {{ form_widget(prototype.projectEnvironmentFilePerm.enableFilePermissions) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(prototype.projectEnvironmentFilePerm.fileOwner) }}
+                            {{ form_errors(prototype.projectEnvironmentFilePerm.fileOwner) }}
+                            {{ form_widget(prototype.projectEnvironmentFilePerm.fileOwner,{ 'attr': { 'class': 'form-control', 'placeholder':'test'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(prototype.projectEnvironmentFilePerm.fileGroup) }}
+                            {{ form_errors(prototype.projectEnvironmentFilePerm.fileGroup) }}
+                            {{ form_widget(prototype.projectEnvironmentFilePerm.fileGroup,{ 'attr': { 'class': 'form-control', 'placeholder':'test'}}) }}
+                        </div>
+                        <hr />
+                        <div class="form-group">
+                           
+                            <label class="control-label" for="">Permissions</label>
+                            <div class='row'>
+                            <div class="col-md-10">
+                                <div class='row'>
+                                    <div class="col-xs-3 col-md-2">Owner</div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionOwnerRead) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionOwnerRead) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionOwnerWrite) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionOwnerWrite) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionOwnerExecute) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionOwnerExecute) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionStickyUid) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionStickyUid) }}
+                                    </div>
+                                </div>
+                                  <div class='row'>
+                                    <div class="col-xs-3 col-md-2">Group</div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionGroupRead) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionGroupRead) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionGroupWrite) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionGroupWrite) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionGroupExecute) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionGroupExecute) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionStickyGid) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionStickyGid) }}
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class="col-xs-3 col-md-2">Others</div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionOtherRead) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionOtherRead) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionOtherWrite) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionOtherWrite) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionOtherExecute) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionOtherExecute) }}
+                                    </div>
+                                    <div class="col-xs-2 ">
+                                        {{ form_errors(prototype.projectEnvironmentFilePerm.permissionStickyBit) }}
+                                        {{ form_widget(prototype.projectEnvironmentFilePerm.permissionStickyBit) }}
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class="col-xs-3 col-md-2">Octal:</div>
+                                    <div class="col-xs-4 ">
+                                         {{ form_widget(prototype.projectEnvironmentFilePerm.fileMode,{ 'attr': { 'class': 'form-control', 'readonly':'true', 'maxlength':'4'}}) }}
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <hr />
+                <a class="btn btn-small btn-danger remove" title="Remove" href="#">
+                    <i class="fa fa-remove"></i>{{'Delete'|trans }}
+                </a>
+            </div>
+        </div>
+     </div>
+
+{% endspaceless %}
+{% endblock projectenvironmentembbed_item_widget %}
+   
+
+             
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            <div class="alert alert-danger" role="alert">
+            {% for error in errors %}
+                {{ error.messageTemplate|trans(error.messageParameters, 'validators')|trans() }}<br />
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}

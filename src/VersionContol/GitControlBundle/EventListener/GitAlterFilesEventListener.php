@@ -39,8 +39,10 @@ class GitAlterFilesEventListener
                     }
                 }
 
-                $this->gitFilesCommand->setFilesPermissions($files,7,7,5);
-                $this->gitFilesCommand->setFilesOwnerAndGroup($files,'www-data','fr_user');
+                $this->gitFilesCommand->setFilesPermissions($files
+                        ,$projectEnvironmentFilePerm->getFileMode()
+                        );
+                $this->gitFilesCommand->setFilesOwnerAndGroup($files,$projectEnvironmentFilePerm->getFileOwner(),$projectEnvironmentFilePerm->getGroupOwner());
            }
        }
        
