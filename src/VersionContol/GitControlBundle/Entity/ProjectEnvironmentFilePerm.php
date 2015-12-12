@@ -43,7 +43,7 @@ class ProjectEnvironmentFilePerm{
     /**
      * @var ProjectEnvironment
      * 
-     * @ORM\OneToOne(targetEntity="VersionContol\GitControlBundle\Entity\ProjectEnvironment", mappedBy="projectEnvironmentFilePerm", cascade={"persist"}, orphanRemoval=true )
+     * @ORM\OneToOne(targetEntity="VersionContol\GitControlBundle\Entity\ProjectEnvironment", mappedBy="projectEnvironmentFilePerm" )
      */
     private $projectEnvironment;
     
