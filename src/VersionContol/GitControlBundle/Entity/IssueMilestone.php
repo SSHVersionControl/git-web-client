@@ -8,8 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
  * IssueMilestone
  *
  * @ORM\Table(name="issue_milestone", indexes={@ORM\Index(name="fk_issue_milestone_ver_user1_idx", columns={"ver_user_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\IssueMilestoneRepository")
  * @ORM\HasLifecycleCallbacks
+ * 
  */
 class IssueMilestone
 {
@@ -339,5 +340,37 @@ class IssueMilestone
         if($this->getState() === 'closed'){
             $this->setClosedAt(new \DateTime());
         }
+    }
+    
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return Issue
+     */
+    public function setClosed()
+    {
+        $this->state = 'closed';
+
+        return $this;
+    }
+    
+    /**
+     * Set status
+     *
+     * @param string $status
+     *
+     * @return Issue
+     */
+    public function setOpen()
+    {
+        $this->state = 'open';
+
+        return $this;
+    }
+    
+    public function isClosed(){
+        return ($this->state === 'closed')?true:false;
     }
 }

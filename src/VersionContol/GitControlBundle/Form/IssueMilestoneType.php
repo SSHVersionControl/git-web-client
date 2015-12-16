@@ -17,7 +17,9 @@ class IssueMilestoneType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('dueOn')
+            //->add('dueOn')
+            ->add('dueOn', 'datetime', array('date_widget' => "single_text", 'time_widget' => "single_text"))
+
             ->add('project', 'hidden_entity',array(
                     'class' => 'VersionContol\GitControlBundle\Entity\Project'
                 ))

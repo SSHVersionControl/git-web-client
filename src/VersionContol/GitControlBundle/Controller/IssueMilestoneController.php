@@ -27,20 +27,40 @@ class IssueMilestoneController extends Controller
      * @Method("GET")
      * @Template()
      */
-    public function indexAction($project)
+    public function indexAction($project, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
 
         //$entities = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->findAll();
         
-        $entities = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->findByProject($project);
+        //$entities = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->findByProject($project);
         //$openIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'open');
         //$closedIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'closed');
+        
+        $keyword = $request->query->get('keyword', false);
+        $filter = $request->query->get('filter', 'open');
+        
+        $query = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->findByProjectAndStatus($project,$filter,$keyword,true)->getQuery();
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1)/*page number*/,
+            15/*limit per page*/
+        );
+
+    
+        $openIssuesCount = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->countForProjectWithStatus($project,'open',$keyword);
+        $closedIssuesCount = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->countForProjectWithStatus($project,'closed',$keyword);
+        
 
         return array(
-            'entities' => $entities,
-            'project' => $project
+            'project' => $project,
+            'openCount' => $openIssuesCount,
+            'closedCount' => $closedIssuesCount,
+            'pagination' => $pagination
         );
+
+            
     }
     /**
      * Creates a new IssueMilestone entity.
@@ -62,7 +82,7 @@ class IssueMilestoneController extends Controller
             $em->persist($issueMilestone);
             $em->flush();
             
-            $this->get('session')->getFlashBag()->add('notice', 'New Milestone:'.$entity->getTitle());
+            $this->get('session')->getFlashBag()->add('notice', 'New Milestone:'.$issueMilestone->getTitle());
 
             return $this->redirect($this->generateUrl('issuemilestone_show', array('id' => $issueMilestone->getId())));
         }
@@ -131,11 +151,18 @@ class IssueMilestoneController extends Controller
         }
 
         $deleteForm = $this->createDeleteForm($id);
+        
+        $openCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($entity->getProject(),'open',false,$entity);
+
+        $closedCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($entity->getProject(),'closed',false,$entity);
+        
 
         return array(
             'entity'      => $entity,
             'project'      => $entity->getProject(),
             'delete_form' => $deleteForm->createView(),
+            'openCount' => $openCount,
+            'closedCount' => $closedCount,
         );
     }
 
@@ -261,5 +288,90 @@ class IssueMilestoneController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
+    }
+    
+    /**
+     * Displays a form to edit an existing Issue entity.
+     *
+     * @Route("/{id}/close", name="issuemilestone_close")
+     * @Method("GET")
+     */
+    public function closeAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $issueMilestone = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->find($id);
+
+        if (!$issueMilestone) {
+            throw $this->createNotFoundException('Unable to find Issue Milestone entity.');
+        }
+        
+        $issueMilestone->setClosed();
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('notice'
+                ,"Milestone #".$issueMilestone->getId()." has been closed");
+        
+        return $this->redirect($this->generateUrl('issuemilestones', array('project' => $issueMilestone->getProject()->getId())));
+    }
+    
+     /**
+     * Displays a form to edit an existing Issue entity.
+     *
+     * @Route("/{id}/open", name="issuemilestone_open")
+     * @Method("GET")
+     */
+    public function openAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $issueMilestone = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->find($id);
+
+        if (!$issueMilestone) {
+            throw $this->createNotFoundException('Unable to find Issue Milestone entity.');
+        }
+        
+        $issueMilestone->setOpen();
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('notice'
+                ,"Milestone #".$issueMilestone->getId()." has been opened");
+        
+        return $this->redirect($this->generateUrl('issuemilestone_show', array('id' => $issueMilestone->getId())));
+
+    }
+    
+    /**
+     * Lists all Issue entities.
+     *
+     * @Template()
+     */
+    public function milestonesIssuesAction(Request $request,$issueMilestone,$filter = 'open',$pageParameterName='page',$keywordParamaterName='keyword')
+    {
+        $parentRequest =  $request->createFromGlobals();
+        
+        $em = $this->getDoctrine()->getManager();
+     
+        $keyword = $parentRequest->query->get($keywordParamaterName, false);
+
+        $query = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($issueMilestone->getProject(),$filter,$keyword,$issueMilestone,true)->getQuery();
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $parentRequest->query->getInt($pageParameterName, 1)/*page number*/,
+            10,/*limit per page*/
+            array('pageParameterName' => $pageParameterName)
+        );
+
+        return array(
+            'issueMilestone' => $issueMilestone,
+            'project' => $issueMilestone->getProject(),
+            'pagination' => $pagination,
+            'status' => $filter,
+            'keywordParamaterName' => $keywordParamaterName,
+            'keyword' => $keyword
+             
+            
+        );
     }
 }

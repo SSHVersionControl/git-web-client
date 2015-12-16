@@ -48,7 +48,7 @@ class IssueController extends Controller
         $keyword = $request->query->get('keyword', false);
         $filter = $request->query->get('filter', false);
         
-        $query = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($project,$filter,$keyword,true)->getQuery();
+        $query = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($project,$filter,$keyword,null,true)->getQuery();
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
             $query,
@@ -69,6 +69,8 @@ class IssueController extends Controller
             
         );
     }
+    
+    
     
     /**
      * Creates a new Issue entity.
