@@ -182,7 +182,7 @@ class GitFilesCommand extends GitCommand {
              //Remote Directory Listing
             $permissions = octdec($mode);
             foreach($filePaths as $filepath){
-                $this->runCommand(sprintf("chmod -R %s %s",$mode,$basePath.$filepath));
+                $this->runCommand(sprintf("chmod -R %s %s",$mode,escapeshellarg($basePath.$filepath)));
             }
 
         }else{
@@ -196,12 +196,12 @@ class GitFilesCommand extends GitCommand {
              //Remote Directory Listing
             if(trim($user)){ 
                 foreach($filePaths as $filepath){
-                    $this->runCommand(sprintf("chown -R %s %s",$user,$basePath.$filepath));
+                    $this->runCommand(sprintf("chown -R %s %s",$user,escapeshellarg($basePath.$filepath)));
                 }  
             }
             if(trim($group)){ 
                 foreach($filePaths as $filepath){
-                    $this->runCommand(sprintf("chgrp -R %s %s",$group,$basePath.$filepath));
+                    $this->runCommand(sprintf("chgrp -R %s %s",$group,escapeshellarg($basePath.$filepath)));
                 }  
             }
         }else{
@@ -256,5 +256,21 @@ class GitFilesCommand extends GitCommand {
         }
         
         return $logs;
+    }
+    
+    /**
+     * Gets the number of objects in git repo
+     * The command returns data in the format:
+     *  3251 objects, 15308 kilobytes
+     * @return integer The number of objects
+     */
+    public function getObjectCount(){
+        $result = $this->runCommand('git count-objects');
+        $splits = explode(',',$result);
+        //0 = object count 1 = size
+        $objects = explode(' ',$splits[0]);
+        $objectCount = $objects[0];
+        
+        return $objectCount;
     }
 }

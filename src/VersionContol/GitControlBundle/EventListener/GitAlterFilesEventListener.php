@@ -42,11 +42,9 @@ class GitAlterFilesEventListener
                 $this->gitFilesCommand->setFilesPermissions($files
                         ,$projectEnvironmentFilePerm->getFileMode()
                         );
-                $this->gitFilesCommand->setFilesOwnerAndGroup($files,$projectEnvironmentFilePerm->getFileOwner(),$projectEnvironmentFilePerm->getGroupOwner());
+                $this->gitFilesCommand->setFilesOwnerAndGroup($files,$projectEnvironmentFilePerm->getFileOwner(),$projectEnvironmentFilePerm->getFileGroup());
            }
        }
-       
-
     }
     
 }

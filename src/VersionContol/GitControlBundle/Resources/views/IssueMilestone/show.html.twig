@@ -49,8 +49,13 @@
                     <p>{{ entity.description | markdown }}</p>
                 </div>
                 <div class="col-md-6">
-                    {% set progress = ((openCount / (openCount + closedCount) ) * 100)%}
-
+                    {% if(closedCount == 0)%}
+                        {% set progress = 0 %}
+                    {% elseif(openCount == 0)%}
+                        {% set progress = 100 %}
+                    {% else %}
+                        {% set progress = ((openCount / (openCount + closedCount) ) * 100)%}
+                    {% endif %}
                     <div class="progress">
                         <div class="progress-bar" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{progress}}%;">
                           {{progress}}%
