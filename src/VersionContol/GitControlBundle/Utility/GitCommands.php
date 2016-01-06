@@ -941,6 +941,14 @@ class GitCommands
         
         return $message;
     }
+    
+    /**
+     * 
+     * @return string command response
+     */
+    public function initRepository(){
+        return $this->runCommand('git init');
+    }
 
     
 }

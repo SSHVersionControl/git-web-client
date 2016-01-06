@@ -12,6 +12,7 @@ use VersionContol\GitControlBundle\Utility\SshProcess;
 use VersionContol\GitControlBundle\Utility\ProjectEnvironmentStorage;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use VersionContol\GitControlBundle\Event\GitAlterFilesEvent;
+use VersionContol\GitControlBundle\Entity\ProjectEnvironment;
 
 abstract class GitCommand {
     
@@ -139,6 +140,17 @@ abstract class GitCommand {
     public function setProject(Project $project) {
         
         $this->projectEnvironment = $this->projectEnvironmentStorage->getProjectEnviromment($project);
+        $this->setGitPath($this->projectEnvironment->getPath());
+        return $this;
+    }
+    
+    /**
+     * Allows you to override the project Environment
+     * @param ProjectEnvironment $projectEnvironment
+     * @return \VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
+     */
+    public function overRideProjectEnvironment(ProjectEnvironment $projectEnvironment){
+        $this->projectEnvironment = $projectEnvironment;
         $this->setGitPath($this->projectEnvironment->getPath());
         return $this;
     }
