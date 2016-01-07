@@ -6,11 +6,19 @@
                 <source>validate.constraint.SshDetails.error</source>
                 <target>Unable to connect using these SFTP Details.</target>
             </trans-unit>
-            <trans-unit id="validate.constraint.GitFolder.error">
-                <source>validate.constraint.GitFolder.error</source>
-                <target>This path does not contain a git repository. Please check that the folder is a git repository and the user (SSH /web user) has access to it.</target>
+            <trans-unit id="validate.constraint.SshDetails.FileDoesNotExist">
+                <source>validate.constraint.SshDetails.FileDoesNotExist</source>
+                <target>This directory does not exist. Please check that you have entered the correct path</target>
             </trans-unit>
             
+            <trans-unit id="validate.constraint.GitFolderExists.error">
+                <source>validate.constraint.GitFolderExists.error</source>
+                <target>This path does not contain a git repository. Please check that the folder is a git repository and the user (SSH /web user) has access to it.</target>
+            </trans-unit>
+            <trans-unit id="validate.constraint.GitFolderNotExists.error">
+                <source>validate.constraint.GitFolderNotExists.error</source>
+                <target>This path already contains a git repository. Please check that the folder is NOT a git repository.</target>
+            </trans-unit>
             <trans-unit id="validate.constraint.StatusHash">
                 <source>validate.constraint.StatusHash</source>
                 <target>Some other files have been modified since last page refresh. Please re-check files below and try to commit again</target>

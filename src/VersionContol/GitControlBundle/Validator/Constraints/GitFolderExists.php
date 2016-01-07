@@ -7,13 +7,13 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @Annotation
  */
-class GitFolder extends Constraint
+class GitFolderExists extends Constraint
 {
-    public $message = 'validate.constraint.GitFolder';
+    public $message = 'validate.constraint.GitFolderExists.error';
     
     public function validatedBy()
     {
-        return 'git_folder_validator';
+        return 'git_folder_exists_validator';
     }
     
     public function getTargets()

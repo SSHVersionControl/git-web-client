@@ -57,7 +57,7 @@ class ProjectCommitController extends BaseProjectController
         
        $this->initAction($id);
 
-       $branchName = $this->gitCommands->getCurrentBranch();
+       $branchName = $this->gitSyncCommands->getCurrentBranch();
        $files =  $this->gitCommands->getFilesToCommit();
        
        $commitEntity = new Commit();
@@ -109,7 +109,7 @@ class ProjectCommitController extends BaseProjectController
             return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
         }
         
-        $branchName = $this->gitCommands->getCurrentBranch();
+        $branchName = $this->gitSyncCommands->getCurrentBranch();
         $files =  $this->gitCommands->getFilesToCommit();
         
         return array(

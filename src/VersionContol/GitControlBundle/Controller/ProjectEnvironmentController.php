@@ -85,6 +85,8 @@ class ProjectEnvironmentController extends BaseProjectController
                 $this->createEmptyGitRepository($projectEnvironment);
             }else if($gitAction === 'clone'){
                 //Create Git Clone
+                $cloneLocation = $form->get('gitclonelocation')->getData();
+                $this->cloneGitRepository($projectEnvironment,$cloneLocation);
             }
             
             $em->persist($projectEnvironment);
@@ -94,7 +96,8 @@ class ProjectEnvironmentController extends BaseProjectController
         }
 
         return array(
-            'entity' => $project,
+            'project' => $project,
+            'projectEnvironment' => $projectEnvironment,
             'form'   => $form->createView(),
         );
     }
@@ -114,14 +117,12 @@ class ProjectEnvironmentController extends BaseProjectController
             'method' => 'POST',
         ));
         
-        //if($gitaction){
-            $form->add('gitaction', 'hidden', array(
-                'mapped' => false,
-                'empty_data' => false,
-                'required' => 'required',
-                'data'=>$gitaction
-            ));
-        //}
+        $form->add('gitaction', 'hidden', array(
+            'mapped' => false,
+            'empty_data' => false,
+            'required' => 'required',
+            'data'=>$gitaction
+        ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
 
@@ -165,7 +166,7 @@ class ProjectEnvironmentController extends BaseProjectController
         $this->checkProjectAuthorization($project);
          
         $projectEnvironment = new ProjectEnvironment();
-        $form   = $this->createCreateForm($projectEnvironment,$project);
+        $form   = $this->createCreateForm($projectEnvironment,$project,'clone');
 
         return array(
             'project' => $project,
@@ -289,7 +290,6 @@ class ProjectEnvironmentController extends BaseProjectController
      * Deletes a Project entity.
      *
      * @Route("/{id}", name="projectenvironment_delete")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -338,6 +338,19 @@ class ProjectEnvironmentController extends BaseProjectController
         $response = $gitCommands->initRepository();
             
         $this->get('session')->getFlashBag()->add('notice', $response);
+    }
+    
+    protected function cloneGitRepository($projectEnvironment,$cloneLocation){
+        
+        $gitCommands = $this->get('version_control.git_init')->overRideProjectEnvironment($projectEnvironment);
+        try{
+            $response = $gitCommands->cloneRepository($cloneLocation);
+        }catch(\Exception $e){
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
+            
+        $this->get('session')->getFlashBag()->add('notice', $response);
+        
     }
     
 

@@ -165,7 +165,9 @@
             <li class="list-group-item">
                  <h4 class="list-group-item-heading">Clone</h4>
                  <p class="list-group-item-text">
-                    Create New Project Environment and clone a Git repository into source folder.(Coming soon)
+                    <a href="{{ path('projectenvironment_clone', { 'project': project.id }) }}" title="">
+                        Create New Project Environment and clone a Git repository into source folder.
+                    </a>
                 </p>
             </li>
         </ul>

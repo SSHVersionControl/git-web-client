@@ -201,6 +201,11 @@
                     {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
                 </div>
             {{ form_end(form) }}
+            
+            {{ form_start( delete_form) }}
+                {{ form_widget(delete_form.submit, { 'attr': {'class': 'btn-danger'} }) }}
+            {{ form_end( delete_form) }}
+            
              </div>
              <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
                  <div class="panel panel-default">

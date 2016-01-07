@@ -7,15 +7,13 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @Annotation
  */
-class SshDetails extends Constraint
+class GitFolderNotExists extends Constraint
 {
-    public $message = 'validate.constraint.SshDetails';
-    
-    public $messageFileDoesNotExist = 'validate.constraint.SshDetails.FileDoesNotExist';
+    public $message = 'validate.constraint.GitFolderNotExists.error';
     
     public function validatedBy()
     {
-        return 'ssh_details_validator';
+        return 'git_folder_not_exists_validator';
     }
     
     public function getTargets()

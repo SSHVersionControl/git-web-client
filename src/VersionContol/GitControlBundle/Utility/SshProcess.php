@@ -173,7 +173,7 @@ class SshProcess
         }
 
         if (count($stderr) > 1) {
-            print_r($stderr);
+            //print_r($stderr);
              throw new \RuntimeException(sprintf('Error in command shell:%s',$command));
             //$this->dispatcher->dispatch(Events::onDeploymentRsyncFeedback, new FeedbackEvent('err', implode("\n", $stderr)));
         }

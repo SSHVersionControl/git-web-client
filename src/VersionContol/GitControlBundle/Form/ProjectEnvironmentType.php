@@ -5,6 +5,7 @@ namespace VersionContol\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormInterface;
 
 class ProjectEnvironmentType extends AbstractType
 {
@@ -26,6 +27,7 @@ class ProjectEnvironmentType extends AbstractType
             ->add('username')
             ->add('password','password',array('required' => false))
             ->add('projectEnvironmentFilePerm',  new ProjectEnvironmentFilePermType(), array('required'  => false))
+            ->add('gitCloneLocation')    
         ;
     }
     
@@ -37,6 +39,22 @@ class ProjectEnvironmentType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'VersionContol\GitControlBundle\Entity\ProjectEnvironment'
             ,'cascade_validation' => true
+            ,'validation_groups' => function (FormInterface $form) {
+                
+                if($form->has('gitaction')){
+                    $gitAction =  $form->get('gitaction')->getData();
+                    
+                    if ($gitAction == 'new') {
+                        return array('Default', 'NewGit');
+                    }elseif ($gitAction == 'clone') {
+                        return array('Default', 'CloneGit');
+                    }elseif ($gitAction == 'existing') {
+                        return array('Default', 'ExistingGit');
+                    }
+                }
+
+                return array('Default', 'ExistingGit');
+            },
         ));
     }
 

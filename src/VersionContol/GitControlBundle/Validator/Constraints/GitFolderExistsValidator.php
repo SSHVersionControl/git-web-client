@@ -6,8 +6,9 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use VersionContol\GitControlBundle\Utility\SshProcess;
 
+use phpseclib\Net\SFTP;
 
-class GitFolderValidator extends ConstraintValidator
+class GitFolderExistsValidator extends ConstraintValidator
 {
     /**
      *
@@ -35,19 +36,19 @@ class GitFolderValidator extends ConstraintValidator
                 if ($sftp->login($projectEnvironment->getUsername(), $projectEnvironment->getPassword())) {
                     if ($sftp->file_exists($gitPath.'/.git') === false){
                         $this->context->buildViolation($constraint->message)
-                            ->atPath('title')
+                            ->atPath('path')
                             ->addViolation();
                     }
                 }
             }catch(\Exception $e){
                 $this->context->buildViolation($e->getMessage())
-                        ->atPath('title')
+                        ->atPath('path')
                         ->addViolation();
             }
         }else{
             if (file_exists($gitPath.'/.git') === false){
                 $this->context->buildViolation($constraint->message)
-                    ->atPath('title')
+                    ->atPath('path')
                     ->addViolation();
             }
         }
