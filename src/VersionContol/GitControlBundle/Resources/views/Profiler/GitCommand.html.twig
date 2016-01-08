@@ -1,0 +1,88 @@
+{% extends app.request.isXmlHttpRequest ? 'WebProfilerBundle:Profiler:ajax_layout.html.twig' : 'WebProfilerBundle:Profiler:layout.html.twig' %}
+{% block toolbar %}
+    {% set icon %}
+        {# this is the content displayed as a panel in the toolbar #}
+        <span class="icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAABmJLR0QA/wD/AP+gvaeTAAAA+UlEQVQ4je2TwSpFURSGv6UTxUx5AKXcKaYYyVNIyURe4o6UJ/AAJpSZEg9gwFBdozuTFIM7UTojnwFpdzvnuvY5M77ak7Vb3/732m34ZxzUNXWlbemheqv21P2hvUl1Old8r86r6+pVUt9UX77WVo64myTeTeqX6obaUXt1/fGDvAQeI2IhqR0AHWAATEXEdk7qUu0P1Qr1WX0dNeeJX58Gc8As0I+It1bE6iJwBhTASUaob1GpPqh76rX67icXatFUnHKj7qg5I6wUH6tLjWQV4qec3torqV3gDhikH6QxdV96XEa97DlwCswAR7kBK1FX1eVWpX+PD4kw5u6E1XPqAAAAAElFTkSuQmCC" alt="Git Commands Called"/></span>
+        <span class="sf-toolbar-value">{{ collector.commandsCount }}</span>
+        <span class="sf-toolbar-label">Git Queries</span>
+    {% endset %}
+
+    {% set text %}
+        {# this is the content displayed when hovering the mouse over
+           the toolbar panel #}
+        <div class="sf-toolbar-info-piece">
+            <b>Git Queries</b>
+            <span>{{ collector.commandsCount }}</span>
+        </div>
+
+        <div class="sf-toolbar-info-piece">
+            <b>Git Queries Time</b>
+            <span>{{ '%0.2f'|format(collector.time * 1000) }} ms</span>
+        </div>
+    {% endset %}
+
+    {# the 'link' value set to 'false' means that this panel doesn't
+       show a section in the web profiler (default is 'true'). #}
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: false }) }}
+{% endblock %}
+
+{% block menu %}
+<span class="label {% if(collector.commandsCount <= 0) %}disabled{% endif %}">
+    <span class="icon"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABmJLR0QA/wD/AP+gvaeTAAABE0lEQVRIie2UsS4EURhGz7VEVrZSEYVOsqUnEBKJeAJvYDUKjWKfwDOskkaBTtQoSFQKIzqJ0JDocRQ7kslmzNi7k2yzp/y/5Dsz9+b+MGLYhKJQnQW2gBegE0L47FcwVpKfAQJrQLtH3lSX1LKOfNSa+qZOqevqUSbbUB/VC/UwSpAW7amJ+qwuZ+bH6qo6oX6otVjBnF2ue+Yt9UrtqOeD/EGuIM3u02ymqCPqgtRpYB54DyG8VipQF4AToA4cxHxgtuz3iO7UTfVS/U5nN2qjKkGWRN1RJwcqzxGcqitq4euPFTzEdpRd8jaQAI3sQ6uEolXRD+N/BSGEL/UJ2AUWgdsYwX/WdYvuut6PWdcjhs8PFKsJGQ8OJH0AAAAASUVORK5CYII=" alt="Git Commands Called" /></span>
+    <strong>Git Queries</strong>
+    <span class="count">
+        <span>{{ collector.commandsCount }}</span>
+    </span>
+</span>
+{% endblock %}
+
+{% block panel %}
+    <h2>Git Queries</h2>
+
+    {% if not collector.commands %}
+        <div class="empty">
+            <p>
+                <em>No Git commands where called.</em>
+            <p>
+        </div>
+    {% elseif not collector.commandsCount %}
+        <div class="empty">
+            <p>
+                <em>No Git commands where called.</em>
+            <p>
+        </div>
+    {% else %}
+        
+       
+        {% for query in collector.commands %}
+            <table>
+               <thead>
+                   <tr>
+                       <th scope="col" class="key">Property</th>
+                       <th scope="col">Value</th>
+                   </tr>
+               </thead>
+               <tbody>
+                    <tr>
+                        <th>Command</th>
+                        <td>{{ query.command }}</td>
+                    </tr>
+                    <tr>
+                        <th>Method</th>
+                        <td>{{ query.method }}</td>
+                    </tr>
+                    <tr>
+                        <th>Data</th>
+                        <td><code>{{ query.data|yaml_encode }}</code></td>
+                    </tr>
+                    <tr>
+                        <th>Time</th>
+                        <td><code>{{ '%0.2f'|format(query.executionMS * 1000) }}</code></td>
+                    </tr>
+                </tbody>
+                </table>
+            {% endfor %}
+                  
+            
+    {% endif %}
+{% endblock %}

@@ -13,6 +13,8 @@ use VersionContol\GitControlBundle\Utility\ProjectEnvironmentStorage;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use VersionContol\GitControlBundle\Event\GitAlterFilesEvent;
 use VersionContol\GitControlBundle\Entity\ProjectEnvironment;
+use VersionContol\GitControlBundle\Logger\GitCommandLogger;
+use Symfony\Component\Stopwatch\Stopwatch;
 
 abstract class GitCommand {
     
@@ -48,6 +50,19 @@ abstract class GitCommand {
     protected $dispatcher;
     
     /**
+     * Git Command Logger
+     * @var \VersionContol\GitControlBundle\Logger\GitCommandLogger 
+     */
+    protected $logger;
+    
+    /**
+     * Symfony's debugging Stopwatch.
+     *
+     * @var Stopwatch|null
+     */
+    private $stopwatch;
+    
+    /**
      * Get current active Branch Name
      * If there is no commits (eg new repo) then branch name is 'NEW REPO'
      * This git command needs at least one commit before if show the correct branch name.
@@ -80,10 +95,17 @@ abstract class GitCommand {
      */
     protected function runCommand($command){
         
+        if ($this->stopwatch) {
+            $this->stopwatch->start('es_request', 'fos_elastica');
+        }
+        $start = microtime(true);
+        
         if($this->projectEnvironment->getSsh() === true){
             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
             $sshProcess = new SshProcess();
             $sshProcess->run(array($fullCommand),$this->projectEnvironment->getHost(),$this->projectEnvironment->getUsername(),22,$this->projectEnvironment->getPassword());
+            $this->logCommand($fullCommand,'remote',array('host'=>$this->projectEnvironment->getHost()),$start);
+            
             return $sshProcess->getStdout();
         }else{
             if(is_array($command)){
@@ -100,6 +122,8 @@ abstract class GitCommand {
             //print_r($process->getCommandLine());
             $process->run();
 
+            $this->logCommand($fullCommand,'local',array(),$start);
+            
             // executes after the command finishes
             if (!$process->isSuccessful()) {
                 if(trim($process->getErrorOutput()) !== ''){
@@ -224,6 +248,43 @@ abstract class GitCommand {
         $event = new GitAlterFilesEvent($this->projectEnvironment,array());
         $this->dispatcher->dispatch($eventName, $event);
     }
+
+    public function getLogger() {
+        return $this->logger;
+    }
+
+    public function setLogger(\VersionContol\GitControlBundle\Logger\GitCommandLogger $logger) {
+        $this->logger = $logger;
+        return $this;
+    }
+    
+    /**
+     * Sets a stopwatch instance for debugging purposes.
+     *
+     * @param Stopwatch $stopwatch
+     */
+    public function setStopwatch(Stopwatch $stopwatch = null)
+    {
+        $this->stopwatch = $stopwatch;
+    }
+    /**
+     * Log the query if we have an instance of ElasticaLogger.
+     *
+     * @param string $command
+     * @param string $method
+     * @param array  $data
+     * @param int    $start
+     */
+    protected function logCommand($command, $method, $data, $start)
+    {
+        if (!$this->logger or !$this->logger instanceof GitCommandLogger) {
+            return;
+        }
+        $time = microtime(true) - $start;
+        
+        $this->logger->logCommand($command, $method, $data, $time);
+    }
+
 
     
 }
