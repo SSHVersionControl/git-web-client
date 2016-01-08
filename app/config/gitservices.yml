@@ -6,6 +6,8 @@ services:
             - [setProjectEnvironmentStorage, ["@version_control.project_environmnent_storage"]]
             - [setDispatcher, ["@event_dispatcher"]]
             - [setLogger, ["@version_control.logger"]]
+            - [setSshProcess, ["@version_control.ssh_process"]]
+            
             
     version_control.git_log:
         class:  VersionContol\GitControlBundle\Utility\GitCommands\GitLogCommand

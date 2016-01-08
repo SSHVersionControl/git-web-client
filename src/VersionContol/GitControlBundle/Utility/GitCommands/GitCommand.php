@@ -63,6 +63,12 @@ abstract class GitCommand {
     private $stopwatch;
     
     /**
+     * SSH Process
+     * @var \VersionContol\GitControlBundle\Utility\SshProcess 
+     */
+    private $sshProcess;
+    
+    /**
      * Get current active Branch Name
      * If there is no commits (eg new repo) then branch name is 'NEW REPO'
      * This git command needs at least one commit before if show the correct branch name.
@@ -96,17 +102,17 @@ abstract class GitCommand {
     protected function runCommand($command){
         
         if ($this->stopwatch) {
-            $this->stopwatch->start('es_request', 'fos_elastica');
+            $this->stopwatch->start('git_request', 'version_control');
         }
         $start = microtime(true);
         
         if($this->projectEnvironment->getSsh() === true){
             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
-            $sshProcess = new SshProcess();
-            $sshProcess->run(array($fullCommand),$this->projectEnvironment->getHost(),$this->projectEnvironment->getUsername(),22,$this->projectEnvironment->getPassword());
+            //$sshProcess = new SshProcess();
+            $this->sshProcess->run(array($fullCommand),$this->projectEnvironment->getHost(),$this->projectEnvironment->getUsername(),22,$this->projectEnvironment->getPassword());
             $this->logCommand($fullCommand,'remote',array('host'=>$this->projectEnvironment->getHost()),$start);
             
-            return $sshProcess->getStdout();
+            return $this->sshProcess->getStdout();
         }else{
             if(is_array($command)){
                 //$finalCommands = array_merge(array('cd',$this->gitPath,'&&'),$command);
@@ -284,6 +290,18 @@ abstract class GitCommand {
         
         $this->logger->logCommand($command, $method, $data, $time);
     }
+    
+    /**
+     * Sets the SSH Process
+     * @param SshProcess $sshProcess
+     * @return \VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
+     */
+    public function setSshProcess(\VersionContol\GitControlBundle\Utility\SshProcess $sshProcess) {
+        $this->sshProcess = $sshProcess;
+        return $this;
+    }
+
+
 
 
     
