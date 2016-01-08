@@ -54,6 +54,7 @@
                  {{ form_end(edit_form) }}
                  <h3>Project Environments</h3>
                  <div class="form-group">
+                     {% if(project.projectEnvironment|length > 0) %}
                     <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
                         {% for projectEnvironment in project.projectEnvironment  %}
                             <div class="panel panel-default">
@@ -95,6 +96,12 @@
                      <div class="text-right">
                       <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary">Add Project Environment</button>
                      </div>
+                     {% else %}
+                         <div class="alert alert-info text-center" role="alert">
+                                <p>There are no Project Environments yet for this project. So what are you waiting for, go create one</p>
+                                <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary">Add a Project Environment</button>
+                         </div>
+                     {% endif %}
                  </div>
              </div>
              <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
@@ -103,7 +110,13 @@
                          <h4>Instructions</h4>
                      </div>
                      <div class="panel-body">
-                         <p>Description</p>
+                         <p>You can edit the projects title and description in the form and manage your "Project Environments".
+                         When creating a new Project Environment you have 3 Options:</p>
+                         <ul>
+                             <li>Existing: References a folder which already contains a git repository</li>
+                             <li>New: References a folder that DOESN't contain a git repository and initalize a new one</li>
+                             <li>Clone: References a folder that DOESN't contain a git repository and clones a git repository into this folder.</li>
+                         </ul>
                      </div>
 
                  </div>

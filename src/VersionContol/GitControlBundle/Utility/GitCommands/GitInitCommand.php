@@ -38,7 +38,7 @@ class GitInitCommand extends GitCommand {
      * @return string command response
      */
     public function cloneRepository($repo){
-        $response = $this->runCommand('git clone');
+        $response = $this->runCommand(sprintf('git clone %s 2>&1',  escapeshellarg($repo)));
         return $response;
     } 
     

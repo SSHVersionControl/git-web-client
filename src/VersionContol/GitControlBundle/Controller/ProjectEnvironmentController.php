@@ -85,8 +85,8 @@ class ProjectEnvironmentController extends BaseProjectController
                 $this->createEmptyGitRepository($projectEnvironment);
             }else if($gitAction === 'clone'){
                 //Create Git Clone
-                $cloneLocation = $form->get('gitclonelocation')->getData();
-                $this->cloneGitRepository($projectEnvironment,$cloneLocation);
+                
+                $this->cloneGitRepository($projectEnvironment);
             }
             
             $em->persist($projectEnvironment);
@@ -340,16 +340,17 @@ class ProjectEnvironmentController extends BaseProjectController
         $this->get('session')->getFlashBag()->add('notice', $response);
     }
     
-    protected function cloneGitRepository($projectEnvironment,$cloneLocation){
+    protected function cloneGitRepository($projectEnvironment){
         
         $gitCommands = $this->get('version_control.git_init')->overRideProjectEnvironment($projectEnvironment);
         try{
-            $response = $gitCommands->cloneRepository($cloneLocation);
+            $response = $gitCommands->cloneRepository($projectEnvironment->getGitCloneLocation());
+            $this->get('session')->getFlashBag()->add('notice', $response);
         }catch(\Exception $e){
             $this->get('session')->getFlashBag()->add('error', $e->getMessage());
         }
             
-        $this->get('session')->getFlashBag()->add('notice', $response);
+        
         
     }
     
