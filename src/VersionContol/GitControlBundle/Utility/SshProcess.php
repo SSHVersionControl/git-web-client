@@ -3,9 +3,9 @@
 namespace VersionContol\GitControlBundle\Utility;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use VersionContol\GitControlBundle\Utility\SshProcessInterface;
 
-
-class SshProcess
+class SshProcess implements SshProcessInterface 
 {
 
 
@@ -158,7 +158,7 @@ class SshProcess
     /**
      * @return void
      */
-    protected function disconnect()
+    public function disconnect()
     {
         if($this->shell){
             fclose($this->shell);

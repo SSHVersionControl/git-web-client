@@ -8,7 +8,7 @@ use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use VersionContol\GitControlBundle\Entity\Project;
-use VersionContol\GitControlBundle\Utility\SshProcess;
+use VersionContol\GitControlBundle\Utility\SshProcessInterface;
 use VersionContol\GitControlBundle\Utility\ProjectEnvironmentStorage;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use VersionContol\GitControlBundle\Event\GitAlterFilesEvent;
@@ -64,7 +64,7 @@ abstract class GitCommand {
     
     /**
      * SSH Process
-     * @var \VersionContol\GitControlBundle\Utility\SshProcess 
+     * @var \VersionContol\GitControlBundle\Utility\SshProcessInterface 
      */
     private $sshProcess;
     
@@ -259,7 +259,7 @@ abstract class GitCommand {
         return $this->logger;
     }
 
-    public function setLogger(\VersionContol\GitControlBundle\Logger\GitCommandLogger $logger) {
+    public function setLogger(GitCommandLogger $logger) {
         $this->logger = $logger;
         return $this;
     }
@@ -296,7 +296,7 @@ abstract class GitCommand {
      * @param SshProcess $sshProcess
      * @return \VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
      */
-    public function setSshProcess(\VersionContol\GitControlBundle\Utility\SshProcess $sshProcess) {
+    public function setSshProcess(\VersionContol\GitControlBundle\Utility\SshProcessInterface $sshProcess) {
         $this->sshProcess = $sshProcess;
         return $this;
     }
