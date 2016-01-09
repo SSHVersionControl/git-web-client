@@ -1,0 +1,67 @@
+<div class="row">
+        <div class="col-md-12">
+             <form action="{{ path('issuemilestone_show', { 'id': issueMilestone.id, 'project': project.id }) }}" method="GET">
+                <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search..." name="{{keywordParamaterName}}">
+                        <span class="input-group-btn">
+                          <button class="btn btn-default" type="submit">Go!</button>
+                        </span>
+                 </div><!-- /input-group -->
+             </form>
+        </div>
+    </div>
+
+    <div class="list-group spacer-top">
+        {% if(pagination|length > 0) %}
+            {% for issue in pagination %}
+               <div class="list-group-item">
+                   <div class="row">
+                       <div class="col-md-10">
+                           <strong class="str-truncated"><a href="{{ path('issue_show', { 'id': issue.id }) }}">{{ issue.title }}</a></strong>
+                       </div>
+                       <div class="col-md-2">
+                           <i class="fa fa-comment-o fa-fw"></i>{{issue.issueComments|length}}
+                       </div>
+                   </div>
+                   {% if(issue.issueLabel|length > 0) %}
+                       <div class="row">
+                            <div class="col-md-10">
+                               {% for label in issue.issueLabel %}
+                                   <div style="background-color:#{{ label.hexColor }};" class="issue-label btn-xs">
+                                       <a href="{{ path('issuelabel_edit', { 'id': label.id, 'project': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
+                                            <i class="fa fa-tag fa-fw"></i>
+                                           {{ label.title }}
+                                       </a>
+                                   </div>
+                               {% endfor %}
+                           </div>
+                       </div>
+                   {% endif %}
+                   <div class="row">
+                       <div class="col-md-10">
+                           <small>#{{issue.id}} opened by {{issue.verUser.name}} {{issue.createdAt|time_ago_in_words}}</small>
+                       </div>
+                       <div class="col-md-2">
+                           .
+                       </div>
+                   </div>
+               </div>
+
+           {% endfor %}
+        {% else %}
+            {% if(keyword) %}
+                <p>There are no {{status}} issues for this search string. Please try a different search.</p>
+            {% else %}
+                <div class="list-group-item">
+                    <p>There are no {{status}} issues for this milestone</p>
+                </div>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="count">
+        {{ pagination.getTotalItemCount }}
+    </div>
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+

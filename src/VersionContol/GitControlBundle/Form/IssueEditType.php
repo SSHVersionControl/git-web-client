@@ -22,11 +22,21 @@ class IssueEditType extends AbstractType
                     ,'required' => false
                     ,'empty_value' => 'Please select a State')
                     )
-            ->add('issueMilestone','entity')
-            ->add('project', 'hidden_entity',array(
-                    'class' => 'VersionContol\GitControlBundle\Entity\Project'
+            ->add('issueMilestone','entity',array(
+                    'multiple' => false,   // Multiple selection allowed
+                    //'expanded' => true,   // Render as checkboxes
+                    'placeholder' => 'Choose a milestone',
+                    'required' => false,
+                    'property' => 'title', // Assuming that the entity has a "name" property
+                    'class' => 'VersionContol\GitControlBundle\Entity\IssueMilestone'
                 ))
-            ->add('issueLabel')
+             ->add('issueLabel','entity',array(
+                    'multiple' => true,   // Multiple selection allowed
+                    'expanded' => true,   // Render as checkboxes
+                    'property' => 'title', // Assuming that the entity has a "name" property
+                    'class' => 'VersionContol\GitControlBundle\Entity\IssueLabel',
+                    'required' => false
+                ))
         ;
     }
     

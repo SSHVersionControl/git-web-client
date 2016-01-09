@@ -112,7 +112,10 @@ class GitBranchCommand extends GitCommand {
             $output = $this->runCommand(sprintf('git branch "%s"',$branchName));
 
             if($switchToBranch){
-                $output .= $this->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));;
+                $output .= $this->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));
+                
+                //Trigger file alter Event
+                $this->triggerGitAlterFilesEvent();
             }
         }else{
             throw new \Exception('This is not a valid branch name');
@@ -137,6 +140,8 @@ class GitBranchCommand extends GitCommand {
 
             if($switchToBranch){
                 $output .= $this->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));;
+                //Trigger file alter Event
+                $this->triggerGitAlterFilesEvent();
             }
         }else{
             throw new \Exception('This is not a valid branch name');
@@ -199,6 +204,8 @@ class GitBranchCommand extends GitCommand {
     public function checkoutBranch($branchName){
         
         $response = $this->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName))); 
+        
+        //Trigger file alter Event
         $this->triggerGitAlterFilesEvent();
         
         return $response;
@@ -242,7 +249,12 @@ class GitBranchCommand extends GitCommand {
         if($branchName === $currentBranch){
             throw new \Exception('You cannot merge a branch with itself. Please checkout a different branch before trying to merge.');
         }
-        return $this->runCommand(sprintf('git merge --no-ff %s 2>&1',  escapeshellarg($branchName)));
+        $response = $this->runCommand(sprintf('git merge --no-ff %s 2>&1',  escapeshellarg($branchName)));
+        
+        //Trigger file alter Event
+        $this->triggerGitAlterFilesEvent();
+        
+        return $response;
     }
     
     /**
@@ -265,7 +277,12 @@ class GitBranchCommand extends GitCommand {
      */
     public function abortMerge(){
         
-        return $this->runCommand('git merge --abort 2>&1');
+        $response = $this->runCommand('git merge --abort 2>&1');
+        
+         //Trigger file alter Event
+        $this->triggerGitAlterFilesEvent();
+        
+        return $response;
     }
     
     /**

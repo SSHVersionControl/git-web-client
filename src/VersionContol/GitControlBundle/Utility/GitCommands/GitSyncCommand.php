@@ -137,7 +137,12 @@ class GitSyncCommand extends GitCommand {
      * @return string command response
      */
     public function resetPullRequest(){
-        return $this->runCommand('git reset --hard ORIG_HEAD');
+        $response = $this->runCommand('git reset --hard ORIG_HEAD');
+        
+         //Trigger file alter Event
+        $this->triggerGitAlterFilesEvent();
+        
+        return $response;
     }
     
     /**
@@ -192,7 +197,13 @@ class GitSyncCommand extends GitCommand {
         }
         
         $command = sprintf($command.' %s %s 2>&1',escapeshellarg($remote),escapeshellarg($branch));
-        return $this->runCommand($command);
+        
+        $response = $this->runCommand($command);
+        
+         //Trigger file alter Event
+        $this->triggerGitAlterFilesEvent();
+        
+        return $response;
     }
     
 }

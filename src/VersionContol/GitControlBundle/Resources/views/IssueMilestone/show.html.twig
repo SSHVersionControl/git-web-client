@@ -6,7 +6,7 @@
 
 {% block content -%}
     <h1 class="page-header">
-        Milestone #{{ entity.id }} <small>{{ entity.title }}</small> {{ entity.state }}
+        Milestone #{{ entity.id }} <small>{{ entity.title }}</small> 
     </h1>
         <ol class="breadcrumb">
             <li>
@@ -35,30 +35,82 @@
                  <div class="col-lg-4 text-right">
                      <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
                      <a href="{{ path('issuemilestone_edit',{ 'id': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-edit fa-fw"></i>Edit</a>
-                     <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Issue</a>
+                     <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Milestone</a>
                  </div>
             </div>
         </div>
         <div class="panel-body">
-            <ul class="timeline">
-                <li class="timeline-inverted">
-                    <div class="timeline-badge success">
-                        <i class="fa fa-check"></i>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="heading">
+                        <p><small class="text-muted"><i class="fa fa-clock-o"></i> Updated {{ entity.updatedAt|time_ago_in_words }}</small>
+                        </p>
                     </div>
-                    <div class="timeline-panel">
-                        <div class="timeline-heading">
-                            <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{ entity.createdAt|time_ago_in_words }}</small>
-                            </p>
-                        </div>
-                        <div class="timeline-body">
-                            <p>{{ entity.description | markdown }}</p>
+                    <p>{{ entity.description | markdown }}</p>
+                </div>
+                <div class="col-md-6">
+                    {% if(closedCount == 0)%}
+                        {% set progress = 0 %}
+                    {% elseif(openCount == 0)%}
+                        {% set progress = 100 %}
+                    {% else %}
+                        {% set progress = ((openCount / (openCount + closedCount) ) * 100)%}
+                    {% endif %}
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{progress}}%;">
+                          {{progress}}%
                         </div>
                     </div>
-                    
-                </li>
-                Need to show issues
-            </ul>
+                    <ul>
+                        <li>
+                            <strong>{{progress}}%</strong> complete
+                        </li>
+                        <li>
+                            <strong>{{openCount}}</strong> Open
+                        </li>
+                        <li>
+                            <strong>{{closedCount}}</strong> Closed
+                        </li>
+                    </ul>
+                </div>
+            </div>
             
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+             <div class="panel panel-default">
+                 <div class="panel-heading">
+                    <div class="row">
+                         <div class="col-lg-12">
+                             <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i>Open Issues </h3>
+                         </div>
+                    </div>
+                </div>
+                 <div class="panel-body">
+                      {{ render(controller(
+                'VersionContolGitControlBundle:IssueMilestone:milestonesIssues',
+                { 'issueMilestone': entity }
+            )) }}
+                 </div>
+             </div>
+        </div>
+        <div class="col-md-6">
+             <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="row">
+                         <div class="col-lg-12">
+                             <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i>Closed Issues </h3>
+                         </div>
+                    </div>
+                </div>
+                <div class="panel-body">
+                      {{ render(controller(
+                'VersionContolGitControlBundle:IssueMilestone:milestonesIssues',
+                { 'issueMilestone': entity, 'filter': 'closed', pageParameterName:'pageClosed',keywordParamaterName:'keywordclosed' }
+            )) }}
+                 </div>
+             </div>
         </div>
     </div>
 

@@ -3,7 +3,7 @@ namespace VersionContol\GitControlBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-class IssueRepository extends EntityRepository
+class IssueMilestoneRepository extends EntityRepository
 {
     
 
@@ -12,10 +12,10 @@ class IssueRepository extends EntityRepository
   * @param type $project
   * @return integer
   */
-  public function countIssuesForProjectWithStatus($project,$status = 'open',$keyword=false,$milestone=null)
+  public function countForProjectWithStatus($project,$status = 'open',$keyword=false)
   {
       
-    $qb = $this->findByProjectAndStatus($project,$status,$keyword,$milestone,true);
+    $qb = $this->findByProjectAndStatus($project,$status,$keyword,true);
     
     $qb->select('count(a)');
     
@@ -23,7 +23,7 @@ class IssueRepository extends EntityRepository
     
   }
   
-  public function findByProjectAndStatus($project,$status = 'open',$keyword = false,$milestone=null,$queryOnly= false){
+  public function findByProjectAndStatus($project,$status = 'open',$keyword = false,$queryOnly= false){
      $em=$this->getEntityManager();
      $qb = $em->createQueryBuilder();
      
@@ -32,13 +32,13 @@ class IssueRepository extends EntityRepository
      
 
      $qb->select('a')
-       ->from('VersionContolGitControlBundle:Issue','a')
+       ->from('VersionContolGitControlBundle:IssueMilestone','a')
        ->where($where)
        ->setParameters($parameters);
      
      if($status){
           $qb->andWhere(
-            $qb->expr()->like('a.status', ':status')
+            $qb->expr()->like('a.state', ':status')
           )->setParameter('status', $status);
      }
       //If keyword is set 
@@ -50,14 +50,6 @@ class IssueRepository extends EntityRepository
             $qb->expr()->like('a.description', ':keyword')
         )->setParameter('keyword', '%'.$keyword.'%');
       }
-      
-      if($milestone != null){
-          $qb->andWhere(
-            $qb->expr()->eq('a.issueMilestone', ':milestone')
-          )->setParameter('milestone', $milestone);
-     }
-     
-     $qb->orderBy('a.updatedAt','desc');
     
      if($queryOnly === true){
          return $qb;
