@@ -24,8 +24,8 @@ class StatusHashValidator extends ConstraintValidator
         $statusHash = $commitEntity->getStatusHash();
         $this->gitStatusCommand->setProject($commitEntity->getProject());
         $currentStatusHash = $this->gitStatusCommand->getStatusHash();
-        print_r($statusHash."<br/> \n");
-        print_r($currentStatusHash."<br/> \n");
+        //print_r($statusHash."<br/> \n");
+        //print_r($currentStatusHash."<br/> \n");
         
         if($currentStatusHash !== $statusHash){
             $this->context->buildViolation($constraint->message)

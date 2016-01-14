@@ -240,7 +240,7 @@ class ProjectCommitController extends BaseProjectController
             //print_r($gitRemotes);
             foreach($gitRemotes as $gitRemote){
                 $response = $this->gitSyncCommands->push($gitRemote,$branch);  
-                $this->get('session')->getFlashBag()->add('notice', $response.print_r($gitRemotes,true));
+                $this->get('session')->getFlashBag()->add('notice', $response);
             }
         }
     }
