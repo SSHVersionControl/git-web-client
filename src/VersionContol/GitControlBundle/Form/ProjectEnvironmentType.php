@@ -9,6 +9,11 @@ use Symfony\Component\Form\FormInterface;
 
 class ProjectEnvironmentType extends AbstractType
 {
+    protected $useCloneLocation;
+    
+    public function __construct($useCloneLocation = false) {
+        $this->useCloneLocation = $useCloneLocation;
+    }
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -26,9 +31,12 @@ class ProjectEnvironmentType extends AbstractType
             ->add('host')
             ->add('username')
             ->add('password','password',array('required' => false))
-            ->add('projectEnvironmentFilePerm',  new ProjectEnvironmentFilePermType(), array('required'  => false))
-            ->add('gitCloneLocation')    
-        ;
+            ->add('projectEnvironmentFilePerm',  new ProjectEnvironmentFilePermType(), array('required'  => false));
+        
+        if($this->useCloneLocation === true){
+            $builder->add('gitCloneLocation') ; 
+        }
+        
     }
     
     /**

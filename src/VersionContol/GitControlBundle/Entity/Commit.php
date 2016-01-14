@@ -43,6 +43,14 @@ class Commit {
      */
     private $project;
     
+    /**
+     *
+     * @var integer 
+     */
+    private $issue;
+    
+    private $issueAction;
+    
     public function __construct() {
         
     }
@@ -80,6 +88,24 @@ class Commit {
 
     public function setProject(Project $project) {
         $this->project = $project;
+        return $this;
+    }
+
+    public function getIssue() {
+        return $this->issue;
+    }
+
+    public function getIssueAction() {
+        return $this->issueAction;
+    }
+
+    public function setIssue($issue) {
+        $this->issue = $issue;
+        return $this;
+    }
+
+    public function setIssueAction($issueAction) {
+        $this->issueAction = $issueAction;
         return $this;
     }
 

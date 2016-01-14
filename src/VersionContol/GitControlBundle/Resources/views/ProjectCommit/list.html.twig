@@ -55,6 +55,25 @@
                         {{ form_widget(commit_form.comment,{ 'attr': { 'class': 'form-control', 'placeholder':'Enter a commit message here'}}) }}
                         <!--<textarea class="form-control" rows="3" name="comment" placeholder="Enter a commit message here" id="commit"></textarea>-->
                     </div>
+                    {% if(issueCount > 0) %}
+                        <fieldset class="issue-options-fieldset">
+                            <legend class="issue-options"><label><a href="#issue-options" data-toggle="collapse" class="collapse-icon collapsed">Issue Options</a></label></legend>
+                            <div class="collapse" id="issue-options">
+                                <div class="form-group">
+                                    {{ form_label(commit_form.issue) }}
+                                    {{ form_errors(commit_form.issue) }}
+                                    {{ form_widget(commit_form.issue,{ 'attr': { 'class': 'form-control issue-select'}}) }}
+                                </div>
+
+                                <div class="form-group">
+                                    {{ form_label(commit_form.issueAction) }}
+                                    {{ form_errors(commit_form.issueAction) }}
+                                    {{ form_widget(commit_form.issueAction) }}
+                                </div>
+
+                            </div>
+                        </fieldset>
+                    {% endif %}
                     <div class="text-right">
                         <a href="{{ path('home') }}" class="btn btn-default" >Cancel</a>
                         {{ form_widget(commit_form.submit, { 'attr': {'class': ' btn-success submit','data-loading-text':'Committing...'} }) }}
@@ -89,6 +108,94 @@
         $(document).on("hidden.bs.modal", ".modal:not(.local-modal)", function (e) {
             $(e.target).removeData("bs.modal").find(".modal-content").empty().html('<div class="modal-body">Loading...</div>');
         });
+        
+        function formatIssue (issue) {
+            if (issue.loading) return issue.title;
+
+            var markup = "<div class='select2-result-issues clearfix'>" +
+              "<div class='select2-result-issue_meta'>" +
+                "<div class='select2-result-issue_title'>" + issue.title + "</div>";
+
+            if (issue.description) {
+              markup += "<div class='select2-result-issue_description'>" + issue.description + "</div>";
+            }
+
+            markup += "<div class='select2-result-issue_status'>" + issue.status + "</div>" +
+            "</div></div>";
+
+            return markup;
+        }
+
+        function formatIssueSelection (issue) {
+          return issue.title;
+        }
+    
+        $(".issue-select").select2({
+            multiple: false
+            ,ajax: {
+              url: "/issues/search/{{project.id}}",
+              dataType: 'json',
+              delay: 250,
+              data: function (term, page) {
+                return {
+                  keyword: term, // search term
+                  page: page
+                };
+              },
+              results: function(data, page) {
+                  var formatedData = []; 
+                  
+                  $.each( data.results, function( index, issue ) {
+                    //alert( name + ": " + count );
+                    formatedData.push(issue);
+                  });
+                  return {
+                    results: formatedData
+                  };
+                }
+              /*processResults: function (data, params) {
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+
+                return {
+                  results: data.items,
+                  pagination: {
+                    more: (params.page * 30) < data.total_count
+                  }
+                };
+              }*/
+
+            },
+            initSelection: function(element, callback) {
+                // the input tag has a value attribute preloaded that points to a preselected movie's id
+                // this function resolves that id attribute to an object that select2 can render
+                // using its formatResult renderer - that way the movie name is shown preselected
+                var issueId=$(element).val();
+                if (issueId!=="") {
+                    $.ajax("issues/find/"+issueId, {
+                        dataType: "json",
+                        success:function(data){
+                            callback(data.result);
+                        }
+                    }
+                    );
+                }
+            },
+           // escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+            minimumInputLength: 1,
+                    
+                    
+            formatResult: formatIssue, // omitted for brevity, see the source of this page
+            formatSelection: formatIssueSelection,  // omitted for brevity, see the source of this page
+            dropdownCssClass: "bigdrop", // apply css that makes the dropdown taller
+            escapeMarkup: function (m) { return m; }  
+            
+            //templateResult: formatRepo, // omitted for brevity, see the source of this page
+            //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+          });
      });
      </script>
      

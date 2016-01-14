@@ -190,7 +190,7 @@ class SshProcess implements SshProcessInterface
 
         if (count($stderr) > 1) {
             //print_r($stderr);
-             throw new \RuntimeException(sprintf('Error in command shell:%s',$command));
+             throw new \RuntimeException(sprintf("Error in command shell:%s \n Error Response:%s",$command,implode("\n", $stderr)));
             //$this->dispatcher->dispatch(Events::onDeploymentRsyncFeedback, new FeedbackEvent('err', implode("\n", $stderr)));
         }
 

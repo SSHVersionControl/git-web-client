@@ -5,11 +5,18 @@ namespace VersionContol\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CommitType extends AbstractType
 {
     protected $fileChoices = array();
     
+    protected $includeIssues;
+    
+    public function __construct($includeIssues = false) {
+        $this->includeIssues = $includeIssues;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -30,10 +37,7 @@ class CommitType extends AbstractType
                 //new NotBlank()
             //)
             ))
-        //->add('project', 'hidden', array('property_path' => 'project.id'))
-        /*->add('project', 'hidden',array(
-            'data_class' => 'VersionContol\GitControlBundle\Entity\Project'
-        ))*/
+
         ->add('files', 'choice', array(
             'choices' => $this->getFileChoices(),
             //'class' => '\VersionContol\GitControlBundle\Entity\GitFile',
@@ -51,9 +55,26 @@ class CommitType extends AbstractType
             //    new NotBlank()
             //    ,new \VersionContol\GitControlBundle\Validator\Constraints\StatusHash()
             //)
-            ))       
-
-        ;
+            ));
+                
+        if($this->includeIssues === true){
+            $builder->add('issue', 'hidden')
+            ->add('issueAction','choice', [
+                    'choices' => [
+                        'Close Issue' => [
+                            'Fixed Issue' => 'Fixed',
+                            'Closed Issue' => 'Closed',
+                            'Resolved Issue' => 'Resolved',
+                        ],
+                        'Related to Issue' => [
+                            'Reference Issue' => 'Reference',
+                            'See Issue' => 'See'
+                        ]
+                    ],
+                    'choices_as_values' => true
+                ]
+                );
+        }
     }
     
     /**

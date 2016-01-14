@@ -457,4 +457,48 @@ class IssueController extends Controller
 
         return $form;
     }
+    
+    /**
+     * Displays a form to edit an existing Issue entity.
+     *
+     * @Route("s/search/{id}", name="issue_searchajax")
+     * @Method("GET")
+     */
+    public function searchAjaxAction($id,Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $project = $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+        
+        if (!$project) {
+            throw $this->createNotFoundException('Unable to find project entity.');
+        }
+        
+        $keyword = $request->query->get('keyword', false);
+        $filter = $request->query->get('filter', 'open');
+        
+        $issueEntities = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($project,$filter,$keyword,null,false);
+        $result = [];
+        foreach($issueEntities as $issueEntity){
+            $result[] = array(
+                'id' => $issueEntity->getId()
+                ,'title' => $issueEntity->getTitle()
+                ,'description' => $issueEntity->getDescription() 
+                ,'status' => $issueEntity->getStatus()
+            );
+        }
+        
+        return new JsonResponse(array('success' => true, 'results' => $result));
+    }
+    
+    /**
+     * Displays a form to edit an existing Issue entity.
+     *
+     * @Route("s/find/{issueId}", name="issue_findajax")
+     * @Method("GET")
+     */
+    public function findAjaxAction($issueId)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+    }
 }

@@ -112,7 +112,7 @@ class ProjectEnvironmentController extends BaseProjectController
      */
     private function createCreateForm(ProjectEnvironment $entity,$project,$gitaction = '')
     {
-        $form = $this->createForm(new ProjectEnvironmentType(), $entity, array(
+        $form = $this->createForm(new ProjectEnvironmentType(true), $entity, array(
             'action' => $this->generateUrl('projectenvironment_create',array('project' => $project->getId())),
             'method' => 'POST',
         ));
