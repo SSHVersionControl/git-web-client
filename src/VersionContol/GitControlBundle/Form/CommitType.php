@@ -13,8 +13,11 @@ class CommitType extends AbstractType
     
     protected $includeIssues;
     
-    public function __construct($includeIssues = false) {
+    protected $gitRemoteVersions;
+    
+    public function __construct($includeIssues = false,$gitRemoteVersions = array()) {
         $this->includeIssues = $includeIssues;
+        $this->gitRemoteVersions = $gitRemoteVersions;
     }
 
     /**
@@ -56,6 +59,7 @@ class CommitType extends AbstractType
             //    ,new \VersionContol\GitControlBundle\Validator\Constraints\StatusHash()
             //)
             ));
+ 
                 
         if($this->includeIssues === true){
             $builder->add('issue', 'hidden')
@@ -74,6 +78,23 @@ class CommitType extends AbstractType
                     'choices_as_values' => true
                 ]
                 );
+        }
+        
+        if(is_array($this->gitRemoteVersions) && count($this->gitRemoteVersions) > 0){
+            $remoteChoices = array();
+            foreach($this->gitRemoteVersions as $remoteVersion){
+                $remoteChoices[$remoteVersion[0]] = $remoteVersion[0].'('.$remoteVersion[1].')'; 
+            }
+            $builder->add('pushRemote','choice', [
+                'choices' => $remoteChoices,
+                'multiple'     => true,
+                'expanded'  => true,
+                'required'  => false,
+                'choices_as_values' => false,
+                'label' => 'Push changes immediately to:'
+                
+            ]);
+            
         }
     }
     

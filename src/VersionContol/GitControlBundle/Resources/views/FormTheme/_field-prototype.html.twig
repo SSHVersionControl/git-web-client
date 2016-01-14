@@ -1,4 +1,4 @@
-
+{% use "bootstrap_3_layout.html.twig" %}
 {% block collection_widget %}
 {% spaceless %}
     <div class="wrapper-collection">
@@ -76,6 +76,7 @@
                 <div class="row">
                     <div class="col-md-1">
                             <label>
+ 
                               {{- form_widget(child) -}} 
                             </label>
                     </div>
@@ -103,6 +104,14 @@
 
 {%- endblock _versioncontol_gitcontrolbundle_commit_files_widget %}  
 
-{%- block checkbox_widget -%}
-    <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} class="commit-file"/>
-{%- endblock checkbox_widget -%}
+
+{% block checkbox_widget -%}
+    {% set parent_label_class = parent_label_class|default('') -%}
+
+    {% if unique_block_prefix == '_versioncontol_gitcontrolbundle_commit_files_entry' %}
+        <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} class="commit-file"/>
+    {% else %}
+        {{- parent() -}}
+        
+    {%- endif %}
+{%- endblock checkbox_widget %}

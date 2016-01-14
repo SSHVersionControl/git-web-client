@@ -49,10 +49,27 @@ class Commit {
      */
     private $issue;
     
+    /**
+     *
+     * @var integer 
+     */
     private $issueAction;
     
+    /**
+     * Flag to state if the system should push after commit
+     * 
+     * @var boolean
+     */
+    private $pushOnCommit;
+    
+    /**
+     *
+     * @var array 
+     */
+    private $pushRemote;
+    
     public function __construct() {
-        
+        $this->pushRemote = array();
     }
     
     public function getComment() {
@@ -106,6 +123,24 @@ class Commit {
 
     public function setIssueAction($issueAction) {
         $this->issueAction = $issueAction;
+        return $this;
+    }
+
+    public function getPushOnCommit() {
+        return $this->pushOnCommit;
+    }
+
+    public function setPushOnCommit($pushOnCommit) {
+        $this->pushOnCommit = $pushOnCommit;
+        return $this;
+    }
+
+    public function getPushRemote() {
+        return $this->pushRemote;
+    }
+
+    public function setPushRemote($pushRemote) {
+        $this->pushRemote = $pushRemote;
         return $this;
     }
 

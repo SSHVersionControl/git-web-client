@@ -73,7 +73,6 @@ class ProjectCommitController extends BaseProjectController
        $commitForm = $this->createCommitForm($commitEntity);
        
        
-       
         return array(
             'project'      => $this->project,
             'branchName' => $branchName,
@@ -113,24 +112,30 @@ class ProjectCommitController extends BaseProjectController
                 $this->gitCommands->stageFiles($selectedFiles);
                 $commitMessage = $commitEntity->getComment();
                 
+                //Handle Issue
                 $issueId = $commitEntity->getIssue();
-                $em = $this->getDoctrine()->getManager();
-                $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
-                if($issueEntity){
-                    $issueAction = $commitEntity->getIssueAction();
-                    $commitMessage = $issueAction.' #'.$issueEntity->getId().':'.$commitMessage;
-                    if(in_array($issueAction,array('Fixed','Closed','Resolved'))){
-                        //Close Issue
-                        $this->closeIssue($issueEntity);
+                
+                if($issueId){
+                    $em = $this->getDoctrine()->getManager();
+                    $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+                    if($issueEntity){
+                        $issueAction = $commitEntity->getIssueAction();
+                        $commitMessage = $issueAction.' #'.$issueEntity->getId().':'.$commitMessage;
+                        if(in_array($issueAction,array('Fixed','Closed','Resolved'))){
+                            //Close Issue
+                            $this->closeIssue($issueEntity);
+                        }
                     }
                 }
+                
                 $this->gitCommands->commit($commitEntity->getComment());
                 
                 $this->get('session')->getFlashBag()->add('notice'
                 , count($selectedFiles)." files have been committed");
                 
-                //Update Issues
-
+                //Push to remote
+                $this->pushToRemote($commitEntity);
+              
                 return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
         
             }catch(\Exception $e){
@@ -177,9 +182,11 @@ class ProjectCommitController extends BaseProjectController
     
     private function createCommitForm($commitEntity){
  
-        $includeIssues = $this->issuesCount > 0?true:false;
+        $includeIssues = ($this->issuesCount > 0)?true:false;
         $fileChoices = $this->gitCommands->getFilesToCommit();
-        $form = $this->createForm((new CommitType($includeIssues))->setFileChoices($fileChoices), $commitEntity, array(
+        $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
+        
+        $form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
             'action' => $this->generateUrl('project_commit', array('id' => $this->project->getId())),
             'method' => 'POST',
         ));
@@ -206,11 +213,14 @@ class ProjectCommitController extends BaseProjectController
         
     }
     
-    protected function closeIssue($issueEntity){
+    /**
+     * 
+     * @param \VersionContol\GitControlBundle\Entity\Issue $issueEntity
+     * @throws \Exception
+     */
+    protected function closeIssue(\VersionContol\GitControlBundle\Entity\Issue $issueEntity){
         $em = $this->getDoctrine()->getManager();
 
-        //print_r('Issue Project id = '.$issueEntity->getProject()->getId().';');
-        //print_r('Project id = '.$this->project->getId().';');
         if ($issueEntity->getProject()->getId() !== $this->project->getId()) {
             throw $this->createNotFoundException('Issue does not match this project. Issue state was not updated');
         }
@@ -220,6 +230,18 @@ class ProjectCommitController extends BaseProjectController
         
         $this->get('session')->getFlashBag()->add('notice'
                 ,"Issue #".$issueEntity->getId()." has been closed");
+    }
+    
+    protected function pushToRemote($commitEntity){
+        $branch = $this->gitSyncCommands->getCurrentBranch();
+        
+        $gitRemotes = $commitEntity->getPushRemote();
+        if(count($gitRemotes) > 0){
+            foreach($gitRemotes as $gitRemote){
+                $response = $this->gitSyncCommands->push($gitRemote,$branch);  
+                $this->get('session')->getFlashBag()->add('notice', $response);
+            }
+        }
     }
     
 }
