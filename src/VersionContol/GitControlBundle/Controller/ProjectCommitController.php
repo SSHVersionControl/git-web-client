@@ -109,31 +109,20 @@ class ProjectCommitController extends BaseProjectController
             }
 
             try{
+                //Git Stage selected files
                 $this->gitCommands->stageFiles($selectedFiles);
-                $commitMessage = $commitEntity->getComment();
                 
-                //Handle Issue
-                $issueId = $commitEntity->getIssue();
-                
-                if($issueId){
-                    $em = $this->getDoctrine()->getManager();
-                    $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
-                    if($issueEntity){
-                        $issueAction = $commitEntity->getIssueAction();
-                        $commitMessage = $issueAction.' #'.$issueEntity->getId().':'.$commitMessage;
-                        if(in_array($issueAction,array('Fixed','Closed','Resolved'))){
-                            //Close Issue
-                            $this->closeIssue($issueEntity);
-                        }
-                    }
-                }
-                
+                //Handle Issue Action eg Close issue. Update Commit message
+                $this->handleIssue($commitEntity);
+     
+                //Git Commit 
                 $this->gitCommands->commit($commitEntity->getComment());
                 
+                //Set notice of successfull commit
                 $this->get('session')->getFlashBag()->add('notice'
                 , count($selectedFiles)." files have been committed");
                 
-                //Push to remote
+                //Git Push to remote repository
                 $this->pushToRemote($commitEntity);
               
                 return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
@@ -214,7 +203,33 @@ class ProjectCommitController extends BaseProjectController
     }
     
     /**
+     * Check if issue options have been set and updates git message 
+     * and closes issue if certain issue actions are set.
      * 
+     * @param Commit $commitEntity]
+     */
+    protected function handleIssue(\VersionContol\GitControlBundle\Entity\Commit &$commitEntity){
+        $issueId = $commitEntity->getIssue();
+        $commitMessage = $commitEntity->getComment();
+        $issueCloseStatus = array('Fixed','Closed','Resolved');
+         
+        if($issueId){
+            $em = $this->getDoctrine()->getManager();
+            $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+            if($issueEntity){
+                $issueAction = $commitEntity->getIssueAction();
+                $commitMessage = $issueAction.' #'.$issueEntity->getId().':'.$commitMessage;
+                $commitEntity->setComment($commitMessage);
+                if(in_array($issueAction,$issueCloseStatus)){
+                    //Close Issue
+                    $this->closeIssue($issueEntity);
+                }
+            }
+        }
+    } 
+    
+    /**
+     * Closes Issue
      * @param \VersionContol\GitControlBundle\Entity\Issue $issueEntity
      * @throws \Exception
      */
@@ -232,12 +247,18 @@ class ProjectCommitController extends BaseProjectController
                 ,"Issue #".$issueEntity->getId()." has been closed");
     }
     
-    protected function pushToRemote($commitEntity){
+    
+    /**
+     * Push to remote repositories. Supports mulitple pushes
+     * 
+     * @param Commit $commitEntity
+     */
+    protected function pushToRemote(\VersionContol\GitControlBundle\Entity\Commit $commitEntity){
         $branch = $this->gitSyncCommands->getCurrentBranch();
         
         $gitRemotes = $commitEntity->getPushRemote();
         if(count($gitRemotes) > 0){
-            //print_r($gitRemotes);
+
             foreach($gitRemotes as $gitRemote){
                 $response = $this->gitSyncCommands->push($gitRemote,$branch);  
                 $this->get('session')->getFlashBag()->add('notice', $response);
