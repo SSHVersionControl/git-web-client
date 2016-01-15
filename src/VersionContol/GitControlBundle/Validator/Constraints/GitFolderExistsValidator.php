@@ -8,7 +8,7 @@ use VersionContol\GitControlBundle\Utility\SshProcess;
 
 use phpseclib\Net\SFTP;
 
-class SshDetailsValidator extends ConstraintValidator
+class GitFolderExistsValidator extends ConstraintValidator
 {
     /**
      *
@@ -29,27 +29,27 @@ class SshDetailsValidator extends ConstraintValidator
     public function validate($projectEnvironment, Constraint $constraint)
     {
         $gitPath = rtrim(trim($projectEnvironment->getPath()),'/');
-        
         if($projectEnvironment->getSsh() === true){
            
             $sftp = new SFTP($projectEnvironment->getHost(), 22);
             try{
-                if (!$sftp->login($projectEnvironment->getUsername(), $projectEnvironment->getPassword())) {
-                    $this->context->buildViolation($constraint->message)
-                        ->atPath('title')
-                        ->addViolation();
-                }else{
-                    //Validate path
-                     if ($sftp->is_dir($gitPath) === false){
-                        $this->context->buildViolation($constraint->messageFileDoesNotExist)
+                if ($sftp->login($projectEnvironment->getUsername(), $projectEnvironment->getPassword())) {
+                    if ($sftp->file_exists($gitPath.'/.git') === false){
+                        $this->context->buildViolation($constraint->message)
                             ->atPath('path')
                             ->addViolation();
                     }
                 }
             }catch(\Exception $e){
                 $this->context->buildViolation($e->getMessage())
-                        ->atPath('title')
+                        ->atPath('path')
                         ->addViolation();
+            }
+        }else{
+            if (file_exists($gitPath.'/.git') === false){
+                $this->context->buildViolation($constraint->message)
+                    ->atPath('path')
+                    ->addViolation();
             }
         }
     }

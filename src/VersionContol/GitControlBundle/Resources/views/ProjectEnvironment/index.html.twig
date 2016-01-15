@@ -1,0 +1,45 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <h1>Project list</h1>
+
+    <table class="records_list">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Path</th>
+                <th>Id</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for project in pagination %}
+            <tr>
+                <td><a href="{{ path('project_commitlist', { 'id': project.id }) }}">{{ project.title }}</a></td>
+                <td>{{ project.description }}</td>
+                <td>{{ project.path }}</td>
+                <td>{{ project.id }}</td>
+                <td>
+                <ul>
+                    <li>
+                        <a href="{{ path('project_commitlist', { 'id': project.id }) }}">show</a>
+                    </li>
+                    <li>
+                        <a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a>
+                    </li>
+                </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+        <ul>
+        <li>
+            <a href="{{ path('project_new') }}">
+                Create a new entry
+            </a>
+        </li>
+    </ul>
+    {% endblock %}

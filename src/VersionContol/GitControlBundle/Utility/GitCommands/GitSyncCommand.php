@@ -154,7 +154,8 @@ class GitSyncCommand extends GitCommand {
      */
     public function push($remote,$branch){
         
-        $command = sprintf('git push %s %s 2>&1',escapeshellarg($remote),escapeshellarg($branch));
+        $command = sprintf('git push %s %s 2>&1',escapeshellarg(trim($remote)),escapeshellarg(trim($branch)));
+
         return $this->runCommand($command);
     }
     

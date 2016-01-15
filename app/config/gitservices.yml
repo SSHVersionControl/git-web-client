@@ -5,6 +5,9 @@ services:
             - [setSecurityContext, ["@security.token_storage"]]
             - [setProjectEnvironmentStorage, ["@version_control.project_environmnent_storage"]]
             - [setDispatcher, ["@event_dispatcher"]]
+            - [setLogger, ["@version_control.logger"]]
+            - [setSshProcess, ["@version_control.ssh_process"]]
+            
             
     version_control.git_log:
         class:  VersionContol\GitControlBundle\Utility\GitCommands\GitLogCommand
@@ -25,3 +28,27 @@ services:
     version_control.git_files:
         class:  VersionContol\GitControlBundle\Utility\GitCommands\GitFilesCommand
         parent: version_control.git_command_base
+        
+    version_control.git_init:
+        class:  VersionContol\GitControlBundle\Utility\GitCommands\GitInitCommand
+        parent: version_control.git_command_base
+        
+    version_control.gitcommand_collector:
+        class: VersionContol\GitControlBundle\Profiler\GitCommandCollector
+        tags:
+            -
+                name:     data_collector
+                template: 'VersionContolGitControlBundle:Profiler:GitCommand.html.twig'
+                id:       'version_control.gitcommand_collector'
+                #priority: 300
+        public: false
+        arguments:
+            - @version_control.logger
+        
+    version_control.logger:  
+        class: VersionContol\GitControlBundle\Logger\GitCommandLogger
+        arguments:
+            - @logger
+            - %kernel.debug%
+        tags:
+            - { name: monolog.logger, channel: 'gitcommand' }    

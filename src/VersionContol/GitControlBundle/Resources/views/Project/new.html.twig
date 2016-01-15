@@ -18,10 +18,6 @@
                     {{ form_widget(form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
                 </div>
                 
-                <div class="form-group">
-                    {{ form_errors(form.projectEnvironment) }}
-                    {{ form_widget(form.projectEnvironment,{'attr': {'class': 'curriculum'}}) }}
-                </div>
 
                 <div class="text-right">
                     <a href="{{ path('home') }}" class="btn btn-default">
@@ -37,7 +33,10 @@
                 <h4>Instructions</h4>
             </div>
             <div class="panel-body">
-                <p>Description</p>
+                <p>Fill in a the form to create a new project. A project is usually a collection 
+                of different git projects eg Development, Staging, Live. Each of these git projects 
+                are referred to as "Project Enviroments". Once you create the project you will be able to create 
+                the Project Enviroments.</p>
             </div>
             
         </div>

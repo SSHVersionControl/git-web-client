@@ -5,11 +5,21 @@ namespace VersionContol\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class CommitType extends AbstractType
 {
     protected $fileChoices = array();
     
+    protected $includeIssues;
+    
+    protected $gitRemoteVersions;
+    
+    public function __construct($includeIssues = false,$gitRemoteVersions = array()) {
+        $this->includeIssues = $includeIssues;
+        $this->gitRemoteVersions = $gitRemoteVersions;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -30,10 +40,7 @@ class CommitType extends AbstractType
                 //new NotBlank()
             //)
             ))
-        //->add('project', 'hidden', array('property_path' => 'project.id'))
-        /*->add('project', 'hidden',array(
-            'data_class' => 'VersionContol\GitControlBundle\Entity\Project'
-        ))*/
+
         ->add('files', 'choice', array(
             'choices' => $this->getFileChoices(),
             //'class' => '\VersionContol\GitControlBundle\Entity\GitFile',
@@ -51,9 +58,44 @@ class CommitType extends AbstractType
             //    new NotBlank()
             //    ,new \VersionContol\GitControlBundle\Validator\Constraints\StatusHash()
             //)
-            ))       
-
-        ;
+            ));
+ 
+                
+        if($this->includeIssues === true){
+            $builder->add('issue', 'hidden')
+            ->add('issueAction','choice', [
+                    'choices' => [
+                        'Close Issue' => [
+                            'Fixed Issue' => 'Fixed',
+                            'Closed Issue' => 'Closed',
+                            'Resolved Issue' => 'Resolved',
+                        ],
+                        'Related to Issue' => [
+                            'Reference Issue' => 'Reference',
+                            'See Issue' => 'See'
+                        ]
+                    ],
+                    'choices_as_values' => true
+                ]
+                );
+        }
+        
+        if(is_array($this->gitRemoteVersions) && count($this->gitRemoteVersions) > 0){
+            $remoteChoices = array();
+            foreach($this->gitRemoteVersions as $remoteVersion){
+                $remoteChoices[$remoteVersion[0]] = $remoteVersion[0].'('.$remoteVersion[1].')'; 
+            }
+            $builder->add('pushRemote','choice', [
+                'choices' => $remoteChoices,
+                'multiple'     => true,
+                'expanded'  => true,
+                'required'  => false,
+                'choices_as_values' => false,
+                'label' => 'Push changes immediately to:'
+                
+            ]);
+            
+        }
     }
     
     /**

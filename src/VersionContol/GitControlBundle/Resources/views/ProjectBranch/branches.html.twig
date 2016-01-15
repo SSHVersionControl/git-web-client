@@ -139,3 +139,14 @@
     </div>
           
 {% endblock %}
+
+{% block footerJS %}
+    {% if(newBranchName) %}
+    <script>
+        $(function(){
+            $('#newBranch').modal('show');
+        });
+    </script>
+    {% endif %}
+    
+{% endblock %} 

@@ -47,20 +47,26 @@ class ProjectBranchController extends BaseProjectController
     /**
      * List Branches. Not sure how to list remote and local branches.
      *
-     * @Route("es/{id}", name="project_branches")
+     * @Route("es/{id}/{newBranchName}", name="project_branches")
      * @Method("GET")
      * @Template()
      */
-    public function branchesAction($id)
+    public function branchesAction($id,$newBranchName = false)
     {
         
         $this->initAction($id);
         $this->initListingView();
         
-        $form = $this->createNewBranchForm($this->project);
+        $defaultData = array();
+        if($newBranchName !== false){
+            $defaultData['name'] = $newBranchName; 
+        }
+        
+        $form = $this->createNewBranchForm($this->project,$defaultData);
   
         return array_merge($this->viewVariables, array(
             'form' => $form->createView(),
+            'newBranchName' => $newBranchName,
         ));
     }
     
@@ -139,7 +145,7 @@ class ProjectBranchController extends BaseProjectController
         //Remote Server choice 
         $gitRemoteBranches = $this->gitBranchCommands->getBranchRemoteListing();
         
-        $form = $this->createNewBranchForm($this->project,'project_branch_remote_checkout');
+        $form = $this->createNewBranchForm($this->project,array(),'project_branch_remote_checkout');
         $form->add('remotename', 'hidden', array(
                 'label' => 'Remote Branch Name'
                 ,'required' => true
@@ -171,7 +177,7 @@ class ProjectBranchController extends BaseProjectController
         $branchName = $this->gitBranchCommands->getCurrentBranch();
          $gitRemoteBranches = $this->gitBranchCommands->getBranchRemoteListing();
 
-        $form = $this->createNewBranchForm($this->project,'project_branch_remote_checkout');
+        $form = $this->createNewBranchForm($this->project,array(),'project_branch_remote_checkout');
         $form->add('remotename', 'hidden', array(
                 'label' => 'Remote Branch Name'
                 ,'required' => true
@@ -256,10 +262,10 @@ class ProjectBranchController extends BaseProjectController
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createNewBranchForm($project,$formAction = 'project_branch')
+    private function createNewBranchForm($project,$defaultData = array(),$formAction = 'project_branch')
     {
 
-        $defaultData = array();
+        //$defaultData = array();
         $form = $this->createFormBuilder($defaultData, array(
                 'action' => $this->generateUrl($formAction, array('id' => $project->getId())),
                 'method' => 'POST',

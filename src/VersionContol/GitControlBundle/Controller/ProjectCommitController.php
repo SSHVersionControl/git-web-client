@@ -46,6 +46,12 @@ class ProjectCommitController extends BaseProjectController
     protected $project;
     
     /**
+     * Number of issues for this project
+     * @var integer 
+     */
+    protected $issuesCount;
+    
+    /**
      * List files to be commited.
      *
      * @Route("/{id}", name="project_commitlist")
@@ -57,7 +63,7 @@ class ProjectCommitController extends BaseProjectController
         
        $this->initAction($id);
 
-       $branchName = $this->gitCommands->getCurrentBranch();
+       $branchName = $this->gitSyncCommands->getCurrentBranch();
        $files =  $this->gitCommands->getFilesToCommit();
        
        $commitEntity = new Commit();
@@ -66,11 +72,13 @@ class ProjectCommitController extends BaseProjectController
        
        $commitForm = $this->createCommitForm($commitEntity);
        
+       
         return array(
             'project'      => $this->project,
             'branchName' => $branchName,
             'files' => $files,
-            'commit_form' => $commitForm->createView()
+            'commit_form' => $commitForm->createView(),
+            'issueCount' => $this->issuesCount
         );
     }
 
@@ -100,23 +108,41 @@ class ProjectCommitController extends BaseProjectController
                 $selectedFiles[] = $gitFile->getPath1();
             }
 
-            $this->gitCommands->stageFiles($selectedFiles);
-            $this->gitCommands->commit($commitEntity->getComment());
-
-            $this->get('session')->getFlashBag()->add('notice'
+            try{
+                //Git Stage selected files
+                $this->gitCommands->stageFiles($selectedFiles);
+                
+                //Handle Issue Action eg Close issue. Update Commit message
+                $this->handleIssue($commitEntity);
+     
+                //Git Commit 
+                $this->gitCommands->commit($commitEntity->getComment());
+                
+                //Set notice of successfull commit
+                $this->get('session')->getFlashBag()->add('notice'
                 , count($selectedFiles)." files have been committed");
+                
+                //Git Push to remote repository
+                $this->pushToRemote($commitEntity);
+              
+                return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
+        
+            }catch(\Exception $e){
+                $this->get('session')->getFlashBag()->add('error'
+                , $e->getMessage());
+            }
 
-            return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
         }
         
-        $branchName = $this->gitCommands->getCurrentBranch();
+        $branchName = $this->gitSyncCommands->getCurrentBranch();
         $files =  $this->gitCommands->getFilesToCommit();
         
         return array(
             'project'      => $this->project,
             'branchName' => $branchName,
             'files' => $files,
-            'commit_form' => $commitForm->createView()
+            'commit_form' => $commitForm->createView(),
+            'issueCount' => $this->issuesCount
         );
 
     } 
@@ -138,13 +164,18 @@ class ProjectCommitController extends BaseProjectController
         
         $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
         $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
+
+        $this->issuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($this->project,'open');
     }
     
     
     private function createCommitForm($commitEntity){
  
+        $includeIssues = ($this->issuesCount > 0)?true:false;
         $fileChoices = $this->gitCommands->getFilesToCommit();
-        $form = $this->createForm((new CommitType())->setFileChoices($fileChoices), $commitEntity, array(
+        $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
+        
+        $form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
             'action' => $this->generateUrl('project_commit', array('id' => $this->project->getId())),
             'method' => 'POST',
         ));
@@ -169,6 +200,70 @@ class ProjectCommitController extends BaseProjectController
         
         return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
         
+    }
+    
+    /**
+     * Check if issue options have been set and updates git message 
+     * and closes issue if certain issue actions are set.
+     * 
+     * @param Commit $commitEntity]
+     */
+    protected function handleIssue(\VersionContol\GitControlBundle\Entity\Commit &$commitEntity){
+        $issueId = $commitEntity->getIssue();
+        $commitMessage = $commitEntity->getComment();
+        $issueCloseStatus = array('Fixed','Closed','Resolved');
+         
+        if($issueId){
+            $em = $this->getDoctrine()->getManager();
+            $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+            if($issueEntity){
+                $issueAction = $commitEntity->getIssueAction();
+                $commitMessage = $issueAction.' #'.$issueEntity->getId().':'.$commitMessage;
+                $commitEntity->setComment($commitMessage);
+                if(in_array($issueAction,$issueCloseStatus)){
+                    //Close Issue
+                    $this->closeIssue($issueEntity);
+                }
+            }
+        }
+    } 
+    
+    /**
+     * Closes Issue
+     * @param \VersionContol\GitControlBundle\Entity\Issue $issueEntity
+     * @throws \Exception
+     */
+    protected function closeIssue(\VersionContol\GitControlBundle\Entity\Issue $issueEntity){
+        $em = $this->getDoctrine()->getManager();
+
+        if ($issueEntity->getProject()->getId() !== $this->project->getId()) {
+            throw $this->createNotFoundException('Issue does not match this project. Issue state was not updated');
+        }
+        
+        $issueEntity->setClosed();
+        $em->flush();
+        
+        $this->get('session')->getFlashBag()->add('notice'
+                ,"Issue #".$issueEntity->getId()." has been closed");
+    }
+    
+    
+    /**
+     * Push to remote repositories. Supports mulitple pushes
+     * 
+     * @param Commit $commitEntity
+     */
+    protected function pushToRemote(\VersionContol\GitControlBundle\Entity\Commit $commitEntity){
+        $branch = $this->gitSyncCommands->getCurrentBranch();
+        
+        $gitRemotes = $commitEntity->getPushRemote();
+        if(count($gitRemotes) > 0){
+
+            foreach($gitRemotes as $gitRemote){
+                $response = $this->gitSyncCommands->push($gitRemote,$branch);  
+                $this->get('session')->getFlashBag()->add('notice', $response);
+            }
+        }
     }
     
 }

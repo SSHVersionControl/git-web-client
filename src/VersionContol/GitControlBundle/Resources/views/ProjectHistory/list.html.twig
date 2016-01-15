@@ -58,39 +58,53 @@
                 </div>
             
                 <div class="list-group spacer-top">
-                {% for log in gitLogs %}
+                    {% if(gitLogs|length > 0)%}
+                        {% for log in gitLogs %}
 
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-md-10">
-                                <strong class="str-truncated">{{log.subject}}</strong>
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <strong class="str-truncated">{{log.subject}}</strong>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}">{{log.abbrHash}}</a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="#options{{ loop.index }}" data-toggle="collapse" class="btn btn-link">more options...</a>
+                                    </div>
+                                </div>
+                                <div id="options{{ loop.index }}" class="row collapse">
+                                     <div class="col-md-offset-6 col-md-6 text-right">
+                                        {% if(loop.first) %}
+                                            <a href="{{ path('undocommit_soft', { 'id': project.id}) }}" class="btn btn-default btn-small" >Undo Soft</a>
+                                        {% endif %}
+                                         <a href="" class="btn btn-default btn-small" >Checkout</a>
+                                         <a href="" class="btn btn-default btn-small" >Revert To</a>
+                                         <a href="" class="btn btn-default btn-small" >Show files</a>
+                                     </div>
+                                </div>
                             </div>
-                            <div class="col-md-2">
-                                <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}">{{log.abbrHash}}</a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10">
-                                <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
-                            </div>
-                            <div class="col-md-2">
-                                <a href="#options{{ loop.index }}" data-toggle="collapse" class="btn btn-link">more options...</a>
-                            </div>
-                        </div>
-                        <div id="options{{ loop.index }}" class="row collapse">
-                             <div class="col-md-offset-6 col-md-6 text-right">
-                                {% if(loop.first) %}
-                                    <a href="{{ path('undocommit_soft', { 'id': project.id}) }}" class="btn btn-default btn-small" >Undo Soft</a>
-                                {% endif %}
-                                 <a href="" class="btn btn-default btn-small" >Checkout</a>
-                                 <a href="" class="btn btn-default btn-small" >Revert To</a>
-                                 <a href="" class="btn btn-default btn-small" >Show files</a>
-                             </div>
-                        </div>
-                    </div>
 
-                {% endfor %}
-            </div>
+                        {% endfor %}
+                    {% elseif(keyword)%}
+                        <div class="list-group-item">
+                            <div class="alert alert-warning" role="alert">
+                                There are no result for your search
+                            </div>
+                        </div>
+                    {% else%}
+                        <div class="list-group-item">
+                            <div class="alert alert-warning" role="alert">
+                                This repository does not contain any history. This is most like due to it been a new repostiory with no commits.
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
             
             {{ totalCount|pagination(currentPage,limit)|raw }}
             

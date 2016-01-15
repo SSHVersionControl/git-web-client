@@ -23,7 +23,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="row">
-                 <div class="col-lg-8">
+                 <div class="col-lg-7">
                     <h3 class="panel-title">
                         <div class="issue-state issue-state-{{ entity.status }}"> 
                             {{ entity.status|capitalize }} 
@@ -32,7 +32,7 @@
                           
                     </h3>
                  </div>
-                 <div class="col-lg-4 text-right">
+                 <div class="col-lg-5 text-right">
                     {% if(entity.closed)%}
                         <a href="{{ path('issue_open',{ 'id': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Re-Open</a>
                     {% else %}
@@ -40,6 +40,7 @@
                     {% endif %}
                      
                      <a href="{{ path('issue_edit',{ 'id': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-edit fa-fw"></i>Edit</a>
+                     <a href="{{ path('project_branches',{ 'id': project.id,'newBranchName' : 'issue' ~ entity.id}) }}" class="btn btn-default btn-sm"><i class="fa fa-code-fork fa-fw"></i>Create Branch</a>
                      <a href="{{ path('issue_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Issue</a>
                  </div>
             </div>

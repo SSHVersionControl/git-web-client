@@ -60,7 +60,10 @@
                           <td>{{userProject.project.title}}</td>
                           <td>{{userProject.project.description}}</td>
                            <td>{{userProject.roles}}</td>
-                          <td><a href="{{ path('project_log', { 'id': userProject.project.id }) }}" class="btn btn-default">Open</a></td>
+                          <td style="width:180px">
+                              <a href="{{ path('project_log', { 'id': userProject.project.id }) }}" class="btn btn-default">Open</a>
+                              <a href="{{ path('project_edit', { 'id': userProject.project.id }) }}" class="btn btn-default">Edit</a>
+                          </td>
                         </tr>
                       {% endfor %}
                     </tbody>

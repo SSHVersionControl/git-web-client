@@ -40,14 +40,12 @@ class ProjectHistoryController extends BaseProjectController
         }
         
         $this->checkProjectAuthorization($project,'VIEW');
-
-        $gitCommands = $this->get('version_control.git_command')->setProject($project);
-        $branchName = $gitCommands->getCurrentBranch();
         
-        $currentPage = $request->query->get('page', 1);
-        
+        $currentPage = $request->query->get('page', 1); 
         
         $gitLogCommand = $this->get('version_control.git_log')->setProject($project);
+        $branchName = $gitLogCommand->getCurrentBranch();
+ 
         $gitLogCommand->setBranch($branchName)
                 ->setPage(($currentPage-1));
         

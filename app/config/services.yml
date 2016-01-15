@@ -105,4 +105,18 @@ services:
         arguments: ["@doctrine.orm.entity_manager"]
         tags:
         - { name: form.type, alias: entity_hidden }
+        
+    version_control.validator.git_folder_exists_validator:
+        class: VersionContol\GitControlBundle\Validator\Constraints\GitFolderExistsValidator
+        tags:
+            - { name: validator.constraint_validator, alias: git_folder_exists_validator }
+        arguments: 
+            - @version_control.ssh_process
+            
+    version_control.validator.git_folder_not_exists_validator:
+        class: VersionContol\GitControlBundle\Validator\Constraints\GitFolderNotExistsValidator
+        tags:
+            - { name: validator.constraint_validator, alias: git_folder_not_exists_validator }
+        arguments: 
+            - @version_control.ssh_process
             

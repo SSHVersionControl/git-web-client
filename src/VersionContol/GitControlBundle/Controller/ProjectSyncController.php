@@ -113,7 +113,7 @@ class ProjectSyncController extends BaseProjectController
         return array(
             'project'      => $project,
             'remoteVersions' => $gitRemoteVersions,
-            'push_form' => $this->createPushPullForm($project,$gitCommands)->createView()
+            'push_form' => $pushForm->createView()
         );
     }
 

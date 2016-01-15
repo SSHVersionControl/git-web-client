@@ -224,7 +224,7 @@ class GitLogCommand extends GitCommand {
             
         }catch(\RuntimeException $e){
             if($this->getObjectCount() == 0){
-                return $logs;
+                $this->logData = '';
             }else{
                 //Throw exception
             }
