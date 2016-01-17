@@ -1,4 +1,30 @@
-{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+          Issues
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-bug"></i> Issues
+        </li>
+    </ol>
+{% endblock %}
 
 {% block sidemenu -%}
  {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
@@ -6,25 +32,6 @@
 
 {% block content -%}
     
-    
-    
-    <h1 class="page-header">
-       Issues
-      <small>
-          {{ project.title }} 
-      </small>
-          {% if (is_granted('MASTER', project)) %}
-          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
-        {% endif %}
-    </h1>
-        <ol class="breadcrumb">
-            <li>
-                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-            </li>
-            <li class="active">
-                <i class="fa fa-file"></i> Issues
-            </li>
-        </ol>
     <div class="row">
         <div class="col-md-9">
             <ul class="nav nav-tabs">

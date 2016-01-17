@@ -1,49 +1,60 @@
-{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+           Push
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-arrow-circle-right"></i> Push
+        </li>
+    </ol>
+{% endblock %}
 
 {% block sidemenu -%}
  {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
-{% endblock %}
-
-{% block topcontent %}
-    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
 {% endblock %} 
 
 {% block content -%}
-    <h1 class="page-header">
-       Push
-      <small>
-          {{ project.title }} 
-      </small>
-         {% if (is_granted('MASTER', project)) %}
-          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
-        {% endif %}
-    </h1>
-        <ol class="breadcrumb">
-            <li>
-                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-            </li>
-            <li class="active">
-                <i class="fa fa-file"></i> Push
-            </li>
-        </ol>
-
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-md-12">
-                    <a href="{{ path('project_listremote', { 'id': project.id})}}" class="btn btn-info btn-sm pull-right" >
-                        Manage Remote Repositories
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="panel-body">
+    <div class="callout callout-info">
+        <h4>Info</h4>
+        <p>Pushing is how you transfer commits from your local repository to a remote repository. It's the opposite of pulling, pushing commits to remote branches.
+            If a matching branch name does not exist in the remote repository a new branch will be created.
+            Pushing has the potential to overwrite changes, so you need to be careful how you use it. </p>
+    </div>
+    
+    <div class="box box-success">
+        <div class="box-header with-border">
+            <h3 class="box-title">Push local changes to a remote repository</h3>
+            <div class="box-tools pull-right">
+                  <!-- Buttons, labels, and many other things can be placed here! -->
+                  <!-- Here is a label for example -->
+                  <a href="{{ path('project_listremote', { 'id': project.id})}}" class="btn btn-info btn-sm pull-right" >
+                      Manage Remote Repositories
+                  </a>
+            </div><!-- /.box-tools -->
+        </div><!-- /.box-header -->
+        <div class="box-body">
             {% if(remoteVersions|length == 0)%}
                 <div class="alert alert-warning" role="alert">You do not have any remote servers set up for this repository.
                 <a href="{{ path('project_newremote', { 'id': project.id})}}" title="Manage Remote Repositories">Click here to add a remote repository</a>
                 </div>
             {% else %}
-                <p>Push local changes to a remote repository server.</p>
 
                 {{ form_start(push_form,{ 'attr': { 'class': 'form'}}) }}
 
@@ -69,8 +80,10 @@
                      </div>
                  {{ form_end(push_form) }}
              {% endif %}
-
-        </div>
-    </div>
+        </div><!-- /.box-body -->
+        <div class="box-footer">
+         
+        </div><!-- box-footer -->
+    </div><!-- /.box -->
 
 {% endblock %}

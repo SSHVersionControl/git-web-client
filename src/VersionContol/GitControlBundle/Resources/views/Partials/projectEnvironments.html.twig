@@ -1,6 +1,6 @@
-<div class="row">
+
     <ul class="nav navbar-nav environment-selection">
-        <li><span class="title">Project Environments:</span></li>
+        <li><a><span class="title">Project Environments:</span></a></li>
         {% set currentEnvironment = currentprojectenvironmnent(project) %}
         {% for projectEnvironment in project.projectEnvironment %}
             <li {% if(projectEnvironment.id == currentEnvironment.id) %} class="active"{%endif%}>
@@ -8,4 +8,4 @@
             </li>
         {% endfor %}
     </ul>
-</div>
+

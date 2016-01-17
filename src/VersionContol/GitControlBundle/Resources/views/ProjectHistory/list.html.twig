@@ -1,63 +1,71 @@
-{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+           History of Commits
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-hourglass-start"></i> Commit History
+        </li>
+    </ol>
+{% endblock %}
 
 {% block sidemenu -%}
  {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
 {% endblock %}
 
-{% block topcontent %}
-    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
-{% endblock %} 
-
 {% block content -%}
-    
-    <h1 class="page-header">
-       Latest Commits
-      <small>
-          {{ project.title }} 
-      </small>
-          {% if (is_granted('MASTER', project)) %}
-          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
-        {% endif %}
-    </h1>
-        <ol class="breadcrumb">
-            <li>
-                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-            </li>
-            <li class="active">
-                <i class="fa fa-file"></i> Projects
-            </li>
-        </ol>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
-        </div>
-        <div class="panel-body">
-                <div class="row">    
-                    <div class="col-xs-8 col-xs-offset-1">
-                        <form action="{{ path('project_log',{ 'id': project.id}) }}" method="GET">
-                            <div class="input-group">
-                                <div class="input-group-btn search-panel">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                        <span id="search_concept">{{ filter ? filter : 'Filter by' }}</span> <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                      <li><a href="#messages">Commit Messages</a></li>
-                                      <li><a href="#author">Author</a></li>
-                                      <li><a href="#content">Content</a></li>
-                                    </ul>
-                                </div>
-                                <input type="hidden" name="filter" value="{{ filter ? filter : '' }}" id="filter">         
-                                <input type="text" class="form-control" name="keyword" placeholder="Search term..." value="{{ keyword ? keyword : '' }}">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-                                </span>
+    <div class="box box-primary box-solid">
+        <div class="box-header with-border">
+          <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
+          <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+          </div><!-- /.box-tools -->
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">    
+                <div class="col-xs-8 col-xs-offset-1">
+                    <form action="{{ path('project_log',{ 'id': project.id}) }}" method="GET">
+                        <div class="input-group">
+                            <div class="input-group-btn search-panel">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <span id="search_concept">{{ filter ? filter : 'Filter by' }}</span> <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                  <li><a href="#messages">Commit Messages</a></li>
+                                  <li><a href="#author">Author</a></li>
+                                  <li><a href="#content">Content</a></li>
+                                </ul>
                             </div>
-                        </form>
-                    </div>
+                            <input type="hidden" name="filter" value="{{ filter ? filter : '' }}" id="filter">         
+                            <input type="text" class="form-control" name="keyword" placeholder="Search term..." value="{{ keyword ? keyword : '' }}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                            </span>
+                        </div>
+                    </form>
                 </div>
-            
-                <div class="list-group spacer-top">
+            </div>
+            <p></p>                    
+            <div class="list-group spacer-top">
                     {% if(gitLogs|length > 0)%}
                         {% for log in gitLogs %}
 
@@ -105,10 +113,10 @@
                         </div>
                     {% endif %}
                 </div>
-            
-            {{ totalCount|pagination(currentPage,limit)|raw }}
-            
-        </div>
-    </div>
+        </div><!-- /.box-body -->
+        <div class="box-footer">
+         {{ totalCount|pagination(currentPage,limit)|raw }}
+        </div><!-- box-footer -->
+    </div><!-- /.box -->
 
 {% endblock %}

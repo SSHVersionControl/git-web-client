@@ -1,37 +1,46 @@
-{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+        Milestones
+        <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li >
+            <i class="fa fa-bug"></i> <a href="{{path('issues', { 'id': project.id }) }}">Issues</a>
+        </li>
+        <li class="active">
+                <i class="fa fa-file"></i> Milestones
+            </li>
+    </ol>
+{% endblock %}
 
 {% block sidemenu -%}
  {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
 {% endblock %}
 
 {% block content -%}
-    <h1 class="page-header">
-       Milestones
-      <small>
-          {{ project.title }} 
-      </small>
-          {% if (is_granted('MASTER', project)) %}
-          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
-        {% endif %}
-    </h1>
-        <ol class="breadcrumb">
-            <li>
-                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-            </li>
-            <li>
-                <i class="fa fa-file"></i> <a href="{{ path('issues', { 'id': project.id }) }}" title="issues">Issues</a>
-            </li>
-            <li class="active">
-                <i class="fa fa-file"></i> Milestones
-            </li>
-        </ol>
     
     <ul class="nav nav-tabs">
         <li >
             <a href="{{ path('issues', { 'id': project.id }) }}" >Issues</a>
         </li>
         <li >
-            <a href="{{path('issuemilestones', { 'project': project.id }) }}" >Labels</a>
+            <a href="{{path('issuelabels', { 'project': project.id }) }}" >Labels</a>
         </li>
         <li  class="active">
             <a href="{{path('issuemilestones', { 'project': project.id }) }}" >Milestones</a>
