@@ -35,8 +35,9 @@ class GitDiffParser {
         $collected = array();
 
         for ($i = 0; $i < $this->lineCount; ++$i) {
-            if (preg_match('(^---\\s+(?P<file>\\S+))', $this->lines[$i], $matchFileA) &&
-                preg_match('(^\\+\\+\\+\\s+(?P<file>\\S+))', $this->lines[$i + 1], $matchFileB)) {
+            if (preg_match('(^---\\s+(?P<file>.+))', $this->lines[$i], $matchFileA) &&
+                preg_match('(^\\+\\+\\+\\s+(?P<file>.+))', $this->lines[$i + 1], $matchFileB)) {
+                
                 
                 //Second iteration
                 if(count($collected) > 0 && count($diffs) > 0){
@@ -85,7 +86,7 @@ class GitDiffParser {
     {
         $section = array();
         $diffLines = array();
-
+        $lineNumber = 0;
         foreach ($lines as $line) {
             $diffLine = new GitDiffLine($line);
             if (preg_match('/^@@\s+-(?P<start>\d+)(?:,\s*(?P<startrange>\d+))?\s+\+(?P<end>\d+)(?:,\s*(?P<endrange>\d+))?\s+@@/', $line, $match)) {
