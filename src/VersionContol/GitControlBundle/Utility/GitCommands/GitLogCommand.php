@@ -179,14 +179,6 @@ class GitLogCommand extends GitCommand {
             $this->command .= ' '.escapeshellarg($this->commitHash);
         }
         
-        if($this->branch){
-            $this->command .= ' '.escapeshellarg(trim($this->branch));
-        }
-        
-        if($this->notRemote){
-            $this->command .= ' --not --remotes';
-        }
-        
         //Filters
         if($this->filterByMessage){
            $this->command .= ' --grep='.escapeshellarg($this->filterByMessage).' -i';
@@ -206,6 +198,15 @@ class GitLogCommand extends GitCommand {
         
         if($this->filterByContent){
            $this->command .= ' -S'.escapeshellarg($this->filterByContent);
+        }
+        
+        if($this->branch){
+            //Need to append -- do tell git that its a branch and not a file
+            $this->command .= ' '.escapeshellarg(trim($this->branch)).' --';
+        }
+        
+        if($this->notRemote){
+            $this->command .= ' --not --remotes';
         }
 
         return $this->command;
@@ -227,6 +228,7 @@ class GitLogCommand extends GitCommand {
                 $this->logData = '';
             }else{
                 //Throw exception
+                throw new \Exception("Error in getting log: ".$e->getMessage());
             }
         }
         
@@ -241,6 +243,9 @@ class GitLogCommand extends GitCommand {
      */
     public function getResults(){
         $logs = array();
+        if(is_array($this->logData)){
+            return array();
+        }
         $lines = $this->splitOnNewLine($this->logData);
 
         if(is_array($lines)){

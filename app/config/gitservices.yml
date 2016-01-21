@@ -33,6 +33,14 @@ services:
         class:  VersionContol\GitControlBundle\Utility\GitCommands\GitInitCommand
         parent: version_control.git_command_base
         
+    version_control.git_commit:
+        class:  VersionContol\GitControlBundle\Utility\GitCommands\GitCommitCommand
+        parent: version_control.git_command_base
+        
+    version_control.git_diff:
+        class:  VersionContol\GitControlBundle\Utility\GitCommands\GitDiffCommand
+        parent: version_control.git_command_base
+        
     version_control.gitcommand_collector:
         class: VersionContol\GitControlBundle\Profiler\GitCommandCollector
         tags:

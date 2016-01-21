@@ -34,6 +34,7 @@ class GitAlterFilesEventListener
                      $files = $event->getFilesAltered();
                 }else{
                     $fileInfos = $this->gitFilesCommand->listFiles('',$branch,true);
+
                     foreach($fileInfos as $fileInfo){
                          $files[] =$fileInfo->getFullPath();
                     }

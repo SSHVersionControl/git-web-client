@@ -3,7 +3,7 @@
 namespace VersionContol\GitControlBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  *
  * @Route("/issue")
  */
-class IssueController extends Controller
+class IssueController extends BaseProjectController
 {
 
     /**
@@ -41,7 +41,7 @@ class IssueController extends Controller
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
         
-        //$this->checkProjectAuthorization($project,'EDIT');
+        $this->checkProjectAuthorization($project,'VIEW');
         
 
         //$entities = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProject($project);
@@ -87,6 +87,8 @@ class IssueController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            $project = $entity->getProject();
+            $this->checkProjectAuthorization($project,'EDIT');
             
             //Set User
             $user = $this->get('security.token_storage')->getToken()->getUser();
@@ -141,6 +143,7 @@ class IssueController extends Controller
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
         
+        $this->checkProjectAuthorization($project,'EDIT');
         
         $entity = new Issue();
         $entity->setProject($project);
@@ -169,6 +172,9 @@ class IssueController extends Controller
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Issue entity.');
         }
+        
+        $project = $entity->getProject();
+        $this->checkProjectAuthorization($project,'VIEW');
 
         $deleteForm = $this->createDeleteForm($id);
         
@@ -200,6 +206,9 @@ class IssueController extends Controller
         if (!$issue) {
             throw $this->createNotFoundException('Unable to find Issue entity.');
         }
+        
+        $project = $issue->getProject();
+        $this->checkProjectAuthorization($project,'EDIT');
 
         $editForm = $this->createEditForm($issue);
         $deleteForm = $this->createDeleteForm($id);
@@ -252,6 +261,9 @@ class IssueController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $project = $entity->getProject();
+            $this->checkProjectAuthorization($project,'EDIT');
+        
             $em->flush();
 
             return $this->redirect($this->generateUrl('issue_edit', array('id' => $id)));
@@ -275,12 +287,17 @@ class IssueController extends Controller
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            
+            
             $em = $this->getDoctrine()->getManager();
             $entity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($id);
 
             if (!$entity) {
                 throw $this->createNotFoundException('Unable to find Issue entity.');
             }
+            
+            $project = $entity->getProject();
+            $this->checkProjectAuthorization($project,'EDIT');
 
             $em->remove($entity);
             $em->flush();
@@ -304,6 +321,9 @@ class IssueController extends Controller
         if (!$issue) {
             throw $this->createNotFoundException('Unable to find Issue entity.');
         }
+        
+        $project = $issue->getProject();
+        $this->checkProjectAuthorization($project,'EDIT');
         
         $issue->setClosed();
         $em->flush();
@@ -329,6 +349,9 @@ class IssueController extends Controller
         if (!$issue) {
             throw $this->createNotFoundException('Unable to find Issue entity.');
         }
+        
+        $project = $issue->getProject();
+        $this->checkProjectAuthorization($project,'EDIT');
         
         $issue->setOpen();
         $em->flush();
@@ -413,6 +436,9 @@ class IssueController extends Controller
         if ($commentForm->isValid()) {
             $em = $this->getDoctrine()->getManager();
             
+            $project = $entity->getIssue()->getProject();
+            $this->checkProjectAuthorization($project,'EDIT');
+            
             //Set User
             $user = $this->get('security.token_storage')->getToken()->getUser();
             $entity->setVerUser($user);
@@ -473,6 +499,8 @@ class IssueController extends Controller
             throw $this->createNotFoundException('Unable to find project entity.');
         }
         
+        $this->checkProjectAuthorization($project,'VIEW');
+        
         $keyword = $request->query->get('keyword', false);
         $filter = $request->query->get('filter', 'open');
         
@@ -493,12 +521,44 @@ class IssueController extends Controller
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("s/find/{issueId}", name="issue_findajax")
+     * @Route("/find/{issueId}", name="issue_findajax")
      * @Method("GET")
      */
     public function findAjaxAction($issueId)
     {
         $em = $this->getDoctrine()->getManager();
         $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+        
+        if (!$issueEntity) {
+            throw $this->createNotFoundException('Unable to find issue entity.');
+        }
+        
+        $this->checkProjectAuthorization($issueEntity->getProject(),'VIEW');
+    }
+    
+    /**
+     * Finds and displays a Issue entity.
+     *
+     * @Route("/modal/{id}", name="issue_show_modal")
+     * @Method("GET")
+     * @Template()
+     */
+    public function showModalAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $entity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($id);
+
+        if (!$entity) {
+            throw $this->createNotFoundException('Unable to find Issue entity.');
+        }
+        
+        $project = $entity->getProject();
+        $this->checkProjectAuthorization($project,'VIEW');
+
+        return array(
+            'entity'  => $entity,
+            'project' => $entity->getProject(),
+        );
     }
 }

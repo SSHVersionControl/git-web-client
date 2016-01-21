@@ -64,6 +64,13 @@ services:
         arguments:
             - @router
             - @request_stack
+            
+    version_control.twig.versioncontrol_issuelink:
+        class: VersionContol\GitControlBundle\Twig\Extension\IssueLinkExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @router
            
     version_control.beforecontoller.action_listener:
         class: VersionContol\GitControlBundle\EventListener\ProjectEnviromentBeforeListener

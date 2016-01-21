@@ -31,7 +31,7 @@ class ProjectCommitController extends BaseProjectController
      *
      * @var GitCommand 
      */
-    protected $gitCommands;
+    protected $gitCommitCommand;
     
     /**
      *
@@ -64,11 +64,11 @@ class ProjectCommitController extends BaseProjectController
        $this->initAction($id);
 
        $branchName = $this->gitSyncCommands->getCurrentBranch();
-       $files =  $this->gitCommands->getFilesToCommit();
+       $files =  $this->gitCommitCommand->getFilesToCommit();
        
        $commitEntity = new Commit();
        $commitEntity->setProject($this->project);
-       $commitEntity->setStatusHash($this->gitCommands->getStatusHash());
+       $commitEntity->setStatusHash($this->gitCommitCommand->getStatusHash());
        
        $commitForm = $this->createCommitForm($commitEntity);
        
@@ -110,13 +110,13 @@ class ProjectCommitController extends BaseProjectController
 
             try{
                 //Git Stage selected files
-                $this->gitCommands->stageFiles($selectedFiles);
+                $this->gitCommitCommand->stageFiles($selectedFiles);
                 
                 //Handle Issue Action eg Close issue. Update Commit message
                 $this->handleIssue($commitEntity);
      
                 //Git Commit 
-                $this->gitCommands->commit($commitEntity->getComment());
+                $this->gitCommitCommand->commit($commitEntity->getComment());
                 
                 //Set notice of successfull commit
                 $this->get('session')->getFlashBag()->add('notice'
@@ -135,7 +135,7 @@ class ProjectCommitController extends BaseProjectController
         }
         
         $branchName = $this->gitSyncCommands->getCurrentBranch();
-        $files =  $this->gitCommands->getFilesToCommit();
+        $files =  $this->gitCommitCommand->getFilesToCommit();
         
         return array(
             'project'      => $this->project,
@@ -162,17 +162,24 @@ class ProjectCommitController extends BaseProjectController
         }
         $this->checkProjectAuthorization($this->project,'EDIT');
         
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
+        $this->gitCommitCommand = $this->get('version_control.git_commit')->setProject($this->project);
         $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
 
         $this->issuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($this->project,'open');
+        
+        $this->branchName = $this->gitCommitCommand->getCurrentBranch();
+        
+        $this->viewVariables = array_merge($this->viewVariables, array(
+            'project'      => $this->project,
+            'branchName' => $this->branchName,
+            ));
     }
     
     
     private function createCommitForm($commitEntity){
  
         $includeIssues = ($this->issuesCount > 0)?true:false;
-        $fileChoices = $this->gitCommands->getFilesToCommit();
+        $fileChoices = $this->gitCommitCommand->getFilesToCommit();
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
         $form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
@@ -196,7 +203,7 @@ class ProjectCommitController extends BaseProjectController
         
         $this->initAction($id);
         
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
+        $this->gitCommitCommand = $this->get('version_control.git_command')->setProject($this->project);
         
         return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
         
@@ -264,6 +271,28 @@ class ProjectCommitController extends BaseProjectController
                 $this->get('session')->getFlashBag()->add('notice', $response);
             }
         }
+    }
+    
+    /**
+     * Show Git commit diff
+     *
+     * @Route("/filediff/{id}/{difffile}", name="project_filediff")
+     * @Method("GET")
+     * @Template()
+     */
+    public function fileDiffAction($id,$difffile){
+        
+        $this->initAction($id);
+        
+        $gitDiffCommand = $this->get('version_control.git_diff')->setProject($this->project);
+
+        $difffile = urldecode($difffile);
+       
+        $gitDiffs = $gitDiffCommand->getDiffFile($difffile);
+   
+        return array_merge($this->viewVariables, array(
+            'diffs' => $gitDiffs,
+        ));
     }
     
 }

@@ -24,8 +24,19 @@
         <a href="{{ path('project_pull', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span></a>
     </li>
     {% endif%}
-    <li {% if app.request.attributes.get('_route') == 'project_branches' %}class="active"{% endif %}>
-        <a href="{{ path('project_branches', { 'id': project.id }) }}"><i class="fa fa-fw fa-code-fork"></i><span>Branches</span></a>
+    <li class="treeview {% if app.request.attributes.get('_route') in ['project_branches','project_branch_remotes'] %}active{% endif %}">
+        <a href="#">
+            <i class="fa fa-fw fa-code-fork"></i><span>Branches</span> 
+            <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+          <li {% if app.request.attributes.get('_route') == 'project_branches' %}class="active"{% endif %}>
+                <a href="{{ path('project_branches', { 'id': project.id }) }}"><span>Local Branches</span></a>
+          </li>
+          <li {% if app.request.attributes.get('_route') == 'project_branch_remotes' %}class="active"{% endif %}>                
+              <a href="{{ path('project_branch_remotes', { 'id': project.id }) }}"><span>Remote Branches</span></a>
+          </li>
+        </ul>
     </li>
     <li {% if app.request.attributes.get('_route') == 'issues' %}class="active"{% endif %}>
         <a href="{{ path('issues', { 'id': project.id }) }}"><i class="fa fa-fw fa-bug"></i><span>Issues</span></a>

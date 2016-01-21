@@ -381,11 +381,19 @@ class ProjectBranchController extends BaseProjectController
         //Local Server choice 
         $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
         
-        $gitLogs = $this->gitCommands->getLog(1,$branchName);
+        $gitLogCommand = $this->get('version_control.git_log')->setProject($this->project);
+
+ 
+        $gitLogCommand->setBranch($branchName)->setLogCount(1);
+
+        
+        $gitLogs = $gitLogCommand->execute()->getFirstResult();
+        
+        //$gitLogs = $this->gitCommands->getLog(1,$branchName);
 
         $this->viewVariables = array_merge($this->viewVariables, array(
             'branches' => $gitLocalBranches,
-            'gitLogs' => $gitLogs
+            'gitLogs' => array($gitLogs)
         ));
     }
     

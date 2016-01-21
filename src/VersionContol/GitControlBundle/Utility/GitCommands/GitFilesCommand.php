@@ -5,6 +5,7 @@ use VersionContol\GitControlBundle\Entity\FileInfo;
 use VersionContol\GitControlBundle\Entity\RemoteFileInfo;
 use VersionContol\GitControlBundle\Entity\GitFile;
 use VersionContol\GitControlBundle\Entity\GitLog;
+use VersionContol\GitControlBundle\Utility\GitDiffParser;
 
 use phpseclib\Net\SFTP;
 
@@ -229,18 +230,20 @@ class GitFilesCommand extends GitCommand {
         $logData = '';
         try{
             //$logData = $this->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -'.intval($count).' '.$branch);
-            $command = 'git --no-pager log -m "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' '.escapeshellarg(trim($branch));
+            $command = 'git --no-pager log -m "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' '.escapeshellarg(trim($branch)).'';
             
             if($fileName !== false){
-                $command .= ' '.escapeshellarg($fileName);
+                $command .= ' -- '.escapeshellarg($fileName);
+            }else{
+                $command .= ' --';
             }
             $logData = $this->runCommand($command);
             
-     
         }catch(\RuntimeException $e){
             if($this->getObjectCount() == 0){
                 return $logs;
             }else{
+                throw new \Exception('Error in get log Command:'.$e->getMessage());
                 //Throw exception
             }
         }
@@ -273,4 +276,5 @@ class GitFilesCommand extends GitCommand {
         
         return $objectCount;
     }
+    
 }

@@ -21,12 +21,23 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 abstract class BaseProjectController extends Controller{
     
+    /**
+     * The current Project Entity
+     * @var Project 
+     */
+    protected $project;
     
     /**
      * Array of variables the will be past to the twig templating engine
      * @var array 
      */
     protected $viewVariables = array();
+    
+    /**
+     * The current branch name
+     * @var string 
+     */
+    protected $branchName;
     
     /**
      * 
