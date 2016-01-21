@@ -14,14 +14,25 @@
             <a href="{{ path('project_commitlist', { 'id': project.id }) }}"><i class="fa fa-fw fa-history"></i><span>Commit</span></a>
         </li>
     {% endif%}
+   
     {% if (is_granted('EDIT', project)) %}
-        <li {% if app.request.attributes.get('_route') == 'project_push' %}class="active"{% endif %}>
-            <a href="{{ path('project_push', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-right"></i><span>Push</span></a>
-        </li>
-    {% endif%}
-    {% if (is_granted('EDIT', project)) %}
-    <li {% if app.request.attributes.get('_route') == 'project_pull' %}class="active"{% endif %}>
-        <a href="{{ path('project_pull', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span></a>
+    <li class="treeview {% if app.request.attributes.get('_route') in ['project_push','project_pull','project_listremote'] %}active{% endif %}">
+        <a href="#">
+            <i class="fa fa-fw fa-refresh"></i><span>Sync</span> 
+            <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu">
+            
+            <li {% if app.request.attributes.get('_route') == 'project_push' %}class="active"{% endif %}>
+                <a href="{{ path('project_push', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-right"></i><span>Push</span></a>
+            </li>
+            <li {% if app.request.attributes.get('_route') == 'project_pull' %}class="active"{% endif %}>
+                <a href="{{ path('project_pull', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span></a>
+            </li>
+            <li {% if app.request.attributes.get('_route') == 'project_listremote' %}class="active"{% endif %}>
+                <a href="{{ path('project_listremote', { 'id': project.id }) }}"><i class="fa fa-fw fa-server"></i><span>Manage Remotes</span></a>
+            </li>
+        </ul>
     </li>
     {% endif%}
     <li class="treeview {% if app.request.attributes.get('_route') in ['project_branches','project_branch_remotes'] %}active{% endif %}">

@@ -54,12 +54,12 @@ class ProjectRemoteController extends BaseProjectController
     public function listAction($id){
         $this->initAction($id);
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
-        $branchName = $this->gitCommands->getCurrentBranch();
+
         
         return array(
             'project'      => $this->project,
             'remotes' => $gitRemoteVersions,
-            'branchName' => $branchName
+            'branchName' => $this->branchName
         );
     }
     
@@ -74,12 +74,49 @@ class ProjectRemoteController extends BaseProjectController
     public function newAction($id){
         $this->initAction($id);
         $remoteForm = $this->createRemoteForm();
-        $branchName = $this->gitCommands->getCurrentBranch();
+        
         
         return array(
             'project'      => $this->project,
             'remote_form' => $remoteForm->createView(),
-            'branchName' => $branchName
+            'branchName' => $this->branchName
+        );
+    }
+    
+
+    /**
+     * Form to choose which brabch and remote a user will pull.
+     * This is just the form. Also see pullToLocal() 
+     *
+     * @Route("create/{id}", name="project_createremote")
+     * @Method("POST")
+     * @Template("VersionContolGitControlBundle:ProjectRemote:new.html.twig")
+     */
+    public function createAction(Request $request,$id)
+    {
+        $this->initAction($id);
+
+        $addRemoteForm = $this->createRemoteForm(); 
+        $addRemoteForm->handleRequest($request);
+
+        if ($addRemoteForm->isValid()) {
+            $data = $addRemoteForm->getData();
+            $remote = $data['remoteName'];
+            $url = $data['remoteUrl'];
+
+            //Remote Server choice 
+            $response = $this->gitSyncCommands->addRemote($remote,$url);
+            
+            $this->get('session')->getFlashBag()->add('notice', $response);
+            
+            return $this->redirect($this->generateUrl('project_listremote', array('id' => $id)));
+        }
+        
+        
+        return array(
+            'project'      => $this->project,
+            'pull_form' => $addRemoteForm->createView(),
+            'diffs' => array()
         );
     }
     
@@ -101,54 +138,63 @@ class ProjectRemoteController extends BaseProjectController
         return $this->redirect($this->generateUrl('project_listremote', array('id' => $id)));
      }
      
-     /**
-     * Form to choose which brabch and remote a user will pull.
-     * This is just the form. Also see pullToLocal() 
+     
+    /**
+     * Create rename remote form. 
      *
-     * @Route("rename/{id}", name="project_renameremote")
+     * @Route("rename/{id}/{remote}", name="project_renameremote")
      * @Method("GET")
      * @Template()
      */
-     public function renameAction(Request $request,$id){
-         $this->initAction($id);
-     }
-    
-    /**
-     * Form to choose which brabch and remote a user will pull.
-     * This is just the form. Also see pullToLocal() 
-     *
-     * @Route("create/{id}", name="project_createremote")
-     * @Method("POST")
-     * @Template("VersionContolGitControlBundle:ProjectRemote:new.html.twig")
-     */
-    public function createAction(Request $request,$id)
-    {
+     public function renameAction(Request $request,$id,$remote){
         $this->initAction($id);
-
-        $addRemoteForm = $this->createRemoteForm(); 
-        $addRemoteForm->handleRequest($request);
-
-        if ($addRemoteForm->isValid()) {
-            $data = $addRemoteForm->getData();
-            $remote = $data['remoteName'];
-            $url = $data['remoteUrl'];
-            
-            
-            //Remote Server choice 
-            $response = $this->gitSyncCommands->addRemote($remote,$url);
-            
-            $this->get('session')->getFlashBag()->add('notice', $response);
-            
-            return $this->redirect($this->generateUrl('project_listremote', array('id' => $id)));
-        }
-        
+         
+        $defaultData = array('remoteName' => $remote);
+        $renameRemoteForm = $this->createRenameRemoteForm($defaultData);
         
         return array(
             'project'      => $this->project,
-            'pull_form' => $addRemoteForm->createView(),
-            'diffs' => array()
+            'remote_form' => $renameRemoteForm->createView(),
+            'branchName' => $this->branchName
         );
-    }
+                
+     }
+     
+    /**
+     * Changes the name of the remote repositiory in git for the local branch
+     *
+     * @Route("rename/{id}/{remote}", name="project_remoteupdate")
+     * @Method("POST")
+     * @Template("VersionContolGitControlBundle:ProjectRemote:rename.html.twig")
+     */
+     public function updateAction(Request $request,$id){
+        $this->initAction($id);
+         
+        $renameRemoteForm = $this->createRenameRemoteForm();
+        
+        $renameRemoteForm->handleRequest($request);
+
+        if ($renameRemoteForm->isValid()) {
+            $data = $renameRemoteForm->getData();
+            $remoteName = $data['remoteName'];
+            $newRemoteName = $data['newRemoteName'];
+            
+            $response = $this->gitSyncCommands->renameRemote($remoteName,$newRemoteName);
+            
+            $this->get('session')->getFlashBag()->add('notice',$response);
+
+            return $this->redirect($this->generateUrl('project_listremote', array('id' => $id)));
+        }
+
+        
+        return array(
+            'project'      => $this->project,
+            'remote_form' => $renameRemoteForm->createView(),
+            'branchName' => $this->branchName
+        );
+                
+     }
+    
     
     
     /**
@@ -166,8 +212,9 @@ class ProjectRemoteController extends BaseProjectController
         }
         $this->checkProjectAuthorization($this->project,'EDIT');
         
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
         $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
+        
+        $this->branchName = $this->gitSyncCommands->getCurrentBranch();
     }
     
     
@@ -192,6 +239,31 @@ class ProjectRemoteController extends BaseProjectController
                 new NotBlank()
             ))
         )->add('submit', 'submit', array('label' => 'Add'))
+          
+        ->getForm();
+
+        return $form;
+    }
+    
+    private function createRenameRemoteForm($defaultData = array()){
+
+        
+        $form = $this->createFormBuilder($defaultData, array(
+            'action' => $this->generateUrl('project_createremote', array('id' => $this->project->getId())),
+            'method' => 'POST',
+        ))
+        ->add('remoteName', 'hidden', array(
+            'constraints' => array(
+                new NotBlank()
+            ))
+        )
+        ->add('newRemoteName', 'text', array(
+            'label' => 'New Remote Name'
+            ,'required' => false
+            ,'constraints' => array(
+                new NotBlank()
+            ))
+        )->add('submit', 'submit', array('label' => 'Rename'))
           
         ->getForm();
 
