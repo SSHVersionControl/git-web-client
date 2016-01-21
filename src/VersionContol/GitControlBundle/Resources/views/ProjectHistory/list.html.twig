@@ -27,14 +27,14 @@
 {% endblock %}
 
 {% block sidemenu -%}
- {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+ {% include 'VersionContolGitControlBundle::Partials/sidemenu.html.twig'  %}
 {% endblock %}
 
 {% block content -%}
 
     <div class="box box-primary box-solid">
         <div class="box-header with-border">
-          <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
+          <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName|issueLink|raw}}</h3>
           <div class="box-tools pull-right">
             <!-- Buttons, labels, and many other things can be placed here! -->
             <!-- Here is a label for example -->

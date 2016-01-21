@@ -1,0 +1,17 @@
+
+<div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav side-nav">
+        <li>
+            <a href="{{ path('project_log', { 'id': project.id }) }}"><i class="fa fa-fw fa-caret-square-o-left"></i>Back to project</a>
+        </li>
+        <li class="separate-item"></li>
+        <li {% if app.request.attributes.get('_route') == 'project_edit' %}class="active"{% endif %}>
+            <a href="{{ path('project_edit', { 'id': project.id }) }}"><i class="fa fa-fw fa-pencil-square-o"></i>Edit Project</a>
+        </li>
+        {% if is_granted('MASTER', project) %}
+            <li {% if app.request.attributes.get('_route') == 'members_list' %}class="active"{% endif %}>
+                <a href="{{ path('members_list', { 'id': project.id }) }}"><i class="fa fa-fw fa-users"></i>Members</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>

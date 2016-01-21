@@ -27,7 +27,7 @@
 {% endblock %}
 
 {% block sidemenu -%}
- {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+ {% include 'VersionContolGitControlBundle::Partials/sidemenu.html.twig'  %}
 {% endblock %}
 
 {% block content -%}
@@ -36,7 +36,7 @@
         <div class="panel-heading">
             <div class="row">
                 <div class="col-md-10">
-                    <h3 class="panel-title"><i class="fa fa-user fa-fw"></i>  Current Branch: {{branchName}}</h3>
+                    <h3 class="panel-title"><i class="fa fa-user fa-fw"></i>  Current Branch: {{branchName|issueLink|raw}}</h3>
                 </div>
                 <div class="col-md-2">
                     <a href="{{ path('project_newremote', { 'id': project.id})}}" class="btn btn-primary btn-sm" >
