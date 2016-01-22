@@ -101,13 +101,14 @@
                       {{ form_errors(form.switch) }}
                       {{ form_widget(form.switch) }}
                   </div>
-                  <div class="alert-info">
-                      
-                      <h4>Branching from: {{branchName}}</h4>
+                  <div class="box box-info box-solid">
+                      <div class="box-header with-border">
+                        <h4 class="box-title">Branching from: {{branchName}}</h4>
+                      </div>
 
-                      <div class="list-group">
+                      <div class="box-body">
                         {% for log in gitLogs %}
-                            <div class="list-group-item">
+                   
                               <div class="row">
                                   <div class="col-md-10">
                                       <strong class="str-truncated">{{log.subject}}</strong>
@@ -124,7 +125,6 @@
                           {% endfor %}
                       </div>
                     </div>
-                  </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
