@@ -34,66 +34,55 @@
 {% endblock %}
 
 {% block content -%}
-    
-    <ul class="nav nav-tabs">
-        <li >
-            <a href="{{ path('issues', { 'id': project.id }) }}" >Issues</a>
-        </li>
-        <li >
-            <a href="{{path('issuelabels', { 'project': project.id }) }}" >Labels</a>
-        </li>
-        <li  class="active">
-            <a href="{{path('issuemilestones', { 'project': project.id }) }}" >Milestones</a>
-        </li>
-    </ul>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                 <div class="col-lg-10">
-                    <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i> Milestones: 
-                        <span class="open">
-                            <i class="fa fa-exclamation-circle fa-fw"></i>
-                            <a  href="{{ path('issuemilestones', {'project': project.id }) }}">{{openCount}} open</a>
-                        </span>
-                        <span class="closed">
-                            <i class="fa fa-check fa-fw"></i>
-                            <a  href="{{ path(route, params | merge({ 'filter': 'closed' })|craue_removeKey('page')) }}">{{closedCount}} closed</a>
-                        </span>
-                    </h3>
-                 </div>
-                 <div class="col-lg-2">
-                      <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-primary btn-sm">New Milestone</a>
-                 </div>
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-bug fa-fw"></i> Milestones: 
+                <span class="open">
+                    <i class="fa fa-exclamation-circle fa-fw"></i>
+                    <a  href="{{ path('issuemilestones', {'project': project.id }) }}">{{openCount}} open</a>
+                </span>
+                <span class="closed">
+                    <i class="fa fa-check fa-fw"></i>
+                    <a  href="{{ path(route, params | merge({ 'filter': 'closed' })|craue_removeKey('page')) }}">{{closedCount}} closed</a>
+                </span>
+            </h3>
+
+            <div class="box-tools">
+                 <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-primary btn-sm">
+                     <i class="fa fa-plus"></i> New Milestone
+                 </a>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="box-body">
                 <div class="list-group">
                  {% for milestone in pagination %}
-
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-md-9">
-                                    <h3><a href="{{ path('issuemilestone_show', { 'id': milestone.id, 'project': project.id }) }}" >{{ milestone.title }}</a></h3>
-                                    <div class="row">
+                                    <h3 class="no-margin">
+                                        <a href="{{ path('issuemilestone_show', { 'id': milestone.id, 'project': project.id }) }}" >{{ milestone.title }}</a>
+                                    </h3>
+                                    <div class="milestone-info">
                                             {% if(milestone.closed == false) %}
                                                 {% if(milestone.dueOn) %}
-                                                    <div class="col-md-6"> 
+                                                <span class="small" style="margin-right: 10px"> 
                                                         <i class="fa fa-calendar"></i>
                                                         Due By {{ milestone.dueOn|date('F j,Y \\a\\t h:m:s') }}
-                                                    </div>
+                                                </span>
                                                {% else %}
-                                                   <div class="col-md-6"> 
-                                                   <i class="fa fa-calendar"></i>
-                                                   No Due Date
-                                               </div>
+                                                    <span class="small" style="margin-right: 10px"> 
+                                                        <i class="fa fa-calendar"></i>
+                                                        No Due Date
+                                                    </span>
                                                {% endif%}
                                             {% endif %}
                                             {% if milestone.updatedAt %}
-                                                <div class="col-md-6"> 
+                                                <span class="small"> 
                                                     <i class="fa fa-clock-o"></i>
                                                    Updated on {{ milestone.updatedAt|date('F j,Y \\a\\t h:m:s') }}
-                                               </div>
+                                               </span>
                                             {% endif %}
                                             {% if(milestone.closed)%}
                                                 <div class="col-md-6"> 
@@ -106,13 +95,18 @@
                                     
                             </div>
                             <div class="col-md-3">
-                                {% if(milestone.closed)%}
-                                    <a href="{{ path('issuemilestone_open', { 'id': milestone.id}) }}" class="btn btn-danger">Open</a>
-                                {% else %}
-                                    <a href="{{ path('issuemilestone_close', { 'id': milestone.id}) }}" class="btn btn-danger">Close</a>    
-                                {%endif%}
-                                
-                                <a href="{{ path('issuemilestone_edit', { 'id': milestone.id, 'project': project.id }) }}" class="btn btn-default">Edit</a>
+                                <div class="pull-right">
+                                    <a href="{{ path('issuemilestone_edit', { 'id': milestone.id, 'project': project.id }) }}" class="btn btn-primary btn-flat">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+
+                                    {% if(milestone.closed)%}
+                                        <a href="{{ path('issuemilestone_open', { 'id': milestone.id}) }}" class="btn btn-danger btn-flat"><i class="fa fa-undo"></i>Re-Open Milestone</a>
+                                    {% else %}
+                                        <a href="{{ path('issuemilestone_close', { 'id': milestone.id}) }}" class="btn btn-danger btn-flat"><i class="fa fa-times-circle"></i> Close Milestone</a>    
+                                    {%endif%}
+
+                                </div>
                             </div>
                         </div>
                         

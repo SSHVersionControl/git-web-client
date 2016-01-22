@@ -46,7 +46,7 @@ class IssueController extends BaseProjectController
 
         //$entities = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProject($project);
         $keyword = $request->query->get('keyword', false);
-        $filter = $request->query->get('filter', false);
+        $filter = $request->query->get('filter', 'open');
         
         $query = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($project,$filter,$keyword,null,true)->getQuery();
         $paginator  = $this->get('knp_paginator');

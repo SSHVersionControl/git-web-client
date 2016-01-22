@@ -49,7 +49,22 @@
           </li>
         </ul>
     </li>
-    <li {% if app.request.attributes.get('_route') == 'issues' %}class="active"{% endif %}>
-        <a href="{{ path('issues', { 'id': project.id }) }}"><i class="fa fa-fw fa-bug"></i><span>Issues</span></a>
+    
+    <li class="treeview {% if app.request.attributes.get('_route') in ['issues','issuemilestones','issuelabels'] %}active{% endif %}">
+        <a href="#">
+            <i class="fa fa-fw fa-bug"></i><span>Bug Tracking</span> 
+            <i class="fa fa-angle-left pull-right"></i>
+        </a>
+        <ul class="treeview-menu"> 
+            <li {% if app.request.attributes.get('_route') == 'issues' %}class="active"{% endif %}>
+                <a href="{{ path('issues', { 'id': project.id }) }}"><i class="fa fa-circle-o text-green"></i><span>Issues</span></a>
+            </li>
+            <li {% if app.request.attributes.get('_route') == 'issuemilestones' %}class="active"{% endif %}>
+                <a href="{{ path('issuemilestones', { 'project': project.id  }) }}"><i class="fa fa-circle-o text-aqua"></i><span>Milestones</span></a>
+            </li>
+            <li {% if app.request.attributes.get('_route') == 'issuelabels' %}class="active"{% endif %}>
+                <a href="{{ path('issuelabels', { 'project': project.id }) }}"><i class="fa fa-circle-o text-red"></i><span>Labels</span></a>
+            </li>
+        </ul>
     </li>
 </ul>

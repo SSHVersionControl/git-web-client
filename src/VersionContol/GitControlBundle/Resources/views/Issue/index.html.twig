@@ -32,47 +32,34 @@
 
 {% block content -%}
     
-    <div class="row">
-        <div class="col-md-9">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="{{ path('issues', { 'id': project.id }) }}" >Issues</a>
-                </li>
-                <li>
-                    <a href="{{path('issuelabels', { 'project': project.id }) }}" >Labels</a>
-                </li>
-                <li>
-                    <a href="{{path('issuemilestones', { 'project': project.id }) }}" >Milestones</a>
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-3">
-             <form action="{{ path('issues', { 'id': project.id }) }}" method="GET">
-                <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search..." name="keyword">
-                        <span class="input-group-btn">
-                          <button class="btn btn-default" type="submit">Go!</button>
-                        </span>
-                 </div><!-- /input-group -->
-             </form>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                 <div class="col-lg-10">
-                    <h3 class="panel-title"><i class="fa fa-bug fa-fw"></i> Issues: 
-                        <span class="all"><a  href="{{ path(route, params |craue_removeKey('filter')|craue_removeKey('page')) }}">{{ pagination.getTotalItemCount }}</a></span>
-                        <span class="open"><i class="fa fa-exclamation-circle fa-fw"></i><a  href="{{ path(route, params | merge({ 'filter': 'open' })|craue_removeKey('page')) }}">{{openIssuesCount}} open</a></span>
-                        <span class="closed"><i class="fa fa-check fa-fw"></i><a  href="{{ path(route, params | merge({ 'filter': 'closed' })|craue_removeKey('page')) }}">{{closedIssuesCount}} closed</a></span>
-                    </h3>
-                 </div>
-                 <div class="col-lg-2">
-                     <a href="{{ path('issue_new',{ 'id': project.id }) }}" class="btn btn-primary btn-sm">New Issue</a>
-                 </div>
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-bug fa-fw"></i> Issues: 
+                <span class="open"><i class="fa fa-exclamation-circle fa-fw"></i><a  href="{{ path(route, params | merge({ 'filter': 'open' })|craue_removeKey('page')) }}">{{openIssuesCount}} open</a></span>
+                <span class="closed"><i class="fa fa-check fa-fw"></i><a  href="{{ path(route, params | merge({ 'filter': 'closed' })|craue_removeKey('page')) }}">{{closedIssuesCount}} closed</a></span>
+            </h3>
+   
+            <div class="box-tools">
+                
+                <form action="{{ path('issues', { 'id': project.id }) }}" method="GET">
+                    <div class="pull-right">
+                        <a href="{{ path('issue_new',{ 'id': project.id }) }}" class="btn btn-primary btn-sm bg-blue ">
+                            <i class="fa fa-plus"></i> New Issue
+                        </a>
+                    </div>
+                    <div class="input-group input-group-sm pull-right" style="width: 250px; margin-right:10px">
+                            <input type="text" class="form-control " placeholder="Search issues..." name="keyword">
+                            <span class="input-group-btn">
+                              <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                     </div><!-- /input-group -->
+                     
+                 </form>
+                
             </div>
         </div>
-        <div class="panel-body">
+        <div class="box-body">
+             
                 <div class="list-group">
                  {% for issue in pagination %}
 
@@ -119,5 +106,4 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
