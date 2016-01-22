@@ -1,38 +1,67 @@
 {% form_theme form 'VersionContolGitControlBundle::FormTheme/_editproject-prototype.html.twig' %}
-{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+{% form_theme edit_form 'VersionContolGitControlBundle::FormTheme/_editproject-prototype.html.twig' %}
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+ 
+{% endblock %}
+            
+{% block header %}
+     
+    <h1 class="page-header">
+           New Project
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-edit"></i> Edit
+        </li>
+    </ol>
+{% endblock %}
+
 
 {% block content -%}
-    <h1>Create New Project</h1>
+ <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
-        {{ form_start(form,{ 'attr': { 'class': 'form'}}) }}
-
-               {{ form_errors(form) }}                
-                <div class="form-group">
-                    {{ form_label(form.title) }}
-                    {{ form_errors(form.title) }}           
-                    {{ form_widget(form.title,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for your project'}}) }}
-                </div>
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_errors(form.description) }}
-                    {{ form_widget(form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
-                </div>
-                
-
-                <div class="text-right">
-                    <a href="{{ path('home') }}" class="btn btn-default">
-                        Cancel
-                    </a>
-                    {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
-                </div>
-            {{ form_end(form) }}
-        </div>
-    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4>Instructions</h4>
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title"><i class="fa fa-product-hunt"></i>Create New Project</h3>
             </div>
-            <div class="panel-body">
+            <div class="box-body">
+                {{ form_start(form,{ 'attr': { 'class': 'form'}}) }}
+
+                       {{ form_errors(form) }}                
+                        <div class="form-group">
+                            {{ form_label(form.title) }}
+                            {{ form_errors(form.title) }}           
+                            {{ form_widget(form.title,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for your project'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.description) }}
+                            {{ form_errors(form.description) }}
+                            {{ form_widget(form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
+                        </div>
+
+
+                        <div class="text-right">
+                            <a href="{{ path('home') }}" class="btn btn-default">
+                                Cancel
+                            </a>
+                            {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
+                        </div>
+                    {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h4 class="box-title">Instructions</h4>
+            </div>
+            <div class="box-body">
                 <p>Fill in a the form to create a new project. A project is usually a collection 
                 of different git projects eg Development, Staging, Live. Each of these git projects 
                 are referred to as "Project Enviroments". Once you create the project you will be able to create 
@@ -41,4 +70,5 @@
             
         </div>
     </div>
+ </div>
 {% endblock %}

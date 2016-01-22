@@ -1,79 +1,57 @@
 {% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
 
-
 {% block topnavleft %}
  
 {% endblock %}
             
 {% block header %}
-    
-    
+     
     <h1 class="page-header">
-           Pull
-          <small>{{ project.title }}
-            {% if (is_granted('MASTER', project)) %}
-                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
-            {% endif %}
-        </small>
+           Project Members List
+          <small>{{ project.title }}</small>
     </h1>
     <ol class="breadcrumb">
         <li>
             <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
         </li>
+        <li>
+            <i class="fa fa-dashboard"></i>  <a href="{{ path('project_edit', { 'id': project.id }) }}">Project</a>
+        </li>
         <li class="active">
-            <i class="fa fa-arrow-circle-left"></i> Pull
+            <i class="fa fa-users"></i> Project Members
         </li>
     </ol>
 {% endblock %}
 
 {% block sidemenu -%}
  {% include 'VersionContolGitControlBundle::Partials/modifiySideMenu.html.twig'  %}
-{% endblock %}
+{% endblock %} 
+    
+
 
 {% block content -%}
-    <h1 class="page-header">
-       Members
-      <small>
-          {{project.title}}
-      </small>
-          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
-    </h1>
-    
-    <ol class="breadcrumb">
-        <li>
-            <i class="fa fa-dashboard"></i>  <a href="{{ path('home') }}">Projects</a>
-        </li>
-        <li>
-            <i class="fa fa-file"></i> <a href="{{ path('project_log', { 'id': project.id }) }}">Project</a>
-        </li>
-         <li class="active">
-             <i class="fa fa-user"></i> Project Members
-        </li>
-    </ol>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-lg-10">
-                    <h3 class="panel-title"><i class="fa fa-user fa-fw"></i> Project Members</h3>
-                </div>
-                <div class="col-lg-2">
-                    <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMember">
-                        Add Member
-                    </button>
-                </div>
+    
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-user fa-fw"></i> Project Members</h3>
+            <div class="box-tools">
+                <button  type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addMember">
+                    <i class="fa fa-plus"></i> Add Member
+                </button>
             </div>
         </div>
-        <div class="panel-body">
+        <div class="box-body">
+            <p>List of Project Members with access to this project.</p>
             <div class="list-group">
                 {% for userProject in userProjects %}
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-md-8">
-                                    {{userProject.user.name}}  {{userProject.user.username}}
+                                <strong>{{userProject.user.name}}</strong>  ({{userProject.user.username}})
                             </div>
                             <div class="col-md-2">
-                                {{userProject.roles}}
+                                <span class="label label-success">{{userProject.roles}}</span>
                             </div>
                             <div class="col-md-2">
                                  {% if(userProject.user.id != userProject.project.creator.id)%}
@@ -83,23 +61,29 @@
                             </div>
                         </div>
                         <div id="edit-user-access-{{userProject.id}}" class="collapse">
-                            <div class="well">
-                                <form action="{{ path('userprojects_update',{ 'id': userProject.id }) }}" method="POST" {{ form_enctype(form) }}>
-                                    <input type="hidden" name="_method" value="PUT" />
-                                    <div class="form-group">
-                                        <label for="roles">User Role</label>
-                                        <select placeholder="Please provide a description of the project" class="form-control" name="roles" id="roles">
-                                            <option value="">Please select a role</option>            
-                                            <option value="Reporter" {% if(userProject.roles == 'Reporter')%}selected{% endif %}>Reporter</option>            
-                                            <option value="Developer" {% if(userProject.roles == 'Developer')%}selected{% endif %}>Developer</option>            
-                                            <option value="Master" {% if(userProject.roles == 'Master')%}selected{% endif %}>Master</option>
-                                        </select>
-                                    </div>
-                                    <div class="text-right">
-                                        <button type="button" class="btn btn-default"  data-toggle="collapse" data-target="#edit-user-access-{{userProject.id}}">Close</button>
-                                        <button class="btn btn-success" name="submit" id="versioncontol_gitcontrolbundle_userprojects_submit" type="submit">Update</button>
-                                    </div>
-                                </form>
+                            <p></p>
+                            <div class="box box-primary box-solid">
+                                <div class="box-header">
+                                    <h3 class="box-title"><i class="fa fa-edit"></i> Edit users access to project</h3>
+                                </div>
+                                <div class="box-body">
+                                    <form action="{{ path('userprojects_update',{ 'id': userProject.id }) }}" method="POST" {{ form_enctype(form) }}>
+                                        <input type="hidden" name="_method" value="PUT" />
+                                        <div class="form-group">
+                                            <label for="roles">User Role</label>
+                                            <select placeholder="Please provide a description of the project" class="form-control" name="roles" id="roles">
+                                                <option value="">Please select a role</option>            
+                                                <option value="Reporter" {% if(userProject.roles == 'Reporter')%}selected{% endif %}>Reporter</option>            
+                                                <option value="Developer" {% if(userProject.roles == 'Developer')%}selected{% endif %}>Developer</option>            
+                                                <option value="Master" {% if(userProject.roles == 'Master')%}selected{% endif %}>Master</option>
+                                            </select>
+                                        </div>
+                                        <div class="text-right">
+                                            <button type="button" class="btn btn-default"  data-toggle="collapse" data-target="#edit-user-access-{{userProject.id}}">Close</button>
+                                            <button class="btn btn-success" name="submit" id="versioncontol_gitcontrolbundle_userprojects_submit" type="submit">Update</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -155,7 +155,7 @@ class UserProjectsController extends Controller
      *
      * @Route("/{id}", name="userprojects_update")
      * @Method("PUT")
-     * @Template("VersionContolGitControlBundle:UserProjects:edit.html.twig")
+     * @Template("VersionContolGitControlBundle:UserProjects:membersList.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
@@ -178,7 +178,7 @@ class UserProjectsController extends Controller
             $em->flush();
              $this->get('session')->getFlashBag()->add('notice', 'Users role has been updated');
         }else{
-            $this->get('session')->getFlashBag()->add('error', 'Error in adding user to this form');
+            $this->get('session')->getFlashBag()->add('error', 'Error in adding user to this project');
         }
         
         return $this->redirect($this->generateUrl('members_list', array('id' => $project->getId())));
