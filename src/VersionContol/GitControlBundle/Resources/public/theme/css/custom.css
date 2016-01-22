@@ -187,6 +187,7 @@ table.diff >tbody>tr.diff-type-2>td{
 .timeline-body > p,
 .timeline-body > ul {
     margin-bottom: 0;
+    color: #333 !important;
 }
 
 .timeline-body > p + p {

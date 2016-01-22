@@ -141,5 +141,12 @@ $(function(){
 		$('#dataConfirmModal').modal({show:true});
 		return false;
 	});
+        
+    $("#ajax-modal").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-body").load(link.attr("href"));
+    });
+        
+        
 
 });
