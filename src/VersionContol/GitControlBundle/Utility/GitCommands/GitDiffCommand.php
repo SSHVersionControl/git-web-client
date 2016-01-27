@@ -2,6 +2,8 @@
 namespace VersionContol\GitControlBundle\Utility\GitCommands;
 
 use VersionContol\GitControlBundle\Utility\GitDiffParser;
+use VersionContol\GitControlBundle\Entity\GitCommitFile;
+use VersionContol\GitControlBundle\Entity\Collections\GitCommitFileCollection;
 
 /**
  * Description of GitFilesCommand
@@ -32,5 +34,22 @@ class GitDiffCommand extends GitCommand {
          $diffs = $diffParser->parse(); 
          return $diffs;
     }
+    
+    /**
+     * Returns a list of files effected by a commit.
+     * 
+     * @return array() Array of file paths
+     */
+    public function getFilesInCommit($commitHash){
+         $response = $this->runCommand("git diff-tree --no-commit-id --name-status -r ".escapeshellarg($commitHash)."");
+         $responseLines = $this->splitOnNewLine($response);
+         $files = new GitCommitFileCollection();
+         foreach($responseLines as $line){
+             $files->addGitCommitFile((new GitCommitFile($line)));
+         }
+         return $files;
+    }
+    
+    
     
 }

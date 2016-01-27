@@ -120,6 +120,15 @@ class GitCommitCommand extends GitCommand {
     }
     
     /**
+     * Shortcut to stage all (new, modified, deleted) files
+     * 
+     * @return string Command response
+     */
+    public function stageAll(){
+        return $this->runCommand('git add -A');
+    }
+    
+    /**
      * Commits any file that was been staged
      *  
      * @param string $message

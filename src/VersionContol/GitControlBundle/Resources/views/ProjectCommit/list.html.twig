@@ -46,14 +46,25 @@
                 {{ form_start(commit_form,{ 'attr': { 'class': 'form'}}) }}
                     {{ form_errors(commit_form) }} 
 
-                    {{ form_label(commit_form.files) }}
-                    {{ form_errors(commit_form.files) }}
-                    {{ form_widget(commit_form.files,{ 'attr': { 'class': 'form-control commit-file'}, 'project':project}) }}
+                    {% if(files|length > 200)%}
+                        <div class="callout callout-warning">
+                            <h4>To many files to List!</h4>
+
+                            <p>There are over <strong>{{files|length}}</strong> files to commit. This is to many to list. Select "Commit all files" to commit all the files</p>
+                        </div>
+                        {{ form_label(commit_form.files) }}
+                        {{ form_errors(commit_form.files) }}
+                        {{ form_widget(commit_form.files,{ 'attr': { 'class': ''}}) }}  
+                    {% else %}           
+                        {{ form_label(commit_form.files) }}
+                        {{ form_errors(commit_form.files) }}
+                        {{ form_widget(commit_form.files,{ 'attr': { 'class': 'commit-file'}, 'project':project}) }}
                         
-                    <div class="form-group">
-                        <button id="commit-select-all" type="button" class="btn btn-default btn-sm" >Select All</button>
-                        <button id="commit-deselect-all" type="button" class="btn btn-default btn-sm" >Deselect All</button>
-                    </div>
+                        <div class="form-group">
+                            <button id="commit-select-all" type="button" class="btn btn-default btn-sm" >Select All</button>
+                            <button id="commit-deselect-all" type="button" class="btn btn-default btn-sm" >Deselect All</button>
+                        </div
+                    {% endif %}
                     <div class="form-group">
                         {{ form_label(commit_form.comment) }}
                         {{ form_errors(commit_form.comment) }}

@@ -17,7 +17,8 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Theme style -->
-    
+    {% block includeCSSBefore %}
+    {% endblock %}
     <link rel="stylesheet" href="{{ asset('bundles/versioncontolgitcontrol/theme/css/AdminLTE.min.css') }}" >
     <link rel="stylesheet" href="{{ asset('bundles/versioncontolgitcontrol/theme/css/skins/skin-green.min.css') }}" >
     
@@ -26,7 +27,8 @@
     <link href="{{ asset('bundles/versioncontolgitcontrol/js/select2/v3.5/select2-bootstrap.css') }}" rel="stylesheet" type="text/css">
 
     <link href="{{ asset('bundles/versioncontolgitcontrol/theme/css/custom.css') }}" rel="stylesheet" type="text/css">
-    
+    {% block includeCSSAfter %}
+    {% endblock %}
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>

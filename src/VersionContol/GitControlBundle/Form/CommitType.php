@@ -39,26 +39,32 @@ class CommitType extends AbstractType
             //'constraints' => array(
                 //new NotBlank()
             //)
-            ))
-
-        ->add('files', 'choice', array(
-            'choices' => $this->getFileChoices(),
-            //'class' => '\VersionContol\GitControlBundle\Entity\GitFile',
-            'multiple'     => true,
-            'expanded'  => true,
-            'required'  => false,
-            'choices_as_values' => true,
-            'choice_label' => function($gitFile) {
-                    return $gitFile->getPath1();
-                },
-             'choice_value' => function($gitFile) {
-                    return $gitFile->getPath1();
-                },
-            //'constraints' => array(
-            //    new NotBlank()
-            //    ,new \VersionContol\GitControlBundle\Validator\Constraints\StatusHash()
-            //)
             ));
+        if(count($this->getFileChoices()) > 0){
+            $builder->add('files', 'choice', array(
+                'choices' => $this->getFileChoices(),
+                //'class' => '\VersionContol\GitControlBundle\Entity\GitFile',
+                'multiple'     => true,
+                'expanded'  => true,
+                'required'  => false,
+                'choices_as_values' => true,
+                'choice_label' => function($gitFile) {
+                        return $gitFile->getPath1();
+                    },
+                 'choice_value' => function($gitFile) {
+                        return $gitFile->getPath1();
+                    },
+                //'constraints' => array(
+                //    new NotBlank()
+                //    ,new \VersionContol\GitControlBundle\Validator\Constraints\StatusHash()
+                //)
+                ));
+        }else{
+            $builder->add('files','checkbox', array(
+                'label'    => 'Commit all files',
+                'required' => false,
+            )); 
+        }
  
                 
         if($this->includeIssues === true){
@@ -117,6 +123,11 @@ class CommitType extends AbstractType
     }
     
     public function getFileChoices() {
+
+        if(count($this->fileChoices) > 200){
+            return array();
+        }
+        
         return $this->fileChoices;
     }
 

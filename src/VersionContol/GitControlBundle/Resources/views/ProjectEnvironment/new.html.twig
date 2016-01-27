@@ -41,11 +41,14 @@
 
                         {{ form_errors(form) }}  
 
-                        <div class="form-group {% if(form.gitaction.vars.value != 'clone')%}hidden{%endif%}">
-                            {{ form_label(form.gitCloneLocation) }}
-                            {{ form_errors(form.gitCloneLocation) }}           
-                            {{ form_widget(form.gitCloneLocation,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide Git Repository Location to clone'}}) }}
-                        </div>
+                        {% if(form.gitaction.vars.value == 'clone')%}
+                            <div class="form-group {% if(form.gitaction.vars.value != 'clone')%}hidden{%endif%}">
+                                {{ form_label(form.gitCloneLocation) }}
+                                {{ form_errors(form.gitCloneLocation) }}           
+                                {{ form_widget(form.gitCloneLocation,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide Git Repository Location to clone'}}) }}
+                            </div>
+                        {% endif %}
+                        
                         <div class="form-group">
                             {{ form_label(form.title) }}
                             {{ form_errors(form.title) }}           

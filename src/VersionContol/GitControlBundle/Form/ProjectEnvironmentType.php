@@ -34,7 +34,7 @@ class ProjectEnvironmentType extends AbstractType
             ->add('projectEnvironmentFilePerm',  new ProjectEnvironmentFilePermType(), array('required'  => false));
         
         if($this->useCloneLocation === true){
-            $builder->add('gitCloneLocation') ; 
+            $builder->add('gitCloneLocation','text',array('required' => false)) ; 
         }
         
     }

@@ -70,7 +70,7 @@ class ProjectCommitController extends BaseProjectController
        $commitEntity->setProject($this->project);
        $commitEntity->setStatusHash($this->gitCommitCommand->getStatusHash());
        
-       $commitForm = $this->createCommitForm($commitEntity);
+       $commitForm = $this->createCommitForm($commitEntity,$files);
        
        
         return array(
@@ -84,7 +84,7 @@ class ProjectCommitController extends BaseProjectController
 
     
     /**
-     * Creates a new Project entity.
+     * Handles the commit form
      *
      * @Route("/{id}", name="project_commit")
      * @Method("POST")
@@ -93,25 +93,38 @@ class ProjectCommitController extends BaseProjectController
     public function commitAction(Request $request,$id)
     {
         $this->initAction($id);
+        $files =  $this->gitCommitCommand->getFilesToCommit();
         
         $commitEntity = new Commit();
         $commitEntity->setProject($this->project);
-        $commitForm = $this->createCommitForm($commitEntity);
+        $commitForm = $this->createCommitForm($commitEntity,$files);
         $commitForm->handleRequest($request);
 
         if ($commitForm->isValid()) {
            
             $selectedGitFiles = $commitEntity->getFiles();
      
-            $selectedFiles = array();
-            foreach($selectedGitFiles as $gitFile){
-                $selectedFiles[] = $gitFile->getPath1();
-            }
-
             try{
-                //Git Stage selected files
-                $this->gitCommitCommand->stageFiles($selectedFiles);
+                $selectedFiles = array();
+                $filesCommited = 0;
                 
+                if(is_array($selectedGitFiles)){
+                    foreach($selectedGitFiles as $gitFile){
+                        $selectedFiles[] = $gitFile->getPath1();
+                    }
+                
+                    $filesCommited = count($selectedFiles);
+                    //Git Stage selected files
+                    $this->gitCommitCommand->stageFiles($selectedFiles);
+                }else{
+                    //To many files
+                    if($selectedGitFiles === true){
+                         $this->gitCommitCommand->stageAll();
+                         
+                         $filesCommited = count($files);
+                    }
+                }
+
                 //Handle Issue Action eg Close issue. Update Commit message
                 $this->handleIssue($commitEntity);
      
@@ -120,7 +133,7 @@ class ProjectCommitController extends BaseProjectController
                 
                 //Set notice of successfull commit
                 $this->get('session')->getFlashBag()->add('notice'
-                , count($selectedFiles)." files have been committed");
+                , $filesCommited." files have been committed");
                 
                 //Git Push to remote repository
                 $this->pushToRemote($commitEntity);
@@ -135,7 +148,7 @@ class ProjectCommitController extends BaseProjectController
         }
         
         $branchName = $this->gitSyncCommands->getCurrentBranch();
-        $files =  $this->gitCommitCommand->getFilesToCommit();
+        
         
         return array(
             'project'      => $this->project,
@@ -176,10 +189,10 @@ class ProjectCommitController extends BaseProjectController
     }
     
     
-    private function createCommitForm($commitEntity){
+    private function createCommitForm($commitEntity,$fileChoices){
  
         $includeIssues = ($this->issuesCount > 0)?true:false;
-        $fileChoices = $this->gitCommitCommand->getFilesToCommit();
+        //$fileChoices = $this->gitCommitCommand->getFilesToCommit();
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
         $form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(

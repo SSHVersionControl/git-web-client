@@ -89,6 +89,7 @@ class IssueMilestoneController extends Controller
 
         return array(
             'entity' => $issueMilestone,
+            'project' => $issueMilestone->getProject(),
             'form'   => $form->createView(),
         );
     }

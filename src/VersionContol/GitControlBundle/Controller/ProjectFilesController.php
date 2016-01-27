@@ -29,7 +29,7 @@ class ProjectFilesController extends BaseProjectController{
     protected $gitFilesCommands;
     
     
-     /**
+    /**
      * Show Git commit diff
      *
      * @Route("s/{id}/{currentDir}",defaults={"$currentDir" = ""}, name="project_filelist")
@@ -66,7 +66,7 @@ class ProjectFilesController extends BaseProjectController{
      * 
      * @param integer $id Project Id
      */
-    protected function initAction($id){
+    protected function initAction($id,$grantType = 'VIEW'){
  
         $em = $this->getDoctrine()->getManager();
 
@@ -75,7 +75,7 @@ class ProjectFilesController extends BaseProjectController{
         if (!$this->project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        $this->checkProjectAuthorization($this->project,'VIEW');
+        $this->checkProjectAuthorization($this->project,$grantType);
         
         $this->gitFilesCommands = $this->get('version_control.git_files')->setProject($this->project);
         
@@ -85,6 +85,25 @@ class ProjectFilesController extends BaseProjectController{
             'project'      => $this->project,
             'branchName' => $this->branchName,
             ));
+    }
+    
+    /**
+     * Adds File to .gitignore and remove file git index.
+     *
+     * @Route("/{id}/ignore/{filePath}", name="project_fileignore")
+     * @Method("GET")
+     * @Template("VersionContolGitControlBundle:ProjectFiles:fileList.html.twig")
+     */
+    public function ignoreAction($id,$filePath){
+        $this->initAction($id,'MASTER');
+        
+        $filePath = trim(urldecode($filePath));
+        
+        $response = $this->gitFilesCommands->ignoreFile($filePath, $this->branchName);
+        
+        $this->get('session')->getFlashBag()->add('notice', $response);
+            
+        return $this->redirect($this->generateUrl('project_filelist', array('id' => $id)));
     }
     
    

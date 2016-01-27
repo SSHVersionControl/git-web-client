@@ -81,8 +81,30 @@ abstract class GitCommand {
             //$branchName =  $this->runCommand('git rev-parse --abbrev-ref HEAD');
             $branchName =  $this->runCommand('git symbolic-ref --short -q HEAD');
         }catch(\RuntimeException $e){
+            $branchName = $this->getCurrentBranchOldGit();
+        }
+        
+        return $branchName;
+    }
+    
+    /**
+     * Git "--short" does not work on older Git versions.
+     * @TODO Check for git version
+     * @return string
+     * @throws Exception
+     */
+    public function getCurrentBranchOldGit(){
+        $branchName = '';
+        try{
+            //$branchName =  $this->runCommand('git rev-parse --abbrev-ref HEAD');
+            $response =  $this->runCommand('git symbolic-ref HEAD');
+            $tmp = explode('/', $response);
+            $branchName = $tmp['2'];
+        }catch(\RuntimeException $e){
             if($this->getObjectCount() == 0){
                 $branchName = 'NEW REPO';
+            }else{
+                throw new Exception($e->getMessage());
             }
         }
         

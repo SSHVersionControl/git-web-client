@@ -28,11 +28,6 @@ class ProjectHistoryController extends BaseProjectController
      */
     protected $gitLogCommand;
     
-    /**
-     *
-     * @var GitCommand 
-     */
-    protected $gitBranchCommands;
     
     /**
      * Displays the project commit history for the current branch.
@@ -101,11 +96,16 @@ class ProjectHistoryController extends BaseProjectController
         $gitLog = $this->gitLogCommand->execute()->getFirstResult();
         
         //Get git Diff
-        $gitDiffs = $gitDiffCommand->getCommitDiff($commitHash);
+        //$gitDiffs = $gitDiffCommand->getCommitDiff($commitHash);
+        $files = $gitDiffCommand->getFilesInCommit($commitHash);
+        foreach($files as $file){
+            
+        }
         
         return array_merge($this->viewVariables, array(
             'log' => $gitLog,
-            'diffs' => $gitDiffs,
+            //'diffs' => $gitDiffs,
+            'files' => $files,
         ));
     }
     
@@ -125,9 +125,8 @@ class ProjectHistoryController extends BaseProjectController
         $this->checkProjectAuthorization($this->project,'VIEW');
         
         $this->gitLogCommand = $this->get('version_control.git_log')->setProject($this->project);
-        $this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
         
-        $this->branchName = $this->gitBranchCommands->getCurrentBranch();
+        $this->branchName = $this->gitLogCommand->getCurrentBranch();
         
         $this->viewVariables = array_merge($this->viewVariables, array(
             'project'      => $this->project,

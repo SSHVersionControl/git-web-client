@@ -138,7 +138,7 @@ class GitFilesCommand extends GitCommand {
     }
     
     public function readFile($file){
-   
+        $basePath = $this->addEndingSlash($this->projectEnvironment->getPath());
         $fileContents = '';
         
          if($this->projectEnvironment->getSsh() === true){
@@ -148,10 +148,10 @@ class GitFilesCommand extends GitCommand {
                 exit('Login Failed');
             }
             
-            $fileContents = $sftp->get($file->getFullPath());
+            $fileContents = $sftp->get($basePath.$file->getFullPath());
 
          }else{
-            $fileContents = file_get_contents($file->getFullPath());
+            $fileContents = file_get_contents($basePath.$file->getFullPath());
          }
          
          return $fileContents;
@@ -277,4 +277,84 @@ class GitFilesCommand extends GitCommand {
         return $objectCount;
     }
     
+    public function ignoreFile($filePath){
+        $response = '';
+        if($this->fileExists($filePath)){
+            if($this->filePathIsIgnored($filePath) === false){
+                $response = $this->addToGitIgnore($filePath);
+            }else{
+                $response = "File in .gitignore already.\n";
+            }
+ 
+            $response .= $this->runCommand(sprintf('git rm --cached %s',escapeshellarg($filePath)));
+            
+            $response .= "\n Please commit to complete the removal of this file from git index";
+        }else{
+            throw new \Exception("File path was not valid. Please check that the file exists.");
+        }
+        
+        return $response;
+        
+    }
+    
+    /**
+     * Checks if a file exists
+     * @param type $filePath FilePath excluding base path
+     * @return type
+     */
+    public function fileExists($filePath){
+        $fileExists = false;
+        $basePath = trim($this->addEndingSlash($this->projectEnvironment->getPath()));
+        if($this->projectEnvironment->getSsh() === true){
+            $sftp = $this->connectToSftp();
+            $fileExists = $sftp->file_exists($basePath.$filePath);
+        }else{
+            $fileExists = file_exists($basePath.$filePath);
+        }
+        
+        return $fileExists;
+    }
+    
+    public function filePathIsIgnored($filePath){
+
+        $fileIgnored = false;
+        $ignoreFiles = $this->getGitIgnoreFile();
+        
+        foreach($ignoreFiles as $ignoreFilePath){
+            if($ignoreFilePath === '/'.$filePath){
+                $fileIgnored = true;
+            }
+        }
+        
+        return $fileIgnored;
+    }
+    
+    /**
+     * Gets the contents of gitignore file and 
+     * splits on newline and returns it as an array
+     * @return array
+     */
+    public function getGitIgnoreFile(){
+        $ignoreFiles = array();
+        
+        
+        $fileData['fullPath'] = '.gitignore';
+        $fileData['gitPath'] = '.gitignore';
+
+        $remoteFileInfo = new RemoteFileInfo($fileData);
+
+        $contents = $this->readFile($remoteFileInfo);
+        $ignoreFiles = $this->splitOnNewLine($contents, true);
+        
+        return $ignoreFiles;
+    }
+    
+    public function addToGitIgnore(){
+        if($this->fileExists('.gitignore')){
+            //Update git ignore file
+        }else{
+            //create file
+        }
+        return "File added to .gitignore\n";
+    }
 }
