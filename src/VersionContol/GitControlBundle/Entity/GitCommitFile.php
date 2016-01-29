@@ -52,7 +52,7 @@ class GitCommitFile
         
         $this->statusChange = substr($line, 0 ,1);
         
-        $this->filePath = substr($line, 1);
+        $this->filePath = trim(substr($line, 1));
 
     }
 

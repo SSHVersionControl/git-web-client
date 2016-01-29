@@ -78,11 +78,11 @@ class ProjectHistoryController extends BaseProjectController
     /**
      * Show Git commit diff
      *
-     * @Route("/commitdiff/{id}/{commitHash}", name="project_commitdiff")
+     * @Route("/commit/{id}/{commitHash}", name="project_commitdiff")
      * @Method("GET")
      * @Template()
      */
-    public function commitDiffAction($id,$commitHash){
+    public function commitHistoryAction($id,$commitHash){
         
         $this->initAction($id);
         
@@ -98,14 +98,36 @@ class ProjectHistoryController extends BaseProjectController
         //Get git Diff
         //$gitDiffs = $gitDiffCommand->getCommitDiff($commitHash);
         $files = $gitDiffCommand->getFilesInCommit($commitHash);
-        foreach($files as $file){
-            
-        }
+
         
         return array_merge($this->viewVariables, array(
             'log' => $gitLog,
             //'diffs' => $gitDiffs,
             'files' => $files,
+        ));
+    }
+    
+    /**
+     * Show Git commit diff
+     *
+     * @Route("/commitfile/{id}/{commitHash}/{difffile}", name="project_commitfilediff")
+     * @Method("GET")
+     * @Template()
+     */
+    public function fileDiffAction($id,$commitHash,$difffile){
+        
+        $this->initAction($id);
+        
+        $gitDiffCommand = $this->get('version_control.git_diff')->setProject($this->project);
+
+        $difffile = urldecode($difffile);
+        
+        $previousCommitHash = $gitDiffCommand->getPreviousCommitHash($commitHash);
+        
+        $gitDiffs = $gitDiffCommand->getDiffFileBetweenCommits($difffile,$previousCommitHash,$commitHash);
+   
+        return array_merge($this->viewVariables, array(
+            'diffs' => $gitDiffs,
         ));
     }
     
