@@ -1,0 +1,21 @@
+
+{% if(pagination.getTotalItemCount > 0)%}
+    <h3 class="control-sidebar-heading">Recent Issues</h3>
+    <ul class="control-sidebar-menu">
+        {% for issue in pagination %}
+        <li>
+            
+          <a href="{{ path('issue_show_modal', { 'id': issue.id }) }}" data-remote="false" data-toggle="modal" data-target="#issueModal" title="{{ issue.title }}" class="ajax-modal">
+            <i class="menu-icon fa fa-bug bg-red"></i>
+            <div class="menu-info">
+              <h4 class="control-sidebar-subheading">{{ issue.title }}</h4>
+              <p>#{{issue.id}} opened by {{issue.verUser.name}} {{issue.createdAt|time_ago_in_words}}</p>
+            </div>
+          </a>
+        </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <h3 class="control-sidebar-heading">Recent Issues</h3>
+    <p>There are not open issues for this project.</p>
+{% endif %}

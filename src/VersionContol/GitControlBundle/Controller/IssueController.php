@@ -70,6 +70,46 @@ class IssueController extends BaseProjectController
         );
     }
     
+    /**
+     * Lists latest Issue entities.
+     *
+     * @Route("s/latest/{id}", name="issues_latest")
+     * @Method("GET")
+     * @Template()
+     */
+    public function latestAction($id, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+
+        if (!$project) {
+            throw $this->createNotFoundException('Unable to find Project entity.');
+        }
+        
+        $this->checkProjectAuthorization($project,'VIEW');
+        
+
+        
+        $query = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($project,'open',false,null,true)->getQuery();
+        $paginator  = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1)/*page number*/,
+            5/*limit per page*/
+        );
+
+        //$openIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'open',false);
+        
+        return array(
+            //'entities' => $entities,
+            'project' => $project,
+            //'openIssuesCount' => $openIssuesCount,
+            'pagination' => $pagination
+            
+        );
+    }
+    
     
     
     /**
