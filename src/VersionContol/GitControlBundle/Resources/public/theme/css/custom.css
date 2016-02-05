@@ -370,3 +370,9 @@ table.diff >tbody>tr.diff-type-2>td{
 
 }
 
+
+.alert-header {
+    position: relative;
+    padding: 15px 15px 0 15px;
+}
+
