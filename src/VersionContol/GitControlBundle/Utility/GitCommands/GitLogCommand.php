@@ -382,7 +382,9 @@ class GitLogCommand extends GitCommand {
     }
 
     public function setBranch($branch) {
-        $this->branch = $branch;
+        if($branch !== '(No Branch)'){
+            $this->branch = $branch;
+        }
         return $this;
     }
 

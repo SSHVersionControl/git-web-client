@@ -75,7 +75,10 @@
                                         <strong class="str-truncated">{{log.subject}}</strong>
                                     </div>
                                     <div class="col-md-2">
-                                        <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}">{{log.abbrHash}}</a>
+                                        <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}" class="">
+                                            <i class="fa fa-code-fork"></i>
+                                            {{log.abbrHash}}
+                                        </a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -83,17 +86,27 @@
                                         <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
                                     </div>
                                     <div class="col-md-2">
-                                        <a href="#options{{ loop.index }}" data-toggle="collapse" class="btn btn-link">more options...</a>
+                                        <a href="#options{{ loop.index }}" data-toggle="collapse" class="">more options...</a>
                                     </div>
                                 </div>
                                 <div id="options{{ loop.index }}" class="row collapse">
                                      <div class="col-md-offset-6 col-md-6 text-right">
                                         {% if(loop.first) %}
-                                            <a href="{{ path('undocommit_soft', { 'id': project.id}) }}" class="btn btn-default btn-small" >Undo Soft</a>
+                                            <a href="{{ path('undocommit_soft', { 'id': project.id}) }}" class="btn btn-sm bg-green btn-flat" >
+                                                <i class="fa fa-undo"></i>Undo Soft
+                                            </a>
                                         {% endif %}
-                                         <a href="" class="btn btn-default btn-small" >Checkout</a>
-                                         <a href="" class="btn btn-default btn-small" >Revert To</a>
-                                         <a href="" class="btn btn-default btn-small" >Show files</a>
+                                         <a href="{{ path('project_checkout_commit', { 'id': project.id, 'commitHash': log.abbrHash}) }}" class="btn btn-sm bg-green btn-flat" data-confirm="You are about to checkout the commit '{{log.abbrHash}}'. This will but the repository in a read only state. You can browser all the files in this repository, but you will not be able to make any commits until you checkout current HEAD." data-confirm-header="Confirm Checkout of Commit">
+                                             <i class="fa fa-credit-card"></i>
+                                             Checkout
+                                         </a>
+                                         <a href="" class="btn btn-sm bg-green btn-flat" >
+                                             <i class="fa fa-retweet"></i>
+                                             Revert To
+                                         </a>
+                                         <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}" class="btn btn-sm bg-green btn-flat" >
+                                             Show files
+                                         </a>
                                      </div>
                                 </div>
                             </div>

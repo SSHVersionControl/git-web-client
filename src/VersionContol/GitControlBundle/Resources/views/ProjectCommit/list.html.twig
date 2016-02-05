@@ -6,10 +6,13 @@
 {% block topnavleft %}
     {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
 {% endblock %}
-            
+
+{% block otherAlerts %}
+    {% include 'VersionContolGitControlBundle::Partials/detachedHead.html.twig'  %}
+{% endblock %}   
+
 {% block header %}
-    
-    
+
     <h1 class="page-header">
            Commit
           <small>{{ project.title }}

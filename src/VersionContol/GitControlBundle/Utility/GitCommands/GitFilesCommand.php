@@ -230,8 +230,12 @@ class GitFilesCommand extends GitCommand {
         $logData = '';
         try{
             //$logData = $this->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -'.intval($count).' '.$branch);
-            $command = 'git --no-pager log -m "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' '.escapeshellarg(trim($branch)).'';
-            
+            $command = 'git --no-pager log -m "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' ';
+            if($branch && $branch != '(No Branch)'){
+                $command .= escapeshellarg(trim($branch)).' ';
+            }else{
+                $command .= '-- ';
+            }
             if($fileName !== false){
                 $command .= ' -- '.escapeshellarg($fileName);
             }else{

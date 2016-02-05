@@ -41,6 +41,10 @@ services:
         class:  VersionContol\GitControlBundle\Utility\GitCommands\GitDiffCommand
         parent: version_control.git_command_base
         
+    version_control.git_undo:
+        class:  VersionContol\GitControlBundle\Utility\GitCommands\GitUndoCommand
+        parent: version_control.git_command_base
+        
     version_control.gitcommand_collector:
         class: VersionContol\GitControlBundle\Profiler\GitCommandCollector
         tags:

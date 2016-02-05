@@ -170,30 +170,46 @@
             {% block topcontent %}{% endblock %} 
             
             <!-- Alert Flash Messages -->
-            <div class="row">
-                <div class="col-lg-12">
-                    {% for flashMessage in app.session.flashbag.get('notice') %}
-                        <div class="alert alert-success">
-                            <em>Notice</em>: {{ flashMessage|nl2br }}
-                        </div>
-                    {% endfor %}
-                    {% for flashMessage in app.session.flashbag.get('error') %}
-                        <div class="alert alert-danger">
-                            <em>Error</em>: {{ flashMessage|nl2br }}
-                        </div>
-                    {% endfor %}
-                    {% for flashMessage in app.session.flashbag.get('warning') %}
-                        <div class="alert alert-warning">
-                            <em>Notice</em>: {{ flashMessage|nl2br }}
-                        </div>
-                    {% endfor %}
-                    {% for flashMessage in app.session.flashbag.get('info') %}
-                        <div class="alert alert-info">
-                            <em>Notice</em>: {{ flashMessage|nl2br }}
-                        </div>
-                    {% endfor %}
+            <div class="alert-header">
 
-                </div>               
+                {% for flashMessage in app.session.flashbag.get('notice') %}
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-info"></i> Notice</h4>
+                        {{ flashMessage|nl2br }}
+                    </div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('success') %}
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-check"></i> Success</h4>
+                        {{ flashMessage|nl2br }}
+                    </div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('error') %}
+                    <div class="alert alert-danger alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-ban"></i> Error</h4> 
+                        {{ flashMessage|nl2br }}
+                    </div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('warning') %}
+                    <div class="alert alert-warning alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-warning"></i> Warning</h4>  
+                        {{ flashMessage|nl2br }}
+                    </div>
+                {% endfor %}
+                {% for flashMessage in app.session.flashbag.get('info') %}
+                    <div class="alert alert-info alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        <h4><i class="icon fa fa-info"></i> Info</h4> 
+                        {{ flashMessage|nl2br }}
+                    </div>
+                {% endfor %}
+   
+                {% block otherAlerts %}
+                {% endblock %}
             </div>
 
                     

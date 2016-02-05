@@ -83,6 +83,9 @@ abstract class GitCommand {
         }catch(\RuntimeException $e){
             $branchName = $this->getCurrentBranchOldGit();
         }
+        if(!$branchName){
+            $branchName = "(No Branch)";
+        }
         
         return $branchName;
     }

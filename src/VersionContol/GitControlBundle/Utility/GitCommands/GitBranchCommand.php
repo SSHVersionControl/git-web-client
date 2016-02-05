@@ -10,28 +10,6 @@ use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
  */
 class GitBranchCommand extends GitCommand {
     
-    /**
-     * Get current active Branch Name
-     * If there is no commits (eg new repo) then branch name is 'NEW REPO'
-     * This git command needs at least one commit before if show the correct branch name.
-     *  
-     * @return string The current branch name
-     */
-    public function getCurrentBranch(){
-        $branchName = '';
-        try{
-            //$branchName =  $this->runCommand('git rev-parse --abbrev-ref HEAD');
-            $branchName =  $this->runCommand('git symbolic-ref --short -q HEAD');
-        }catch(\RuntimeException $e){
-            if($this->getObjectCount() == 0){
-                $branchName = 'NEW REPO';
-            }
-        }
-        
-        return $branchName;
-        
-
-    }
     
     /**
      * List all of the branches in your repository.

@@ -1,0 +1,13 @@
+{# empty Twig template #}
+{% if(branchName == '(No Branch)')%}
+<div class="alert alert-warning">
+    <h4><i class="icon fa fa-warning"></i> Your Repository is in an 'detached HEAD' state (No Branch)</h4>
+    You repository is currently in a 'detached Head' state. You can look around, make experimental
+    changes and commit them, and you can discard any commits you make in this
+    state without impacting any branches by performing another checkout.
+    <br /><br/>
+    If you create any commits make sure you create a new branch from this state to retain a record of these commits. 
+    If you checkout another branch without making a new branch you will lose all changes made in this detached HEAD state.
+    <br /><br/>
+</div>
+{% endif %}
