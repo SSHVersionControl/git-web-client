@@ -151,7 +151,7 @@ class GitFilesCommand extends GitCommand {
             $fileContents = $sftp->get($basePath.$file->getFullPath());
 
          }else{
-            $fileContents = file_get_contents($basePath.$file->getFullPath());
+            $fileContents = file_get_contents($file->getFullPath());
          }
          
          return $fileContents;
