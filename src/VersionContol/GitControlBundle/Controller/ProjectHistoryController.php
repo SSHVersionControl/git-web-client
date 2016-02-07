@@ -110,17 +110,17 @@ class ProjectHistoryController extends BaseProjectController
     /**
      * Show Git commit diff
      *
-     * @Route("/commitfile/{id}/{commitHash}/{difffile}", name="project_commitfilediff")
+     * @Route("/commitfile/{id}/{commitHash}/{filePath}", name="project_commitfilediff")
      * @Method("GET")
      * @Template()
      */
-    public function fileDiffAction($id,$commitHash,$difffile){
+    public function fileDiffAction($id,$commitHash,$filePath){
         
         $this->initAction($id);
         
         $gitDiffCommand = $this->get('version_control.git_diff')->setProject($this->project);
 
-        $difffile = urldecode($difffile);
+        $difffile = urldecode($filePath);
         
         $previousCommitHash = $gitDiffCommand->getPreviousCommitHash($commitHash);
         
@@ -129,6 +129,29 @@ class ProjectHistoryController extends BaseProjectController
         return array_merge($this->viewVariables, array(
             'diffs' => $gitDiffs,
         ));
+    }
+    
+    /**
+     * Show Git commit diff
+     *
+     * @Route("/checkout-file/{id}/{commitHash}/{filePath}", name="project_checkout_file")
+     * @Method("GET")
+     */
+    public function checkoutFileAction($id,$commitHash,$filePath){
+        
+        $this->initAction($id);
+        
+        $gitUndoCommand = $this->get('version_control.git_undo')->setProject($this->project);
+
+        $file = urldecode($filePath);
+        
+        $response = $gitUndoCommand->checkoutFile($commitHash,$file);
+        
+        $this->get('session')->getFlashBag()->add('notice', $response);
+        $this->get('session')->getFlashBag()->add('warning', "Make sure to commit the changes.");
+            
+        return $this->redirect($this->generateUrl('project_commitfilediff', array('id' => $id,'commitHash' => $commitHash,'filePath' => $filePath)));
+       
     }
     
     /**

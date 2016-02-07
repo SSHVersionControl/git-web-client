@@ -48,4 +48,21 @@ class GitUndoCommand extends GitCommand {
         return $response;       
     }
     
+    /**
+     * Check out a previous version of a file. This turns the <file> that resides in the working directory into an 
+     * exact copy of the one from <commit> and adds it to the staging area.
+     * 
+     * @param string $file
+     * @param string $commitHash
+     * @return string 
+     */
+    public function checkoutFile($file, $commitHash = 'HEAD'){
+        $response = $this->runCommand(sprintf('git checkout %s %s 2>&1',escapeshellarg($commitHash),escapeshellarg($file)));
+        
+        //Trigger file alter Event
+        $this->triggerGitAlterFilesEvent();
+        
+        return $response;       
+    }
+    
 }
