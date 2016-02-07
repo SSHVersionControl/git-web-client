@@ -1,6 +1,6 @@
 <?php
 
-namespace VersionContol\GitControlBundle\Controller;
+namespace VersionContol\GitControlBundle\Controller\Admin;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -10,60 +10,58 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionContol\GitControlBundle\Entity\IssueLabel;
 use VersionContol\GitControlBundle\Form\IssueLabelType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * IssueLabel controller.
  *
- * @Route("/issuelabel")
+ * @Route("/admin/issuelabel")
+ * @Security("has_role('ROLE_ADMIN')")
  */
-class IssueLabelController extends Controller
+class IssueLabelAdminController extends Controller
 {
 
     /**
      * Lists all IssueLabel entities.
      *
-     * @Route("s/{project}", name="issuelabels")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("s/", name="admin_issuelabels")
      * @Method("GET")
-     * @Template()
+     * @Template("VersionContolGitControlBundle:Admin/IssueLabel:index.html.twig")
      */
-    public function indexAction($project)
+    public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('VersionContolGitControlBundle:IssueLabel')->findBy(array('allProjects'=>0));
+        $entities = $em->getRepository('VersionContolGitControlBundle:IssueLabel')->findBy(array('allProjects'=>1));
         
-     
         return array(
-            'entities' => $entities,
-            'project' => $project,
+            'entities' => $entities
         );
     }
     /**
      * Creates a new IssueLabel entity.
      *
-     * @Route("/{project}", name="issuelabel_create")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("/", name="admin_issuelabel_create")
      * @Method("POST")
-     * @Template("VersionContolGitControlBundle:IssueLabel:new.html.twig")
+     * @Template("VersionContolGitControlBundle:Admin/IssueLabel:new.html.twig")
      */
-    public function createAction(Request $request,$project)
+    public function createAction(Request $request)
     {
         $issue = new IssueLabel();
-        $form = $this->createCreateForm($issue,$project);
+        $form = $this->createCreateForm($issue);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $issue->setAllProjects(true);
             $em = $this->getDoctrine()->getManager();
             $em->persist($issue);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('issuelabels', array('project' => $project->getId())));
+            return $this->redirect($this->generateUrl('admin_issuelabels'));
         }
 
         return array(
             'entity' => $issue,
             'form'   => $form->createView(),
-            'project' => $project,
         );
     }
 
@@ -74,10 +72,10 @@ class IssueLabelController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(IssueLabel $issue,$project)
+    private function createCreateForm(IssueLabel $issue)
     {
         $form = $this->createForm(new IssueLabelType(), $issue, array(
-            'action' => $this->generateUrl('issuelabel_create', array('project' => $project->getId())),
+            'action' => $this->generateUrl('admin_issuelabel_create'),
             'method' => 'POST',
         ));
 
@@ -89,21 +87,20 @@ class IssueLabelController extends Controller
     /**
      * Displays a form to create a new IssueLabel entity.
      *
-     * @Route("/new/{project}", name="issuelabel_new")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("/new/", name="admin_issuelabel_new")
      * @Method("GET")
-     * @Template()
+     * @Template("VersionContolGitControlBundle:Admin/IssueLabel:new.html.twig")
      */
-    public function newAction($project)
+    public function newAction()
     {
         $issueLabel = new IssueLabel();
-        $issueLabel->setProject($project);
-        $form   = $this->createCreateForm($issueLabel,$project);
+
+        $form   = $this->createCreateForm($issueLabel);
 
         return array(
             'entity' => $issueLabel,
             'form'   => $form->createView(),
-            'project' => $project,
+
         );
     }
 
@@ -112,12 +109,11 @@ class IssueLabelController extends Controller
     /**
      * Displays a form to edit an existing IssueLabel entity.
      *
-     * @Route("/{id}/edit/{project}", name="issuelabel_edit")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("/{id}/edit/", name="admin_issuelabel_edit")
      * @Method("GET")
-     * @Template()
+     * @Template("VersionContolGitControlBundle:Admin/IssueLabel:edit.html.twig")
      */
-    public function editAction($id,$project)
+    public function editAction($id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -127,14 +123,13 @@ class IssueLabelController extends Controller
             throw $this->createNotFoundException('Unable to find IssueLabel entity.');
         }
 
-        $editForm = $this->createEditForm($issue,$project);
+        $editForm = $this->createEditForm($issue);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
             'entity'      => $issue,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-            'project' => $project
         );
     }
 
@@ -145,10 +140,10 @@ class IssueLabelController extends Controller
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(IssueLabel $issue, $project)
+    private function createEditForm(IssueLabel $issue)
     {
         $form = $this->createForm(new IssueLabelType(), $issue, array(
-            'action' => $this->generateUrl('issuelabel_update', array('id' => $issue->getId(),'project' => $project->getId())),
+            'action' => $this->generateUrl('admin_issuelabel_update', array('id' => $issue->getId())),
             'method' => 'PUT',
         ));
 
@@ -156,15 +151,15 @@ class IssueLabelController extends Controller
 
         return $form;
     }
+    
     /**
      * Edits an existing IssueLabel entity.
      *
-     * @Route("/{id}/{project}", name="issuelabel_update")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("/{id}", name="admin_issuelabel_update")
      * @Method("PUT")
-     * @Template("VersionContolGitControlBundle:IssueLabel:edit.html.twig")
+     * @Template("VersionContolGitControlBundle:Admin/IssueLabel:edit.html.twig")
      */
-    public function updateAction(Request $request, $id, $project)
+    public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -175,26 +170,25 @@ class IssueLabelController extends Controller
         }
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($issue,$project);
+        $editForm = $this->createEditForm($issue);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
             $em->flush();
 
-            return $this->redirect($this->generateUrl('issuelabel_edit', array('id' => $id, 'project' => $project->getId())));
+            return $this->redirect($this->generateUrl('admin_issuelabel_edit', array('id' => $id)));
         }
 
         return array(
             'entity'      => $issue,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-            'project' => $project
         );
     }
     /**
      * Deletes a IssueLabel entity.
      *
-     * @Route("/{id}", name="issuelabel_delete")
+     * @Route("/{id}", name="admin_issuelabel_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -214,23 +208,23 @@ class IssueLabelController extends Controller
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('issuelabel'));
+        return $this->redirect($this->generateUrl('admin_issuelabel'));
     }
 
     /**
      * Creates a form to delete a IssueLabel entity by id.
      *
      * @param mixed $id The entity id
-     *
      * @return \Symfony\Component\Form\Form The form
      */
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('issuelabel_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('admin_issuelabel_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
     }
+    
 }
