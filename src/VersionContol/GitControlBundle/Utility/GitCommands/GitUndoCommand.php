@@ -57,7 +57,7 @@ class GitUndoCommand extends GitCommand {
      * @return string 
      */
     public function checkoutFile($file, $commitHash = 'HEAD'){
-        $response = $this->runCommand(sprintf('git checkout %s %s 2>&1',escapeshellarg($commitHash),escapeshellarg($file)));
+        $response = $this->runCommand(sprintf('git checkout %s %s',escapeshellarg($commitHash),escapeshellarg($file)));
         
         //Trigger file alter Event
         $this->triggerGitAlterFilesEvent();

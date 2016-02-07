@@ -75,12 +75,14 @@
                         
                         
                     </div>
-                    <div class="form-group">  
-                        {{ form_label(commit_form.pushRemote) }}
-                        {{ form_errors(commit_form.pushRemote) }}
-                        {{ form_widget(commit_form.pushRemote) }}
-                        
-                    </div>
+                    {% if(commit_form.pushRemote is defined)%}
+                        <div class="form-group">  
+                            {{ form_label(commit_form.pushRemote) }}
+                            {{ form_errors(commit_form.pushRemote) }}
+                            {{ form_widget(commit_form.pushRemote) }}
+
+                        </div>
+                    {% endif %}
                     {% if(issueCount > 0) %}
                         <fieldset class="issue-options-fieldset">
                             <legend class="issue-options"><label><a href="#issue-options" data-toggle="collapse" class="collapse-icon collapsed">Issue Options</a></label></legend>
