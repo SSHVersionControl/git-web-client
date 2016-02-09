@@ -13,4 +13,9 @@
             <a href="{{ path('members_list', { 'id': project.id }) }}"><i class="fa fa-fw fa-users"></i><span>Members</span></a>
         </li>
     {% endif %}
+    {% if is_granted('OWNER', project) %}
+        <li {% if app.request.attributes.get('_route') == 'members_list' %}class="active"{% endif %}>
+            <a href="{{ path('project_issue_integrator', { 'id': project.id }) }}"><i class="fa fa-fw fa-users"></i><span>Issue Integrator</span></a>
+        </li>
+    {% endif %}
 </ul>

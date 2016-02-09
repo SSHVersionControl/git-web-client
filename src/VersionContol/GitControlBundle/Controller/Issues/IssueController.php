@@ -1,6 +1,6 @@
 <?php
 
-namespace VersionContol\GitControlBundle\Controller;
+namespace VersionContol\GitControlBundle\Controller\Issues;
 
 use Symfony\Component\HttpFoundation\Request;
 use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
