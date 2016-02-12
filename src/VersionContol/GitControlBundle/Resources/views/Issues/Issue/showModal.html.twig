@@ -58,6 +58,6 @@
 </div>
 </div>
 <div class="modal-footer">
-    <a href="{{ path('issue_show',{'id':entity.id})}}" class="btn btn-info" >Open Issue</a>
+    <a href="{{ path('issue_show',{'id':project.id, 'issueId':entity.id})}}" class="btn btn-info" >Open Issue</a>
     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
 </div>

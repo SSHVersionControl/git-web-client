@@ -17,7 +17,7 @@
                <div class="list-group-item">
                    <div class="row">
                        <div class="col-md-10">
-                           <strong class="str-truncated"><a href="{{ path('issue_show', { 'id': issue.id }) }}">{{ issue.title }}</a></strong>
+                           <strong class="str-truncated"><a href="{{ path('issue_show', { 'id':project.id, 'issueId': issue.id }) }}">{{ issue.title }}</a></strong>
                        </div>
                        <div class="col-md-2">
                            <i class="fa fa-comment-o fa-fw"></i>{{issue.issueComments|length}}

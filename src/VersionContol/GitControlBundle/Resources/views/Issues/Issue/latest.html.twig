@@ -5,7 +5,7 @@
         {% for issue in pagination %}
         <li>
             
-          <a href="{{ path('issue_show_modal', { 'id': issue.id }) }}" data-remote="false" data-toggle="modal" data-target="#issueModal" title="{{ issue.title }}" class="ajax-modal">
+          <a href="{{ path('issue_show_modal', { 'id':project.id, 'issueId': issue.id }) }}" data-remote="false" data-toggle="modal" data-target="#issueModal" title="{{ issue.title }}" class="ajax-modal">
             <i class="menu-icon fa fa-bug bg-red"></i>
             <div class="menu-info">
               <h4 class="control-sidebar-subheading">{{ issue.title }}</h4>

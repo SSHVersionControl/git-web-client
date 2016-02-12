@@ -63,4 +63,7 @@ services:
             - @logger
             - %kernel.debug%
         tags:
-            - { name: monolog.logger, channel: 'gitcommand' }    
+            - { name: monolog.logger, channel: 'gitcommand' }  
+            
+    version_control.repository.github:
+        class:  VersionContol\GitControlBundle\Repository\Github\IssueRepository

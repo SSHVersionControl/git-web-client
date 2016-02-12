@@ -1,6 +1,5 @@
 <?php
 
-
 namespace VersionContol\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;

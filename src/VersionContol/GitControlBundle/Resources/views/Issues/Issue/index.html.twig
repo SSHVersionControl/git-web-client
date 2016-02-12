@@ -66,7 +66,7 @@
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-md-10">
-                                <strong class="str-truncated"><a href="{{ path('issue_show', { 'id': issue.id }) }}">{{ issue.title }}</a></strong>
+                                <strong class="str-truncated"><a href="{{ path('issue_show', { 'id':project.id, 'issueId': issue.id }) }}">{{ issue.title }}</a></strong>
                             </div>
                             <div class="col-md-2">
                                 <i class="fa fa-comment-o fa-fw"></i>{{issue.issueComments|length}}
@@ -77,7 +77,7 @@
                                  <div class="col-md-10">
                                     {% for label in issue.issueLabel %}
                                         <div style="background-color:#{{ label.hexColor }};" class="issue-label btn-xs">
-                                            <a href="{{ path('issuelabel_edit', { 'id': label.id, 'project': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
+                                            <a href="{{ path('issuelabel_edit', { 'id':project.id, 'issueId': label.id, 'project': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
                                                  <i class="fa fa-tag fa-fw"></i>
                                                 {{ label.title }}
                                             </a>
@@ -88,7 +88,7 @@
                         {% endif %}
                         <div class="row">
                             <div class="col-md-10">
-                                <small>#{{issue.id}} opened by {{issue.verUser.name}} {{issue.createdAt|time_ago_in_words}}</small>
+                                <small>#{{issue.id}} opened by {#{{issue.verUser.name}}#} {{issue.createdAt|time_ago_in_words}}</small>
                             </div>
                             <div class="col-md-2">
                                 .

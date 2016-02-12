@@ -35,7 +35,7 @@
     <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title ">
-                <i class="fa fa-server fa-fw"></i>  Current Branch: {{branchName|issueLink|raw}}
+                <i class="fa fa-server fa-fw"></i>  Current Branch: {{branchName|issueLink(project.id)|raw}}
             </h3>
             <div class="box-tools">
                 <a href="{{ path('project_newremote', { 'id': project.id})}}" class="btn btn-primary btn-sm" >

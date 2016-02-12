@@ -6,7 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use VersionContol\GitControlBundle\Repository\IssueMilestoneRepository;
-use VersionContol\GitControlBundle\Repository\IssueLabelRepository;
+//use VersionContol\GitControlBundle\Repository\IssueLabelRepository;
+use Doctrine\ORM\EntityRepository;
 
 class IssueType extends AbstractType
 {
@@ -49,7 +50,7 @@ class IssueType extends AbstractType
                     'property' => 'title', // Assuming that the entity has a "name" property
                     'class' => 'VersionContol\GitControlBundle\Entity\IssueLabel',
                     'required' => false,
-                    'query_builder' => function (IssueLabelRepository $er) use ($project) {
+                    'query_builder' => function (EntityRepository $er) use ($project) {
                         return $er->createQueryBuilder('a')
                             ->where('a.project = :project OR a.allProjects = 1')
                             ->setParameter('project', $project)
