@@ -2,6 +2,7 @@
 
 namespace VersionContol\GitControlBundle\Entity;
 
+use VersionContol\GitControlBundle\Entity\Issues\IssueLabel as BaseIssueLabel;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="issue_label")
  * @ORM\Entity
  */
-class IssueLabel
+class IssueLabel extends BaseIssueLabel
 {
     /**
      * @var string
@@ -133,7 +134,7 @@ class IssueLabel
      *
      * @return IssueLabel
      */
-    public function addIssue(\VersionContol\GitControlBundle\Entity\Issue $issue)
+    public function addIssue(\VersionContol\GitControlBundle\Entity\Issues\Issue $issue)
     {
         $this->issue[] = $issue;
 
@@ -145,7 +146,7 @@ class IssueLabel
      *
      * @param \VersionContol\GitControlBundle\Entity\Issue $issue
      */
-    public function removeIssue(\VersionContol\GitControlBundle\Entity\Issue $issue)
+    public function removeIssue(\VersionContol\GitControlBundle\Entity\Issues\Issue $issue)
     {
         $this->issue->removeElement($issue);
     }

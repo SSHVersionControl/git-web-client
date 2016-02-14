@@ -23,6 +23,7 @@ class AppKernel extends Kernel
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
             //new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
+            new VersionControl\GithubIssueBundle\VersionControlGithubIssueBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

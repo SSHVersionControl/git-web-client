@@ -9,9 +9,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionContol\GitControlBundle\Entity\Issues\Issue;
 
-use VersionContol\GitControlBundle\Form\IssueType;
-use VersionContol\GitControlBundle\Form\IssueEditType;
-
 use VersionContol\GitControlBundle\Entity\Issues\IssueComment;
 use VersionContol\GitControlBundle\Form\IssueCommentType;
 
@@ -151,7 +148,8 @@ class IssueController extends BaseProjectController
      */
     private function createCreateForm(Issue $entity)
     {
-        $form = $this->createForm(new IssueType($this->issueManager), $entity, array(
+        $issueFormType = $this->issueManager->getIssueFormType();
+        $form = $this->createForm($issueFormType, $entity, array(
             'action' => $this->generateUrl('issue_create',array('id' => $this->project->getId())),
             'method' => 'POST',
             'data_class' => get_class($entity), // Where we store our entities
@@ -250,7 +248,8 @@ class IssueController extends BaseProjectController
     */
     private function createEditForm(Issue $entity)
     {
-        $form = $this->createForm(new IssueEditType($this->issueManager), $entity, array(
+        $issueFormEditType = $this->issueManager->getIssueEditFormType();
+        $form = $this->createForm($issueFormEditType, $entity, array(
             'action' => $this->generateUrl('issue_update', array('id'=>$this->project->getId(),'issueId' => $entity->getId())),
             'method' => 'PUT',
             'data_class' => get_class($entity)
@@ -563,7 +562,11 @@ class IssueController extends BaseProjectController
         $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
         
         $this->issueManager = $this->get('version_control.issue_repository_manager');
-        $this->issueManager->setIssueIntegrator($issueIntegrator);
+        if($issueIntegrator){
+            $this->issueManager->setIssueIntegrator($issueIntegrator);
+        }else{
+            $this->issueManager->setProject($this->project);
+        }
         $this->issueRepository = $this->issueManager->getIssueRepository();
         
     }

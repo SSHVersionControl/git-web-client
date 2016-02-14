@@ -72,8 +72,3 @@ services:
             - @doctrine.orm.entity_manager
             - @service_container
         
-    version_control.issue_repository.github:
-        class:  VersionContol\GitControlBundle\Repository\Github\IssueRepository
-        
-    version_control.issue_label_repository.github:
-        class:  VersionContol\GitControlBundle\Repository\Github\IssueLabelRepository

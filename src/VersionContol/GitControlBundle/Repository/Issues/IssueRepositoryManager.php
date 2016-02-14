@@ -3,6 +3,10 @@
 namespace VersionContol\GitControlBundle\Repository\Issues;
 
 use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
+
+use VersionContol\GitControlBundle\Form\IssueType;
+use VersionContol\GitControlBundle\Form\IssueEditType;
+
 /**
  * Description of IssueRepositoryManager
  *
@@ -76,6 +80,38 @@ class IssueRepositoryManager {
         $this->issueIntegrator = $issueIntegrator;
         $this->project = $issueIntegrator->getProject();
         return $this;
+    }
+    
+    public function getProject() {
+        return $this->project;
+    }
+
+    public function setProject($project) {
+        $this->project = $project;
+        return $this;
+    }
+
+        
+    public function getIssueFormType(){
+        if($this->issueIntegrator){ 
+            $repoType = $this->issueIntegrator->getRepoType();
+            $issueFormType = $this->serviceContainer->get('version_control.issue_form_type.'.strtolower($repoType));
+        }else{
+            $issueFormType = new IssueType($this);
+        }
+        return $issueFormType;
+    }
+    
+    public function getIssueEditFormType(){
+
+         if($this->issueIntegrator){ 
+            $repoType = $this->issueIntegrator->getRepoType();
+            $issueEditFormType = $this->serviceContainer->get('version_control.issue_form_edit_type.'.strtolower($repoType));
+        }else{
+            $issueEditFormType = new IssueEditType($this);
+        }
+        
+        return $issueEditFormType;
     }
 
 

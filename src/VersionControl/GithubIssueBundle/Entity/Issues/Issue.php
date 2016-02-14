@@ -1,9 +1,10 @@
 <?php
 
-namespace VersionContol\GitControlBundle\Entity\Issues;
+namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
+use VersionContol\GitControlBundle\Entity\Issues\Issue as BaseIssue;
 
-abstract class Issue
+class Issue extends BaseIssue
 {
     /**
      * @var string
@@ -41,6 +42,12 @@ abstract class Issue
      *
      */
     private $updatedAt;
+
+    /**
+     * @var integer
+     *
+     */
+    private $githubNumber;
 
     /**
      * @var integer

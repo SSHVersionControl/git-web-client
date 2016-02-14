@@ -4,6 +4,7 @@ namespace VersionContol\GitControlBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryInterface;
 use VersionContol\GitControlBundle\Entity\Issue;
+use VersionContol\GitControlBundle\Entity\IssueComment;
 
 class IssueRepository extends EntityRepository implements IssueRepositoryInterface
 {
@@ -57,6 +58,16 @@ class IssueRepository extends EntityRepository implements IssueRepositoryInterfa
         $issueEntity = new Issue();
         $issueEntity->setProject($this->project);
         return $issueEntity;
+    }
+    
+    /**
+     * 
+     * @param type $issue
+     */
+    public function newIssueComment(){
+        $issueComment = new IssueComment();
+        //$issueComment->setProject($this->project);
+        return $issueComment;
     }
     
     /**
