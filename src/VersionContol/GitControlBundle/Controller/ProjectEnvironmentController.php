@@ -69,6 +69,7 @@ class ProjectEnvironmentController extends BaseProjectController
          
         $projectEnvironment = new ProjectEnvironment();
         $form = $this->createCreateForm($projectEnvironment,$project);
+        //$form   = $this->createCreateForm($projectEnvironment,$project,'clone');
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -346,7 +347,7 @@ class ProjectEnvironmentController extends BaseProjectController
     }
     
     protected function cloneGitRepository($projectEnvironment){
-        
+        //$projectEnvironment->getGitCloneLocation();
         $gitCommands = $this->get('version_control.git_init')->overRideProjectEnvironment($projectEnvironment);
         try{
             $response = $gitCommands->cloneRepository($projectEnvironment->getGitCloneLocation());
