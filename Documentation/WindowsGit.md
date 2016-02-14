@@ -1,4 +1,4 @@
-Windows Git Installation
+﻿Windows Git Installation
 ========================
 You can download git for windows here: https://git-scm.com/download/win
 
@@ -33,9 +33,9 @@ For me this location was:
 
 Now you can open Git Bash within this shell by running the following command:
 
-    32bit:  C:\Program Files (x86)\Git\bin\sh –login –i
+    32bit:  "C:\Program Files (x86)\Git\bin\sh" –login –i
 
-    64bit:  C:\Program Files\Git\bin\sh –login –i
+    64bit:  "C:\Program Files\Git\bin\sh" –login –i
 
 You can copy your existing private key into the correct location for the Local System User:
 
