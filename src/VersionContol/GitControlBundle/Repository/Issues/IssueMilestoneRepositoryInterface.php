@@ -7,58 +7,42 @@ namespace VersionContol\GitControlBundle\Repository\Issues;
  */
 
 
-interface IssueRepositoryInterface{
+interface IssueMilestoneRepositoryInterface{
     
     /**
      * Finds issues for a state
      * @param string $keyword
      * @return array of issues
      */
-    public function findIssues($keyword,$state="open");
+    public function findLabel($keyword,$state="open");
     
-    /**
-     * Count number of issues by $state and $keyword
-     * @param string $keyword
-     * @param string $state
-     */
-    public function countFindIssues($keyword,$state="open");
+    
     
     /**
      * 
      * @param integer $id
      */
-    public function findIssueById($id);
+    public function findLabelById($id);
     
     /**
-     * Gets a new Issue entity
+     * Gets a new Label entity
      * @param type $issue
-     * @return VersionContol\GitControlBundle\Entity\Issues\Issue
+     * @return VersionContol\GitControlBundle\Entity\Labels\Label
      */
-    public function newIssue();
+    public function newLabel();
     
     /**
      * 
      * @param type $issue
      */
-    public function createIssue($issue);
-    
-    /**
-     * 
-     * @param integer $id
-     */
-    public function reOpenIssue($id);
-    
-    /**
-     * 
-     * @param integer $id
-     */
-    public function closeIssue($id);
+    public function createLabel($issue);
+
     
     /**
      * 
      * @param integer $issue
      */
-    public function updateIssue($issue);
+    public function updateLabel($issue);
     
       
     

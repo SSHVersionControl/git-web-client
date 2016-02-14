@@ -1,64 +1,88 @@
 <?php
-namespace VersionContol\GitControlBundle\Repository\Issues;
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+namespace VersionContol\GitControlBundle\Repository\Github;
 
+use VersionContol\GitControlBundle\Repository\Issues\IssueLabelRepositoryInterface;
+use VersionContol\GitControlBundle\Entity\Issues\IssueLabel;
 
-interface IssueRepositoryInterface{
+class  IssueLabelRepository extends GithubBase implements IssueLabelRepositoryInterface{
     
-    /**
+
+     /**
      * Finds issues for a state
      * @param string $keyword
      * @return array of issues
      */
-    public function findIssues($keyword,$state="open");
-    
-    /**
-     * Count number of issues by $state and $keyword
-     * @param string $keyword
-     * @param string $state
-     */
-    public function countFindIssues($keyword,$state="open");
+    public function listLabels(){
+        $labels = $this->client->api('issue')->labels()->all($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName());
+
+        return $this->mapLabels($labels);
+    }
     
     /**
      * 
      * @param integer $id
      */
-    public function findIssueById($id);
+    public function findLabelById($id){
+        
+    }
     
     /**
-     * Gets a new Issue entity
+     * Gets a new Label entity
      * @param type $issue
-     * @return VersionContol\GitControlBundle\Entity\Issues\Issue
+     * @return VersionContol\GitControlBundle\Entity\Labels\Label
      */
-    public function newIssue();
+    public function newLabel(){
+        
+    }
     
     /**
      * 
-     * @param type $issue
+     * @param type $issueLabel
      */
-    public function createIssue($issue);
+    public function createLabel($issueLabel){
+        $label = $this->client->api('issue')->labels()->create($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), array(
+            'name' => $issueLabel->title(),
+            'color' => $issueLabel->hexColor(),
+        ));
+    }
+
     
     /**
      * 
-     * @param integer $id
+     * @param integer $issueLabel
      */
-    public function reOpenIssue($id);
+    public function updateLabel($issueLabel){
+        $labels = $this->client->api('issue')->labels()->update('KnpLabs', 'php-github-api', $issueLabel->title(), $issueLabel->hexColor());
+
+    }
     
     /**
      * 
-     * @param integer $id
+     * @param array $issues
+     * @return array of 
      */
-    public function closeIssue($id);
+    protected function mapLabels($labels){
+        $issueLabelEntities = array();
+ 
+        if(is_array($labels)){
+            foreach($labels as $label){
+                $issueLabelEntities[] =  $this->mapToEntity($label);
+            }
+        }
+        
+        return $issueLabelEntities;
+    }
     
-    /**
-     * 
-     * @param integer $issue
-     */
-    public function updateIssue($issue);
+    protected function mapToEntity($label){
+        
+        $mappedIssueLabel = new IssueLabel();
+        $mappedIssueLabel->setId($label['name']);
+        $mappedIssueLabel->setTitle($label['name']);
+        $mappedIssueLabel->setHexColor($label['color']);
+
+        return $mappedIssueLabel;
+        
+    }
     
       
     

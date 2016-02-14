@@ -3,7 +3,7 @@
 namespace VersionContol\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use VersionContol\GitControlBundle\Entity\Issues\Issue as IssueBase;
 /**
  * Issue
  *
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Issue
+class Issue extends IssueBase
 {
     /**
      * @var string
@@ -321,7 +321,7 @@ class Issue
      *
      * @return Issue
      */
-    public function setIssueMilestone(\VersionContol\GitControlBundle\Entity\IssueMilestone $issueMilestone = null)
+    public function setIssueMilestone(\VersionContol\GitControlBundle\Entity\Issues\IssueMilestone $issueMilestone = null)
     {
         $this->issueMilestone = $issueMilestone;
 
@@ -393,7 +393,7 @@ class Issue
      *
      * @return Issue
      */
-    public function addIssueLabel(\VersionContol\GitControlBundle\Entity\IssueLabel $issueLabel)
+    public function addIssueLabel(\VersionContol\GitControlBundle\Entity\Issues\IssueLabel $issueLabel)
     {
         $this->issueLabel[] = $issueLabel;
 
@@ -405,7 +405,7 @@ class Issue
      *
      * @param \VersionContol\GitControlBundle\Entity\IssueLabel $issueLabel
      */
-    public function removeIssueLabel(\VersionContol\GitControlBundle\Entity\IssueLabel $issueLabel)
+    public function removeIssueLabel(\VersionContol\GitControlBundle\Entity\Issues\IssueLabel $issueLabel)
     {
         $this->issueLabel->removeElement($issueLabel);
     }
@@ -433,7 +433,7 @@ class Issue
      * @param \Doctrine\Common\Collections\Collection $issueComments
      * @return \VersionContol\GitControlBundle\Entity\Issue
      */
-    public function setIssueComments(\Doctrine\Common\Collections\Collection $issueComments) {
+    public function setIssueComments(array $issueComments) {
         $this->issueComments = $issueComments;
         return $this;
     }

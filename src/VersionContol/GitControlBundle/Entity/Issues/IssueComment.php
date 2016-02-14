@@ -1,65 +1,44 @@
 <?php
 
-namespace VersionContol\GitControlBundle\Entity;
+namespace VersionContol\GitControlBundle\Entity\Issues;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * IssueComment
  *
- * @ORM\Table(name="issue_comment", indexes={@ORM\Index(name="fk_issue_comment_ver_user1_idx", columns={"ver_user_id"})})
- * @ORM\Entity
- * @ORM\HasLifecycleCallbacks
  */
 class IssueComment
 {
     /**
      * @var string
      *
-     * @ORM\Column(name="comment", type="text", nullable=true)
+
      */
     private $comment;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
-    /**
-     * @var \VersionContol\GitControlBundle\Entity\User\User
-     *
-     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\User\User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ver_user_id", referencedColumnName="id")
-     * })
-     */
-    private $verUser;
     
     /**
-     * @var \VersionContol\GitControlBundle\Entity\Issue
+     * @var \VersionContol\GitControlBundle\Entity\Issues\Issue
      *
-     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\Issue", inversedBy="issueComments")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="issue_id", referencedColumnName="id")
-     * })
      */
     private $issue;
 
@@ -151,35 +130,13 @@ class IssueComment
         return $this->id;
     }
 
-    /**
-     * Set verUser
-     *
-     * @param \VersionContol\GitControlBundle\Entity\User\User $verUser
-     *
-     * @return IssueComment
-     */
-    public function setVerUser(\VersionContol\GitControlBundle\Entity\User\User $verUser = null)
-    {
-        $this->verUser = $verUser;
 
-        return $this;
-    }
-
-    /**
-     * Get verUser
-     *
-     * @return \VersionContol\GitControlBundle\Entity\User\User
-     */
-    public function getVerUser()
-    {
-        return $this->verUser;
-    }
     /**
      * Sets issue
      * @param \VersionContol\GitControlBundle\Entity\Issue $issue
      * @return \VersionContol\GitControlBundle\Entity\IssueComment
      */
-    public function setIssue(\VersionContol\GitControlBundle\Entity\Issue $issue) {
+    public function setIssue(\VersionContol\GitControlBundle\Entity\Issues\Issue $issue) {
         $this->issue = $issue;
         return $this;
     }

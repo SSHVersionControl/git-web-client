@@ -89,7 +89,6 @@ class ProjectEnvironment
     private $projectEnvironmentFilePerm;
     
     /**
-     * @Assert\Url(groups={"CloneGit"}))
      * @Assert\NotNull(groups={"CloneGit"}))
      * @var string 
      */

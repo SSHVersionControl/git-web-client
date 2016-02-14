@@ -1,27 +1,12 @@
 <?php
 namespace VersionContol\GitControlBundle\Repository\Github;
 use VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryInterface;
-use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
 use VersionContol\GitControlBundle\Entity\Issues\Issue;
+use VersionContol\GitControlBundle\Entity\Issues\IssueComment;
+use VersionContol\GitControlBundle\Entity\Issues\IssueLabel;
 
-
-class IssueRepository implements IssueRepositoryInterface{
+class IssueRepository extends GithubBase implements IssueRepositoryInterface{
     
-    /**
-     * Github Client
-     * @var \Github\Client()
-     */
-    protected $client;
-
-    /**
-     * ProjectIssueIntegrator Entity with data for repo, owner and authentication details
-     * @var ProjectIssueIntegrator; 
-     */
-    protected $issueIntegrator;
-    
-    public function __construct() {
-        $this->client = new \Github\Client();
-    }
     
     /**
      * Finds issues for a state
@@ -54,7 +39,8 @@ class IssueRepository implements IssueRepositoryInterface{
      * @param integer $id
      */
     public function findIssueById($id){
-        
+        $issue = $this->client->api('issue')->show($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $id);
+        return $this->mapIssueToEntity($issue);
     }
     
     /**
@@ -81,7 +67,8 @@ class IssueRepository implements IssueRepositoryInterface{
      * @param integer $id
      */
     public function reOpenIssue($id){
-        
+        $this->authenticate();
+        $this->client->api('issue')->update($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(),$id,array('state' => 'open'));
     }
     
     /**
@@ -89,15 +76,23 @@ class IssueRepository implements IssueRepositoryInterface{
      * @param integer $id
      */
     public function closeIssue($id){
-        
+        $this->authenticate();
+        $this->client->api('issue')->update($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(),$id,array('state' => 'closed'));
+
     }
     
     /**
      * 
-     * @param integer $issue
+     * @param integer $issueEntity
      */
-    public function updateIssue($issue){
-        
+    public function updateIssue($issueEntity){
+        $this->authenticate();
+        $this->client->api('issue')->update($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $issueEntity->getId(), $this->mapEntityToIssue($issueEntity));
+    }
+    
+    public function addlabel($issueEntity,$labelEntity){
+        $this->authenticate();
+        $labels = $this->client->api('issue')->labels()->add($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $issueEntity->getId(), $labelEntity->getTitle());
     }
     
     /**
@@ -120,15 +115,35 @@ class IssueRepository implements IssueRepositoryInterface{
     protected function mapIssueToEntity($issue){
         
         $mappedIssue = new Issue();
-        $mappedIssue->setId($issue['id']);
+        $mappedIssue->setId($issue['number']);
         $mappedIssue->setTitle($issue['title']);
         $mappedIssue->setStatus($issue['state']);
         $mappedIssue->setDescription($issue['body']);
         $mappedIssue->setCreatedAt($this->formatDate($issue['created_at']));
         $mappedIssue->setClosedAt($this->formatDate($issue['closed_at']));
         $mappedIssue->setUpdatedAt($this->formatDate($issue['updated_at']));
+        
+        //Map Issue labels
+        if(isset($issue['labels']) && is_array($issue['labels'])){
+            foreach($issue['labels'] as $label){
+                $issueLabel = $this->mapLabelToEntity($label);
+                $mappedIssue->addIssueLabel($issueLabel);
+            }
+        }
+        
 
         return $mappedIssue;
+        
+    }
+    
+    protected function mapLabelToEntity($label){
+        
+        $mappedIssueLabel = new IssueLabel();
+        $mappedIssueLabel->setId($label['name']);
+        $mappedIssueLabel->setTitle($label['name']);
+        $mappedIssueLabel->setHexColor($label['color']);
+
+        return $mappedIssueLabel;
         
     }
     
@@ -138,8 +153,15 @@ class IssueRepository implements IssueRepositoryInterface{
             ,'body' =>  $issueEntity->getDescription()
             ,'state' =>  $issueEntity->getStatus()
             ,'title' =>  $issueEntity->getTitle()
+            ,'labels' =>  array()
+            //,'milestone' =>  0
         );
-
+        $labels = array();
+        foreach($issueEntity->getIssueLabel() as $issueLabel){
+            $labels[] = $issueLabel->getId();
+        }
+        $issue['labels'] = $labels;
+        
         return $issue;
         
     }
@@ -153,17 +175,13 @@ class IssueRepository implements IssueRepositoryInterface{
         return $dateTime;
     }
     
-    public function getIssueIntegrator() {
-        return $this->issueIntegrator;
+    /**
+     * 
+     */
+    public function newIssueComment(){
+        $issueCommentEntity = new IssueComment();
+        return $issueCommentEntity;
     }
-
-    public function setIssueIntegrator(ProjectIssueIntegrator $issueIntegrator) {
-        $this->issueIntegrator = $issueIntegrator;
-        return $this;
-    }
-
-    protected function authenticate(){
-        $this->client->authenticate($this->issueIntegrator->getApiToken(), '', Github\Client::AUTH_URL_TOKEN);
-    }
+    
 
 }

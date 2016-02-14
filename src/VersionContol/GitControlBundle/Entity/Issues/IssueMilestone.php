@@ -1,15 +1,12 @@
 <?php
 
-namespace VersionContol\GitControlBundle\Entity;
+namespace VersionContol\GitControlBundle\Entity\Issues;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * IssueMilestone
  *
- * @ORM\Table(name="issue_milestone", indexes={@ORM\Index(name="fk_issue_milestone_ver_user1_idx", columns={"ver_user_id"})})
- * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\IssueMilestoneRepository")
- * @ORM\HasLifecycleCallbacks
  * 
  */
 class IssueMilestone
@@ -17,82 +14,51 @@ class IssueMilestone
     /**
      * @var string
      *
-     * @ORM\Column(name="title", type="string", length=255, nullable=true)
      */
     private $title;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="state", type="string", length=45, nullable=true)
      */
     private $state;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="due_on", type="datetime", nullable=true)
      */
     private $dueOn;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
      */
     private $createdAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
     private $updatedAt;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="closed_at", type="datetime", nullable=true)
      */
     private $closedAt;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
-    /**
-     * @var \VersionContol\GitControlBundle\Entity\User\User
-     *
-     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\User\User")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="ver_user_id", referencedColumnName="id")
-     * })
-     */
-    private $verUser;
     
-    /**
-     * @var \VersionContol\GitControlBundle\Entity\Project
-     *
-     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\Project")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
-     * })
-     */
-    private $project;
-
-
     /**
      * Constructor
      */

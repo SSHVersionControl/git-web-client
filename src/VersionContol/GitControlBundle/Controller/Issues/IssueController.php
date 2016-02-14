@@ -7,11 +7,12 @@ use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use VersionContol\GitControlBundle\Entity\Issue;
+use VersionContol\GitControlBundle\Entity\Issues\Issue;
+
 use VersionContol\GitControlBundle\Form\IssueType;
 use VersionContol\GitControlBundle\Form\IssueEditType;
 
-use VersionContol\GitControlBundle\Entity\IssueComment;
+use VersionContol\GitControlBundle\Entity\Issues\IssueComment;
 use VersionContol\GitControlBundle\Form\IssueCommentType;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -31,6 +32,12 @@ class IssueController extends BaseProjectController
      * @var IssueRepositoryInterface
      */
     protected $issueRepository;
+    
+    /**
+     *
+     * @var \VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryManager;
+     */
+    protected $issueManager;
     
     /**
      * Lists all Issue entities.
@@ -117,7 +124,7 @@ class IssueController extends BaseProjectController
         $this->initAction($id,'EDIT');
         
         $issueEntity = $this->issueRepository->newIssue();
-        $form = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($issueEntity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -144,9 +151,11 @@ class IssueController extends BaseProjectController
      */
     private function createCreateForm(Issue $entity)
     {
-        $form = $this->createForm(new IssueType(), $entity, array(
+        $form = $this->createForm(new IssueType($this->issueManager), $entity, array(
             'action' => $this->generateUrl('issue_create',array('id' => $this->project->getId())),
             'method' => 'POST',
+            'data_class' => get_class($entity), // Where we store our entities
+
         ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -165,11 +174,11 @@ class IssueController extends BaseProjectController
     {
         $this->initAction($id);
         
-        $entity = $this->issueRepository->newIssue();
-        $form   = $this->createCreateForm($entity);
+        $issueEntity = $this->issueRepository->newIssue();
+        $form   = $this->createCreateForm($issueEntity);
 
         return array(
-            'entity' => $entity,
+            'entity' => $issueEntity,
             'form'   => $form->createView(),
             'project' => $this->project
         );
@@ -195,7 +204,8 @@ class IssueController extends BaseProjectController
         $deleteForm = $this->createDeleteForm($issueId);
         
         //@TODO: Needs to update
-        $issueComment = new IssueComment();
+        //$issueComment = new IssueComment();
+        $issueComment = $this->issueRepository->newIssueComment();
         $issueComment->setIssue($issueEntity);
         $commentForm = $this->createCommentForm($issueComment);
 
@@ -240,9 +250,10 @@ class IssueController extends BaseProjectController
     */
     private function createEditForm(Issue $entity)
     {
-        $form = $this->createForm(new IssueEditType(), $entity, array(
+        $form = $this->createForm(new IssueEditType($this->issueManager), $entity, array(
             'action' => $this->generateUrl('issue_update', array('id'=>$this->project->getId(),'issueId' => $entity->getId())),
             'method' => 'PUT',
+            'data_class' => get_class($entity)
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));
@@ -451,6 +462,7 @@ class IssueController extends BaseProjectController
         $form = $this->createForm(new IssueCommentType(), $entity, array(
             'action' => $this->generateUrl('issuecomment_create'),
             'method' => 'POST',
+            'data_class' => get_class($entity),
         ));
 
         $form->add('create', 'submit', array('label' => 'Create'));
@@ -548,30 +560,12 @@ class IssueController extends BaseProjectController
         }
         
         $this->checkProjectAuthorization($this->project,$grantType);
+        $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
         
-        $this->issueRepository = $this->getIssueRepository($this->project);
+        $this->issueManager = $this->get('version_control.issue_repository_manager');
+        $this->issueManager->setIssueIntegrator($issueIntegrator);
+        $this->issueRepository = $this->issueManager->getIssueRepository();
         
     }
-    
-    protected function getIssueRepository($project){
-        $issueRepository = null;
-        $em = $this->getDoctrine()->getManager();
 
-        $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($project);
-
-        if($issueIntegrator){ 
-            $repoType = $issueIntegrator->getRepoType();
-            $issueRepository = $this->get('version_control.repository.'.strtolower($repoType));
-            $issueRepository->setIssueIntegrator($issueIntegrator);
-        }else{
-            //Default ORM repository
-            $issueRepository = $em->getRepository('VersionContolGitControlBundle:Issue');
-            $issueRepository->setProject($this->project);
-            //Set User
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $issueRepository->setCurrentUser($user);
-        }
-        
-        return $issueRepository;
-    }
 }
