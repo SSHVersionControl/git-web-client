@@ -164,11 +164,11 @@ class IssueRepository extends EntityRepository implements IssueRepositoryInterfa
          //If keyword is set 
          if($keyword){
            $qb->andWhere(
-               $qb->expr()->like('a.title', ':keyword')
-           )->setParameter('keyword', '%'.$keyword.'%')
-           ->andWhere(
-               $qb->expr()->like('a.description', ':keyword')
-           )->setParameter('keyword', '%'.$keyword.'%');
+                $qb->expr()->orX(
+                    $qb->expr()->like('a.title', ':keyword'),
+                    $qb->expr()->like('a.description', ':keyword')
+                )
+            )->setParameter('keyword', '%'.$keyword.'%');
          }
 
          if($milestone != null){

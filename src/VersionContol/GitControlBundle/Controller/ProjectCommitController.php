@@ -52,6 +52,12 @@ class ProjectCommitController extends BaseProjectController
     protected $issuesCount;
     
     /**
+     * Issue Respository
+     * @var VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryInterface 
+     */
+    protected $issueRepository;
+    
+    /**
      * List files to be commited.
      *
      * @Route("/{id}", name="project_commitlist")
@@ -177,8 +183,18 @@ class ProjectCommitController extends BaseProjectController
         
         $this->gitCommitCommand = $this->get('version_control.git_commit')->setProject($this->project);
         $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
+        
+        $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
+        $this->issueManager = $this->get('version_control.issue_repository_manager');
+        if($issueIntegrator){
+            $this->issueManager->setIssueIntegrator($issueIntegrator);
+        }else{
+            $this->issueManager->setProject($this->project);
+        }
+        $this->issueRepository = $this->issueManager->getIssueRepository();
+        $this->issuesCount = $this->issueRepository->countFindIssues('','open');
 
-        $this->issuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($this->project,'open');
+        //$this->issuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($this->project,'open');
         
         $this->branchName = $this->gitCommitCommand->getCurrentBranch();
         
@@ -234,38 +250,18 @@ class ProjectCommitController extends BaseProjectController
         $issueCloseStatus = array('Fixed','Closed','Resolved');
          
         if($issueId){
-            $em = $this->getDoctrine()->getManager();
-            $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+            $issueEntity = $this->issueRepository->findIssueById($issueId);
             if($issueEntity){
                 $issueAction = $commitEntity->getIssueAction();
                 $commitMessage = $issueAction.' #'.$issueEntity->getId().':'.$commitMessage;
                 $commitEntity->setComment($commitMessage);
                 if(in_array($issueAction,$issueCloseStatus)){
                     //Close Issue
-                    $this->closeIssue($issueEntity);
+                    $this->issueRepository->closeIssue($issueEntity->getId());
                 }
             }
         }
     } 
-    
-    /**
-     * Closes Issue
-     * @param \VersionContol\GitControlBundle\Entity\Issue $issueEntity
-     * @throws \Exception
-     */
-    protected function closeIssue(\VersionContol\GitControlBundle\Entity\Issue $issueEntity){
-        $em = $this->getDoctrine()->getManager();
-
-        if ($issueEntity->getProject()->getId() !== $this->project->getId()) {
-            throw $this->createNotFoundException('Issue does not match this project. Issue state was not updated');
-        }
-        
-        $issueEntity->setClosed();
-        $em->flush();
-        
-        $this->get('session')->getFlashBag()->add('notice'
-                ,"Issue #".$issueEntity->getId()." has been closed");
-    }
     
     
     /**

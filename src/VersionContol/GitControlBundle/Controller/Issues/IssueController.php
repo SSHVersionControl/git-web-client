@@ -486,6 +486,7 @@ class IssueController extends BaseProjectController
         //$issueEntities = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($project,$filter,$keyword,null,false);
         $data = $this->issueRepository->findIssues($keyword, $filter);
         if($data instanceof \Doctrine\ORM\QueryBuilder){
+            
             $issueEntities = $data->getQuery()->getResult();
         }else{
             $issueEntities = $data;
@@ -506,20 +507,20 @@ class IssueController extends BaseProjectController
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/find/{issueId}", name="issue_findajax")
+     * @Route("/{id}/find/{issueId}", name="issue_findajax")
      * @Method("GET")
      * @TODO Pass in project id
      */
-    public function findAjaxAction($issueId)
+    public function findAjaxAction($id,$issueId)
     {
-        $em = $this->getDoctrine()->getManager();
-        $issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
-        
+        $this->initAction($id);
+        //$em = $this->getDoctrine()->getManager();
+        //$issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
+        $issueEntity = $this->issueRepository->findIssueById($issueId);
         if (!$issueEntity) {
             throw $this->createNotFoundException('Unable to find issue entity.');
         }
-        
-        $this->checkProjectAuthorization($issueEntity->getProject(),'VIEW');
+
     }
     
     /**
