@@ -408,34 +408,39 @@ class IssueController extends BaseProjectController
     /**
      * Creates a new Issue comment entity.
      *
-     * @Route("/comment/", name="issuecomment_create")
+     * @Route("/{id}/comment/", name="issuecomment_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:Issues/Issue:show.html.twig")
      */
-    public function createCommentAction(Request $request)
+    public function createCommentAction(Request $request, $id)
     {
-        $entity = new IssueComment();
-        $commentForm = $this->createCommentForm($entity);
+        $this->initAction($id);
+        
+        $issueComment = $this->issueRepository->newIssueComment();
+
+        $commentForm = $this->createCommentForm($issueComment);
         $commentForm->handleRequest($request);
 
         if ($commentForm->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            //$em = $this->getDoctrine()->getManager();
             
-            $project = $entity->getIssue()->getProject();
-            $this->checkProjectAuthorization($project,'EDIT');
+            //$project = $entity->getIssue()->getProject();
+            //$this->checkProjectAuthorization($project,'EDIT');
             
             //Set User
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $entity->setVerUser($user);
+            //$user = $this->get('security.token_storage')->getToken()->getUser();
+            //$entity->setVerUser($user);
+            $issueComment = $this->issueRepository->createIssueComment($issueComment);
+            $issueId = $issueComment->getIssue()->getId();
             
             if($commentForm->get('createClose')->isClicked()){
-                $entity->getIssue()->setClosed();
+                $this->issueRepository->closeIssue($issueId);
             }
             
-            $em->persist($entity);
-            $em->flush();
+           // $em->persist($entity);
+           // $em->flush();
 
-            return $this->redirect($this->generateUrl('issue_show', array('id'=>$this->project->getId(),'issueId' => $entity->getIssue()->getId())));
+            return $this->redirect($this->generateUrl('issue_show', array('id'=>$this->project->getId(),'issueId' => $issueId)));
         }
         
         $deleteForm = $this->createDeleteForm($entity->getIssue()->getId());
@@ -459,7 +464,7 @@ class IssueController extends BaseProjectController
     private function createCommentForm(IssueComment $entity)
     {
         $form = $this->createForm(new IssueCommentType(), $entity, array(
-            'action' => $this->generateUrl('issuecomment_create'),
+            'action' => $this->generateUrl('issuecomment_create',array('id'=>$this->project->getId())),
             'method' => 'POST',
             'data_class' => get_class($entity),
         ));

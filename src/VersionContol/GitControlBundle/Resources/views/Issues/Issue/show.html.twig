@@ -82,7 +82,7 @@
                                 </p>
                             </div>
                             <div class="timeline-body">
-                                <p>{{ comment.comment | markdown }}</p>
+                                <p>{{ comment.comment | markdown | commitHashLink(project.id) }}</p>
                             </div>
                         </div>
 

@@ -70,6 +70,17 @@ class IssueRepository extends EntityRepository implements IssueRepositoryInterfa
         return $issueComment;
     }
     
+     public function createIssueComment($issueComment){
+        $em=$this->getEntityManager();
+        
+        //Set User
+        $issueComment->setVerUser($this->currentUser);
+        $em->persist($issueComment);
+        $em->flush();
+         
+        return $issueComment;
+     }
+    
     /**
      * 
      * @param type $issueEntity

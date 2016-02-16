@@ -71,6 +71,20 @@ services:
             - { name: twig.extension }
         arguments:
             - @router
+            
+    version_control.twig.versioncontrol_commit_hash_link:
+        class: VersionContol\GitControlBundle\Twig\Extension\CommitHashLinkExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @router
+            
+    version_control.twig.versioncontrol_issue_number_link:
+        class: VersionContol\GitControlBundle\Twig\Extension\IssueNumberLinkExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @router
            
     version_control.beforecontoller.action_listener:
         class: VersionContol\GitControlBundle\EventListener\ProjectEnviromentBeforeListener
