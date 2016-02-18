@@ -66,7 +66,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12 text-right">
-                           <a href="{{ path('issuemilestones',{ 'project': project.id }) }}" class="btn btn-default">
+                           <a href="{{ path('issuemilestones',{ 'id': project.id }) }}" class="btn btn-default">
                                Cancel
                            </a>
                            {{ form_widget(form.submit, { 'attr': {'class': ' btn-success submit'} }) }}

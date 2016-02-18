@@ -1,14 +1,14 @@
 <?php
 namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueMilestone as BaseIssueMilestone;
+use VersionContol\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
 
 /**
  * IssueMilestone
  *
  * 
  */
-class IssueMilestone extends BaseIssueMilestone
+class IssueMilestone implements IssueMilestoneInterface
 {
     /**
      * @var string
@@ -57,17 +57,31 @@ class IssueMilestone extends BaseIssueMilestone
      */
     private $id;
 
-    
     /**
-     * Constructor
+     *
+     * @var \VersionControl\GithubIssueBundle\Entity\User
      */
-    public function __construct()
-    {
-        $this->setCreatedAt(new \DateTime());
-        $this->setState('open');
-    }
+    private $user;
     
 
+    /**
+     * 
+     * @param integer $id
+     */
+    public function setId($id){
+        $this->id = $id;
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    
     /**
      * Set title
      *
@@ -236,76 +250,26 @@ class IssueMilestone extends BaseIssueMilestone
         return $this->closedAt;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set verUser
-     *
-     * @param \VersionContol\GitControlBundle\Entity\User\User $verUser
-     *
-     * @return IssueMilestone
-     */
-    public function setVerUser(\VersionContol\GitControlBundle\Entity\User\User $verUser = null)
-    {
-        $this->verUser = $verUser;
-
-        return $this;
-    }
 
     /**
      * Get verUser
      *
-     * @return \VersionContol\GitControlBundle\Entity\User\User
+     * @return \VersionControl\GithubIssueBundle\Entity\User
      */
-    public function getVerUser()
+    public function getUser()
     {
-        return $this->verUser;
+        return $this->user;
     }
     
     /**
-     * Set project
+     * Get verUser
      *
-     * @param \VersionContol\GitControlBundle\Entity\Project $project
-     *
-     * @return IssueMilestone
      */
-    public function setProject(\VersionContol\GitControlBundle\Entity\Project $project = null)
+    public function setUser(\VersionControl\GithubIssueBundle\Entity\User $user)
     {
-        $this->project = $project;
-
-        return $this;
-    }
-
-    /**
-     * Get project
-     *
-     * @return \VersionContol\GitControlBundle\Entity\Project
-     */
-    public function getProject()
-    {
-        return $this->project;
+        $this->user = $user;
     }
     
-    /**
-     * @ORM\PrePersist()
-     * @ORM\PreUpdate()
-     */
-    public function updateModifiedDatetime() {
-        // update the modified time
-        //$this->setCreatedAt(new \DateTime());
-        $this->setUpdatedAt(new \DateTime());
-        if($this->getState() === 'closed'){
-            $this->setClosedAt(new \DateTime());
-        }
-    }
     
     /**
      * Set status

@@ -8,7 +8,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionContol\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
-use VersionContol\GitControlBundle\Form\IssueMilestoneType;
 
 /**
  * IssueMilestone controller.
@@ -188,7 +187,7 @@ class IssueMilestoneController extends BaseProjectController
             throw $this->createNotFoundException('Unable to find IssueMilestone entity.');
         }
 
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($issueMilestone);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
@@ -210,7 +209,7 @@ class IssueMilestoneController extends BaseProjectController
     {
         $issueLMilestoneFormType = $this->issueManager->getIssueMilestoneFormType();
         $form = $this->createForm($issueLMilestoneFormType, $entity, array(
-            'action' => $this->generateUrl('issuemilestone_update', array('id' => $entity->getId())),
+            'action' => $this->generateUrl('issuemilestone_update', array('id'=> $this->project->getId(), 'milestoneId' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -241,7 +240,7 @@ class IssueMilestoneController extends BaseProjectController
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            $this->issueMilestoneRepository->update($issueMilestone);
+            $this->issueMilestoneRepository->updateMilestone($issueMilestone);
             $this->get('session')->getFlashBag()->add('notice', 'Updated Milestone:'.$issueMilestone->getTitle());
             return $this->redirect($this->generateUrl('issuemilestone_edit', array('id' => $id, 'milestoneId' => $milestoneId)));
         }

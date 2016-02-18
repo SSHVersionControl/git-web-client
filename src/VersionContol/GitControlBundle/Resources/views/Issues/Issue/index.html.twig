@@ -77,7 +77,7 @@
                                  <div class="col-md-10">
                                     {% for label in issue.issueLabel %}
                                         <div style="background-color:#{{ label.hexColor }};" class="issue-label btn-xs">
-                                            <a href="{{ path('issuelabel_edit', { 'id':project.id, 'issueId': label.id, 'project': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
+                                            <a href="{{ path('issuelabel_edit', { 'id':project.id, 'labelId': label.id }) }}" style="color:#{{label.hexColor|textcolor}};">
                                                  <i class="fa fa-tag fa-fw"></i>
                                                 {{ label.title }}
                                             </a>
@@ -88,7 +88,7 @@
                         {% endif %}
                         <div class="row">
                             <div class="col-md-10">
-                                <small>#{{issue.id}} opened by {#{{issue.verUser.name}}#} {{issue.createdAt|time_ago_in_words}}</small>
+                                <small>#{{issue.id}} opened by {{issue.user.name}} {{issue.createdAt|time_ago_in_words}}</small>
                             </div>
                             <div class="col-md-2">
                                 .

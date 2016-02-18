@@ -7,7 +7,7 @@ use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use VersionContol\GitControlBundle\Entity\Issues\Issue;
+use VersionContol\GitControlBundle\Entity\Issues\IssueInterface;
 
 use VersionContol\GitControlBundle\Entity\Issues\IssueCommentInteface;
 use VersionContol\GitControlBundle\Form\IssueCommentType;
@@ -246,7 +246,7 @@ class IssueController extends BaseProjectController
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(Issue $entity)
+    private function createEditForm(IssueInterface $entity)
     {
         $issueFormEditType = $this->issueManager->getIssueEditFormType();
         $form = $this->createForm($issueFormEditType, $entity, array(

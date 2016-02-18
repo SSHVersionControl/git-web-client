@@ -18,7 +18,7 @@ class IssueToEntityTransformer implements DataTransformerInterface
     public function __construct()
     {
         $this->issueLabelTransformer = new IssueLabelToEntityTransformer();
-        //$this->issueMilestoneTransformer = new IssueMilestoneToEntityTransformer();
+        $this->issueMilestoneTransformer = new IssueMilestoneToEntityTransformer();
         $this->issueCommentTransformer = new IssueCommentToEntityTransformer();
         $this->userTransformer = new UserToEntityTransformer();
     }
@@ -56,6 +56,10 @@ class IssueToEntityTransformer implements DataTransformerInterface
             $user = $this->userTransformer->transform($issue['user']);
             $issueEntity->setUser($user);
         }
+        if(isset($issue['milestone']) && is_array($issue['milestone'])){
+            $issueMilestoneEntity = $this->issueMilestoneTransformer->transform($issue['milestone']);
+            $issueEntity->setIssueMilestone($issueMilestoneEntity);
+        }
 
         return $issueEntity;
     }
@@ -81,6 +85,9 @@ class IssueToEntityTransformer implements DataTransformerInterface
             ,'title' =>  $issueEntity->getTitle()
             //,'milestone' =>  0
         );
+        if($issueEntity->getIssueMilestone()){
+           $issue['milestone'] =  $issueEntity->getIssueMilestone()->getId();
+        }
         $labels = array();
         foreach($issueEntity->getIssueLabel() as $issueLabel){
             $labels[] = $issueLabel->getId();

@@ -20,9 +20,6 @@ class IssueMilestoneType extends AbstractType
             //->add('dueOn')
             ->add('dueOn', 'datetime', array('date_widget' => "single_text", 'time_widget' => "single_text" ,'required' => false,))
 
-            ->add('project', 'hidden_entity',array(
-                    'class' => 'VersionContol\GitControlBundle\Entity\Project'
-                ))
         ;
     }
     
@@ -32,7 +29,7 @@ class IssueMilestoneType extends AbstractType
     public function configureOptions(OptionsResolver  $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionContol\GitControlBundle\Entity\IssueMilestone'
+            'data_class' => 'VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone'
         ));
     }
 

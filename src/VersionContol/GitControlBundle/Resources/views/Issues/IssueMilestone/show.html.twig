@@ -42,7 +42,7 @@
                 <div class="issue-state issue-state-{{ entity.state }}"> 
                     {{ entity.state|capitalize }} 
                 </div>
-                <strong>{{entity.verUser.name}}</strong> created this Milestone {{ entity.createdAt|time_ago_in_words }}
+                <strong>{{entity.user.name}}</strong> created this Milestone {{ entity.createdAt|time_ago_in_words }}
 
             </h3>
 

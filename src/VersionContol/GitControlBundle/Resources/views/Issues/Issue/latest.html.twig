@@ -9,7 +9,7 @@
             <i class="menu-icon fa fa-bug bg-red"></i>
             <div class="menu-info">
               <h4 class="control-sidebar-subheading">{{ issue.title }}</h4>
-              <p>#{{issue.id}} opened by {{issue.verUser.name}} {{issue.createdAt|time_ago_in_words}}</p>
+              <p>#{{issue.id}} opened by {{issue.user.name}} {{issue.createdAt|time_ago_in_words}}</p>
             </div>
           </a>
         </li>

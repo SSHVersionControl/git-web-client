@@ -2,16 +2,19 @@
 
 namespace VersionContol\GitControlBundle\Entity\Issues;
 
+use Doctrine\ORM\Mapping as ORM;
 
-interface IssueInterface
+/**
+ * IssueMilestone
+ *
+ * 
+ */
+interface IssueMilestoneInterface
 {
+    
+    
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId();
+    
 
     /**
      * Get title
@@ -32,20 +35,21 @@ interface IssueInterface
 
 
     /**
-     * Get status
+     * Get state
      *
      * @return string
      */
-    public function getStatus();
+    public function getState();
 
 
 
     /**
-     * Get closedAt
+     * Get dueOn
      *
      * @return \DateTime
      */
-    public function getClosedAt();
+    public function getDueOn();
+
 
 
     /**
@@ -54,7 +58,6 @@ interface IssueInterface
      * @return \DateTime
      */
     public function getCreatedAt();
-
 
 
     /**
@@ -66,36 +69,27 @@ interface IssueInterface
 
 
     /**
-     * Get issueMilestone
+     * Get closedAt
      *
-     * @return \VersionContol\GitControlBundle\Entity\Issues\IssueMilestone
+     * @return \DateTime
      */
-    public function getIssueMilestone();
+    public function getClosedAt();
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId();
 
 
     /**
-     * Get User
+     * Get verUser
      *
      * @return \VersionContol\GitControlBundle\Entity\Issues\IssueUserInterface
      */
     public function getUser();
-
-    
-
-    /**
-     * Get issueLabel
-     *
-     * @return array of \VersionContol\GitControlBundle\Entity\Issue\IssueLabelInteface
-     */
-    public function getIssueLabel();
-    
-    /**
-     * Get Issue Comments
-     * @return array of \VersionContol\GitControlBundle\Entity\Issue\IssueCommentInteface
-     */
-    public function getIssueComments();
-
-
+   
     /**
      * Set status
      *
@@ -114,11 +108,6 @@ interface IssueInterface
      */
     public function setOpen();
     
-    /**
-     * 
-     */
     public function isClosed();
-
+    
 }
-
-

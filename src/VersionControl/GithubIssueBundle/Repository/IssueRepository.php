@@ -9,7 +9,6 @@ use VersionControl\GithubIssueBundle\DataTransformer\IssueCommentToEntityTransfo
 
 class IssueRepository extends GithubBase implements IssueRepositoryInterface{
     
-    
     /**
      * Finds issues for a state
      * @param string $keyword
@@ -97,6 +96,37 @@ class IssueRepository extends GithubBase implements IssueRepositoryInterface{
     public function addlabel($issueEntity,$labelEntity){
         $this->authenticate();
         $labels = $this->client->api('issue')->labels()->add($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $issueEntity->getId(), $labelEntity->getTitle());
+    }
+    
+    
+    /**
+     * Gets the number of Issues for a milestone by state
+     * @param integer $issueMilestoneId
+     * @param string $state open|closed|blank
+     */
+    public function countIssuesInMilestones($issueMilestoneId,$state){
+        $milestone = $this->client->api('issue')->milestones()->show($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(),$issueMilestoneId);
+        if($state === 'open'){
+            $count = $milestone['open_issues'];
+        }else if($state === 'closed'){
+            $count = $milestone['closed_issues'];
+        }else{
+           $count = $milestone['open_issues']+$milestone['closed_issues']; 
+        }
+        return $count;
+    }
+    
+    /**
+     * Find issues in milestone
+     * 
+     * @param integer $issueMilestoneId
+     * @param string $state open|closed|blank
+     * @param string $keyword Search string
+     */
+    public function findIssuesInMilestones($issueMilestoneId,$state,$keyword = false){
+        $issues = $this->client->api('issue')->all($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), array('state' => $state, 'milestone' => $issueMilestoneId));
+
+        return $this->mapIssues($issues);
     }
     
     /**

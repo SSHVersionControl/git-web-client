@@ -4,6 +4,9 @@ services:
         
     version_control.issue_label_repository.github:
         class:  VersionControl\GithubIssueBundle\Repository\IssueLabelRepository
+        
+    version_control.issue_milestone_repository.github:
+        class:  VersionControl\GithubIssueBundle\Repository\IssueMilestoneRepository
        
     #Form Types
     version_control.issue_form_type.github:

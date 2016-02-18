@@ -56,16 +56,10 @@ class Issue implements IssueInterface
     private $id;
 
     /**
-     * @var \VersionContol\GitControlBundle\Entity\Issues\IssueMilestone
+     * @var \VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone
      *
      */
     private $issueMilestone;
-
-    /**
-     * @var \VersionContol\GitControlBundle\Entity\Project
-     *
-     */
-    private $project;
 
     /**
      * @var \VersionControl\GithubIssueBundle\Entity\User
@@ -283,11 +277,11 @@ class Issue implements IssueInterface
     /**
      * Set issueMilestone
      *
-     * @param \VersionContol\GitControlBundle\Entity\Issues\IssueMilestone $issueMilestone
+     * @param \VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone $issueMilestone
      *
      * @return Issue
      */
-    public function setIssueMilestone(\VersionContol\GitControlBundle\Entity\Issues\IssueMilestone $issueMilestone = null)
+    public function setIssueMilestone(\VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone $issueMilestone = null)
     {
         $this->issueMilestone = $issueMilestone;
 
@@ -297,36 +291,13 @@ class Issue implements IssueInterface
     /**
      * Get issueMilestone
      *
-     * @return \VersionContol\GitControlBundle\Entity\Issues\IssueMilestone
+     * @return \VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone
      */
     public function getIssueMilestone()
     {
         return $this->issueMilestone;
     }
 
-    /**
-     * Set project
-     *
-     * @param \VersionContol\GitControlBundle\Entity\Project $project
-     *
-     * @return Issue
-     */
-    public function setProject(\VersionContol\GitControlBundle\Entity\Project $project = null)
-    {
-        $this->project = $project;
-
-        return $this;
-    }
-
-    /**
-     * Get project
-     *
-     * @return \VersionContol\GitControlBundle\Entity\Project
-     */
-    public function getProject()
-    {
-        return $this->project;
-    }
 
     /**
      * Set User
@@ -373,7 +344,10 @@ class Issue implements IssueInterface
      */
     public function removeIssueLabel(\VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel $issueLabel)
     {
-        $this->issueLabel->removeElement($issueLabel);
+        $key = array_search($issueLabel, $this->issueLabel, true);
+        if ($key !== false) {
+             unset($this->issueLabel[$key]);
+        }
     }
 
     /**

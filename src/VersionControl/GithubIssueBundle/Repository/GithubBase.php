@@ -23,7 +23,9 @@ abstract class GithubBase {
     protected $issueIntegrator;
     
     public function __construct() {
-        $this->client = new \Github\Client();
+        $this->client = new \Github\Client(
+               new \Github\HttpClient\CachedHttpClient(array('cache_dir' => $this->getCacheDir())) 
+        );
     }
     
     public function getIssueIntegrator() {
@@ -37,5 +39,14 @@ abstract class GithubBase {
 
     protected function authenticate(){
         $this->client->authenticate($this->issueIntegrator->getApiToken(), '', \Github\Client::AUTH_URL_TOKEN);
+    }
+    
+    protected function getCacheDir(){
+        $dir = dirname(__DIR__).'/../../../app/cache/githubcache';
+ 
+        if(!file_exists($dir)){
+             mkdir($dir, 0755);
+        }
+        return $dir;
     }
 }

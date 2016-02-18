@@ -85,7 +85,8 @@ class IssueEditType extends AbstractType
     }
     
     protected function getIssueMilestoneChoices(){
-        return array();
+        $issueMilestoneRepository = $this->issueManager->getIssueMilestoneRepository();
+        return $issueMilestoneRepository->listMilestones();
     }
     
     protected function getIssueLabelChoices(){
