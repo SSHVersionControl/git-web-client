@@ -3,60 +3,65 @@
 namespace VersionContol\GitControlBundle\Controller\Issues;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use VersionContol\GitControlBundle\Entity\IssueMilestone;
+use VersionContol\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
 use VersionContol\GitControlBundle\Form\IssueMilestoneType;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 /**
  * IssueMilestone controller.
  *
  * @Route("/issuemilestone")
  */
-class IssueMilestoneController extends Controller
+class IssueMilestoneController extends BaseProjectController
 {
 
     /**
+     * 
+     * @var IssueMilestoneRepositoryInterface
+     */
+    protected $issueMilestoneRepository;
+    
+    /**
+     *
+     * @var \VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryManager;
+     */
+    protected $issueManager;
+    
+    
+    /**
      * Lists all IssueMilestone entities.
      *
-     * @Route("s/{project}", name="issuemilestones")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("s/{id}", name="issuemilestones")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction($project, Request $request)
+    public function indexAction($id, Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
+        $this->initAction($id);
 
-        //$entities = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->findAll();
-        
-        //$entities = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->findByProject($project);
-        //$openIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'open');
-        //$closedIssuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'closed');
-        
-        $keyword = $request->query->get('keyword', false);
         $filter = $request->query->get('filter', 'open');
         
-        $query = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->findByProjectAndStatus($project,$filter,$keyword,true)->getQuery();
+        $data = $this->issueMilestoneRepository->listMilestones($filter);
+        
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $query,
+            $data,
             $request->query->getInt('page', 1)/*page number*/,
             15/*limit per page*/
         );
 
-    
-        $openIssuesCount = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->countForProjectWithStatus($project,'open',$keyword);
-        $closedIssuesCount = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->countForProjectWithStatus($project,'closed',$keyword);
+        
+        $openCount = $this->issueMilestoneRepository->countMilestones('open');
+        $closedCount = $this->issueMilestoneRepository->countMilestones('closed');
         
 
         return array(
-            'project' => $project,
-            'openCount' => $openIssuesCount,
-            'closedCount' => $closedIssuesCount,
+            'project' => $this->project,
+            'openCount' => $openCount,
+            'closedCount' => $closedCount,
             'pagination' => $pagination
         );
 
@@ -65,22 +70,20 @@ class IssueMilestoneController extends Controller
     /**
      * Creates a new IssueMilestone entity.
      *
-     * @Route("/", name="issuemilestone_create")
+     * @Route("/{id}", name="issuemilestone_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:IssueMilestone:new.html.twig")
      */
-    public function createAction(Request $request)
+    public function createAction(Request $request,$id)
     {
-        $issueMilestone = new IssueMilestone();
+        $this->initAction($id,'EDIT');
+        
+        $issueMilestone = $this->issueMilestoneRepository->newMilestone();
         $form = $this->createCreateForm($issueMilestone);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $user = $this->get('security.token_storage')->getToken()->getUser();
-            $issueMilestone->setVerUser($user);
-            $em->persist($issueMilestone);
-            $em->flush();
+            $issueMilestone = $this->issueMilestoneRepository->createMilestone($issueMilestone);
             
             $this->get('session')->getFlashBag()->add('notice', 'New Milestone:'.$issueMilestone->getTitle());
 
@@ -89,7 +92,7 @@ class IssueMilestoneController extends Controller
 
         return array(
             'entity' => $issueMilestone,
-            'project' => $issueMilestone->getProject(),
+            'project' => $this->project,
             'form'   => $form->createView(),
         );
     }
@@ -101,10 +104,11 @@ class IssueMilestoneController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(IssueMilestone $entity)
+    private function createCreateForm(IssueMilestoneInterface $entity)
     {
-        $form = $this->createForm(new IssueMilestoneType(), $entity, array(
-            'action' => $this->generateUrl('issuemilestone_create'),
+        $issueLMilestoneFormType = $this->issueManager->getIssueMilestoneFormType();
+        $form = $this->createForm($issueLMilestoneFormType, $entity, array(
+            'action' => $this->generateUrl('issuemilestone_create',array('id'=>$this->project->getId())),
             'method' => 'POST',
         ));
 
@@ -116,20 +120,20 @@ class IssueMilestoneController extends Controller
     /**
      * Displays a form to create a new IssueMilestone entity.
      *
-     * @Route("/new/{project}", name="issuemilestone_new")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("/new/{id}", name="issuemilestone_new")
      * @Method("GET")
      * @Template()
      */
-    public function newAction($project)
+    public function newAction($id)
     {
-        $entity = new IssueMilestone();
-        $entity->setProject($project);
-        $form   = $this->createCreateForm($entity);
+        $this->initAction($id,'EDIT');
+        
+        $issueMilestone = $this->issueMilestoneRepository->newMilestone();
+        $form   = $this->createCreateForm($issueMilestone);
 
         return array(
-            'entity' => $entity,
-            'project' => $project,
+            'entity' => $issueMilestone,
+            'project' => $this->project,
             'form'   => $form->createView(),
         );
     }
@@ -137,50 +141,50 @@ class IssueMilestoneController extends Controller
     /**
      * Finds and displays a IssueMilestone entity.
      *
-     * @Route("/{id}", name="issuemilestone_show")
+     * @Route("/{id}/{milestoneId}", name="issuemilestone_show")
      * @Method("GET")
      * @Template()
      */
-    public function showAction($id)
+    public function showAction($id,$milestoneId)
     {
-        $em = $this->getDoctrine()->getManager();
+        
+        $this->initAction($id);
+        $issueMilestone = $this->issueMilestoneRepository->findMilestoneById($milestoneId);
 
-        $entity = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->find($id);
-
-        if (!$entity) {
+        if (!$issueMilestone) {
             throw $this->createNotFoundException('Unable to find IssueMilestone entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
         
-        $openCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($entity->getProject(),'open',false,$entity);
-
-        $closedCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($entity->getProject(),'closed',false,$entity);
+        $issueRepository = $this->issueManager->getIssueRepository();
         
-
+        $openIssuesCount = $issueRepository->countIssuesInMilestones($milestoneId,'open');
+        $closedIssuesCount = $issueRepository->countIssuesInMilestones($milestoneId,'closed');
+        
         return array(
-            'entity'      => $entity,
-            'project'      => $entity->getProject(),
+            'entity'      => $issueMilestone,
+            'project'      => $this->project,
             'delete_form' => $deleteForm->createView(),
-            'openCount' => $openCount,
-            'closedCount' => $closedCount,
+            'openCount' => $openIssuesCount,
+            'closedCount' => $closedIssuesCount,
         );
     }
 
     /**
      * Displays a form to edit an existing IssueMilestone entity.
      *
-     * @Route("/{id}/edit", name="issuemilestone_edit")
+     * @Route("/{id}/edit/{milestoneId}", name="issuemilestone_edit")
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
+    public function editAction($id,$milestoneId)
     {
-        $em = $this->getDoctrine()->getManager();
+        $this->initAction($id,'EDIT');
+        
+        $issueMilestone = $this->issueMilestoneRepository->findMilestoneById($milestoneId);
 
-        $entity = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->find($id);
-
-        if (!$entity) {
+        if (!$issueMilestone) {
             throw $this->createNotFoundException('Unable to find IssueMilestone entity.');
         }
 
@@ -188,8 +192,8 @@ class IssueMilestoneController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'milestone'      => $entity,
-            'project'   => $entity->getProject(),
+            'milestone'      => $issueMilestone,
+            'project'   => $this->project,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -202,9 +206,10 @@ class IssueMilestoneController extends Controller
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(IssueMilestone $entity)
+    private function createEditForm(IssueMilestoneInterface $entity)
     {
-        $form = $this->createForm(new IssueMilestoneType(), $entity, array(
+        $issueLMilestoneFormType = $this->issueManager->getIssueMilestoneFormType();
+        $form = $this->createForm($issueLMilestoneFormType, $entity, array(
             'action' => $this->generateUrl('issuemilestone_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
@@ -216,32 +221,33 @@ class IssueMilestoneController extends Controller
     /**
      * Edits an existing IssueMilestone entity.
      *
-     * @Route("/{id}", name="issuemilestone_update")
+     * @Route("/{id}/{milestoneId}", name="issuemilestone_update")
      * @Method("PUT")
      * @Template("VersionContolGitControlBundle:IssueMilestone:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, $id, $milestoneId)
     {
-        $em = $this->getDoctrine()->getManager();
+        $this->initAction($id,'EDIT');
+        
+        $issueMilestone = $this->issueMilestoneRepository->findMilestoneById($milestoneId);
+       
 
-        $entity = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->find($id);
-
-        if (!$entity) {
+        if (!$issueMilestone) {
             throw $this->createNotFoundException('Unable to find IssueMilestone entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
-        $editForm = $this->createEditForm($entity);
+        $editForm = $this->createEditForm($issueMilestone);
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'Updated Milestone:'.$entity->getTitle());
-            return $this->redirect($this->generateUrl('issuemilestone_edit', array('id' => $id)));
+            $this->issueMilestoneRepository->update($issueMilestone);
+            $this->get('session')->getFlashBag()->add('notice', 'Updated Milestone:'.$issueMilestone->getTitle());
+            return $this->redirect($this->generateUrl('issuemilestone_edit', array('id' => $id, 'milestoneId' => $milestoneId)));
         }
 
         return array(
-            'entity'      => $entity,
+            'entity'      => $issueMilestone,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
@@ -249,29 +255,24 @@ class IssueMilestoneController extends Controller
     /**
      * Deletes a IssueMilestone entity.
      *
-     * @Route("/{id}", name="issuemilestone_delete")
+     * @Route("/{id}/{milestoneId}", name="issuemilestone_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, $id, $milestoneId)
     {
+        $this->initAction($id,'EDIT');
+        
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->find($id);
+            $this->issueMilestoneRepository->deleteMilestone($milestoneId);
 
-            if (!$entity) {
-                throw $this->createNotFoundException('Unable to find IssueMilestone entity.');
-            }
-
-            $this->get('session')->getFlashBag()->add('notice', 'Deleted Milestone:'.$entity->getTitle());
+            $this->get('session')->getFlashBag()->add('notice', 'Deleted Milestone:'.$milestoneId);
             
-            $em->remove($entity);
-            $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('issuemilestone'));
+        return $this->redirect($this->generateUrl('issuemilestones',array('id'=> $id)));
     }
 
     /**
@@ -284,7 +285,7 @@ class IssueMilestoneController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('issuemilestone_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('issuemilestone_delete', array('id' => $this->project->getId(),'milestoneId'=>$id)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
@@ -294,21 +295,18 @@ class IssueMilestoneController extends Controller
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/{id}/close", name="issuemilestone_close")
+     * @Route("/{id}/close/{milestoneId}", name="issuemilestone_close")
      * @Method("GET")
      */
-    public function closeAction($id)
+    public function closeAction($id,$milestoneId)
     {
-        $em = $this->getDoctrine()->getManager();
+        $this->initAction($id,'EDIT');
 
-        $issueMilestone = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->find($id);
-
+        $issueMilestone = $this->issueMilestoneRepository->closeMilestone($milestoneId);
+        
         if (!$issueMilestone) {
             throw $this->createNotFoundException('Unable to find Issue Milestone entity.');
         }
-        
-        $issueMilestone->setClosed();
-        $em->flush();
         
         $this->get('session')->getFlashBag()->add('notice'
                 ,"Milestone #".$issueMilestone->getId()." has been closed");
@@ -319,26 +317,22 @@ class IssueMilestoneController extends Controller
      /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/{id}/open", name="issuemilestone_open")
+     * @Route("/{id}/open/{milestoneId}", name="issuemilestone_open")
      * @Method("GET")
      */
-    public function openAction($id)
+    public function openAction($id,$milestoneId)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $issueMilestone = $em->getRepository('VersionContolGitControlBundle:IssueMilestone')->find($id);
+        $this->initAction($id,'EDIT');
+        $issueMilestone = $this->issueMilestoneRepository->reOpenMilestone($milestoneId);
 
         if (!$issueMilestone) {
             throw $this->createNotFoundException('Unable to find Issue Milestone entity.');
         }
         
-        $issueMilestone->setOpen();
-        $em->flush();
-        
         $this->get('session')->getFlashBag()->add('notice'
                 ,"Milestone #".$issueMilestone->getId()." has been opened");
         
-        return $this->redirect($this->generateUrl('issuemilestone_show', array('id' => $issueMilestone->getId())));
+        return $this->redirect($this->generateUrl('issuemilestone_show', array('id'=>$this->project, 'milestoneId' => $issueMilestone->getId())));
 
     }
     
@@ -347,18 +341,19 @@ class IssueMilestoneController extends Controller
      *
      * @Template()
      */
-    public function milestonesIssuesAction(Request $request,$issueMilestone,$filter = 'open',$pageParameterName='page',$keywordParamaterName='keyword')
+    public function milestonesIssuesAction(Request $request,$id,$issueMilestone,$filter = 'open',$pageParameterName='page',$keywordParamaterName='keyword')
     {
+        $this->initAction($id);
         $parentRequest =  $request->createFromGlobals();
-        
-        $em = $this->getDoctrine()->getManager();
-     
         $keyword = $parentRequest->query->get($keywordParamaterName, false);
-
-        $query = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($issueMilestone->getProject(),$filter,$keyword,$issueMilestone,true)->getQuery();
+        
+        $issueRepository = $this->issueManager->getIssueRepository();
+        $data = $issueRepository->findIssuesInMilestones($issueMilestone->getId(),$filter,$keyword);
+        
+        //$data = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($issueMilestone->getProject(),$filter,$keyword,$issueMilestone,true)->getQuery();
         $paginator  = $this->get('knp_paginator');
         $pagination = $paginator->paginate(
-            $query,
+            $data,
             $parentRequest->query->getInt($pageParameterName, 1)/*page number*/,
             10,/*limit per page*/
             array('pageParameterName' => $pageParameterName)
@@ -366,7 +361,7 @@ class IssueMilestoneController extends Controller
 
         return array(
             'issueMilestone' => $issueMilestone,
-            'project' => $issueMilestone->getProject(),
+            'project' => $this->project,
             'pagination' => $pagination,
             'status' => $filter,
             'keywordParamaterName' => $keywordParamaterName,
@@ -374,5 +369,31 @@ class IssueMilestoneController extends Controller
              
             
         );
+    }
+    
+    /**
+     * 
+     * @param integer $id
+     */
+    protected function initAction($id,$grantType='VIEW'){
+        $em = $this->getDoctrine()->getManager();
+        
+        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+
+        if (!$this->project) {
+            throw $this->createNotFoundException('Unable to find Project entity.');
+        }
+        
+        $this->checkProjectAuthorization($this->project,$grantType);
+        $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
+        
+        $this->issueManager = $this->get('version_control.issue_repository_manager');
+        if($issueIntegrator){
+            $this->issueManager->setIssueIntegrator($issueIntegrator);
+        }else{
+            $this->issueManager->setProject($this->project);
+        }
+        $this->issueMilestoneRepository = $this->issueManager->getIssueMilestoneRepository();
+        
     }
 }

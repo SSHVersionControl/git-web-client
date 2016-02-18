@@ -48,6 +48,9 @@
                     <p><strong>Respository Name:</strong> {{issueIntegrator.repoName}}</p>
                     <p><strong>Owner Name:</strong> {{issueIntegrator.ownerName}}</p>
                     <p><strong>Authenticated:</strong> {%if(issueIntegrator.apiToken)%}YES{%else%}NO{%endif%}</p>
+                    <div class="text-right">
+                        <a href="{{path('project_issue_integrator_edit', {'id':project.id,'integratorId':issueIntegrator.id })}}" class="btn-sm btn btn-info text-right">Edit</a>
+                    </div>
                 </div>
                 {% for issue in issues %}
                     <p>{{issue.id}} {{issue.title}}</p>

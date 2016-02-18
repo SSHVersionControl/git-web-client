@@ -6,13 +6,13 @@ namespace VersionContol\GitControlBundle\Entity\User;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-
+use VersionContol\GitControlBundle\Entity\Issues\IssueUserInterface;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="ver_user")
  */
-class User extends BaseUser
+class User extends BaseUser implements IssueUserInterface
 {
     /**
      * @ORM\Id
@@ -143,7 +143,6 @@ class User extends BaseUser
         $this->githubAccessToken = $githubAccessToken;
         return $this;
     }
-
 
 
 

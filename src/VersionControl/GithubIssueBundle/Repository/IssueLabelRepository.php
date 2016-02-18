@@ -3,6 +3,7 @@ namespace VersionControl\GithubIssueBundle\Repository;
 
 use VersionContol\GitControlBundle\Repository\Issues\IssueLabelRepositoryInterface;
 use VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel;
+use VersionControl\GithubIssueBundle\DataTransformer\IssueLabelToEntityTransformer;
 
 class  IssueLabelRepository extends GithubBase implements IssueLabelRepositoryInterface{
     
@@ -23,7 +24,11 @@ class  IssueLabelRepository extends GithubBase implements IssueLabelRepositoryIn
      * @param integer $id
      */
     public function findLabelById($id){
+        $issueLabelEntity = $this->newLabel();
+        $issueLabelEntity->setId($id);
+        $issueLabelEntity->setTitle($id);
         
+        return $issueLabelEntity;
     }
     
     /**
@@ -32,18 +37,21 @@ class  IssueLabelRepository extends GithubBase implements IssueLabelRepositoryIn
      * @return VersionContol\GitControlBundle\Entity\Labels\Label
      */
     public function newLabel(){
-        
+        $issueLabelEntity = new IssueLabel();
+        return $issueLabelEntity;
     }
-    
+
     /**
      * 
      * @param type $issueLabel
      */
     public function createLabel($issueLabel){
+        $this->authenticate();
         $label = $this->client->api('issue')->labels()->create($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), array(
-            'name' => $issueLabel->title(),
-            'color' => $issueLabel->hexColor(),
+            'name' => $issueLabel->getTitle(),
+            'color' => $issueLabel->getHexColor(),
         ));
+        return $this->mapToEntity($label);
     }
 
     
@@ -52,8 +60,19 @@ class  IssueLabelRepository extends GithubBase implements IssueLabelRepositoryIn
      * @param integer $issueLabel
      */
     public function updateLabel($issueLabel){
-        $labels = $this->client->api('issue')->labels()->update('KnpLabs', 'php-github-api', $issueLabel->title(), $issueLabel->hexColor());
-
+        $this->authenticate();
+        $label = $this->client->api('issue')->labels()->update($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $issueLabel->getId(), $issueLabel->getTitle(), $issueLabel->getHexColor());
+        return $this->mapToEntity($label);
+    }
+    
+    /**
+     * 
+     * @param integer $issueLabelId
+     */
+    public function deleteLabel($issueLabelId){
+        $this->authenticate();
+        $labels = $this->client->api('issue')->labels()->deleteLabel($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $issueLabelId);
+        return true;
     }
     
     /**
@@ -75,12 +94,10 @@ class  IssueLabelRepository extends GithubBase implements IssueLabelRepositoryIn
     
     protected function mapToEntity($label){
         
-        $mappedIssueLabel = new IssueLabel();
-        $mappedIssueLabel->setId($label['name']);
-        $mappedIssueLabel->setTitle($label['name']);
-        $mappedIssueLabel->setHexColor($label['color']);
+        $issueLabelTransfomer = new IssueLabelToEntityTransformer();
+        $issueLabelEntity = $issueLabelTransfomer->transform($label);
 
-        return $mappedIssueLabel;
+        return $issueLabelEntity;
         
     }
     

@@ -15,10 +15,10 @@ class IssueCommentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('comment')
-            ->add('issue', 'hidden_entity',array(
-                    'class' => 'VersionContol\GitControlBundle\Entity\Issue'
-                ))
+            ->add('comment','textarea')
+            //->add('issue', 'hidden_entity',array(
+            //        'class' => 'VersionControl\GithubIssueBundle\Entity\Issues\Issue'
+            //    ))
 
         ;
     }
@@ -29,7 +29,7 @@ class IssueCommentType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionContol\GitControlBundle\Entity\IssueComment'
+            'data_class' => 'VersionControl\GithubIssueBundle\Entity\Issues\IssueComment'
         ));
     }
 

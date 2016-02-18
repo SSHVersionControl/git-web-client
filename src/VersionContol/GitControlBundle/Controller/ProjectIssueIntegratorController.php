@@ -40,6 +40,8 @@ class ProjectIssueIntegratorController extends BaseProjectController{
             $em = $this->getDoctrine()->getManager();
             $em->persist($issueIntegrator);
             $em->flush();
+            
+            $this->get('session')->getFlashBag()->add('notice', 'Issue Integrator Record has been created');
 
             return $this->redirect($this->generateUrl('project_issue_integrator', array('id' => $this->project->getId())));
         }
@@ -168,8 +170,10 @@ class ProjectIssueIntegratorController extends BaseProjectController{
 
         if ($editForm->isValid()) {
             $em->flush();
+            
+            $this->get('session')->getFlashBag()->add('notice', 'Issue Integrator Record has been update');
 
-            return $this->redirect($this->generateUrl('project_issue_integrator_edit', array('id' => $id, 'id' => $this->project->getId())));
+            return $this->redirect($this->generateUrl('project_issue_integrator_edit', array('id' => $id,'integratorId' => $integratorId)));
         }
 
         return array_merge($this->viewVariables, array(

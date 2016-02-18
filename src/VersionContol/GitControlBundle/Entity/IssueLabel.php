@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  * IssueLabel
  *
  * @ORM\Table(name="issue_label")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\IssueLabelRepository")
  */
 class IssueLabel extends BaseIssueLabel
 {

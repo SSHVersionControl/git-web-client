@@ -70,7 +70,7 @@ class IssueRepository extends EntityRepository implements IssueRepositoryInterfa
         return $issueComment;
     }
     
-     public function createIssueComment($issueComment){
+    public function createIssueComment($issueComment){
         $em=$this->getEntityManager();
         
         //Set User
@@ -136,6 +136,26 @@ class IssueRepository extends EntityRepository implements IssueRepositoryInterfa
         $em=$this->getEntityManager();
         
         $em->flush();
+    }
+    
+    /**
+     * Gets the number of Issues for a milestone by state
+     * @param integer $issueMilestoneId
+     * @param string $state open|closed|blank
+     */
+    public function countIssuesInMilestones($issueMilestoneId,$state){
+        return $this->countIssuesForProjectWithStatus($state,false,$issueMilestoneId);
+    }
+    
+    /**
+     * Find issues in milestone
+     * 
+     * @param integer $issueMilestoneId
+     * @param string $state open|closed|blank
+     * @param string $keyword Search string
+     */
+    public function findIssuesInMilestones($issueMilestoneId,$state,$keyword = false){
+        return $this->findByProjectAndStatus($state,$keyword,$issueMilestoneId,true);
     }
     
     /**

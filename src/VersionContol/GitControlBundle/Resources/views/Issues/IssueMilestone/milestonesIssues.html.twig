@@ -1,6 +1,6 @@
 <div class="row">
         <div class="col-md-12">
-             <form action="{{ path('issuemilestone_show', { 'id': issueMilestone.id, 'project': project.id }) }}" method="GET">
+             <form action="{{ path('issuemilestone_show', { 'milestoneId': issueMilestone.id, 'id': project.id }) }}" method="GET">
                 <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search..." name="{{keywordParamaterName}}">
                         <span class="input-group-btn">
@@ -28,7 +28,7 @@
                             <div class="col-md-10">
                                {% for label in issue.issueLabel %}
                                    <div style="background-color:#{{ label.hexColor }};" class="issue-label btn-xs">
-                                       <a href="{{ path('issuelabel_edit', { 'id': label.id, 'project': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
+                                       <a href="" style="color:#{{label.hexColor|textcolor}};">
                                             <i class="fa fa-tag fa-fw"></i>
                                            {{ label.title }}
                                        </a>

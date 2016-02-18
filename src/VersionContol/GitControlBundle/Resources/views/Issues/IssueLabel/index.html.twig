@@ -43,7 +43,7 @@
             </h3>
 
              <div class="box-tools">
-                 <a href="{{ path('issuelabel_new',{ 'project': project.id }) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> New Label</a>
+                 <a href="{{ path('issuelabel_new',{ 'id': project.id }) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> New Label</a>
              </div>
 
         </div>
@@ -54,16 +54,16 @@
                     <div class="list-group-item">
                         
                                 <div style="background-color:#{{ label.hexColor }};" class="issue-label">
-                                    <a href="{{ path('issuelabel_edit', { 'id': label.id, 'project': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
+                                    <a href="{{ path('issuelabel_edit', { 'labelId': label.id, 'id': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
                                          <i class="fa fa-tag fa-fw"></i>
                                         {{ label.title }}
                                     </a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="{{ path('issuelabel_edit', { 'id': label.id, 'project': project.id }) }}" class="btn btn-primary btn-sm btn-flat">
+                                    <a href="{{ path('issuelabel_edit', { 'labelId': label.id, 'id': project.id }) }}" class="btn btn-primary btn-sm btn-flat">
                                         <i class="fa fa-edit"></i> Edit
                                     </a>
-                                    <a href="" class="btn btn-danger btn-sm btn-flat">
+                                    <a href="{{ path('issuelabel_delete', { 'labelId': label.id, 'id': project.id }) }}" class="btn btn-danger btn-sm btn-flat" data-confirm="Are you sure you wish to delete this issue label?" data-confirm-header="Confirm Delete">
                                         <i class="fa fa-remove"></i> Delete
                                     </a>
                                 </div>

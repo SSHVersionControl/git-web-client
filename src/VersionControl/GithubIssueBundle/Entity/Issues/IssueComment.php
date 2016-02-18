@@ -2,13 +2,13 @@
 
 namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueComment as BaseIssueComment;
+use VersionContol\GitControlBundle\Entity\Issues\IssueCommentInteface;
 
 /**
  * IssueComment
  *
  */
-class IssueComment extends BaseIssueComment
+class IssueComment implements IssueCommentInteface
 {
     /**
      * @var string
@@ -36,11 +36,16 @@ class IssueComment extends BaseIssueComment
 
     
     /**
-     * @var \VersionContol\GitControlBundle\Entity\Issues\Issue
+     * @var \VersionControl\GithubIssueBundle\Entity\Issues\Issue
      *
      */
     private $issue;
 
+    /**
+     * Github User
+     * @var VersionControl\GithubIssueBundle\Entity\User 
+     */
+    private $user;
 
 
     public function __construct() {
@@ -124,6 +129,16 @@ class IssueComment extends BaseIssueComment
      *
      * @return integer
      */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer
+     */
     public function getId()
     {
         return $this->id;
@@ -135,7 +150,7 @@ class IssueComment extends BaseIssueComment
      * @param \VersionContol\GitControlBundle\Entity\Issue $issue
      * @return \VersionContol\GitControlBundle\Entity\IssueComment
      */
-    public function setIssue(\VersionContol\GitControlBundle\Entity\Issues\Issue $issue) {
+    public function setIssue(\VersionControl\GithubIssueBundle\Entity\Issues\Issue $issue) {
         $this->issue = $issue;
         return $this;
     }
@@ -146,6 +161,18 @@ class IssueComment extends BaseIssueComment
      */
     public function getIssue() {
         return $this->issue;
+    }
+    
+    public function setUser($user) {
+        $this->user = $user;
+    }
+    
+    /**
+     * 
+     * @return type
+     */
+    public function getUser() {
+        return $this->user;
     }
     
 

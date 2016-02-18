@@ -4,6 +4,8 @@ use VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryInterface;
 use VersionControl\GithubIssueBundle\Entity\Issues\Issue;
 use VersionControl\GithubIssueBundle\Entity\Issues\IssueComment;
 use VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel;
+use VersionControl\GithubIssueBundle\DataTransformer\IssueToEntityTransformer;
+use VersionControl\GithubIssueBundle\DataTransformer\IssueCommentToEntityTransformer;
 
 class IssueRepository extends GithubBase implements IssueRepositoryInterface{
     
@@ -40,7 +42,8 @@ class IssueRepository extends GithubBase implements IssueRepositoryInterface{
      */
     public function findIssueById($id){
         $issue = $this->client->api('issue')->show($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $id);
-        return $this->mapIssueToEntity($issue);
+        $issueComments = $this->client->api('issue')->comments()->all($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $id);
+        return $this->mapIssueToEntity($issue,$issueComments);
     }
     
     /**
@@ -103,7 +106,6 @@ class IssueRepository extends GithubBase implements IssueRepositoryInterface{
      */
     protected function mapIssues($issues){
         $issueEntities = array();
- 
         if(is_array($issues)){
             foreach($issues as $issue){
                 $issueEntities[] =  $this->mapIssueToEntity($issue);
@@ -113,75 +115,43 @@ class IssueRepository extends GithubBase implements IssueRepositoryInterface{
         return $issueEntities;
     }
     
-    protected function mapIssueToEntity($issue){
+    protected function mapIssueToEntity($issue,$issueComments = array()){
+        $issueTransfomer = new IssueToEntityTransformer();
+        $issueCommentTransfomer = new IssueCommentToEntityTransformer();
+        $issueEntity = $issueTransfomer->transform($issue);
         
-        $mappedIssue = new Issue();
-        $mappedIssue->setId($issue['number']);
-        $mappedIssue->setTitle($issue['title']);
-        $mappedIssue->setStatus($issue['state']);
-        $mappedIssue->setDescription($issue['body']);
-        $mappedIssue->setCreatedAt($this->formatDate($issue['created_at']));
-        $mappedIssue->setClosedAt($this->formatDate($issue['closed_at']));
-        $mappedIssue->setUpdatedAt($this->formatDate($issue['updated_at']));
-        
-        //Map Issue labels
-        if(isset($issue['labels']) && is_array($issue['labels'])){
-            foreach($issue['labels'] as $label){
-                $issueLabel = $this->mapLabelToEntity($label);
-                $mappedIssue->addIssueLabel($issueLabel);
-            }
+        foreach($issueComments as $issueComment){
+            $issueCommentEntity = $issueCommentTransfomer->transform($issueComment);
+            $issueEntity->addIssueComment($issueCommentEntity);
         }
         
-
-        return $mappedIssue;
-        
+        return $issueEntity;
     }
     
-    protected function mapLabelToEntity($label){
-        
-        $mappedIssueLabel = new IssueLabel();
-        $mappedIssueLabel->setId($label['name']);
-        $mappedIssueLabel->setTitle($label['name']);
-        $mappedIssueLabel->setHexColor($label['color']);
-
-        return $mappedIssueLabel;
-        
-    }
     
     protected function mapEntityToIssue($issueEntity){
-        $issue = array(
-            'title' =>  $issueEntity->getTitle()
-            ,'body' =>  $issueEntity->getDescription()
-            ,'state' =>  $issueEntity->getStatus()
-            ,'title' =>  $issueEntity->getTitle()
-            ,'labels' =>  array()
-            //,'milestone' =>  0
-        );
-        $labels = array();
-        foreach($issueEntity->getIssueLabel() as $issueLabel){
-            $labels[] = $issueLabel->getId();
-        }
-        $issue['labels'] = $labels;
-        
-        return $issue;
-        
+        $issueTransfomer = new IssueToEntityTransformer();
+        return $issueTransfomer->reverseTransform($issueEntity);
     }
-    
-    protected function formatDate($date){
-        try {
-            $dateTime = new \DateTime($date);
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        }
-        return $dateTime;
-    }
-    
+
     /**
      * 
      */
     public function newIssueComment(){
         $issueCommentEntity = new IssueComment();
         return $issueCommentEntity;
+    }
+    
+    /**
+     * Creates a New issue Comment on github
+     * @param \VersionControl\GithubIssueBundle\Entity\Issues\IssueComment $issueCommentEntity
+     */
+    public function createIssueComment(\VersionControl\GithubIssueBundle\Entity\Issues\IssueComment $issueCommentEntity){
+        $this->authenticate();
+        $issueId = $issueCommentEntity->getIssue()->getId();
+        $comment = $this->client->api('issue')->comments()->create($this->issueIntegrator->getOwnerName(), $this->issueIntegrator->getRepoName(), $issueId, array('body' => $issueCommentEntity->getComment()));
+        $issueCommentTransfomer = new IssueCommentToEntityTransformer();
+        return $issueCommentTransfomer->transform($comment);
     }
     
 

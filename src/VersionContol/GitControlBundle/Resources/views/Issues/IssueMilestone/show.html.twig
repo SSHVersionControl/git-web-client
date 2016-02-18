@@ -47,9 +47,9 @@
             </h3>
 
              <div class="box-tools">
-                 <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
-                 <a href="{{ path('issuemilestone_edit',{ 'id': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-edit fa-fw"></i>Edit</a>
-                 <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Milestone</a>
+                 <a href="{{ path('issuemilestone_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
+                 <a href="{{ path('issuemilestone_edit',{ 'id': project.id,'milestoneId': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-edit fa-fw"></i>Edit</a>
+                 <a href="{{ path('issuemilestone_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Milestone</a>
              </div>
 
         </div>
@@ -99,8 +99,8 @@
                 </div>
                  <div class="box-body">
                       {{ render(controller(
-                'VersionContolGitControlBundle:IssueMilestone:milestonesIssues',
-                { 'issueMilestone': entity }
+                'VersionContolGitControlBundle:Issues\\IssueMilestone:milestonesIssues',
+                { 'id':project.id, 'issueMilestone': entity }
             )) }}
                  </div>
              </div>
@@ -112,8 +112,8 @@
                 </div>
                 <div class="box-body">
                       {{ render(controller(
-                'VersionContolGitControlBundle:IssueMilestone:milestonesIssues',
-                { 'issueMilestone': entity, 'filter': 'closed', pageParameterName:'pageClosed',keywordParamaterName:'keywordclosed' }
+                'VersionContolGitControlBundle:Issues\\IssueMilestone:milestonesIssues',
+                { 'id':project.id, 'issueMilestone': entity, 'filter': 'closed', pageParameterName:'pageClosed',keywordParamaterName:'keywordclosed' }
             )) }}
                  </div>
              </div>

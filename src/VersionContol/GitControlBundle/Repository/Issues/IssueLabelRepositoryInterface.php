@@ -15,9 +15,7 @@ interface IssueLabelRepositoryInterface{
      * @return array of issues
      */
     public function listLabels();
-    
-    
-    
+     
     /**
      * 
      * @param integer $id
@@ -44,6 +42,11 @@ interface IssueLabelRepositoryInterface{
      */
     public function updateLabel($issueLabel);
     
+    /**
+     * 
+     * @param integer $issueLabelId
+     */
+    public function deleteLabel($issueLabelId);
       
     
 }

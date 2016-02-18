@@ -2,9 +2,9 @@
 
 namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
-use VersionContol\GitControlBundle\Entity\Issues\Issue as BaseIssue;
+use VersionContol\GitControlBundle\Entity\Issues\IssueInterface;
 
-class Issue extends BaseIssue
+class Issue implements IssueInterface
 {
     /**
      * @var string
@@ -68,10 +68,10 @@ class Issue extends BaseIssue
     private $project;
 
     /**
-     * @var \VersionContol\GitControlBundle\Entity\User\User
+     * @var \VersionControl\GithubIssueBundle\Entity\User
      *
      */
-    private $verUser;
+    private $user;
 
     /**
      * @var array
@@ -329,37 +329,37 @@ class Issue extends BaseIssue
     }
 
     /**
-     * Set verUser
+     * Set User
      *
-     * @param \VersionContol\GitControlBundle\Entity\User\User $verUser
+     * @param \VersionControl\GithubIssueBundle\Entity\User $user
      *
      * @return Issue
      */
-    public function setVerUser(\VersionContol\GitControlBundle\Entity\User\User $verUser = null)
+    public function setUser(\VersionControl\GithubIssueBundle\Entity\User $user = null)
     {
-        $this->verUser = $verUser;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get verUser
+     * Get User
      *
-     * @return \VersionContol\GitControlBundle\Entity\User\User
+     * @return \VersionControl\GithubIssueBundle\Entity\User
      */
-    public function getVerUser()
+    public function getUser()
     {
-        return $this->verUser;
+        return $this->user;
     }
 
     /**
      * Add issueLabel
      *
-     * @param \VersionContol\GitControlBundle\Entity\Issues\IssueLabel $issueLabel
+     * @param \VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel $issueLabel
      *
      * @return Issue
      */
-    public function addIssueLabel(\VersionContol\GitControlBundle\Entity\Issues\IssueLabel $issueLabel)
+    public function addIssueLabel(\VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel $issueLabel)
     {
         $this->issueLabel[] = $issueLabel;
 
@@ -369,9 +369,9 @@ class Issue extends BaseIssue
     /**
      * Remove issueLabel
      *
-     * @param \VersionContol\GitControlBundle\Entity\Issues\IssueLabel $issueLabel
+     * @param \VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel $issueLabel
      */
-    public function removeIssueLabel(\VersionContol\GitControlBundle\Entity\Issues\IssueLabel $issueLabel)
+    public function removeIssueLabel(\VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel $issueLabel)
     {
         $this->issueLabel->removeElement($issueLabel);
     }
@@ -384,6 +384,20 @@ class Issue extends BaseIssue
     public function getIssueLabel()
     {
         return $this->issueLabel;
+    }
+    
+    /**
+     * Add Issue Comment
+     *
+     * @param \VersionControl\GithubIssueBundle\Entity\Issues\IssueComment $issueComment
+     *
+     * @return Issue
+     */
+    public function addIssueComment(\VersionControl\GithubIssueBundle\Entity\Issues\IssueComment $issueComment)
+    {
+        $this->issueComments[] = $issueComment;
+
+        return $this;
     }
     
     /**

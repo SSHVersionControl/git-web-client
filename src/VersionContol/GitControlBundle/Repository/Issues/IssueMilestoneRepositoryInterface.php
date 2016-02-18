@@ -10,41 +10,63 @@ namespace VersionContol\GitControlBundle\Repository\Issues;
 interface IssueMilestoneRepositoryInterface{
     
     /**
-     * Finds issues for a state
-     * @param string $keyword
+     * Finds all milestones
+     * @param string $state open|closed
      * @return array of issues
      */
-    public function findLabel($keyword,$state="open");
+    public function listMilestones($state);
+    
+    /**
+     * Get number of milestones for a state
+     * @param string $state open|closed
+     */
+    public function countMilestones($state);
     
     
+     
+    /**
+     * Find milestone for Id
+     * @param integer $id
+     */
+    public function findMilestoneById($id);
+    
+    /**
+     * Gets a new Milestone entity
+     * 
+     * @return VersionContol\GitControlBundle\Entity\Milestones\MilestoneInterface
+     */
+    public function newMilestone();
+    
+    /**
+     * 
+     * @param type $issueMilestone
+     */
+    public function createMilestone($issueMilestone);
+
+    
+    /**
+     * 
+     * @param integer $issueMilestone
+     */
+    public function updateMilestone($issueMilestone);
     
     /**
      * 
      * @param integer $id
      */
-    public function findLabelById($id);
-    
-    /**
-     * Gets a new Label entity
-     * @param type $issue
-     * @return VersionContol\GitControlBundle\Entity\Labels\Label
-     */
-    public function newLabel();
+    public function deleteMilestone($id);
     
     /**
      * 
-     * @param type $issue
+     * @param integer $id
      */
-    public function createLabel($issue);
-
+    public function reOpenMilestone($id);
     
     /**
      * 
-     * @param integer $issue
+     * @param integer $id
      */
-    public function updateLabel($issue);
-    
-      
+    public function closeMilestone($id);
     
 }
 

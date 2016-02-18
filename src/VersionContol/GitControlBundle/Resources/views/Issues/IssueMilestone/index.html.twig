@@ -41,7 +41,7 @@
             <h3 class="box-title"><i class="fa fa-bug fa-fw"></i> Milestones: 
                 <span class="open">
                     <i class="fa fa-exclamation-circle fa-fw"></i>
-                    <a  href="{{ path('issuemilestones', {'project': project.id }) }}">{{openCount}} open</a>
+                    <a  href="{{ path('issuemilestones', {'id': project.id }) }}">{{openCount}} open</a>
                 </span>
                 <span class="closed">
                     <i class="fa fa-check fa-fw"></i>
@@ -50,7 +50,7 @@
             </h3>
 
             <div class="box-tools">
-                 <a href="{{ path('issuemilestone_new',{ 'project': project.id }) }}" class="btn btn-primary btn-sm">
+                 <a href="{{ path('issuemilestone_new',{ 'id': project.id }) }}" class="btn btn-primary btn-sm">
                      <i class="fa fa-plus"></i> New Milestone
                  </a>
             </div>
@@ -62,7 +62,7 @@
                         <div class="row">
                             <div class="col-md-9">
                                     <h3 class="no-margin">
-                                        <a href="{{ path('issuemilestone_show', { 'id': milestone.id, 'project': project.id }) }}" >{{ milestone.title }}</a>
+                                        <a href="{{ path('issuemilestone_show', { 'milestoneId': milestone.id, 'id': project.id }) }}" >{{ milestone.title }}</a>
                                     </h3>
                                     <div class="milestone-info">
                                             {% if(milestone.closed == false) %}
@@ -96,14 +96,14 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="pull-right">
-                                    <a href="{{ path('issuemilestone_edit', { 'id': milestone.id, 'project': project.id }) }}" class="btn btn-primary btn-flat">
+                                    <a href="{{ path('issuemilestone_edit', { 'milestoneId': milestone.id, 'id': project.id }) }}" class="btn btn-primary btn-flat">
                                         <i class="fa fa-edit"></i> Edit
                                     </a>
 
                                     {% if(milestone.closed)%}
-                                        <a href="{{ path('issuemilestone_open', { 'id': milestone.id}) }}" class="btn btn-danger btn-flat"><i class="fa fa-undo"></i>Re-Open Milestone</a>
+                                        <a href="{{ path('issuemilestone_open', { 'milestoneId': milestone.id, 'id': project.id}) }}" class="btn btn-danger btn-flat"><i class="fa fa-undo"></i>Re-Open Milestone</a>
                                     {% else %}
-                                        <a href="{{ path('issuemilestone_close', { 'id': milestone.id}) }}" class="btn btn-danger btn-flat"><i class="fa fa-times-circle"></i> Close Milestone</a>    
+                                        <a href="{{ path('issuemilestone_close', { 'milestoneId': milestone.id, 'id': project.id}) }}" class="btn btn-danger btn-flat"><i class="fa fa-times-circle"></i> Close Milestone</a>    
                                     {%endif%}
 
                                 </div>

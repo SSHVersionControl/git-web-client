@@ -17,9 +17,9 @@ class IssueLabelType extends AbstractType
         $builder
             ->add('title')
             ->add('hexColor')
-            ->add('project', 'hidden_entity',array(
-                    'class' => 'VersionContol\GitControlBundle\Entity\Project'
-                ))
+            //->add('project', 'hidden_entity',array(
+            //        'class' => 'VersionContol\GitControlBundle\Entity\Project'
+            //    ))
         ;
     }
     
@@ -29,7 +29,7 @@ class IssueLabelType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionContol\GitControlBundle\Entity\IssueLabel'
+            'data_class' => 'VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel'
         ));
     }
 

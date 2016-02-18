@@ -39,7 +39,7 @@
                 <div class="issue-state issue-state-{{ entity.status }}"> 
                     {{ entity.status|capitalize }} 
                 </div>
-                <strong>TODO ADD AUTHOR</strong> created this issue {{ entity.createdAt|time_ago_in_words }}
+                <strong>{{ entity.user.name }}</strong> created this issue {{ entity.createdAt|time_ago_in_words }}
 
             </h3>
             <div class="box-tools">
@@ -78,7 +78,7 @@
                         </div>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <p><small class="text-muted"><i class="fa fa-clock-o"></i> Created By {{comment.verUser.name}} {{ comment.createdAt|time_ago_in_words }}</small>
+                                <p><small class="text-muted"><i class="fa fa-clock-o"></i> Created By {{comment.user.name}} {{ comment.createdAt|time_ago_in_words }}</small>
                                 </p>
                             </div>
                             <div class="timeline-body">

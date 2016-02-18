@@ -60,7 +60,20 @@ interface IssueRepositoryInterface{
      */
     public function updateIssue($issue);
     
-      
+    /**
+     * Gets the number of Issues for a milestone by state
+     * @param integer $issueMilestoneId
+     * @param string $state open|closed|blank
+     */
+    public function countIssuesInMilestones($issueMilestoneId,$state);
+    
+    /**
+     * Find issues in milestone
+     * @param integer $issueMilestoneId
+     * @param string $state open|closed
+     * @param string $keyword Search string
+     */
+    public function findIssuesInMilestones($issueMilestoneId,$state,$keyword = false);
     
 }
 

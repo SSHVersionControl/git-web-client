@@ -3,7 +3,7 @@
 namespace VersionContol\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use VersionContol\GitControlBundle\Entity\Issues\Issue as IssueBase;
+use VersionContol\GitControlBundle\Entity\Issues\IssueInterface;
 /**
  * Issue
  *
@@ -11,7 +11,7 @@ use VersionContol\GitControlBundle\Entity\Issues\Issue as IssueBase;
  * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Issue extends IssueBase
+class Issue implements IssueInterface
 {
     /**
      * @var string
@@ -170,7 +170,6 @@ class Issue extends IssueBase
     public function setDescription($description)
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -374,6 +373,16 @@ class Issue extends IssueBase
         $this->verUser = $verUser;
 
         return $this;
+    }
+    
+    /**
+     * Get User
+     *
+     * @return \VersionContol\GitControlBundle\Entity\Issues\IssueUserInterface
+     */
+    public function getUser()
+    {
+        return $this->verUser;
     }
 
     /**

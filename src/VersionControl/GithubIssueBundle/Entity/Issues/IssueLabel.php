@@ -2,12 +2,12 @@
 
 namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueLabel as BaseIssueLabel;
+use VersionContol\GitControlBundle\Entity\Issues\IssueLabelInterface;
 /**
  * IssueLabel
  *
  */
-class IssueLabel extends BaseIssueLabel
+class IssueLabel implements IssueLabelInterface
 {
     /**
      * @var string
@@ -31,7 +31,7 @@ class IssueLabel extends BaseIssueLabel
      * @var array
      *
      */
-    private $issue;
+    private $issues;
     
 
     /**
@@ -39,12 +39,22 @@ class IssueLabel extends BaseIssueLabel
      */
     public function __construct()
     {
-        $this->issue = [];
+        $this->issues = [];
     }
     
      public function setId($id) {
         $this->id = $id;
         return $this;
+    }
+    
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
 
@@ -96,48 +106,17 @@ class IssueLabel extends BaseIssueLabel
         return $this->hexColor;
     }
 
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+    
 
-    /**
-     * Add issue
-     *
-     * @param \VersionContol\GitControlBundle\Entity\Issue $issue
-     *
-     * @return IssueLabel
-     */
-    public function addIssue(\VersionContol\GitControlBundle\Entity\Issues\Issues $issue)
-    {
-        $this->issue[] = $issue;
-
-        return $this;
-    }
-
-    /**
-     * Remove issue
-     *
-     * @param \VersionContol\GitControlBundle\Entity\Issue $issue
-     */
-    public function removeIssue(\VersionContol\GitControlBundle\Entity\Issues\Issues $issue)
-    {
-        $this->issue->removeElement($issue);
-    }
 
     /**
      * Get issue
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
-    public function getIssue()
+    public function getIssues()
     {
-        return $this->issue;
+        return $this->issues;
     }
 
     

@@ -60,10 +60,10 @@
                 <a href="{{ path('issues', { 'id': project.id }) }}"><i class="fa fa-circle-o text-green"></i><span>Issues</span></a>
             </li>
             <li {% if app.request.attributes.get('_route') == 'issuemilestones' %}class="active"{% endif %}>
-                <a href="{{ path('issuemilestones', { 'project': project.id  }) }}"><i class="fa fa-circle-o text-aqua"></i><span>Milestones</span></a>
+                <a href="{{ path('issuemilestones', { 'id': project.id  }) }}"><i class="fa fa-circle-o text-aqua"></i><span>Milestones</span></a>
             </li>
             <li {% if app.request.attributes.get('_route') == 'issuelabels' %}class="active"{% endif %}>
-                <a href="{{ path('issuelabels', { 'project': project.id }) }}"><i class="fa fa-circle-o text-red"></i><span>Labels</span></a>
+                <a href="{{ path('issuelabels', { 'id': project.id }) }}"><i class="fa fa-circle-o text-red"></i><span>Labels</span></a>
             </li>
         </ul>
     </li>

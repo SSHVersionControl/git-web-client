@@ -6,6 +6,9 @@ use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
 
 use VersionContol\GitControlBundle\Form\IssueType;
 use VersionContol\GitControlBundle\Form\IssueEditType;
+use VersionContol\GitControlBundle\Form\IssueCommentType;
+use VersionContol\GitControlBundle\Form\IssueLabelType;
+use VersionContol\GitControlBundle\Form\IssueMilestoneType;
 
 /**
  * Description of IssueRepositoryManager
@@ -34,8 +37,6 @@ class IssueRepositoryManager {
         $this->securityToken= $securityToken;
         $this->em = $em;
         $this->serviceContainer= $serviceContainer;
-        //print_r($this->project->getId());
-        //$this->issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($project);
         
     }
             
@@ -57,19 +58,39 @@ class IssueRepositoryManager {
         return $issueRepository;
     }
     
-     public function getIssueLabelRepository(){
+    public function getIssueLabelRepository(){
         if($this->issueIntegrator){ 
             $repoType = $this->issueIntegrator->getRepoType();
             $issueLabelRepository = $this->serviceContainer->get('version_control.issue_label_repository.'.strtolower($repoType));
             $issueLabelRepository->setIssueIntegrator($this->issueIntegrator);
         }else{
             //Default ORM repository
-            $issueLabelRepository = $this->em->getRepository('VersionContolGitControlBundle:Issue');
+            $issueLabelRepository = $this->em->getRepository('VersionContolGitControlBundle:IssueLabel');
             $issueLabelRepository->setProject($this->project);
+            //Set User
+            $user = $this->securityToken->getToken()->getUser();
+            $issueLabelRepository->setCurrentUser($user);
 
         }
         
         return $issueLabelRepository;
+    }
+    
+    public function getIssueMilestoneRepository(){
+        if($this->issueIntegrator){ 
+            $repoType = $this->issueIntegrator->getRepoType();
+            $issueMilestoneRepository = $this->serviceContainer->get('version_control.issue_milestone_repository.'.strtolower($repoType));
+            $issueMilestoneRepository->setIssueIntegrator($this->issueIntegrator);
+        }else{
+            //Default ORM repository
+            $issueMilestoneRepository = $this->em->getRepository('VersionContolGitControlBundle:IssueMilestone');
+            $issueMilestoneRepository->setProject($this->project);
+            //Set User
+            $user = $this->securityToken->getToken()->getUser();
+            $issueMilestoneRepository->setCurrentUser($user);
+        }
+        
+        return $issueMilestoneRepository;
     }
     
     public function getIssueIntegrator() {
@@ -112,6 +133,36 @@ class IssueRepositoryManager {
         }
         
         return $issueEditFormType;
+    }
+    
+    public function getIssueCommentFormType(){
+        if($this->issueIntegrator){ 
+            $repoType = $this->issueIntegrator->getRepoType();
+            $issueFormType = $this->serviceContainer->get('version_control.issue_comment_form_type.'.strtolower($repoType));
+        }else{
+            $issueFormType = new IssueCommentType($this);
+        }
+        return $issueFormType;
+    }
+    
+    public function getIssueLabelFormType(){
+        if($this->issueIntegrator){ 
+            $repoType = $this->issueIntegrator->getRepoType();
+            $issueFormType = $this->serviceContainer->get('version_control.issue_label_form_type.'.strtolower($repoType));
+        }else{
+            $issueFormType = new IssueLabelType($this);
+        }
+        return $issueFormType;
+    }
+    
+    public function getIssueMilestoneFormType(){
+        if($this->issueIntegrator){ 
+            $repoType = $this->issueIntegrator->getRepoType();
+            $issueFormType = $this->serviceContainer->get('version_control.issue_milestone_form_type.'.strtolower($repoType));
+        }else{
+            $issueFormType = new IssueMilestoneType($this);
+        }
+        return $issueFormType;
     }
 
 

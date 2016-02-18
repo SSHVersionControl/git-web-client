@@ -61,12 +61,6 @@ abstract class Issue
     private $project;
 
     /**
-     * @var \VersionContol\GitControlBundle\Entity\User\User
-     *
-     */
-    private $verUser;
-
-    /**
      * @var array
      *
      */
@@ -321,28 +315,15 @@ abstract class Issue
         return $this->project;
     }
 
-    /**
-     * Set verUser
-     *
-     * @param \VersionContol\GitControlBundle\Entity\User\User $verUser
-     *
-     * @return Issue
-     */
-    public function setVerUser(\VersionContol\GitControlBundle\Entity\User\User $verUser = null)
-    {
-        $this->verUser = $verUser;
-
-        return $this;
-    }
 
     /**
-     * Get verUser
+     * Get User
      *
-     * @return \VersionContol\GitControlBundle\Entity\User\User
+     * @return \VersionContol\GitControlBundle\Entity\Issues\IssueUserInterface
      */
-    public function getVerUser()
+    public function getUser()
     {
-        return $this->verUser;
+        return $this->user;
     }
 
     /**
@@ -381,7 +362,7 @@ abstract class Issue
     
     /**
      * Get Issue Comments
-     * @return array of \VersionContol\GitControlBundle\Entity\Issue\IssueComment
+     * @return array of \VersionContol\GitControlBundle\Entity\Issue\IssueCommentInteface
      */
     public function getIssueComments() {
         return $this->issueComments;

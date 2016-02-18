@@ -50,7 +50,7 @@ class IssueNumberLinkExtension extends \Twig_Extension {
     public function issueNumberLink($text, $projectId) {
        
         $matches = array();
-        if (preg_match('/(\b#)(\d+)/i', $text, $matches)) {
+        if (preg_match('/\s(#)(\d+)/i', $text, $matches)) {
             foreach($matches as $issueId){
                 if(is_numeric($issueId)){
                     $issueUrl = $this->generateIssueUrl($issueId,$projectId);

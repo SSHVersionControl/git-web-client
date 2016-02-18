@@ -9,7 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionContol\GitControlBundle\Entity\Issues\Issue;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueComment;
+use VersionContol\GitControlBundle\Entity\Issues\IssueCommentInteface;
 use VersionContol\GitControlBundle\Form\IssueCommentType;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -205,7 +205,7 @@ class IssueController extends BaseProjectController
         //$issueComment = new IssueComment();
         $issueComment = $this->issueRepository->newIssueComment();
         $issueComment->setIssue($issueEntity);
-        $commentForm = $this->createCommentForm($issueComment);
+        $commentForm = $this->createCommentForm($issueComment,$issueId);
 
         return array(
             'entity'      => $issueEntity,
@@ -408,30 +408,24 @@ class IssueController extends BaseProjectController
     /**
      * Creates a new Issue comment entity.
      *
-     * @Route("/{id}/comment/", name="issuecomment_create")
+     * @Route("/{id}/comment/{issueId}", name="issuecomment_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:Issues/Issue:show.html.twig")
      */
-    public function createCommentAction(Request $request, $id)
+    public function createCommentAction(Request $request,$id, $issueId)
     {
-        $this->initAction($id);
+        $this->initAction($id,'EDIT');
         
         $issueComment = $this->issueRepository->newIssueComment();
+        $issueEntity = $this->issueRepository->findIssueById($issueId);
 
-        $commentForm = $this->createCommentForm($issueComment);
+        $commentForm = $this->createCommentForm($issueComment,$issueId);
         $commentForm->handleRequest($request);
 
         if ($commentForm->isValid()) {
-            //$em = $this->getDoctrine()->getManager();
-            
-            //$project = $entity->getIssue()->getProject();
-            //$this->checkProjectAuthorization($project,'EDIT');
-            
-            //Set User
-            //$user = $this->get('security.token_storage')->getToken()->getUser();
-            //$entity->setVerUser($user);
+            $issueComment->setIssue($issueEntity);
             $issueComment = $this->issueRepository->createIssueComment($issueComment);
-            $issueId = $issueComment->getIssue()->getId();
+            //$issueId = $issueComment->getIssue()->getId();
             
             if($commentForm->get('createClose')->isClicked()){
                 $this->issueRepository->closeIssue($issueId);
@@ -443,12 +437,12 @@ class IssueController extends BaseProjectController
             return $this->redirect($this->generateUrl('issue_show', array('id'=>$this->project->getId(),'issueId' => $issueId)));
         }
         
-        $deleteForm = $this->createDeleteForm($entity->getIssue()->getId());
+        $deleteForm = $this->createDeleteForm($issueId);
 
         return array(
-            'entity'      => $entity->getIssue(),
+            'entity'      => $issueEntity,
             'delete_form' => $deleteForm->createView(),
-            'project' => $entity->getIssue()->getProject(),
+            'project' => $this->project,
             'comment_form' => $commentForm->createView(),
 
         );
@@ -461,10 +455,11 @@ class IssueController extends BaseProjectController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCommentForm(IssueComment $entity)
+    private function createCommentForm(IssueCommentInteface $entity, $issueId)
     {
-        $form = $this->createForm(new IssueCommentType(), $entity, array(
-            'action' => $this->generateUrl('issuecomment_create',array('id'=>$this->project->getId())),
+        $issueCommentType = $this->issueManager->getIssueCommentFormType();
+        $form = $this->createForm($issueCommentType, $entity, array(
+            'action' => $this->generateUrl('issuecomment_create',array('id'=>$this->project->getId(),'issueId' => $issueId)),
             'method' => 'POST',
             'data_class' => get_class($entity),
         ));
