@@ -71,7 +71,7 @@ class IssueMilestoneController extends BaseProjectController
      *
      * @Route("/{id}", name="issuemilestone_create")
      * @Method("POST")
-     * @Template("VersionContolGitControlBundle:IssueMilestone:new.html.twig")
+     * @Template("VersionContolGitControlBundle:Issues/IssueMilestone:new.html.twig")
      */
     public function createAction(Request $request,$id)
     {
@@ -222,7 +222,7 @@ class IssueMilestoneController extends BaseProjectController
      *
      * @Route("/{id}/{milestoneId}", name="issuemilestone_update")
      * @Method("PUT")
-     * @Template("VersionContolGitControlBundle:IssueMilestone:edit.html.twig")
+     * @Template("VersionContolGitControlBundle:Issues/IssueMilestone:edit.html.twig")
      */
     public function updateAction(Request $request, $id, $milestoneId)
     {

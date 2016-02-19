@@ -241,10 +241,15 @@ class ProjectIssueIntegratorController extends BaseProjectController{
         $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
 
         if($issueIntegrator){ 
-           $client = new \Github\Client();
-           $issues = $client->api('issue')->all($issueIntegrator->getOwnerName(), $issueIntegrator->getRepoName(), array('state' => 'open'));
+           //$client = new \Github\Client();
+           //$issues = $client->api('issue')->all($issueIntegrator->getOwnerName(), $issueIntegrator->getRepoName(), array('state' => 'open'));
+           //$client = new \Github\Client();
+            //$this->client = new \Gitlab\Client('http://git.fluid-rock.com/api/v3/'); // change here
+            //print_r($issueIntegrator->getApiToken());
+            //$this->client->authenticate($issueIntegrator->getApiToken(), \Gitlab\Client::AUTH_URL_TOKEN);
+            
+            //print_r($this->client->api('projects')->all(1,50));
         }
-        
         
         
         return array_merge($this->viewVariables, array(

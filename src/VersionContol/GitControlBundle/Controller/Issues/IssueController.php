@@ -146,7 +146,7 @@ class IssueController extends BaseProjectController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Issue $entity)
+    private function createCreateForm(IssueInterface $entity)
     {
         $issueFormType = $this->issueManager->getIssueFormType();
         $form = $this->createForm($issueFormType, $entity, array(

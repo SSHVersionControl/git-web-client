@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
             //new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new VersionControl\GithubIssueBundle\VersionControlGithubIssueBundle(),
+            new VersionControl\GitlabIssueBundle\VersionControlGitlabIssueBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

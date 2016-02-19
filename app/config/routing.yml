@@ -1,7 +1,3 @@
-version_control_github_issue:
-    resource: "@VersionControlGithubIssueBundle/Resources/config/routing.yml"
-    prefix:   /
-
 version_contol_git_control:
     resource: "@VersionContolGitControlBundle/Controller/"
     type:     annotation

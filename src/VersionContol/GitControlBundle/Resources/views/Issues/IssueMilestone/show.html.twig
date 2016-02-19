@@ -42,7 +42,7 @@
                 <div class="issue-state issue-state-{{ entity.state }}"> 
                     {{ entity.state|capitalize }} 
                 </div>
-                <strong>{{entity.user.name}}</strong> created this Milestone {{ entity.createdAt|time_ago_in_words }}
+                    <strong>{% if(entity.user is null)%}{%else%}{{entity.user.name}}{%endif%}</strong> created this Milestone {{ entity.createdAt|time_ago_in_words }}
 
             </h3>
 

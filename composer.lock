@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8f4e76b3f2d6ba34af39a5eeabfc98e1",
-    "content-hash": "daa2a73e797690e468059f0273dd06ae",
+    "hash": "5af11112015e5fc83534a9833c410bb8",
+    "content-hash": "e75cd4a80d62c8db47b063ac8055a787",
     "packages": [
         {
             "name": "craue/twigextensions-bundle",
@@ -838,7 +838,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/e39b040e272c72f0a090c67d802e1d3b2d0b0313",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/e770bfa2fd0fc665f55cd7cfeb34bddeffb892f4",
                 "reference": "e39b040e272c72f0a090c67d802e1d3b2d0b0313",
                 "shasum": ""
             },
@@ -1673,6 +1673,61 @@
                 "form"
             ],
             "time": "2015-06-19 08:08:48"
+        },
+        {
+            "name": "m4tthumphrey/php-gitlab-api",
+            "version": "7.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/m4tthumphrey/php-gitlab-api.git",
+                "reference": "65dc67929188f26e2059e99deb56e9c5608232b5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/m4tthumphrey/php-gitlab-api/zipball/65dc67929188f26e2059e99deb56e9c5608232b5",
+                "reference": "65dc67929188f26e2059e99deb56e9c5608232b5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "kriswallsmith/buzz": ">=0.7",
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Gitlab\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thibault Duplessis",
+                    "email": "thibault.duplessis@gmail.com",
+                    "homepage": "http://ornicar.github.com"
+                },
+                {
+                    "name": "KnpLabs Team",
+                    "homepage": "http://knplabs.com"
+                },
+                {
+                    "name": "Matt Humphrey",
+                    "homepage": "http://m4tt.io"
+                }
+            ],
+            "description": "GitLab API client",
+            "homepage": "https://github.com/m4tthumphrey/php-gitlab-api",
+            "keywords": [
+                "api",
+                "gitlab"
+            ],
+            "time": "2015-07-28 11:27:19"
         },
         {
             "name": "michelf/php-markdown",
