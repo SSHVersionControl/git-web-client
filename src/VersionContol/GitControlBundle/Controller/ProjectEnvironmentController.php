@@ -58,17 +58,17 @@ class ProjectEnvironmentController extends BaseProjectController
     /**
      * Creates a new Project entity.
      *
-     * @Route("/{project}", name="projectenvironment_create")
+     * @Route("/{project}/{gitAction}", name="projectenvironment_create")
      * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
      */
-    public function createAction($project, Request $request)
+    public function createAction(Request $request,$project,$gitAction = '')
     {
         $this->checkProjectAuthorization($project);
          
         $projectEnvironment = new ProjectEnvironment();
-        $form = $this->createCreateForm($projectEnvironment,$project);
+        $form = $this->createCreateForm($projectEnvironment,$project,$gitAction);
         //$form   = $this->createCreateForm($projectEnvironment,$project,'clone');
         $form->handleRequest($request);
 
@@ -119,7 +119,7 @@ class ProjectEnvironmentController extends BaseProjectController
             $projectEnvironmentType = new ProjectEnvironmentType(false);
         }
         $form = $this->createForm($projectEnvironmentType, $entity, array(
-            'action' => $this->generateUrl('projectenvironment_create',array('project' => $project->getId())),
+            'action' => $this->generateUrl('projectenvironment_create',array('project' => $project->getId(),'gitAction'=>$gitaction)),
             'method' => 'POST',
         ));
         
