@@ -23,7 +23,7 @@ class IssueEditType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description')
+            ->add('description','textarea')
             ->add('status','choice',array('label' => 'State'
                     ,'choices'  => array('open' => 'Open', 'closed' => 'Close')
                     ,'required' => false

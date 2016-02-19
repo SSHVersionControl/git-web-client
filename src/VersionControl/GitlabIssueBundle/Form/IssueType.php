@@ -23,7 +23,7 @@ class IssueType extends AbstractType
         //$project = $builder->getData()->getProject();
         $builder
             ->add('title')
-            ->add('description')
+            ->add('description', 'textarea')
             ->add('issueMilestone','choice',array(
                     'choices' => $this->getIssueMilestoneChoices(),
                     'multiple' => false,   // Multiple selection allowed
