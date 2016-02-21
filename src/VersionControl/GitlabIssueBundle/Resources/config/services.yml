@@ -27,3 +27,10 @@ services:
         
     version_control.issue_milestone_form_type.gitlab:
         class:  VersionControl\GitlabIssueBundle\Form\IssueMilestoneType
+        
+   
+    version_control.form.field.gitlab_project_choice:
+        class: VersionControl\GitlabIssueBundle\Form\Field\GitlabProjectType
+        #arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+        - { name: form.type, alias: gitlab_project_choice }

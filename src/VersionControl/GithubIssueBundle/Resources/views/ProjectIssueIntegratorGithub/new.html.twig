@@ -1,0 +1,42 @@
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+ 
+{% endblock %}
+            
+{% block header %}
+     
+    <h1 class="page-header">
+           New Github Issue Integrator
+          <small></small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-edit"></i> Edit
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Partials/modifiySideMenu.html.twig'  %}
+{% endblock %} 
+
+
+{% block content -%}
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-bug fa-fw"></i> New Issue Integrator
+            </h3>
+        </div>
+        <div class="box-body">
+  
+                {{ form(form) }}
+                
+        </div>
+    </div>
+{% endblock %}

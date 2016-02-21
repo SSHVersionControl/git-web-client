@@ -14,6 +14,8 @@ use Symfony\Component\DependencyInjection\Loader;
  */
 class VersionContolGitControlExtension extends Extension
 {
+   
+    
     /**
      * {@inheritDoc}
      */
@@ -21,8 +23,16 @@ class VersionContolGitControlExtension extends Extension
     {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
-
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        if(isset($config['mapping'])){
+            $container->setParameter('version_control_dynamic_discriminator_map.mapping', $config['mapping']);
+        }else{
+            $container->setParameter('version_control_dynamic_discriminator_map.mapping', array());
+        }
+        
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.yml');
+        
+        //$loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        //$loader->load('services.xml');
     }
 }

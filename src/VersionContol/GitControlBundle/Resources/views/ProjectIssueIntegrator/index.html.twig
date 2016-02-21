@@ -39,17 +39,21 @@
             If you are using a 3rd party issue tracker like github you can integrate it here.</p>
             {% if( issueIntegrator is null) %}
                 <div class="callout callout-info">
-                    <h4>Create New Issue Tracker</h4>
-                    <a href="{{ path('project_issue_integrator_new',{'id':project.id})}}" title="Create Connection">Click here to connect to an external issue tracker.</a>
+                    <h4>Add Issue Tracker</h4>
+                    <a href="{{ path('project_issue_integrator_github_new',{'id':project.id})}}" title="Create Connection" class="btn btn-success btn-link ">
+                        <i class="fa fa-github"></i> Github
+                    </a>
+                    <a href="{{ path('project_issue_integrator_gitlab_new',{'id':project.id})}}" title="Create Connection" class="btn btn-success btn-link ">
+                        <i class="fa fa-git-square"></i> GitLab
+                    </a>
                 </div>
             {% else %}
                 <div class="callout callout-success">
                     <h4>Connected to {{issueIntegrator.repoType|title}}</h4>
-                    <p><strong>Respository Name:</strong> {{issueIntegrator.repoName}}</p>
-                    <p><strong>Owner Name:</strong> {{issueIntegrator.ownerName}}</p>
+                    
                     <p><strong>Authenticated:</strong> {%if(issueIntegrator.apiToken)%}YES{%else%}NO{%endif%}</p>
                     <div class="text-right">
-                        <a href="{{path('project_issue_integrator_edit', {'id':project.id,'integratorId':issueIntegrator.id })}}" class="btn-sm btn btn-info text-right">Edit</a>
+                        <a href="{{path('project_issue_integrator_'~issueIntegrator.repoType|lower~'_edit', {'id':project.id,'integratorId':issueIntegrator.id })}}" class="btn-sm btn btn-info text-right">Edit</a>
                     </div>
                 </div>
                 {% for issue in issues %}

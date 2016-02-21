@@ -141,3 +141,12 @@ services:
         arguments: 
             - @version_control.ssh_process
             
+
+    version_control.listener.doctrine_event_listener:
+        class: VersionContol\GitControlBundle\EventListener\DoctrineEventListener
+        arguments: [%version_control_dynamic_discriminator_map.mapping%]
+        tags:
+            - { name: doctrine.event_listener, event: loadClassMetadata }
+     
+    fos_user.doctrine_registry:
+        alias: doctrine
