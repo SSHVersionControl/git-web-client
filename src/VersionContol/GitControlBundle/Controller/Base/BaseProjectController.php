@@ -12,6 +12,7 @@ use VersionContol\GitControlBundle\Form\ProjectType;
 use VersionContol\GitControlBundle\Utility\GitCommands;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use VersionContol\GitControlBundle\Entity\UserProjects;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -51,6 +52,22 @@ abstract class BaseProjectController extends Controller{
         if (false === $authorizationChecker->isGranted($grantType, $project)) {
             throw new AccessDeniedException();
         }
+    }
+    
+    /**
+     * Generates a URL from the given parameters adding project id.
+     *
+     * @param string $route         The name of the route
+     * @param mixed  $parameters    An array of parameters
+     * @param int    $referenceType The type of reference (one of the constants in UrlGeneratorInterface)
+     *
+     * @return string The generated URL
+     *
+     * @see UrlGeneratorInterface
+     */
+    public function generateUrl($route, $parameters = array(),$referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
+        $mergedParameters = array_merge(array('id'=>$this->project->getId()),$parameters);
+        parent::generateUrl($route, $mergedParameters,$referenceType);
     }
     
 }

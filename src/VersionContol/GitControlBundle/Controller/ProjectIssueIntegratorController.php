@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Project controller.
  *
- * @Route("/project/issue-integrator")
+ * @Route("/project/{id}/issue-integrator")
  */
 class ProjectIssueIntegratorController extends BaseProjectController{
     //put your code here
@@ -26,7 +26,7 @@ class ProjectIssueIntegratorController extends BaseProjectController{
     /**
      * Deletes a ProjectIssueIntegrator entity.
      *
-     * @Route("/{id}/delete/{integratorId}", name="project_issue_integrator_delete")
+     * @Route("/delete/{integratorId}", name="project_issue_integrator_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id, $integratorId)
@@ -50,7 +50,7 @@ class ProjectIssueIntegratorController extends BaseProjectController{
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('project_issue_integrator',array('id' => $id)));
+        return $this->redirect($this->generateUrl('project_issue_integrator'));
     }
     
     /**
@@ -63,7 +63,7 @@ class ProjectIssueIntegratorController extends BaseProjectController{
     private function createDeleteForm($integratorId)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('project_issue_integrator_delete', array('id' => $this->project->getId(), 'integratorId' => $integratorId)))
+            ->setAction($this->generateUrl('project_issue_integrator_delete', array('integratorId' => $integratorId)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
@@ -72,7 +72,7 @@ class ProjectIssueIntegratorController extends BaseProjectController{
 
     
     /**
-     * @Route("/{id}", name="project_issue_integrator")
+     * @Route("/", name="project_issue_integrator")
      * @Template()
      */
     public function indexAction($id){

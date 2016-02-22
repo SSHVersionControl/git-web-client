@@ -22,7 +22,7 @@ use VersionContol\GitControlBundle\Entity\Commit;
 /**
  * Project Commit controller.
  *
- * @Route("/project/commit")
+ * @Route("/project/{id}/commit")
  */
 class ProjectCommitController extends BaseProjectController
 {
@@ -60,7 +60,7 @@ class ProjectCommitController extends BaseProjectController
     /**
      * List files to be commited.
      *
-     * @Route("/{id}", name="project_commitlist")
+     * @Route("/", name="project_commitlist")
      * @Method("GET")
      * @Template()
      */
@@ -92,7 +92,7 @@ class ProjectCommitController extends BaseProjectController
     /**
      * Handles the commit form
      *
-     * @Route("/{id}", name="project_commit")
+     * @Route("/", name="project_commit")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectCommit:list.html.twig")
      */
@@ -225,7 +225,7 @@ class ProjectCommitController extends BaseProjectController
     /**
      * Aborts a merge action. Should only be called after a merge.
      *
-     * @Route("/about-merge/{id}", name="project_commit_abortmerge")
+     * @Route("/about-merge/", name="project_commit_abortmerge")
      * @Method("GET")
      */
     public function abortMergeAction($id){
@@ -285,7 +285,7 @@ class ProjectCommitController extends BaseProjectController
     /**
      * Show Git commit diff
      *
-     * @Route("/filediff/{id}/{difffile}", name="project_filediff")
+     * @Route("/filediff/{difffile}", name="project_filediff")
      * @Method("GET")
      * @Template()
      */

@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Project controller.
  *
- * @Route("/branch")
+ * @Route("/project/{id}/branch")
  */
 class ProjectBranchController extends BaseProjectController
 {
@@ -47,7 +47,7 @@ class ProjectBranchController extends BaseProjectController
     /**
      * List Branches. Not sure how to list remote and local branches.
      *
-     * @Route("es/{id}/{newBranchName}", name="project_branches")
+     * @Route("es/{newBranchName}", name="project_branches")
      * @Method("GET")
      * @Template()
      */
@@ -75,7 +75,7 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/create/{id}", name="project_branch")
+     * @Route("/create/", name="project_branch")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectBranch:branches.html.twig")
      */
@@ -113,7 +113,7 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/checkoutbranch/{id}/{branchName}", name="project_checkoutbranch" , requirements={"branchName"=".+"})
+     * @Route("/checkoutbranch/{branchName}", name="project_checkoutbranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
      */
@@ -131,7 +131,7 @@ class ProjectBranchController extends BaseProjectController
     /**
      * List Branches. Not sure how to list remote and local branches.
      *
-     * @Route("/remotes/{id}", name="project_branch_remotes")
+     * @Route("/remotes", name="project_branch_remotes")
      * @Method("GET")
      * @Template()
      */
@@ -165,7 +165,7 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/checkout-remote/{id}", name="project_branch_remote_checkout")
+     * @Route("/checkout-remote", name="project_branch_remote_checkout")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectBranch:remoteBranches.html.twig")
      */
@@ -217,7 +217,7 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/fetchall/{id}/", name="project_branch_fetchall")
+     * @Route("/fetchall/", name="project_branch_fetchall")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectBranch:remoteBranches.html.twig")
      */
@@ -236,7 +236,7 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/deletebranch/{id}/{branchName}", name="project_deletebranch" , requirements={"branchName"=".+"})
+     * @Route("/deletebranch/{branchName}", name="project_deletebranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
      */
@@ -291,7 +291,7 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/mergebranch/{id}/{branchName}", name="project_mergebranch" , requirements={"branchName"=".+"})
+     * @Route("/mergebranch/{branchName}", name="project_mergebranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
      */
@@ -303,7 +303,7 @@ class ProjectBranchController extends BaseProjectController
             
         $this->get('session')->getFlashBag()->add('notice', $response);
             
-        return $this->redirect($this->generateUrl('project_branches', array('id' => $id)));
+        return $this->redirect($this->generateUrl('project_branches'));
 
     }
     
