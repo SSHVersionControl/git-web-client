@@ -6,7 +6,6 @@ use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use VersionContol\GitControlBundle\Entity\Project;
 use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
 
 
@@ -47,7 +46,7 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
             
             $this->get('session')->getFlashBag()->add('notice', 'Issue Integrator Record has been created');
 
-            return $this->redirect($this->generateUrl('project_issue_integrator', array('id' => $this->project->getId())));
+            return $this->redirect($this->generateUrl('project_issue_integrator_gitlab_edit', array('id' => $this->project->getId(), 'integratorId'=> $issueIntegrator->getId())));
         }
 
         return array_merge($this->viewVariables, array(

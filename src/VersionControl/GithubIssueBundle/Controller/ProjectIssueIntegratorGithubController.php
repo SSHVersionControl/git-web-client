@@ -66,7 +66,7 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
     private function createCreateForm(ProjectIssueIntegrator $issueIntegrator)
     {
         $form = $this->createForm(new ProjectIssueIntegratorGithubType(), $issueIntegrator, array(
-            'action' => $this->generateUrl('project_issue_integrator_create', array('id' => $this->project->getId())),
+            'action' => $this->generateUrl('project_issue_integrator_github_create', array('id' => $this->project->getId())),
             'method' => 'POST',
         ));
 
