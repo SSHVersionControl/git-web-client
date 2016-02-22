@@ -15,16 +15,16 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      * @return array of issues
      */
     public function findIssues($keyword = "",$state="open"){
-        //$project = new \Gitlab\Model\Project($this->issueIntegrator->getRepoName(), $this->client);
+        //$project = new \Gitlab\Model\Project($this->issueIntegrator->getProjectName(), $this->client);
         $this->authenticate();
-        $issues = $this->client->api('issues')->all($this->issueIntegrator->getRepoName(), 1, 20,array('state' => $state));
+        $issues = $this->client->api('issues')->all($this->issueIntegrator->getProjectName(), 1, 20,array('state' => $state));
         
         return $this->mapIssues($issues);
     }
     
     public function countFindIssues($keyword,$state="open"){
         $this->authenticate();
-        $issues = $this->client->api('issues')->all($this->issueIntegrator->getRepoName(), 1, 20, array('state' => $state));
+        $issues = $this->client->api('issues')->all($this->issueIntegrator->getProjectName(), 1, 20, array('state' => $state));
 
         return count($issues);
     }
@@ -35,8 +35,8 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      */
     public function findIssueById($id){
         $this->authenticate();
-        $issue = $this->client->api('issues')->show($this->issueIntegrator->getRepoName(),$id);
-        $issueComments = $this->client->api('issues')->showComments( $this->issueIntegrator->getRepoName(), $id);
+        $issue = $this->client->api('issues')->show($this->issueIntegrator->getProjectName(),$id);
+        $issueComments = $this->client->api('issues')->showComments( $this->issueIntegrator->getProjectName(), $id);
         return $this->mapIssueToEntity($issue,$issueComments);
     }
     
@@ -57,7 +57,7 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
     public function createIssue($issueEntity){
         $this->authenticate();
 
-        $issue = $this->client->api('issues')->create($this->issueIntegrator->getRepoName(), $this->mapEntityToIssue($issueEntity));
+        $issue = $this->client->api('issues')->create($this->issueIntegrator->getProjectName(), $this->mapEntityToIssue($issueEntity));
         return $this->mapIssueToEntity($issue);
     }
     
@@ -67,7 +67,7 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      */
     public function reOpenIssue($id){
         $this->authenticate();
-        $this->client->api('issues')->update($this->issueIntegrator->getRepoName(),$id,array('state' => 'open'));
+        $this->client->api('issues')->update($this->issueIntegrator->getProjectName(),$id,array('state' => 'open'));
     }
     
     /**
@@ -76,7 +76,7 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      */
     public function closeIssue($id){
         $this->authenticate();
-        $this->client->api('issues')->update( $this->issueIntegrator->getRepoName(),$id,array('state' => 'closed'));
+        $this->client->api('issues')->update( $this->issueIntegrator->getProjectName(),$id,array('state' => 'closed'));
 
     }
     
@@ -86,12 +86,12 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      */
     public function updateIssue($issueEntity){
         $this->authenticate();
-        $this->client->api('issues')->update( $this->issueIntegrator->getRepoName(), $issueEntity->getId(), $this->mapEntityToIssue($issueEntity));
+        $this->client->api('issues')->update( $this->issueIntegrator->getProjectName(), $issueEntity->getId(), $this->mapEntityToIssue($issueEntity));
     }
     
     public function addlabel($issueEntity,$labelEntity){
         $this->authenticate();
-        $labels = $this->client->api('issues')->labels()->add( $this->issueIntegrator->getRepoName(), $issueEntity->getId(), $labelEntity->getTitle());
+        $labels = $this->client->api('issues')->labels()->add( $this->issueIntegrator->getProjectName(), $issueEntity->getId(), $labelEntity->getTitle());
     }
     
     
@@ -104,7 +104,7 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
         $openCount = 0;
         $closedCount = 0;
         $this->authenticate();
-        $issues = $this->client->api('milestones')->issues( $this->issueIntegrator->getRepoName(),$issueMilestoneId);
+        $issues = $this->client->api('milestones')->issues( $this->issueIntegrator->getProjectName(),$issueMilestoneId);
         foreach($issues as $issue){
             if($issue['state'] === 'opened'){
                 $openCount++;
@@ -131,7 +131,7 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      */
     public function findIssuesInMilestones($issueMilestoneId,$state,$keyword = false){
         $this->authenticate();
-        $issues = $this->filterIssuesByState($this->client->api('milestones')->issues( $this->issueIntegrator->getRepoName(),$issueMilestoneId),$state);
+        $issues = $this->filterIssuesByState($this->client->api('milestones')->issues( $this->issueIntegrator->getProjectName(),$issueMilestoneId),$state);
          
         return $this->mapIssues($issues);
     }
@@ -205,7 +205,7 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
     public function createIssueComment(\VersionControl\GitlabIssueBundle\Entity\Issues\IssueComment $issueCommentEntity){
         $this->authenticate();
         $issueId = $issueCommentEntity->getIssue()->getId();
-        $comment = $this->client->api('issues')->addComment( $this->issueIntegrator->getRepoName(), $issueId, $issueCommentEntity->getComment());
+        $comment = $this->client->api('issues')->addComment( $this->issueIntegrator->getProjectName(), $issueId, $issueCommentEntity->getComment());
         $issueCommentTransfomer = new IssueCommentToEntityTransformer();
         return $issueCommentTransfomer->transform($comment);
     }

@@ -17,7 +17,7 @@ class IssueMilestoneRepository extends GitlabBase implements IssueMilestoneRepos
      */
     public function listMilestones($state = 'all'){
         $this->authenticate();
-        $milestones = $this->client->api('milestones')->all($this->issueIntegrator->getRepoName(),1,2000, array('state' => $state));
+        $milestones = $this->client->api('milestones')->all($this->issueIntegrator->getProjectName(),1,2000, array('state' => $state));
 
         return $this->mapMilestones($milestones);
     }
@@ -28,7 +28,7 @@ class IssueMilestoneRepository extends GitlabBase implements IssueMilestoneRepos
      */
     public function countMilestones($state  = 'all'){
         $this->authenticate();
-        $milestones = $this->client->api('milestones')->all($this->issueIntegrator->getRepoName(),1,2000, array('state' => $state));
+        $milestones = $this->client->api('milestones')->all($this->issueIntegrator->getProjectName(),1,2000, array('state' => $state));
 
         return count($milestones);
     }
@@ -41,7 +41,7 @@ class IssueMilestoneRepository extends GitlabBase implements IssueMilestoneRepos
      */
     public function findMilestoneById($id){
         $this->authenticate();
-        $milestone = $this->client->api('milestones')->show($this->issueIntegrator->getRepoName(),$id);
+        $milestone = $this->client->api('milestones')->show($this->issueIntegrator->getProjectName(),$id);
         return $this->mapToEntity($milestone);
     }
     
@@ -67,7 +67,7 @@ class IssueMilestoneRepository extends GitlabBase implements IssueMilestoneRepos
             ,'due_date' => $issueMilestone->getDueOn()->format('c')
         );
         $this->authenticate();
-        $milestone = $this->client->api('milestones')->create($this->issueIntegrator->getRepoName(),$milestoneData);
+        $milestone = $this->client->api('milestones')->create($this->issueIntegrator->getProjectName(),$milestoneData);
         return $this->mapToEntity($milestone);
     }
 
@@ -85,7 +85,7 @@ class IssueMilestoneRepository extends GitlabBase implements IssueMilestoneRepos
                 ,'due_date' => $issueMilestone->getDueOn()->format('c')
                 );
         $this->authenticate();
-        $milestone = $this->client->api('milestones')->update($this->issueIntegrator->getRepoName(),$issueMilestone->getId(),$milestoneData);
+        $milestone = $this->client->api('milestones')->update($this->issueIntegrator->getProjectName(),$issueMilestone->getId(),$milestoneData);
         return $this->mapToEntity($milestone);
     }
     
@@ -95,7 +95,7 @@ class IssueMilestoneRepository extends GitlabBase implements IssueMilestoneRepos
      */
     public function deleteMilestone($id){
         $this->authenticate();
-        $this->client->api('milestones')->remove($this->issueIntegrator->getRepoName(),$id);
+        $this->client->api('milestones')->remove($this->issueIntegrator->getProjectName(),$id);
         
     }
     
@@ -105,7 +105,7 @@ class IssueMilestoneRepository extends GitlabBase implements IssueMilestoneRepos
      */
     public function reOpenMilestone($id){
         $this->authenticate();
-        $this->client->api('milestones')->update($this->issueIntegrator->getRepoName(),array('milestone_id'=>$id,'state_event' => 'activate'));
+        $this->client->api('milestones')->update($this->issueIntegrator->getProjectName(),array('milestone_id'=>$id,'state_event' => 'activate'));
     }
     
     /**
@@ -114,7 +114,7 @@ class IssueMilestoneRepository extends GitlabBase implements IssueMilestoneRepos
      */
     public function closeMilestone($id){
         $this->authenticate();
-        $this->client->api('milestones')->update($this->issueIntegrator->getRepoName(),array('milestone_id'=>$id,'state_event' => 'close'));
+        $this->client->api('milestones')->update($this->issueIntegrator->getProjectName(),array('milestone_id'=>$id,'state_event' => 'close'));
     }
 
     

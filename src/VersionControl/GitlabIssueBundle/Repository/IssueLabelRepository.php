@@ -15,7 +15,7 @@ class  IssueLabelRepository extends GitlabBase implements IssueLabelRepositoryIn
      */
     public function listLabels(){
         $this->authenticate();
-        $labels = $this->client->api('projects')->labels($this->issueIntegrator->getRepoName());
+        $labels = $this->client->api('projects')->labels($this->issueIntegrator->getProjectName());
 
         return $this->mapLabels($labels);
     }
@@ -48,7 +48,7 @@ class  IssueLabelRepository extends GitlabBase implements IssueLabelRepositoryIn
      */
     public function createLabel($issueLabel){
         $this->authenticate();
-        $label = $this->client->api('projects')->addLabel($this->issueIntegrator->getRepoName(), array(
+        $label = $this->client->api('projects')->addLabel($this->issueIntegrator->getProjectName(), array(
             'name' => $issueLabel->getTitle(),
             'color' => '#'.$issueLabel->getHexColor(),
         ));
@@ -63,7 +63,7 @@ class  IssueLabelRepository extends GitlabBase implements IssueLabelRepositoryIn
     public function updateLabel($issueLabel){
         $this->authenticate();
         
-        $label = $this->client->api('projects')->updateLabel($this->issueIntegrator->getRepoName(), array(
+        $label = $this->client->api('projects')->updateLabel($this->issueIntegrator->getProjectName(), array(
             'name' => $issueLabel->getId(),
             'new_name' => $issueLabel->getTitle(),
             'color' => '#'.$issueLabel->getHexColor(),
@@ -77,7 +77,7 @@ class  IssueLabelRepository extends GitlabBase implements IssueLabelRepositoryIn
      */
     public function deleteLabel($issueLabelId){
         $this->authenticate();
-        $this->client->api('projects')->removeLabel($this->issueIntegrator->getRepoName(), $issueLabelId);
+        $this->client->api('projects')->removeLabel($this->issueIntegrator->getProjectName(), $issueLabelId);
         return true;
     }
     
