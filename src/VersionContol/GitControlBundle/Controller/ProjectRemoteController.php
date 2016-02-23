@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Project controller.
  *
- * @Route("/project/remote")
+ * @Route("/project/{id}/remote")
  */
 class ProjectRemoteController extends BaseProjectController
 {
@@ -37,25 +37,20 @@ class ProjectRemoteController extends BaseProjectController
      */
     protected $gitSyncCommands;
     
-    /**
-     * The current Project
-     * @var Project 
-     */
-    protected $project;
+    protected $projectGrantType = 'EDIT';
 
     /**
      * Form to choose which brabch and remote a user will pull.
      * This is just the form. Also see pullToLocal() 
      *
-     * @Route("/{id}", name="project_listremote")
+     * @Route("/", name="project_listremote")
      * @Method("GET")
      * @Template()
      */
     public function listAction($id){
-        $this->initAction($id);
+
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
 
-        
         return array(
             'project'      => $this->project,
             'remotes' => $gitRemoteVersions,
@@ -67,12 +62,12 @@ class ProjectRemoteController extends BaseProjectController
      * Form to choose which brabch and remote a user will pull.
      * This is just the form. Also see pullToLocal() 
      *
-     * @Route("new/{id}", name="project_newremote")
+     * @Route("/new/", name="project_newremote")
      * @Method("GET")
      * @Template()
      */
     public function newAction($id){
-        $this->initAction($id);
+        
         $remoteForm = $this->createRemoteForm();
         
         
@@ -88,13 +83,13 @@ class ProjectRemoteController extends BaseProjectController
      * Form to choose which brabch and remote a user will pull.
      * This is just the form. Also see pullToLocal() 
      *
-     * @Route("create/{id}", name="project_createremote")
+     * @Route("/create/", name="project_createremote")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectRemote:new.html.twig")
      */
     public function createAction(Request $request,$id)
     {
-        $this->initAction($id);
+        
 
         $addRemoteForm = $this->createRemoteForm(); 
         $addRemoteForm->handleRequest($request);
@@ -124,12 +119,12 @@ class ProjectRemoteController extends BaseProjectController
      * Form to choose which brabch and remote a user will pull.
      * This is just the form. Also see pullToLocal() 
      *
-     * @Route("delete/{id}/{remote}", name="project_deleteremote")
+     * @Route("/delete/{remote}", name="project_deleteremote")
      * @Method("GET")
      * @Template()
      */
      public function deleteAction(Request $request,$id,$remote){
-        $this->initAction($id);
+        
          
         $response = $this->gitSyncCommands->deleteRemote($remote);
             
@@ -142,12 +137,12 @@ class ProjectRemoteController extends BaseProjectController
     /**
      * Create rename remote form. 
      *
-     * @Route("rename/{id}/{remote}", name="project_renameremote")
+     * @Route("/rename/{remote}", name="project_renameremote")
      * @Method("GET")
      * @Template()
      */
      public function renameAction(Request $request,$id,$remote){
-        $this->initAction($id);
+        
          
         $defaultData = array('remoteName' => $remote);
         $renameRemoteForm = $this->createRenameRemoteForm($defaultData);
@@ -163,12 +158,11 @@ class ProjectRemoteController extends BaseProjectController
     /**
      * Changes the name of the remote repositiory in git for the local branch
      *
-     * @Route("rename/{id}/{remote}", name="project_remoteupdate")
+     * @Route("/rename/{remote}", name="project_remoteupdate")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectRemote:rename.html.twig")
      */
      public function updateAction(Request $request,$id){
-        $this->initAction($id);
          
         $renameRemoteForm = $this->createRenameRemoteForm();
         
@@ -201,20 +195,11 @@ class ProjectRemoteController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id){
- 
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($this->project,'EDIT');
+    protected function initAction($id, $grantType = 'VIEW'){
         
+        parent::initAction($id, $grantType);
         $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
-        
-        $this->branchName = $this->gitSyncCommands->getCurrentBranch();
+
     }
     
     

@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Project controller.
  *
- * @Route("/sync/")
+ * @Route("/project/{id}/sync/")
  */
 class ProjectSyncController extends BaseProjectController
 {
@@ -40,62 +40,39 @@ class ProjectSyncController extends BaseProjectController
     /**
      * Finds and displays a Project entity.
      *
-     * @Route("push/{id}", name="project_push")
+     * @Route("push/", name="project_push")
      * @Method("GET")
      * @Template()
      */
-    public function pushAction($id)
+    public function pushAction()
     {
-        $em = $this->getDoctrine()->getManager();
 
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($project,'EDIT');
-
-        $this->initAction($project);
-        
         //Remote Server choice 
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
-        $pushForm = $this->createPushPullForm($project);
+        $pushForm = $this->createPushPullForm($this->project);
         $pushForm->add('push', 'submit', array('label' => 'Push'));
 
-        return array(
-            'project'      => $project,
+        return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
             'push_form' => $pushForm->createView()
-        );
+            ));
     }
     
     /**
      * Finds and displays a Project entity.
      *
-     * @Route("pushremote/{id}", name="project_pushremote")
+     * @Route("pushremote/", name="project_pushremote")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectSync:push.html.twig")
      */
     public function pushToRemoteAction(Request $request,$id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
         
-        $this->checkProjectAuthorization($project,'EDIT');
-
-        $this->initAction($project);
-         
-       
+ 
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
-        $pushForm = $this->createPushPullForm($project);
+        $pushForm = $this->createPushPullForm($this->project);
         $pushForm->add('push', 'submit', array('label' => 'Push'));
         $pushForm->handleRequest($request);
 
@@ -110,11 +87,11 @@ class ProjectSyncController extends BaseProjectController
             return $this->redirect($this->generateUrl('project_push', array('id' => $id)));
         }
 
-        return array(
-            'project'      => $project,
+        return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
             'push_form' => $pushForm->createView()
-        );
+            ));
+        
     }
 
     
@@ -122,63 +99,43 @@ class ProjectSyncController extends BaseProjectController
      * Form to choose which brabch and remote a user will pull.
      * This is just the form. Also see pullToLocal() 
      *
-     * @Route("pull/{id}", name="project_pull")
+     * @Route("pull/", name="project_pull")
      * @Method("GET")
      * @Template()
      */
-    public function pullAction($id)
+    public function pullAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($project,'EDIT');
-
-        $this->initAction($project);
+        
         
         //Remote Server choice 
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
 
-        $pullForm = $this->createPushPullForm($project,"project_pulllocal");
+        $pullForm = $this->createPushPullForm($this->project,"project_pulllocal");
         $pullForm->add('pull', 'submit', array('label' => 'Pull'));
         $pullForm->add('viewDiff', 'submit', array('label' => 'View Diff'));
         
-        
-        return array(
-            'project'      => $project,
+         return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
             'pull_form' => $pullForm->createView(),
             'diffs' => array()
-        );
+            ));
+        
     }
     
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("pulllocal/{id}", name="project_pulllocal")
+     * @Route("pulllocal/", name="project_pulllocal")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectSync:pull.html.twig")
      */
     public function pullToLocalAction(Request $request,$id)
     {
         $diffs = array();
-        $em = $this->getDoctrine()->getManager();
-
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($project,'EDIT');
-
-        $this->initAction($project);
 
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
-        $pullForm = $this->createPushPullForm($project,"project_pulllocal");
+        $pullForm = $this->createPushPullForm($this->project,"project_pulllocal");
         $pullForm->add('pull', 'submit', array('label' => 'Pull'));
         $pullForm->add('viewDiff', 'submit', array('label' => 'View Diff'));
         $pullForm->handleRequest($request);
@@ -202,23 +159,23 @@ class ProjectSyncController extends BaseProjectController
             
         }
 
-        return array(
-            'project'      => $project,
+        return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
             'pull_form' => $pullForm->createView(),
             'diffs' => $diffs
-        );
+            ));
+        
     }
     
 
     
     /**
      * 
-     * @param Project $project
+     * 
      */
-    protected function initAction(Project $project){
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($project);
-        $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($project);
+    protected function initAction($id, $grantType = 'VIEW'){
+        parent::initAction($id,$grantType);
+        $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
     }
     
     /**

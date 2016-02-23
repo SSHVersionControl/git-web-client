@@ -14,7 +14,7 @@ use VersionContol\GitControlBundle\Form\IssueLabelType;
 /**
  * IssueLabel controller.
  *
- * @Route("/issuelabel")
+ * @Route("project/{id}/issuelabel")
  */
 class IssueLabelController extends BaseProjectController
 {
@@ -34,13 +34,13 @@ class IssueLabelController extends BaseProjectController
     /**
      * Lists all IssueLabel entities.
      *
-     * @Route("s/{id}", name="issuelabels")
+     * @Route("s/", name="issuelabels")
      * @Method("GET")
      * @Template()
      */
     public function indexAction($id)
     {
-        $this->initAction($id);
+        
         $issueLabels = $this->issueLabelRepository->listLabels();
         
         return array(
@@ -51,13 +51,12 @@ class IssueLabelController extends BaseProjectController
     /**
      * Creates a new IssueLabel entity.
      *
-     * @Route("/{id}", name="issuelabel_create")
+     * @Route("/", name="issuelabel_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:IssueLabel:new.html.twig")
      */
     public function createAction(Request $request,$id)
     {
-        $this->initAction($id);
         
         $issueLabel = $this->issueLabelRepository->newLabel();
         $form = $this->createCreateForm($issueLabel);
@@ -103,13 +102,12 @@ class IssueLabelController extends BaseProjectController
     /**
      * Displays a form to create a new IssueLabel entity.
      *
-     * @Route("/new/{id}", name="issuelabel_new")
+     * @Route("/new/", name="issuelabel_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction($id)
     {
-        $this->initAction($id);
          
         $issueLabel = $this->issueLabelRepository->newLabel();
         $form   = $this->createCreateForm($issueLabel);
@@ -126,13 +124,12 @@ class IssueLabelController extends BaseProjectController
     /**
      * Displays a form to edit an existing IssueLabel entity.
      *
-     * @Route("/{id}/edit/{labelId}", name="issuelabel_edit")
+     * @Route("/edit/{labelId}", name="issuelabel_edit")
      * @Method("GET")
      * @Template()
      */
     public function editAction($id,$labelId)
     {
-        $this->initAction($id);
        
         $issueLabel = $this->issueLabelRepository->findLabelById($labelId);
 
@@ -171,13 +168,12 @@ class IssueLabelController extends BaseProjectController
     /**
      * Edits an existing IssueLabel entity.
      *
-     * @Route("/{id}/{labelId}", name="issuelabel_update")
+     * @Route("/{labelId}", name="issuelabel_update")
      * @Method("PUT")
      * @Template("VersionContolGitControlBundle:IssueLabel:edit.html.twig")
      */
     public function updateAction(Request $request, $id, $labelId)
     {
-        $this->initAction($id);
        
         $issueLabel = $this->issueLabelRepository->findLabelById($labelId);
 
@@ -207,11 +203,10 @@ class IssueLabelController extends BaseProjectController
     /**
      * Deletes a IssueLabel entity.
      *
-     * @Route("/{id}/delete/{labelId}", name="issuelabel_delete")
+     * @Route("/delete/{labelId}", name="issuelabel_delete")
      */
     public function deleteAction($id, $labelId)
     {
-        $this->initAction($id);
 
         if ($labelId){
             $this->issueLabelRepository->deleteLabel($labelId); 
@@ -228,15 +223,10 @@ class IssueLabelController extends BaseProjectController
      * @param integer $id
      */
     protected function initAction($id,$grantType='VIEW'){
+        parent::initAction($id,$grantType);
+        
         $em = $this->getDoctrine()->getManager();
-        
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
 
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($this->project,$grantType);
         $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
         
         $this->issueManager = $this->get('version_control.issue_repository_manager');

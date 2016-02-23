@@ -18,26 +18,28 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Project controller.
  *
- * @Route("/project/undo")
+ * @Route("/project/{id}/undo")
  */
 class UndoCommitController extends BaseProjectController
 {
 
-    protected $gitCommands;
+    protected $gitUndoCommands;
     
+    protected $projectGrantType = 'OPERATOR';
+
+
     /**
      * Action to do a soft undo on the last commit. This will 
      * allow you to fix any messages in the last commit. This 
      * will not effect any files.
      *
-     * @Route("softcommit/{id}", name="undocommit_soft")
+     * @Route("/softcommit/", name="undocommit_soft")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Error:request.html.twig")
      */
     public function undoSoftCommitAction($id, Request $request){
-        $this->initAction($id);
 
-        $response = $this->gitCommands->undoCommit();
+        $response = $this->gitUndoCommands->undoCommit();
         $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -47,14 +49,13 @@ class UndoCommitController extends BaseProjectController
     /**
      * Action to do a hard undo on the last commit. 
      *
-     * @Route("hardcommit/{id}", name="undocommit_hard")
+     * @Route("/hardcommit/", name="undocommit_hard")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Error:request.html.twig")
      */
-    public function undoHardCommitAction($id, Request $request){
-        $this->initAction($id);
+    public function undoHardCommitAction($id, Request $request){    
         
-        $response = $this->gitCommands->undoCommitHard();
+        $response = $this->gitUndoCommands->undoCommitHard();
         $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -67,14 +68,14 @@ class UndoCommitController extends BaseProjectController
      *  in a detached HEAD state. Checking out an old commit is a read-only operation. 
      * It’s impossible to harm your repository while viewing an old revision.
      *
-     * @Route("checkoutCommit/{id}/{commitHash}", name="project_checkout_commit")
+     * @Route("/checkoutCommit/{commitHash}", name="project_checkout_commit")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Error:request.html.twig")
      */
     public function checkoutCommitAction($id,$commitHash){
-        $this->initAction($id);
+        
 
-        $response = $this->gitCommands->checkoutCommit($commitHash);
+        $response = $this->gitUndoCommands->checkoutCommit($commitHash);
         
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -85,18 +86,11 @@ class UndoCommitController extends BaseProjectController
      * 
      * @param integer $id Project Id
      */
-    protected function initAction($id){
+    protected function initAction($id, $grantType = 'VIEW'){
  
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($this->project,'OPERATOR');
+        parent::initAction($id,$grantType);
         
-        $this->gitCommands = $this->get('version_control.git_undo')->setProject($this->project);
+        $this->gitUndoCommands = $this->get('version_control.git_undo')->setProject($this->project);
 
     }
     

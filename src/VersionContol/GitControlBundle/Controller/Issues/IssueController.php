@@ -19,7 +19,7 @@ use VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryInterface;
 /**
  * Issue controller.
  *
- * @Route("/issue")
+ * @Route("project/{id}/issue")
  */
 class IssueController extends BaseProjectController
 {
@@ -39,15 +39,13 @@ class IssueController extends BaseProjectController
     /**
      * Lists all Issue entities.
      *
-     * @Route("s/{id}", name="issues")
+     * @Route("s/", name="issues")
      * @Method("GET")
      * @Template()
      */
     public function indexAction($id, Request $request)
     {
 
-        $this->initAction($id);
-        
         $keyword = $request->query->get('keyword', false);
         $filter = $request->query->get('filter', 'open');
         
@@ -79,13 +77,12 @@ class IssueController extends BaseProjectController
     /**
      * Lists latest Issue entities.
      *
-     * @Route("s/latest/{id}", name="issues_latest")
+     * @Route("s/latest/", name="issues_latest")
      * @Method("GET")
      * @Template()
      */
     public function latestAction($id, Request $request)
     {
-        $this->initAction($id);
         
         $data = $this->issueRepository->findIssues('', 'open');
         
@@ -112,13 +109,12 @@ class IssueController extends BaseProjectController
     /**
      * Creates a new Issue entity.
      *
-     * @Route("/{id}", name="issue_create")
+     * @Route("/", name="issue_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:Issues/Issue:new.html.twig")
      */
     public function createAction(Request $request,$id)
     {
-        $this->initAction($id,'EDIT');
         
         $issueEntity = $this->issueRepository->newIssue();
         $form = $this->createCreateForm($issueEntity);
@@ -164,13 +160,12 @@ class IssueController extends BaseProjectController
     /**
      * Displays a form to create a new Issue entity.
      *
-     * @Route("/new/{id}", name="issue_new")
+     * @Route("/new/", name="issue_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction($id)
     {
-        $this->initAction($id);
         
         $issueEntity = $this->issueRepository->newIssue();
         $form   = $this->createCreateForm($issueEntity);
@@ -185,13 +180,12 @@ class IssueController extends BaseProjectController
     /**
      * Finds and displays a Issue entity.
      *
-     * @Route("/{id}/{issueId}", name="issue_show")
+     * @Route("/{issueId}", name="issue_show")
      * @Method("GET")
      * @Template()
      */
     public function showAction($id,$issueId)
     {
-        $this->initAction($id);
         
         $issueEntity = $this->issueRepository->findIssueById($issueId);
 
@@ -218,13 +212,12 @@ class IssueController extends BaseProjectController
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/{id}/edit/{issueId}", name="issue_edit")
+     * @Route("/edit/{issueId}", name="issue_edit")
      * @Method("GET")
      * @Template()
      */
     public function editAction($id,$issueId)
     {
-        $this->initAction($id,'EDIT');
         
         $issueEntity = $this->issueRepository->findIssueById($issueId);  
 
@@ -262,13 +255,12 @@ class IssueController extends BaseProjectController
     /**
      * Edits an existing Issue entity.
      *
-     * @Route("/{id}/{issueId}", name="issue_update")
+     * @Route("/{issueId}", name="issue_update")
      * @Method("PUT")
      * @Template("VersionContolGitControlBundle:Issues/Issue:edit.html.twig")
      */
     public function updateAction(Request $request, $id, $issueId)
     {
-        $this->initAction($id,'EDIT');
         $issueEntity = $this->issueRepository->findIssueById($issueId);
 
         $deleteForm = $this->createDeleteForm($id);
@@ -292,7 +284,7 @@ class IssueController extends BaseProjectController
     /**
      * Deletes a Issue entity.
      *
-     * @Route("/{id}", name="issue_delete")
+     * @Route("/", name="issue_delete")
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -316,12 +308,11 @@ class IssueController extends BaseProjectController
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/{id}/close/{issueId}", name="issue_close")
+     * @Route("/close/{issueId}", name="issue_close")
      * @Method("GET")
      */
     public function closeAction($id,$issueId)
     {
-        $this->initAction($id,'EDIT');
         $issueEntity = $this->issueRepository->closeIssue($issueId);
         
         if (!$issueEntity) {
@@ -337,12 +328,11 @@ class IssueController extends BaseProjectController
      /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/{id}/open", name="issue_open")
+     * @Route("/open", name="issue_open")
      * @Method("GET")
      */
     public function openAction($id)
     {
-        $this->initAction($id,'EDIT');
         $issueEntity = $this->issueRepository->reOpenIssue($issueId);
         
         if (!$issueEntity) {
@@ -360,12 +350,11 @@ class IssueController extends BaseProjectController
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/hook/{id}", name="issue_hook")
+     * @Route("/hook/", name="issue_hook")
      * 
      */
     public function hookAction($id)
     {
-        $this->initAction($id,'EDIT');
 
         $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
         $message = $this->gitCommands->getLastMessageLog();
@@ -408,13 +397,12 @@ class IssueController extends BaseProjectController
     /**
      * Creates a new Issue comment entity.
      *
-     * @Route("/{id}/comment/{issueId}", name="issuecomment_create")
+     * @Route("/comment/{issueId}", name="issuecomment_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:Issues/Issue:show.html.twig")
      */
     public function createCommentAction(Request $request,$id, $issueId)
     {
-        $this->initAction($id,'EDIT');
         
         $issueComment = $this->issueRepository->newIssueComment();
         $issueEntity = $this->issueRepository->findIssueById($issueId);
@@ -473,12 +461,11 @@ class IssueController extends BaseProjectController
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("s/search/{id}", name="issue_searchajax")
+     * @Route("s/search/", name="issue_searchajax")
      * @Method("GET")
      */
     public function searchAjaxAction($id,Request $request)
     {
-        $this->initAction($id);
         
         $keyword = $request->query->get('keyword', false);
         $filter = $request->query->get('filter', 'open');
@@ -507,13 +494,12 @@ class IssueController extends BaseProjectController
     /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/{id}/find/{issueId}", name="issue_findajax")
+     * @Route("/find/{issueId}", name="issue_findajax")
      * @Method("GET")
      * @TODO Pass in project id
      */
     public function findAjaxAction($id,$issueId)
     {
-        $this->initAction($id);
         //$em = $this->getDoctrine()->getManager();
         //$issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
         $issueEntity = $this->issueRepository->findIssueById($issueId);
@@ -526,13 +512,12 @@ class IssueController extends BaseProjectController
     /**
      * Finds and displays a Issue entity.
      *
-     * @Route("/{id}/modal/{issueId}", name="issue_show_modal")
+     * @Route("/modal/{issueId}", name="issue_show_modal")
      * @Method("GET")
      * @Template()
      */
     public function showModalAction($id,$issueId)
     {
-        $this->initAction($id);
         
         $issueEntity = $this->issueRepository->findIssueById($issueId);
 
@@ -551,15 +536,9 @@ class IssueController extends BaseProjectController
      * @param integer $id
      */
     protected function initAction($id,$grantType='VIEW'){
+        parent::initAction($id,$grantType);
+        
         $em = $this->getDoctrine()->getManager();
-        
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($this->project,$grantType);
         $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
         
         $this->issueManager = $this->get('version_control.issue_repository_manager');

@@ -66,9 +66,6 @@ class ProjectCommitController extends BaseProjectController
      */
     public function listAction($id)
     {
-        
-       $this->initAction($id);
-
        $branchName = $this->gitSyncCommands->getCurrentBranch();
        $files =  $this->gitCommitCommand->getFilesToCommit();
        
@@ -98,7 +95,7 @@ class ProjectCommitController extends BaseProjectController
      */
     public function commitAction(Request $request,$id)
     {
-        $this->initAction($id);
+   
         $files =  $this->gitCommitCommand->getFilesToCommit();
         
         $commitEntity = new Commit();
@@ -170,19 +167,14 @@ class ProjectCommitController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id){
+    protected function initAction($id, $grantType = 'EDIT'){
  
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($this->project,'EDIT');
+        parent::initAction($id,$grantType);
         
         $this->gitCommitCommand = $this->get('version_control.git_commit')->setProject($this->project);
         $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
+        
+        $em = $this->getDoctrine()->getManager();
         
         $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
         $this->issueManager = $this->get('version_control.issue_repository_manager');
@@ -194,14 +186,7 @@ class ProjectCommitController extends BaseProjectController
         $this->issueRepository = $this->issueManager->getIssueRepository();
         $this->issuesCount = $this->issueRepository->countFindIssues('','open');
 
-        //$this->issuesCount = $em->getRepository('VersionContolGitControlBundle:Issue')->countIssuesForProjectWithStatus($this->project,'open');
-        
-        $this->branchName = $this->gitCommitCommand->getCurrentBranch();
-        
-        $this->viewVariables = array_merge($this->viewVariables, array(
-            'project'      => $this->project,
-            'branchName' => $this->branchName,
-            ));
+      
     }
     
     
@@ -212,7 +197,7 @@ class ProjectCommitController extends BaseProjectController
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
         $form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
-            'action' => $this->generateUrl('project_commit', array('id' => $this->project->getId())),
+            'action' => $this->generateUrl('project_commit'),
             'method' => 'POST',
         ));
 
@@ -229,8 +214,6 @@ class ProjectCommitController extends BaseProjectController
      * @Method("GET")
      */
     public function abortMergeAction($id){
-        
-        $this->initAction($id);
         
         $this->gitCommitCommand = $this->get('version_control.git_command')->setProject($this->project);
         
@@ -290,8 +273,6 @@ class ProjectCommitController extends BaseProjectController
      * @Template()
      */
     public function fileDiffAction($id,$difffile){
-        
-        $this->initAction($id);
         
         $gitDiffCommand = $this->get('version_control.git_diff')->setProject($this->project);
 

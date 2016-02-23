@@ -13,6 +13,7 @@ use VersionContol\GitControlBundle\Utility\GitCommands;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use VersionContol\GitControlBundle\Entity\UserProjects;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -39,6 +40,14 @@ abstract class BaseProjectController extends Controller{
      * @var string 
      */
     protected $branchName;
+    
+    /**
+     *
+     * @var GitCommand 
+     */
+    protected $gitCommands;
+    
+    protected $projectGrantType = 'VIEW';
     
     /**
      * 
@@ -68,6 +77,49 @@ abstract class BaseProjectController extends Controller{
     public function generateUrl($route, $parameters = array(),$referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
         $mergedParameters = array_merge(array('id'=>$this->project->getId()),$parameters);
         parent::generateUrl($route, $mergedParameters,$referenceType);
+    }
+    
+     /**
+     * 
+     * @param integer $id
+     */
+    protected function initAction($id,$grantType = 'VIEW'){
+ 
+        $em = $this->getDoctrine()->getManager();
+
+        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+
+        if (!$this->project) {
+            throw $this->createNotFoundException('Unable to find Project entity.');
+        }
+        $this->checkProjectAuthorization($this->project,$grantType);
+        
+        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
+        //$this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
+        
+        $this->viewVariables = array_merge($this->viewVariables, array(
+            'project'      => $this->project,
+            'branchName' => $this->gitCommands->getCurrentBranch(),
+            ));
+    }
+    
+    /**
+     * Sets the container.
+     *
+     * @param ContainerInterface|null $container A ContainerInterface instance or null
+     */
+    public function setContainer(ContainerInterface $container = null){
+        $this->container = $container;
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        $id = $request->get('id', false);
+        if($id){
+            $grantType = $this->getGrantType();
+            $this->initAction($id,$grantType);
+        }
+    }
+    
+    public function getGrantType(){
+        return $this->projectGrantType;
     }
     
 }

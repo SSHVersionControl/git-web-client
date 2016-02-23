@@ -18,7 +18,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Project controller.
  *
- * @Route("/project/file")
+ * @Route("/project/{id}/file")
  */
 class ProjectFilesController extends BaseProjectController{
     
@@ -32,13 +32,11 @@ class ProjectFilesController extends BaseProjectController{
     /**
      * Show Git commit diff
      *
-     * @Route("s/{id}/{currentDir}",defaults={"$currentDir" = ""}, name="project_filelist")
+     * @Route("s/{currentDir}",defaults={"$currentDir" = ""}, name="project_filelist")
      * @Method("GET")
      * @Template()
      */
     public function fileListAction($id,$currentDir = ''){
-        
-        $this->initAction($id);
 
         $dir = '';
         if($currentDir){
@@ -67,35 +65,21 @@ class ProjectFilesController extends BaseProjectController{
      * @param integer $id Project Id
      */
     protected function initAction($id,$grantType = 'VIEW'){
- 
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($this->project,$grantType);
         
+        parent::initAction($id,$grantType);
         $this->gitFilesCommands = $this->get('version_control.git_files')->setProject($this->project);
-        
-        $this->branchName = $this->gitFilesCommands->getCurrentBranch();
-        
-        $this->viewVariables = array_merge($this->viewVariables, array(
-            'project'      => $this->project,
-            'branchName' => $this->branchName,
-            ));
+
     }
     
     /**
      * Adds File to .gitignore and remove file git index.
      *
-     * @Route("/{id}/ignore/{filePath}", name="project_fileignore")
+     * @Route("/ignore/{filePath}", name="project_fileignore")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectFiles:fileList.html.twig")
      */
     public function ignoreAction($id,$filePath){
-        $this->initAction($id,'MASTER');
+        //$this->initAction($id,'MASTER');
         
         $filePath = trim(urldecode($filePath));
         

@@ -18,20 +18,20 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Project controller.
  *
- * @Route("/project/issue-integrator/github")
+ * @Route("/project/{id}/issue-integrator/github")
  */
 class ProjectIssueIntegratorGithubController extends BaseProjectController{
     
    /**
      * Creates a new ProjectIssueIntegrator entity.
      *
-     * @Route("/{id}", name="project_issue_integrator_github_create")
+     * @Route("/", name="project_issue_integrator_github_create")
      * @Method("POST")
      * @Template("VersionControlGithubIssueBundle:ProjectIssueIntegrator:new.html.twig")
      */
     public function createAction(Request $request,$id)
     {
-        $this->initAction($id);
+        
         $issueIntegrator = new ProjectIssueIntegratorGithub();
         $form = $this->createCreateForm($issueIntegrator);
         $form->handleRequest($request);
@@ -78,13 +78,13 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
     /**
      * Displays a form to create a new ProjectIssueIntegrator entity.
      *
-     * @Route("/new/{id}", name="project_issue_integrator_github_new")
+     * @Route("/new/", name="project_issue_integrator_github_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction($id)
     {
-        $this->initAction($id);
+        
         
         $issueIntegrator = new ProjectIssueIntegratorGithub();
         $issueIntegrator->setProject($this->project);
@@ -101,13 +101,13 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
     /**
      * Displays a form to edit an existing ProjectIssueIntegrator entity.
      *
-     * @Route("/{integratorId}/edit/{id}", name="project_issue_integrator_github_edit")
+     * @Route("/{integratorId}/edit/", name="project_issue_integrator_github_edit")
      * @Method("GET")
      * @Template()
      */
     public function editAction($id,$integratorId)
     {
-        $this->initAction($id);
+        
         
         $em = $this->getDoctrine()->getManager();
 
@@ -149,13 +149,13 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
     /**
      * Edits an existing ProjectIssueIntegrator entity.
      *
-     * @Route("/{integratorId}/{id}", name="project_issue_integrator_github_update")
+     * @Route("/{integratorId}/", name="project_issue_integrator_github_update")
      * @Method("PUT")
      * @Template("VersionControlGithubIssueBundle:ProjectIssueIntegrator:edit.html.twig")
      */
     public function updateAction(Request $request,$integratorId, $id)
     {
-        $this->initAction($id);
+        
         
         $em = $this->getDoctrine()->getManager();
 
@@ -204,26 +204,5 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
         ;
     }
     
-    
-    /**
-     * 
-     * @param integer $id Project Id
-     */
-    protected function initAction($id){
  
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($this->project,'OWNER');
-
-        $this->viewVariables = array_merge($this->viewVariables, array(
-            'project'      => $this->project,
-            ));
-    }
-    
 }

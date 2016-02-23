@@ -25,11 +25,6 @@ use Symfony\Component\HttpFoundation\Request;
 class ProjectBranchController extends BaseProjectController
 {
     
-    /**
-     *
-     * @var GitCommand 
-     */
-    protected $gitCommands;
     
     /**
      *
@@ -37,13 +32,12 @@ class ProjectBranchController extends BaseProjectController
      */
     protected $gitBranchCommands;
     
-    /**
-     * The current Project
-     * @var Project 
-     */
-    protected $project;
-   
-    
+
+    protected $projectGrantType = 'EDIT';
+
+
+
+
     /**
      * List Branches. Not sure how to list remote and local branches.
      *
@@ -54,7 +48,6 @@ class ProjectBranchController extends BaseProjectController
     public function branchesAction($id,$newBranchName = false)
     {
         
-        $this->initAction($id);
         $this->initListingView();
         
         $defaultData = array();
@@ -81,7 +74,7 @@ class ProjectBranchController extends BaseProjectController
      */
     public function createBranchAction(Request $request,$id)
     {
-        $this->initAction($id);
+
         
         $form = $this->createNewBranchForm($this->project);
         $form->handleRequest($request);
@@ -119,7 +112,6 @@ class ProjectBranchController extends BaseProjectController
      */
     public function checkoutBranchAction($id, $branchName){
         
-        $this->initAction($id);
         
         $response = $this->gitBranchCommands->checkoutBranch($branchName);
         
@@ -137,8 +129,6 @@ class ProjectBranchController extends BaseProjectController
      */
     public function remoteBranchesAction($id)
     {
-        
-        $this->initAction($id);
         
         $branchName = $this->gitBranchCommands->getCurrentBranch();
         
@@ -171,8 +161,6 @@ class ProjectBranchController extends BaseProjectController
      */
     public function checkoutRemoteBranchAction(Request $request,$id)
     {
-
-        $this->initAction($id);
         
         $branchName = $this->gitBranchCommands->getCurrentBranch();
          $gitRemoteBranches = $this->gitBranchCommands->getBranchRemoteListing();
@@ -223,7 +211,6 @@ class ProjectBranchController extends BaseProjectController
      */
     public function fetchAllAction($id){
         
-        $this->initAction($id);
         
         $response = $this->gitBranchCommands->fetchAll();
         
@@ -241,8 +228,6 @@ class ProjectBranchController extends BaseProjectController
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
      */
     public function deleteBranchAction($id, $branchName){
-        
-        $this->initAction($id);
         
         $response = $this->gitBranchCommands->deleteBranch($branchName);
         
@@ -296,8 +281,6 @@ class ProjectBranchController extends BaseProjectController
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
      */
     public function mergeBranchAction($id,$branchName){
-        
-        $this->initAction($id);
         
         $response = $this->gitBranchCommands->mergeBranch($branchName);
             
@@ -355,24 +338,12 @@ class ProjectBranchController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id){
+    protected function initAction($id, $grantType = 'VIEW'){
  
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($this->project,'EDIT');
+        parent::initAction($id,$grantType);
         
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
         $this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
-        
-        $this->viewVariables = array_merge($this->viewVariables, array(
-            'project'      => $this->project,
-            'branchName' => $this->gitBranchCommands->getCurrentBranch(),
-            ));
+
     }
     
     protected function initListingView(){

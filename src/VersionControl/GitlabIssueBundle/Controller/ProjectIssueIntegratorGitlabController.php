@@ -17,20 +17,20 @@ use VersionControl\GitlabIssueBundle\Form\ProjectIssueIntegratorGitlabNewType;
 /**
  * Project controller.
  *
- * @Route("/project/issue-integrator/gitlab")
+ * @Route("/project/{id}/issue-integrator/gitlab")
  */
 class ProjectIssueIntegratorGitlabController extends BaseProjectController{
     
    /**
      * Creates a new ProjectIssueIntegrator entity.
      *
-     * @Route("/{id}", name="project_issue_integrator_gitlab_create")
+     * @Route("/", name="project_issue_integrator_gitlab_create")
      * @Method("POST")
      * @Template("VersionControlGitlabIssueBundle:ProjectIssueIntegrator:new.html.twig")
      */
     public function createAction(Request $request,$id)
     {
-        $this->initAction($id);
+        
         $issueIntegrator = new ProjectIssueIntegratorGitlab();
         $form = $this->createCreateForm($issueIntegrator);
         $form->handleRequest($request);
@@ -77,13 +77,13 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
     /**
      * Displays a form to create a new ProjectIssueIntegrator entity.
      *
-     * @Route("/new/{id}", name="project_issue_integrator_gitlab_new")
+     * @Route("/new/", name="project_issue_integrator_gitlab_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction($id)
     {
-        $this->initAction($id);
+        
         
         $issueIntegrator = new ProjectIssueIntegratorGitlab();
         $issueIntegrator->setProject($this->project);
@@ -100,13 +100,13 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
     /**
      * Displays a form to edit an existing ProjectIssueIntegrator entity.
      *
-     * @Route("/{integratorId}/edit/{id}", name="project_issue_integrator_gitlab_edit")
+     * @Route("/{integratorId}/edit/", name="project_issue_integrator_gitlab_edit")
      * @Method("GET")
      * @Template()
      */
     public function editAction($id,$integratorId)
     {
-        $this->initAction($id);
+        
         
         $em = $this->getDoctrine()->getManager();
 
@@ -148,13 +148,13 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
     /**
      * Edits an existing ProjectIssueIntegrator entity.
      *
-     * @Route("/{integratorId}/{id}", name="project_issue_integrator_gitlab_update")
+     * @Route("/{integratorId}/", name="project_issue_integrator_gitlab_update")
      * @Method("PUT")
      * @Template("VersionControlGitlabIssueBundle:ProjectIssueIntegrator:edit.html.twig")
      */
     public function updateAction(Request $request,$integratorId, $id)
     {
-        $this->initAction($id);
+        
         
         $em = $this->getDoctrine()->getManager();
 
@@ -201,28 +201,6 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
-    }
-    
-    
-    /**
-     * 
-     * @param integer $id Project Id
-     */
-    protected function initAction($id){
- 
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($this->project,'OWNER');
-
-        $this->viewVariables = array_merge($this->viewVariables, array(
-            'project'      => $this->project,
-            ));
     }
     
 }

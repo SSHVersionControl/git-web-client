@@ -93,7 +93,7 @@
                                                 {% endif %}
                                            </div>
                                      </div>
-                                    <a href="{{ path('projectenvironment_edit', { 'id': projectEnvironment.id }) }}">Edit</a>
+                                    <a href="{{ path('projectenvironment_edit', { 'id': project.id, 'projectEnvironmentId': projectEnvironment.id }) }}">Edit</a>
                                  </div>
                                </div>
                              </div>
@@ -170,7 +170,7 @@
             <li class="list-group-item">
                 <h4 class="list-group-item-heading">Existing</h4>
                 <p class="list-group-item-text">
-                    <a href="{{ path('projectenvironment_existing', { 'project': project.id }) }}" title="">
+                    <a href="{{ path('projectenvironment_existing', { 'id': project.id }) }}" title="">
                         Create New Project Environment with an existing Git Repository in source folder(E.g. Folder already contains a GIT Repository)
                     </a>
                 </p>
@@ -178,7 +178,7 @@
             <li class="list-group-item">
                 <h4 class="list-group-item-heading">New</h4>
                 <p class="list-group-item-text">
-                    <a href="{{ path('projectenvironment_new', { 'project': project.id }) }}" title="">
+                    <a href="{{ path('projectenvironment_new', { 'id': project.id }) }}" title="">
                         Create New Project Environment and initalize a new Git repository in source folder.
                     </a>
                 </p>
@@ -186,7 +186,7 @@
             <li class="list-group-item">
                  <h4 class="list-group-item-heading">Clone</h4>
                  <p class="list-group-item-text">
-                    <a href="{{ path('projectenvironment_clone', { 'project': project.id }) }}" title="">
+                    <a href="{{ path('projectenvironment_clone', { 'id': project.id }) }}" title="">
                         Create New Project Environment and clone a Git repository into source folder.
                     </a>
                 </p>

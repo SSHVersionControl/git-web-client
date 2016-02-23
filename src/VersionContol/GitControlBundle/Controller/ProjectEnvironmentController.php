@@ -20,7 +20,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 /**
  * Project controller.
  *
- * @Route("/project/project-environment")
+ * @Route("/project/{id}/project-environment")
  */
 class ProjectEnvironmentController extends BaseProjectController
 {
@@ -28,14 +28,12 @@ class ProjectEnvironmentController extends BaseProjectController
     /**
      * Lists all Project entities.
      *
-     * @Route("s/{project}", name="projectenvironment")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("s/", name="projectenvironment")
      * @Method("GET")
      * @Template()
      */
-    public function indexAction($project, Request $request)
+    public function indexAction(Request $request)
     {
-        $this->checkProjectAuthorization($project);
         
         $em = $this->getDoctrine()->getManager();
 
@@ -58,17 +56,15 @@ class ProjectEnvironmentController extends BaseProjectController
     /**
      * Creates a new Project entity.
      *
-     * @Route("/{project}/{gitAction}", name="projectenvironment_create")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("/{gitAction}", name="projectenvironment_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
      */
-    public function createAction(Request $request,$project,$gitAction = '')
+    public function createAction(Request $request,$gitAction = '')
     {
-        $this->checkProjectAuthorization($project);
          
         $projectEnvironment = new ProjectEnvironment();
-        $form = $this->createCreateForm($projectEnvironment,$project,$gitAction);
+        $form = $this->createCreateForm($projectEnvironment,$this->project,$gitAction);
         //$form   = $this->createCreateForm($projectEnvironment,$project,'clone');
         $form->handleRequest($request);
 
@@ -93,14 +89,13 @@ class ProjectEnvironmentController extends BaseProjectController
             $em->persist($projectEnvironment);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('project_edit', array('id' => $project->getId())));
+            return $this->redirect($this->generateUrl('project_edit'));
         }
 
-        return array(
-            'project' => $project,
+        return  array_merge($this->viewVariables, array(
             'projectEnvironment' => $projectEnvironment,
             'form'   => $form->createView(),
-        );
+        ));
     }
 
 
@@ -119,7 +114,7 @@ class ProjectEnvironmentController extends BaseProjectController
             $projectEnvironmentType = new ProjectEnvironmentType(false);
         }
         $form = $this->createForm($projectEnvironmentType, $entity, array(
-            'action' => $this->generateUrl('projectenvironment_create',array('project' => $project->getId(),'gitAction'=>$gitaction)),
+            'action' => $this->generateUrl('projectenvironment_create',array('gitAction'=>$gitaction)),
             'method' => 'POST',
         ));
         
@@ -138,69 +133,61 @@ class ProjectEnvironmentController extends BaseProjectController
     /**
      * Displays a form to create a new Project entity.
      *
-     * @Route("/new/{project}", name="projectenvironment_new")
+     * @Route("/new/", name="projectenvironment_new")
      * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
      */
-    public function newAction($project)
+    public function newAction()
     {
-        $this->checkProjectAuthorization($project);
          
         $projectEnvironment = new ProjectEnvironment();
-        $form   = $this->createCreateForm($projectEnvironment,$project,'new');
+        $form   = $this->createCreateForm($projectEnvironment,$this->project,'new');
         
         
 
-        return array(
-            'project' => $project,
+        return  array_merge($this->viewVariables, array(
             'projectEnvironment' => $projectEnvironment,
             'form'   => $form->createView(),
-        );
+        ));
     }
     
     /**
      * Displays a form to create a new Project entity.
      *
-     * @Route("/clone/{project}", name="projectenvironment_clone")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("/clone/", name="projectenvironment_clone")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
      */
-    public function cloneAction($project)
+    public function cloneAction()
     {
-        $this->checkProjectAuthorization($project);
          
         $projectEnvironment = new ProjectEnvironment();
-        $form   = $this->createCreateForm($projectEnvironment,$project,'clone');
+        $form   = $this->createCreateForm($projectEnvironment,$this->project,'clone');
 
-        return array(
-            'project' => $project,
+        return  array_merge($this->viewVariables, array(
             'projectEnvironment' => $projectEnvironment,
             'form'   => $form->createView(),
-        );
+        ));
     }
     
     /**
      * Displays a form to create a new Project entity.
      *
-     * @Route("/existing/{project}", name="projectenvironment_existing")
-     * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
+     * @Route("/existing/", name="projectenvironment_existing")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
      */
-    public function existingAction($project)
+    public function existingAction()
     {
-        $this->checkProjectAuthorization($project);
          
         $projectEnvironment = new ProjectEnvironment();
-        $form   = $this->createCreateForm($projectEnvironment,$project);
+        $form   = $this->createCreateForm($projectEnvironment,$this->project);
 
-        return array(
-            'project' => $project,
+        return array_merge($this->viewVariables, array(
             'projectEnvironment' => $projectEnvironment,
             'form'   => $form->createView(),
-        );
+        ));
     }
 
 
@@ -208,32 +195,29 @@ class ProjectEnvironmentController extends BaseProjectController
     /**
      * Displays a form to edit an existing Project entity.
      *
-     * @Route("/{id}/edit", name="projectenvironment_edit")
+     * @Route("/edit/{projectEnvironmentId}", name="projectenvironment_edit")
      * @Method("GET")
      * @Template()
      */
-    public function editAction($id)
+    public function editAction($projectEnvironmentId)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $projectEnvironment = $em->getRepository('VersionContolGitControlBundle:ProjectEnvironment')->find($id);
+        $projectEnvironment = $em->getRepository('VersionContolGitControlBundle:ProjectEnvironment')->find($projectEnvironmentId);
 
         if (!$projectEnvironment) {
             throw $this->createNotFoundException('Unable to find Project Environment entity.');
         }
-        
-        $this->checkProjectAuthorization($projectEnvironment->getProject(),'MASTER');
 
         $editForm = $this->createEditForm($projectEnvironment);
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($projectEnvironmentId);
         
         
-        return array(
-            'project'     => $projectEnvironment->getProject(),
+        return array_merge($this->viewVariables, array(
             'projectEnvironment'     => $projectEnvironment,
             'form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -246,7 +230,7 @@ class ProjectEnvironmentController extends BaseProjectController
     private function createEditForm(ProjectEnvironment $entity)
     {
         $form = $this->createForm(new ProjectEnvironmentType(), $entity, array(
-            'action' => $this->generateUrl('projectenvironment_update', array('id' => $entity->getId())),
+            'action' => $this->generateUrl('projectenvironment_update', array('projectEnvironmentId' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -257,23 +241,21 @@ class ProjectEnvironmentController extends BaseProjectController
     /**
      * Edits an existing Project entity.
      *
-     * @Route("/{id}", name="projectenvironment_update")
+     * @Route("/{projectEnvironmentId}", name="projectenvironment_update")
      * @Method("PUT")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:edit.html.twig")
      */
-    public function updateAction(Request $request, $id)
+    public function updateAction(Request $request, $projectEnvironmentId)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $projectEnvironment = $em->getRepository('VersionContolGitControlBundle:ProjectEnvironment')->find($id);
+        $projectEnvironment = $em->getRepository('VersionContolGitControlBundle:ProjectEnvironment')->find($projectEnvironmentId);
 
         if (!$projectEnvironment) {
             throw $this->createNotFoundException('Unable to find Project Environment entity.');
         }
-        
-        $this->checkProjectAuthorization($projectEnvironment->getProject(),'MASTER');
 
-        $deleteForm = $this->createDeleteForm($id);
+        $deleteForm = $this->createDeleteForm($projectEnvironmentId);
         $editForm = $this->createEditForm($projectEnvironment);
         $editForm->handleRequest($request);
 
@@ -282,34 +264,31 @@ class ProjectEnvironmentController extends BaseProjectController
             
             $this->get('session')->getFlashBag()->add('success',"Project Environment record updated");
 
-            return $this->redirect($this->generateUrl('projectenvironment_edit', array('id' => $id)));
+            return $this->redirect($this->generateUrl('projectenvironment_edit', array('projectEnvironmentId' => $projectEnvironmentId)));
         }
 
-        return array(
-            'project'      => $projectEnvironment->getProject(),
+        return array_merge($this->viewVariables, array(
             'projectEnvironment'      => $projectEnvironment,
             'form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
     /**
      * Deletes a Project entity.
      *
-     * @Route("/{id}", name="projectenvironment_delete")
+     * @Route("/", name="projectenvironment_delete")
      * @Method("DELETE")
      */
-    public function deleteAction(Request $request, $id)
+    public function deleteAction(Request $request, $projectEnvironmentId)
     {
         $em = $this->getDoctrine()->getManager();
-        $projectEnvironment = $em->getRepository('VersionContolGitControlBundle:ProjectEnvironment')->find($id);
+        $projectEnvironment = $em->getRepository('VersionContolGitControlBundle:ProjectEnvironment')->find($projectEnvironmentId);
 
         if (!$projectEnvironment) {
             throw $this->createNotFoundException('Unable to find Project Environment entity.');
         }
-        
-        $this->checkProjectAuthorization($projectEnvironment->getProject(),'MASTER');
-        $projectId = $projectEnvironment->getProject()->getId();    
-        $form = $this->createDeleteForm($id);
+    
+        $form = $this->createDeleteForm($projectEnvironmentId);
         $form->handleRequest($request);
         
         
@@ -318,20 +297,20 @@ class ProjectEnvironmentController extends BaseProjectController
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('project_edit',array('id'=>$projectId)));
+        return $this->redirect($this->generateUrl('project_edit'));
     }
 
     /**
      * Creates a form to delete a Project entity by id.
      *
-     * @param mixed $id The entity id
+     * @param mixed $projectEnvironmentId The entity id
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createDeleteForm($id)
+    private function createDeleteForm($projectEnvironmentId)
     {
         return $this->createFormBuilder()
-            ->setAction($this->generateUrl('projectenvironment_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('projectenvironment_delete', array('projectEnvironmentId' => $projectEnvironmentId)))
             ->setMethod('DELETE')
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()

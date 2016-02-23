@@ -190,7 +190,7 @@ class IssueComment implements IssueCommentInteface
      * @param \VersionContol\GitControlBundle\Entity\Issue $issue
      * @return \VersionContol\GitControlBundle\Entity\IssueComment
      */
-    public function setIssue(\VersionContol\GitControlBundle\Entity\Issues\Issue $issue) {
+    public function setIssue(\VersionContol\GitControlBundle\Entity\Issues\IssueInterface $issue) {
         $this->issue = $issue;
         return $this;
     }
