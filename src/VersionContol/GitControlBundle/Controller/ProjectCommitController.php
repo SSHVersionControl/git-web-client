@@ -66,6 +66,7 @@ class ProjectCommitController extends BaseProjectController
      */
     public function listAction($id)
     {
+        
        $branchName = $this->gitSyncCommands->getCurrentBranch();
        $files =  $this->gitCommitCommand->getFilesToCommit();
        
@@ -93,7 +94,7 @@ class ProjectCommitController extends BaseProjectController
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectCommit:list.html.twig")
      */
-    public function commitAction(Request $request,$id)
+    public function commitAction(Request $request)
     {
    
         $files =  $this->gitCommitCommand->getFilesToCommit();
@@ -141,7 +142,7 @@ class ProjectCommitController extends BaseProjectController
                 //Git Push to remote repository
                 $this->pushToRemote($commitEntity);
               
-                return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
+                return $this->redirect($this->generateUrl('project_commitlist'));
         
             }catch(\Exception $e){
                 $this->get('session')->getFlashBag()->add('error'
@@ -217,7 +218,7 @@ class ProjectCommitController extends BaseProjectController
         
         $this->gitCommitCommand = $this->get('version_control.git_command')->setProject($this->project);
         
-        return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
+        return $this->redirect($this->generateUrl('project_commitlist'));
         
     }
     
