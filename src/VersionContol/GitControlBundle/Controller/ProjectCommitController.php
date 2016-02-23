@@ -108,7 +108,7 @@ class ProjectCommitController extends BaseProjectController
            
             $selectedGitFiles = $commitEntity->getFiles();
      
-            //try{
+            try{
                 $selectedFiles = array();
                 $filesCommited = 0;
                 
@@ -144,10 +144,10 @@ class ProjectCommitController extends BaseProjectController
               
                 return $this->redirect($this->generateUrl('project_commitlist'));
         
-            //}catch(\Exception $e){
-            //    $this->get('session')->getFlashBag()->add('error'
-            //    , $e->getMessage());
-            //}
+            }catch(\Exception $e){
+                $this->get('session')->getFlashBag()->add('error'
+                , $e->getMessage());
+            }
 
         }
         
