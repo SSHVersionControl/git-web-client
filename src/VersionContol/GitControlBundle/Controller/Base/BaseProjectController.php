@@ -76,7 +76,7 @@ abstract class BaseProjectController extends Controller{
      */
     public function generateUrl($route, $parameters = array(),$referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
         $mergedParameters = array_merge(array('id'=>$this->project->getId()),$parameters);
-        parent::generateUrl($route, $mergedParameters,$referenceType);
+        return parent::generateUrl($route, $mergedParameters,$referenceType);
     }
     
      /**
