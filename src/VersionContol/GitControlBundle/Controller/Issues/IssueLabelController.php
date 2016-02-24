@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionContol\GitControlBundle\Entity\Issues\IssueLabelInterface;
 use VersionContol\GitControlBundle\Form\IssueLabelType;
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * IssueLabel controller.
@@ -37,6 +38,7 @@ class IssueLabelController extends BaseProjectController
      * @Route("s/", name="issuelabels")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function indexAction($id)
     {
@@ -54,6 +56,7 @@ class IssueLabelController extends BaseProjectController
      * @Route("/", name="issuelabel_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:IssueLabel:new.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function createAction(Request $request,$id)
     {
@@ -105,6 +108,7 @@ class IssueLabelController extends BaseProjectController
      * @Route("/new/", name="issuelabel_new")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function newAction($id)
     {
@@ -127,6 +131,7 @@ class IssueLabelController extends BaseProjectController
      * @Route("/edit/{labelId}", name="issuelabel_edit")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function editAction($id,$labelId)
     {
@@ -171,6 +176,7 @@ class IssueLabelController extends BaseProjectController
      * @Route("/{labelId}", name="issuelabel_update")
      * @Method("PUT")
      * @Template("VersionContolGitControlBundle:IssueLabel:edit.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function updateAction(Request $request, $id, $labelId)
     {
@@ -204,6 +210,7 @@ class IssueLabelController extends BaseProjectController
      * Deletes a IssueLabel entity.
      *
      * @Route("/delete/{labelId}", name="issuelabel_delete")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function deleteAction($id, $labelId)
     {
@@ -222,7 +229,7 @@ class IssueLabelController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id,$grantType='VIEW'){
+    public function initAction($id,$grantType='VIEW'){
         parent::initAction($id,$grantType);
         
         $em = $this->getDoctrine()->getManager();

@@ -16,7 +16,7 @@ use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
-
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 /**
  * Project controller.
  *
@@ -46,6 +46,7 @@ class ProjectRemoteController extends BaseProjectController
      * @Route("/", name="project_listremote")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="MASTER")
      */
     public function listAction($id){
 
@@ -65,6 +66,7 @@ class ProjectRemoteController extends BaseProjectController
      * @Route("/new/", name="project_newremote")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="MASTER")
      */
     public function newAction($id){
         
@@ -86,6 +88,7 @@ class ProjectRemoteController extends BaseProjectController
      * @Route("/create/", name="project_createremote")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectRemote:new.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function createAction(Request $request,$id)
     {
@@ -122,6 +125,7 @@ class ProjectRemoteController extends BaseProjectController
      * @Route("/delete/{remote}", name="project_deleteremote")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="MASTER")
      */
      public function deleteAction(Request $request,$id,$remote){
         
@@ -140,6 +144,7 @@ class ProjectRemoteController extends BaseProjectController
      * @Route("/rename/{remote}", name="project_renameremote")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="MASTER")
      */
      public function renameAction(Request $request,$id,$remote){
         
@@ -161,6 +166,7 @@ class ProjectRemoteController extends BaseProjectController
      * @Route("/rename/{remote}", name="project_remoteupdate")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectRemote:rename.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
      public function updateAction(Request $request,$id){
          
@@ -195,7 +201,7 @@ class ProjectRemoteController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id, $grantType = 'VIEW'){
+    public function initAction($id, $grantType = 'VIEW'){
         
         parent::initAction($id, $grantType);
         $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);

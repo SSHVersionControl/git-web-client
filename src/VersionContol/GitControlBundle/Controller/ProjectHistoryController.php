@@ -14,6 +14,7 @@ use VersionContol\GitControlBundle\Entity\UserProjects;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * Project controller.
@@ -35,6 +36,7 @@ class ProjectHistoryController extends BaseProjectController
      * @Route("/", name="project_log")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function listAction(Request $request,$id)
     {
@@ -80,6 +82,7 @@ class ProjectHistoryController extends BaseProjectController
      * @Route("/commit/{commitHash}", name="project_commitdiff")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function commitHistoryAction($id,$commitHash){
         
@@ -111,6 +114,7 @@ class ProjectHistoryController extends BaseProjectController
      * @Route("/commitfile/{commitHash}/{filePath}", name="project_commitfilediff")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function fileDiffAction($id,$commitHash,$filePath){
         
@@ -133,6 +137,7 @@ class ProjectHistoryController extends BaseProjectController
      *
      * @Route("/checkout-file/{commitHash}/{filePath}", name="project_checkout_file")
      * @Method("GET")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function checkoutFileAction($id,$commitHash,$filePath){
         
@@ -154,7 +159,7 @@ class ProjectHistoryController extends BaseProjectController
      * 
      * @param integer $id Project Id
      */
-    protected function initAction($id, $grantType = 'VIEW'){
+    public function initAction($id, $grantType = 'VIEW'){
  
         parent::initAction($id,$grantType);
         

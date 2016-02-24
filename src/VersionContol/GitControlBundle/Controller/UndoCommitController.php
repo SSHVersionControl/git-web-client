@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use VersionContol\GitControlBundle\Entity\UserProjects;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * Project controller.
@@ -36,6 +37,7 @@ class UndoCommitController extends BaseProjectController
      * @Route("/softcommit/", name="undocommit_soft")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Error:request.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function undoSoftCommitAction($id, Request $request){
 
@@ -52,6 +54,7 @@ class UndoCommitController extends BaseProjectController
      * @Route("/hardcommit/", name="undocommit_hard")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Error:request.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function undoHardCommitAction($id, Request $request){    
         
@@ -71,6 +74,7 @@ class UndoCommitController extends BaseProjectController
      * @Route("/checkoutCommit/{commitHash}", name="project_checkout_commit")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Error:request.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function checkoutCommitAction($id,$commitHash){
         
@@ -86,7 +90,7 @@ class UndoCommitController extends BaseProjectController
      * 
      * @param integer $id Project Id
      */
-    protected function initAction($id, $grantType = 'VIEW'){
+    public function initAction($id, $grantType = 'VIEW'){
  
         parent::initAction($id,$grantType);
         

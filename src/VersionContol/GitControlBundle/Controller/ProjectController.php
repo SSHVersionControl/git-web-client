@@ -153,13 +153,6 @@ class ProjectController extends Controller
         $editForm = $this->createEditForm($project);
         $deleteForm = $this->createDeleteForm($id);
         
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        
-        //$client = new \Github\Client();
-        //$client->authenticate($user->getGithubAccessToken(), null, \Github\Client::AUTH_HTTP_TOKEN);
-        //$repositories = $client->api('currentUser')->repositories();
-       // print_r($repositories);
-        
         return array(
             'project'      => $project,
             'edit_form'   => $editForm->createView(),

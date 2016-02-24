@@ -17,6 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 /**
  * Project controller.
  *
@@ -31,6 +32,7 @@ class ProjectEnvironmentController extends BaseProjectController
      * @Route("s/", name="projectenvironment")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="OWNER")
      */
     public function indexAction(Request $request)
     {
@@ -59,6 +61,7 @@ class ProjectEnvironmentController extends BaseProjectController
      * @Route("/{gitAction}", name="projectenvironment_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function createAction(Request $request,$gitAction = '')
     {
@@ -137,6 +140,7 @@ class ProjectEnvironmentController extends BaseProjectController
      * @ParamConverter("project", class="VersionContolGitControlBundle:Project")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function newAction()
     {
@@ -158,6 +162,7 @@ class ProjectEnvironmentController extends BaseProjectController
      * @Route("/clone/", name="projectenvironment_clone")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function cloneAction()
     {
@@ -177,6 +182,7 @@ class ProjectEnvironmentController extends BaseProjectController
      * @Route("/existing/", name="projectenvironment_existing")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:new.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function existingAction()
     {
@@ -198,6 +204,7 @@ class ProjectEnvironmentController extends BaseProjectController
      * @Route("/edit/{projectEnvironmentId}", name="projectenvironment_edit")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="OWNER")
      */
     public function editAction($projectEnvironmentId)
     {
@@ -244,6 +251,7 @@ class ProjectEnvironmentController extends BaseProjectController
      * @Route("/{projectEnvironmentId}", name="projectenvironment_update")
      * @Method("PUT")
      * @Template("VersionContolGitControlBundle:ProjectEnvironment:edit.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function updateAction(Request $request, $projectEnvironmentId)
     {
@@ -278,6 +286,7 @@ class ProjectEnvironmentController extends BaseProjectController
      *
      * @Route("/", name="projectenvironment_delete")
      * @Method("DELETE")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function deleteAction(Request $request, $projectEnvironmentId)
     {

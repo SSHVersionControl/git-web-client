@@ -17,6 +17,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use VersionContol\GitControlBundle\Form\CommitType;
 use VersionContol\GitControlBundle\Entity\Commit;
+
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
 /**
@@ -63,6 +65,7 @@ class ProjectCommitController extends BaseProjectController
      * @Route("/", name="project_commitlist")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function listAction($id)
     {
@@ -93,6 +96,7 @@ class ProjectCommitController extends BaseProjectController
      * @Route("/", name="project_commit")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectCommit:list.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function commitAction(Request $request)
     {
@@ -168,7 +172,7 @@ class ProjectCommitController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id, $grantType = 'EDIT'){
+    public function initAction($id, $grantType = 'EDIT'){
  
         parent::initAction($id,$grantType);
         
@@ -213,6 +217,7 @@ class ProjectCommitController extends BaseProjectController
      *
      * @Route("/about-merge/", name="project_commit_abortmerge")
      * @Method("GET")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function abortMergeAction($id){
         
@@ -272,6 +277,7 @@ class ProjectCommitController extends BaseProjectController
      * @Route("/filediff/{difffile}", name="project_filediff")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function fileDiffAction($id,$difffile){
         

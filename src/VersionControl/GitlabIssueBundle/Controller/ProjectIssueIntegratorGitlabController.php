@@ -12,7 +12,7 @@ use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
 use VersionControl\GitlabIssueBundle\Entity\ProjectIssueIntegratorGitlab;
 use VersionControl\GitlabIssueBundle\Form\ProjectIssueIntegratorGitlabType;
 use VersionControl\GitlabIssueBundle\Form\ProjectIssueIntegratorGitlabNewType;
-
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * Project controller.
@@ -27,6 +27,7 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
      * @Route("/", name="project_issue_integrator_gitlab_create")
      * @Method("POST")
      * @Template("VersionControlGitlabIssueBundle:ProjectIssueIntegrator:new.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function createAction(Request $request,$id)
     {
@@ -80,6 +81,7 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
      * @Route("/new/", name="project_issue_integrator_gitlab_new")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="OWNER")
      */
     public function newAction($id)
     {
@@ -103,6 +105,7 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
      * @Route("/{integratorId}/edit/", name="project_issue_integrator_gitlab_edit")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="OWNER")
      */
     public function editAction($id,$integratorId)
     {
@@ -151,6 +154,7 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
      * @Route("/{integratorId}/", name="project_issue_integrator_gitlab_update")
      * @Method("PUT")
      * @Template("VersionControlGitlabIssueBundle:ProjectIssueIntegrator:edit.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function updateAction(Request $request,$integratorId, $id)
     {

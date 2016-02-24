@@ -150,3 +150,8 @@ services:
      
     fos_user.doctrine_registry:
         alias: doctrine
+        
+    version_control.project_access_annotation_driver:
+        class: VersionContol\GitControlBundle\Annotation\Driver\ProjectAccessAnnotationDriver #Point class
+        tags: [{name: kernel.event_listener, event: kernel.controller, method: onKernelController}]          #Point event
+        arguments: [@annotation_reader] 

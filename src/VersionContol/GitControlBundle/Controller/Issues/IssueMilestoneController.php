@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionContol\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * IssueMilestone controller.
@@ -36,6 +37,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("s/", name="issuemilestones")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function indexAction($id, Request $request)
     {
@@ -72,6 +74,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/", name="issuemilestone_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:Issues/IssueMilestone:new.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function createAction(Request $request,$id)
     { 
@@ -121,6 +124,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/new/", name="issuemilestone_new")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function newAction($id)
     {
@@ -142,6 +146,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/{milestoneId}", name="issuemilestone_show")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function showAction($id,$milestoneId)
     {
@@ -175,6 +180,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/edit/{milestoneId}", name="issuemilestone_edit")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function editAction($id,$milestoneId)
     {
@@ -222,6 +228,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/{milestoneId}", name="issuemilestone_update")
      * @Method("PUT")
      * @Template("VersionContolGitControlBundle:Issues/IssueMilestone:edit.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function updateAction(Request $request, $id, $milestoneId)
     {
@@ -255,6 +262,7 @@ class IssueMilestoneController extends BaseProjectController
      *
      * @Route("/{milestoneId}", name="issuemilestone_delete")
      * @Method("DELETE")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function deleteAction(Request $request, $id, $milestoneId)
     {
@@ -295,6 +303,7 @@ class IssueMilestoneController extends BaseProjectController
      *
      * @Route("/close/{milestoneId}", name="issuemilestone_close")
      * @Method("GET")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function closeAction($id,$milestoneId)
     {
@@ -317,6 +326,7 @@ class IssueMilestoneController extends BaseProjectController
      *
      * @Route("/open/{milestoneId}", name="issuemilestone_open")
      * @Method("GET")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function openAction($id,$milestoneId)
     {
@@ -338,6 +348,7 @@ class IssueMilestoneController extends BaseProjectController
      * Lists all Issue entities.
      *
      * @Template()
+     * 
      */
     public function milestonesIssuesAction(Request $request,$id,$issueMilestone,$filter = 'open',$pageParameterName='page',$keywordParamaterName='keyword')
     {
@@ -373,7 +384,7 @@ class IssueMilestoneController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id,$grantType='VIEW'){
+    public function initAction($id,$grantType='VIEW'){
         $em = $this->getDoctrine()->getManager();
         
         parent::initAction($id,$grantType);

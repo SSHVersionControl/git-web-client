@@ -15,6 +15,8 @@ use VersionContol\GitControlBundle\Entity\UserProjects;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
+
 /**
  * Project controller.
  *
@@ -35,6 +37,7 @@ class ProjectFilesController extends BaseProjectController{
      * @Route("s/{currentDir}",defaults={"$currentDir" = ""}, name="project_filelist")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function fileListAction($id,$currentDir = ''){
 
@@ -64,7 +67,7 @@ class ProjectFilesController extends BaseProjectController{
      * 
      * @param integer $id Project Id
      */
-    protected function initAction($id,$grantType = 'VIEW'){
+    public function initAction($id,$grantType = 'VIEW'){
         
         parent::initAction($id,$grantType);
         $this->gitFilesCommands = $this->get('version_control.git_files')->setProject($this->project);
@@ -77,6 +80,7 @@ class ProjectFilesController extends BaseProjectController{
      * @Route("/ignore/{filePath}", name="project_fileignore")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectFiles:fileList.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function ignoreAction($id,$filePath){
         //$this->initAction($id,'MASTER');

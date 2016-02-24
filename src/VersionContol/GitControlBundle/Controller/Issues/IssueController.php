@@ -15,6 +15,7 @@ use VersionContol\GitControlBundle\Form\IssueCommentType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryInterface;
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * Issue controller.
@@ -42,6 +43,7 @@ class IssueController extends BaseProjectController
      * @Route("s/", name="issues")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function indexAction($id, Request $request)
     {
@@ -80,6 +82,7 @@ class IssueController extends BaseProjectController
      * @Route("s/latest/", name="issues_latest")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function latestAction($id, Request $request)
     {
@@ -112,6 +115,7 @@ class IssueController extends BaseProjectController
      * @Route("/", name="issue_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:Issues/Issue:new.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function createAction(Request $request,$id)
     {
@@ -163,6 +167,7 @@ class IssueController extends BaseProjectController
      * @Route("/new/", name="issue_new")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function newAction($id)
     {
@@ -183,6 +188,7 @@ class IssueController extends BaseProjectController
      * @Route("/{issueId}", name="issue_show")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function showAction($id,$issueId)
     {
@@ -215,6 +221,7 @@ class IssueController extends BaseProjectController
      * @Route("/edit/{issueId}", name="issue_edit")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function editAction($id,$issueId)
     {
@@ -258,6 +265,7 @@ class IssueController extends BaseProjectController
      * @Route("/{issueId}", name="issue_update")
      * @Method("PUT")
      * @Template("VersionContolGitControlBundle:Issues/Issue:edit.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function updateAction(Request $request, $id, $issueId)
     {
@@ -286,6 +294,7 @@ class IssueController extends BaseProjectController
      *
      * @Route("/", name="issue_delete")
      * @Method("DELETE")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function deleteAction(Request $request, $id)
     {
@@ -310,6 +319,7 @@ class IssueController extends BaseProjectController
      *
      * @Route("/close/{issueId}", name="issue_close")
      * @Method("GET")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function closeAction($id,$issueId)
     {
@@ -330,6 +340,7 @@ class IssueController extends BaseProjectController
      *
      * @Route("/open", name="issue_open")
      * @Method("GET")
+      * @ProjectAccess(grantType="EDIT")
      */
     public function openAction($id)
     {
@@ -400,6 +411,7 @@ class IssueController extends BaseProjectController
      * @Route("/comment/{issueId}", name="issuecomment_create")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:Issues/Issue:show.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function createCommentAction(Request $request,$id, $issueId)
     {
@@ -463,6 +475,7 @@ class IssueController extends BaseProjectController
      *
      * @Route("s/search/", name="issue_searchajax")
      * @Method("GET")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function searchAjaxAction($id,Request $request)
     {
@@ -497,6 +510,7 @@ class IssueController extends BaseProjectController
      * @Route("/find/{issueId}", name="issue_findajax")
      * @Method("GET")
      * @TODO Pass in project id
+     * @ProjectAccess(grantType="VIEW")
      */
     public function findAjaxAction($id,$issueId)
     {
@@ -515,6 +529,7 @@ class IssueController extends BaseProjectController
      * @Route("/modal/{issueId}", name="issue_show_modal")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function showModalAction($id,$issueId)
     {
@@ -535,7 +550,7 @@ class IssueController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id,$grantType='VIEW'){
+    public function initAction($id,$grantType='VIEW'){
         parent::initAction($id,$grantType);
         
         $em = $this->getDoctrine()->getManager();

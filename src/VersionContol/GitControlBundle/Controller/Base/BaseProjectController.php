@@ -75,15 +75,17 @@ abstract class BaseProjectController extends Controller{
      * @see UrlGeneratorInterface
      */
     public function generateUrl($route, $parameters = array(),$referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
-        $mergedParameters = array_merge(array('id'=>$this->project->getId()),$parameters);
+        if($this->project){
+            $mergedParameters = array_merge(array('id'=>$this->project->getId()),$parameters);
+        }
         return parent::generateUrl($route, $mergedParameters,$referenceType);
     }
     
-     /**
+    /**
      * 
      * @param integer $id
      */
-    protected function initAction($id,$grantType = 'VIEW'){
+    public function initAction($id,$grantType = 'VIEW'){
  
         $em = $this->getDoctrine()->getManager();
 
@@ -108,19 +110,31 @@ abstract class BaseProjectController extends Controller{
      *
      * @param ContainerInterface|null $container A ContainerInterface instance or null
      */
-    public function setContainer(ContainerInterface $container = null){
+    /*public function setContainer(ContainerInterface $container = null){
         $this->container = $container;
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $id = $request->get('id', false);
         if($id){
             $grantType = $this->getGrantType();
+            print_r($grantType);
             $this->initAction($id,$grantType);
         }
-    }
+    }*/
     
     public function getGrantType(){
         return $this->projectGrantType;
     }
+    
+    public function getProjectGrantType() {
+        return $this->projectGrantType;
+    }
+
+    public function setProjectGrantType($projectGrantType) {
+        $this->projectGrantType = $projectGrantType;
+        return $this;
+    }
+
+
     
 }
 

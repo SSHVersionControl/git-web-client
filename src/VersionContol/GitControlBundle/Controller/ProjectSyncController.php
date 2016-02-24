@@ -15,7 +15,7 @@ use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
- /** ///Route("/example", service="example_bundle.controller.example_controller") */
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * Project controller.
@@ -43,6 +43,7 @@ class ProjectSyncController extends BaseProjectController
      * @Route("push/", name="project_push")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="MASTER")
      */
     public function pushAction()
     {
@@ -65,6 +66,7 @@ class ProjectSyncController extends BaseProjectController
      * @Route("pushremote/", name="project_pushremote")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectSync:push.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function pushToRemoteAction(Request $request,$id)
     {
@@ -102,6 +104,7 @@ class ProjectSyncController extends BaseProjectController
      * @Route("pull/", name="project_pull")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="MASTER")
      */
     public function pullAction()
     {
@@ -128,6 +131,7 @@ class ProjectSyncController extends BaseProjectController
      * @Route("pulllocal/", name="project_pulllocal")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectSync:pull.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function pullToLocalAction(Request $request,$id)
     {
@@ -173,7 +177,7 @@ class ProjectSyncController extends BaseProjectController
      * 
      * 
      */
-    protected function initAction($id, $grantType = 'VIEW'){
+    public function initAction($id, $grantType = 'VIEW'){
         parent::initAction($id,$grantType);
         $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
     }

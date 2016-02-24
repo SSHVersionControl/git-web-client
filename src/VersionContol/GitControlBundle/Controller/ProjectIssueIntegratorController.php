@@ -15,6 +15,8 @@ use VersionControl\GithubIssueBundle\Form\ProjectIssueIntegratorGithubType;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
+
 /**
  * Project controller.
  *
@@ -30,6 +32,7 @@ class ProjectIssueIntegratorController extends BaseProjectController{
      *
      * @Route("/delete/{integratorId}", name="project_issue_integrator_delete")
      * @Method("DELETE")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function deleteAction(Request $request, $id, $integratorId)
     {
@@ -75,6 +78,7 @@ class ProjectIssueIntegratorController extends BaseProjectController{
     /**
      * @Route("/", name="project_issue_integrator")
      * @Template()
+     * @ProjectAccess(grantType="OWNER")
      */
     public function indexAction($id){
         

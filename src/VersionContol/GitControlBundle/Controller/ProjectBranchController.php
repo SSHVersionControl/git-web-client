@@ -15,6 +15,8 @@ use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
+
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
 /**
@@ -44,6 +46,7 @@ class ProjectBranchController extends BaseProjectController
      * @Route("es/{newBranchName}", name="project_branches")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function branchesAction($id,$newBranchName = false)
     {
@@ -71,6 +74,7 @@ class ProjectBranchController extends BaseProjectController
      * @Route("/create/", name="project_branch")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectBranch:branches.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function createBranchAction(Request $request,$id)
     {
@@ -109,6 +113,7 @@ class ProjectBranchController extends BaseProjectController
      * @Route("/checkoutbranch/{branchName}", name="project_checkoutbranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function checkoutBranchAction($id, $branchName){
         
@@ -126,6 +131,7 @@ class ProjectBranchController extends BaseProjectController
      * @Route("/remotes", name="project_branch_remotes")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function remoteBranchesAction($id)
     {
@@ -158,6 +164,7 @@ class ProjectBranchController extends BaseProjectController
      * @Route("/checkout-remote", name="project_branch_remote_checkout")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectBranch:remoteBranches.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function checkoutRemoteBranchAction(Request $request,$id)
     {
@@ -208,6 +215,7 @@ class ProjectBranchController extends BaseProjectController
      * @Route("/fetchall/", name="project_branch_fetchall")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectBranch:remoteBranches.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function fetchAllAction($id){
         
@@ -226,6 +234,7 @@ class ProjectBranchController extends BaseProjectController
      * @Route("/deletebranch/{branchName}", name="project_deletebranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function deleteBranchAction($id, $branchName){
         
@@ -279,6 +288,7 @@ class ProjectBranchController extends BaseProjectController
      * @Route("/mergebranch/{branchName}", name="project_mergebranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function mergeBranchAction($id,$branchName){
         
@@ -338,7 +348,7 @@ class ProjectBranchController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id, $grantType = 'VIEW'){
+    public function initAction($id, $grantType = 'VIEW'){
  
         parent::initAction($id,$grantType);
         

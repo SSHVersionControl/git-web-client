@@ -14,7 +14,7 @@ use VersionControl\GithubIssueBundle\Entity\ProjectIssueIntegratorGithub;
 use VersionControl\GithubIssueBundle\Form\ProjectIssueIntegratorGithubType;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 /**
  * Project controller.
  *
@@ -28,6 +28,7 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
      * @Route("/", name="project_issue_integrator_github_create")
      * @Method("POST")
      * @Template("VersionControlGithubIssueBundle:ProjectIssueIntegrator:new.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function createAction(Request $request,$id)
     {
@@ -81,6 +82,7 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
      * @Route("/new/", name="project_issue_integrator_github_new")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="OWNER")
      */
     public function newAction($id)
     {
@@ -104,6 +106,7 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
      * @Route("/{integratorId}/edit/", name="project_issue_integrator_github_edit")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="OWNER")
      */
     public function editAction($id,$integratorId)
     {
@@ -152,6 +155,7 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
      * @Route("/{integratorId}/", name="project_issue_integrator_github_update")
      * @Method("PUT")
      * @Template("VersionControlGithubIssueBundle:ProjectIssueIntegrator:edit.html.twig")
+     * @ProjectAccess(grantType="OWNER")
      */
     public function updateAction(Request $request,$integratorId, $id)
     {
