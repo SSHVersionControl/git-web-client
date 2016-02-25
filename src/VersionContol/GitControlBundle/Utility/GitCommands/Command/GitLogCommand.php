@@ -233,7 +233,7 @@ class GitLogCommand extends AbstractGitCommand {
         if(is_array($this->logData)){
             return array();
         }
-        $lines = $this->command->splitOnNewLine($this->logData);
+        $lines = $this->splitOnNewLine($this->logData);
 
         if(is_array($lines)){
             $paginatedLines = $this->paginate($lines);
@@ -256,7 +256,7 @@ class GitLogCommand extends AbstractGitCommand {
      */
     public function getFirstResult(){
         $log = null;
-        $lines = $this->command->splitOnNewLine($this->logData);
+        $lines = $this->splitOnNewLine($this->logData);
 
         if(is_array($lines) && count($lines) > 0 ){
             $line = trim($lines[0]);

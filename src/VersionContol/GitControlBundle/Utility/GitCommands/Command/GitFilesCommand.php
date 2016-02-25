@@ -252,7 +252,7 @@ class GitFilesCommand extends AbstractGitCommand {
             }
         }
 
-        $lines = $this->command->splitOnNewLine($logData);
+        $lines = $this->splitOnNewLine($logData);
 
         if(is_array($lines) && count($lines) > 0){
             foreach($lines as $line){
@@ -348,7 +348,7 @@ class GitFilesCommand extends AbstractGitCommand {
         $remoteFileInfo = new RemoteFileInfo($fileData);
 
         $contents = $this->readFile($remoteFileInfo);
-        $ignoreFiles = $this->command->splitOnNewLine($contents, true);
+        $ignoreFiles = $this->splitOnNewLine($contents, true);
         
         return $ignoreFiles;
     }

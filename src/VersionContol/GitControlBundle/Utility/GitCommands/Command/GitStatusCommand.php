@@ -181,7 +181,7 @@ class GitStatusCommand extends AbstractGitCommand {
     protected function processStatus($stausData){
         $files = array();
         
-        $lines = $this->command->splitOnNewLine($stausData,false);
+        $lines = $this->splitOnNewLine($stausData,false);
 
         if(is_array($lines) && count($lines) > 0){
             foreach($lines as $line){

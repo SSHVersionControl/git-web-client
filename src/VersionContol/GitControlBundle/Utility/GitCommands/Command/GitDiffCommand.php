@@ -53,7 +53,7 @@ class GitDiffCommand extends AbstractGitCommand {
      */
     public function getFilesInCommit($commitHash){
          $response = $this->command->runCommand("git diff-tree --no-commit-id --name-status -r ".escapeshellarg($commitHash)."");
-         $responseLines = $this->command->splitOnNewLine($response);
+         $responseLines = $this->splitOnNewLine($response);
          $files = new GitCommitFileCollection();
          foreach($responseLines as $line){
              $files->addGitCommitFile((new GitCommitFile($line)));
@@ -64,7 +64,7 @@ class GitDiffCommand extends AbstractGitCommand {
     public function getPreviousCommitHash($commitHash = 'HEAD'){
         $previousCommitHash = '';
         $response = $this->command->runCommand(" git log --pretty=format:'%h' -n 2 ".escapeshellarg($commitHash)."");
-        $responseLines = $this->command->splitOnNewLine($response);
+        $responseLines = $this->splitOnNewLine($response);
         if(count($responseLines) == 2){
             $previousCommitHash = trim($responseLines['1']);
         }

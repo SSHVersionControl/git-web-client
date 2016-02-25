@@ -42,7 +42,7 @@ class GitUndoCommand extends AbstractGitCommand {
         $response = $this->command->runCommand(sprintf('git checkout %s 2>&1',escapeshellarg($commitHash)));
         
         //Trigger file alter Event
-        $this->command->triggerGitAlterFilesEvent();
+        $this->triggerGitAlterFilesEvent();
         
         return $response;       
     }
@@ -59,7 +59,7 @@ class GitUndoCommand extends AbstractGitCommand {
         $response = $this->command->runCommand(sprintf('git checkout %s %s',escapeshellarg($commitHash),escapeshellarg($file)));
         
         //Trigger file alter Event
-        $this->command->triggerGitAlterFilesEvent();
+        $this->triggerGitAlterFilesEvent();
         
         return $response;       
     }

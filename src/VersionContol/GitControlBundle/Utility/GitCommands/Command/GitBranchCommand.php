@@ -77,7 +77,7 @@ class GitBranchCommand extends AbstractGitCommand{
         
         $localBranches = $this->command->runCommand($command);
          
-         return $this->command->splitOnNewLine($localBranches,true);
+         return $this->splitOnNewLine($localBranches,true);
     }
     
     /**
@@ -97,7 +97,7 @@ class GitBranchCommand extends AbstractGitCommand{
         
         $localBranches = $this->command->runCommand($command);
          
-         return $this->command->splitOnNewLine($localBranches,true);
+         return $this->splitOnNewLine($localBranches,true);
     }
     
     /**
@@ -142,7 +142,7 @@ class GitBranchCommand extends AbstractGitCommand{
                 $output .= $this->command->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));
                 
                 //Trigger file alter Event
-                $this->command->triggerGitAlterFilesEvent();
+                $this->triggerGitAlterFilesEvent();
             }
         }else{
             throw new \Exception('This is not a valid branch name');
@@ -168,7 +168,7 @@ class GitBranchCommand extends AbstractGitCommand{
             if($switchToBranch){
                 $output .= $this->command->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));;
                 //Trigger file alter Event
-                $this->command->triggerGitAlterFilesEvent();
+                $this->triggerGitAlterFilesEvent();
             }
         }else{
             throw new \Exception('This is not a valid branch name');
@@ -233,7 +233,7 @@ class GitBranchCommand extends AbstractGitCommand{
         $response = $this->command->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName))); 
         
         //Trigger file alter Event
-        $this->command->triggerGitAlterFilesEvent();
+        $this->triggerGitAlterFilesEvent();
         
         return $response;
     }
@@ -279,7 +279,7 @@ class GitBranchCommand extends AbstractGitCommand{
         $response = $this->command->runCommand(sprintf('git merge --no-ff %s 2>&1',  escapeshellarg($branchName)));
         
         //Trigger file alter Event
-        $this->command->triggerGitAlterFilesEvent();
+        $this->triggerGitAlterFilesEvent();
         
         return $response;
     }
@@ -307,7 +307,7 @@ class GitBranchCommand extends AbstractGitCommand{
         $response = $this->command->runCommand('git merge --abort 2>&1');
         
          //Trigger file alter Event
-        $this->command->triggerGitAlterFilesEvent();
+        $this->triggerGitAlterFilesEvent();
         
         return $response;
     }
@@ -318,7 +318,7 @@ class GitBranchCommand extends AbstractGitCommand{
      */
     public function listConflictedFiles(){
         
-        return $this->command->splitOnNewLine($this->command->runCommand('git diff --name-only --diff-filter=U 2>&1'));
+        return $this->splitOnNewLine($this->command->runCommand('git diff --name-only --diff-filter=U 2>&1'));
     }
     
     

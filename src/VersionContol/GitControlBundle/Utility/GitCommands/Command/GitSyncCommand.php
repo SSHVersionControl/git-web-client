@@ -32,7 +32,7 @@ class GitSyncCommand extends AbstractGitCommand {
      */
     public function getRemotes(){
         
-        $remotes = $this->command->splitOnNewLine($this->command->runCommand('git remote'));
+        $remotes = $this->splitOnNewLine($this->command->runCommand('git remote'));
         return $remotes;
     }
     
@@ -49,7 +49,7 @@ class GitSyncCommand extends AbstractGitCommand {
     public function getRemoteVersions(){
         $remotes = array();
         
-        $lines = $this->command->splitOnNewLine($this->command->runCommand('git remote -v'));
+        $lines = $this->splitOnNewLine($this->command->runCommand('git remote -v'));
 
         if(count($lines) >= 2){
             for($i = 1; $i < count($lines); $i+=2){
@@ -137,7 +137,7 @@ class GitSyncCommand extends AbstractGitCommand {
         $response = $this->command->runCommand('git reset --hard ORIG_HEAD');
         
          //Trigger file alter Event
-        $this->command->triggerGitAlterFilesEvent();
+        $this->triggerGitAlterFilesEvent();
         
         return $response;
     }
@@ -199,7 +199,7 @@ class GitSyncCommand extends AbstractGitCommand {
         $response = $this->command->runCommand($command);
         
          //Trigger file alter Event
-        $this->command->triggerGitAlterFilesEvent();
+        $this->triggerGitAlterFilesEvent();
         
         return $response;
     }

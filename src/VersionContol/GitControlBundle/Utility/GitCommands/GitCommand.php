@@ -35,7 +35,6 @@ class GitCommand {
     protected $projectEnvironment;
     
 
-    
     /**
      * @var ProjectEnvironmentStorage
      */
@@ -168,25 +167,6 @@ class GitCommand {
         return $this->projectEnvironment;
     }
 
-        
-    /**
-     * Splits a block of text on newlines and returns an array
-     *  
-     * @param string $text Text to split
-     * @param boolean $trimSpaces If true then each line is trimmed of white spaces. Default true. 
-     * @return array Array of lines
-     */
-    public function splitOnNewLine($text,$trimSpaces = true){
-        if(!trim($text)){
-            return array();
-        }
-        $lines = preg_split('/$\R?^/m', $text);
-        if($trimSpaces){
-            return array_map(array($this,'trimSpaces'),$lines); 
-        }else{
-            return $lines; 
-        }
-    }
     
     /**
      * Gets the number of objects in git repo
@@ -204,9 +184,7 @@ class GitCommand {
         return $objectCount;
     }
     
-    public function trimSpaces($value){
-        return trim(trim($value),'\'');
-    }
+
     
     public function getSecurityContext() {
         return $this->securityContext;
