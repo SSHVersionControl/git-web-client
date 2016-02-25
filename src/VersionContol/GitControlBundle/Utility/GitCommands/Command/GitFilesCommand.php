@@ -265,21 +265,6 @@ class GitFilesCommand extends AbstractGitCommand {
         return $logs;
     }
     
-    /**
-     * Gets the number of objects in git repo
-     * The command returns data in the format:
-     *  3251 objects, 15308 kilobytes
-     * @return integer The number of objects
-     */
-    public function getObjectCount(){
-        $result = $this->command->runCommand('git count-objects');
-        $splits = explode(',',$result);
-        //0 = object count 1 = size
-        $objects = explode(' ',$splits[0]);
-        $objectCount = $objects[0];
-        
-        return $objectCount;
-    }
     
     public function ignoreFile($filePath){
         $response = '';
