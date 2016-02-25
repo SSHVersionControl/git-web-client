@@ -26,18 +26,6 @@ use VersionContol\GitControlBundle\Annotation\ProjectAccess;
  */
 class ProjectBranchController extends BaseProjectController
 {
-    
-    
-    /**
-     *
-     * @var GitCommand 
-     */
-    protected $gitBranchCommands;
-    
-
-    protected $projectGrantType = 'EDIT';
-
-
 
 
     /**
@@ -89,7 +77,7 @@ class ProjectBranchController extends BaseProjectController
             $switchToBranch= $data['switch'];
             try{
                 
-                $response = $this->gitBranchCommands->createLocalBranch($newBranchName,$switchToBranch);
+                $response = $this->gitCommands->command('branch')->createLocalBranch($newBranchName,$switchToBranch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
                 return $this->redirect($this->generateUrl('project_branches', array('id' => $id)));
                 
@@ -118,7 +106,7 @@ class ProjectBranchController extends BaseProjectController
     public function checkoutBranchAction($id, $branchName){
         
         
-        $response = $this->gitBranchCommands->checkoutBranch($branchName);
+        $response = $this->gitCommands->command('branch')->checkoutBranch($branchName);
         
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -136,10 +124,10 @@ class ProjectBranchController extends BaseProjectController
     public function remoteBranchesAction($id)
     {
         
-        $branchName = $this->gitBranchCommands->getCurrentBranch();
+        $branchName = $this->gitCommands->command('branch')->getCurrentBranch();
         
         //Remote Server choice 
-        $gitRemoteBranches = $this->gitBranchCommands->getBranchRemoteListing();
+        $gitRemoteBranches = $this->gitCommands->command('branch')->getBranchRemoteListing();
         
         $form = $this->createNewBranchForm($this->project,array(),'project_branch_remote_checkout');
         $form->add('remotename', 'hidden', array(
@@ -169,8 +157,8 @@ class ProjectBranchController extends BaseProjectController
     public function checkoutRemoteBranchAction(Request $request,$id)
     {
         
-        $branchName = $this->gitBranchCommands->getCurrentBranch();
-         $gitRemoteBranches = $this->gitBranchCommands->getBranchRemoteListing();
+        $branchName = $this->gitCommands->command('branch')->getCurrentBranch();
+         $gitRemoteBranches = $this->gitCommands->command('branch')->getBranchRemoteListing();
 
         $form = $this->createNewBranchForm($this->project,array(),'project_branch_remote_checkout');
         $form->add('remotename', 'hidden', array(
@@ -190,7 +178,7 @@ class ProjectBranchController extends BaseProjectController
             $switchToBranch= $data['switch'];
             
             try{
-                $response = $this->gitBranchCommands->createBranchFromRemote($newBranchName,$remoteBranchName,$switchToBranch);
+                $response = $this->gitCommands->command('branch')->createBranchFromRemote($newBranchName,$remoteBranchName,$switchToBranch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
                 return $this->redirect($this->generateUrl('project_branch_remotes', array('id' => $id)));
                 
@@ -220,7 +208,7 @@ class ProjectBranchController extends BaseProjectController
     public function fetchAllAction($id){
         
         
-        $response = $this->gitBranchCommands->fetchAll();
+        $response = $this->gitCommands->command('branch')->fetchAll();
         
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -238,7 +226,7 @@ class ProjectBranchController extends BaseProjectController
      */
     public function deleteBranchAction($id, $branchName){
         
-        $response = $this->gitBranchCommands->deleteBranch($branchName);
+        $response = $this->gitCommands->command('branch')->deleteBranch($branchName);
         
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -292,7 +280,7 @@ class ProjectBranchController extends BaseProjectController
      */
     public function mergeBranchAction($id,$branchName){
         
-        $response = $this->gitBranchCommands->mergeBranch($branchName);
+        $response = $this->gitCommands->command('branch')->mergeBranch($branchName);
             
         $this->get('session')->getFlashBag()->add('notice', $response);
             
@@ -302,8 +290,8 @@ class ProjectBranchController extends BaseProjectController
     
     private function getBranchesToMerge(){
         
-        $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
-        $currentbranchName = $this->gitBranchCommands->getCurrentBranch();
+        $gitLocalBranches = $this->gitCommands->command('branch')->getBranches(true);
+        $currentbranchName = $this->gitCommands->command('branch')->getCurrentBranch();
         $mergeBranches = array();
         foreach($gitLocalBranches as $branchName){
             if($branchName !== $currentbranchName){
@@ -344,25 +332,14 @@ class ProjectBranchController extends BaseProjectController
         return $form;
     }
     
-    /**
-     * 
-     * @param integer $id
-     */
-    public function initAction($id, $grantType = 'VIEW'){
- 
-        parent::initAction($id,$grantType);
-        
-        $this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
-
-    }
     
     protected function initListingView(){
         
-        $branchName = $this->gitBranchCommands->getCurrentBranch();
+        $branchName = $this->gitCommands->command('branch')->getCurrentBranch();
         //Local Server choice 
-        $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
+        $gitLocalBranches = $this->gitCommands->command('branch')->getBranches(true);
         
-        $gitLogCommand = $this->get('version_control.git_log')->setProject($this->project);
+        $gitLogCommand = $this->gitCommands->command('log');
 
  
         $gitLogCommand->setBranch($branchName)->setLogCount(1);

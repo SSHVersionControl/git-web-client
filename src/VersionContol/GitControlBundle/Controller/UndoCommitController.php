@@ -94,7 +94,7 @@ class UndoCommitController extends BaseProjectController
  
         parent::initAction($id,$grantType);
         
-        $this->gitUndoCommands = $this->get('version_control.git_undo')->setProject($this->project);
+        $this->gitUndoCommands = $this->gitCommands->command('undo');
 
     }
     

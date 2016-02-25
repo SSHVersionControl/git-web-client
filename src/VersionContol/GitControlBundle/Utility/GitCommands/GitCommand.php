@@ -16,7 +16,10 @@ use VersionContol\GitControlBundle\Entity\ProjectEnvironment;
 use VersionContol\GitControlBundle\Logger\GitCommandLogger;
 use Symfony\Component\Stopwatch\Stopwatch;
 
-abstract class GitCommand {
+use VersionContol\GitControlBundle\Utility\GitCommands\Command as Command;
+use VersionContol\GitControlBundle\Utility\GitCommands\Exception\InvalidArgumentException;
+
+class GitCommand {
     
     protected $gitPath;
     
@@ -68,53 +71,6 @@ abstract class GitCommand {
      */
     private $sshProcess;
     
-    /**
-     * Get current active Branch Name
-     * If there is no commits (eg new repo) then branch name is 'NEW REPO'
-     * This git command needs at least one commit before if show the correct branch name.
-     *  
-     * @return string The current branch name
-     */
-    public function getCurrentBranch(){
-        $branchName = '';
-        try{
-            //$branchName =  $this->runCommand('git rev-parse --abbrev-ref HEAD');
-            $branchName =  $this->runCommand('git symbolic-ref --short -q HEAD');
-        }catch(\RuntimeException $e){
-            $branchName = $this->getCurrentBranchOldGit();
-        }
-        if(!$branchName){
-            $branchName = "(No Branch)";
-        }
-        
-        return $branchName;
-    }
-    
-    /**
-     * Git "--short" does not work on older Git versions.
-     * @TODO Check for git version
-     * @return string
-     * @throws Exception
-     */
-    public function getCurrentBranchOldGit(){
-        $branchName = '';
-        try{
-            //$branchName =  $this->runCommand('git rev-parse --abbrev-ref HEAD');
-            $response =  $this->runCommand('git symbolic-ref HEAD');
-            $tmp = explode('/', $response);
-            $branchName = $tmp['2'];
-        }catch(\RuntimeException $e){
-            if($this->getObjectCount() == 0){
-                $branchName = 'NEW REPO';
-            }else{
-                throw new Exception($e->getMessage());
-            }
-        }
-        
-        return $branchName;
-        
-
-    }
     
     /**
      * Wrapper function to run shell commands. Supports local and remote commands
@@ -124,7 +80,7 @@ abstract class GitCommand {
      * @return string Result of command
      * @throws \RuntimeException
      */
-    protected function runCommand($command){
+    public function runCommand($command){
         
         if ($this->stopwatch) {
             $this->stopwatch->start('git_request', 'version_control');
@@ -211,13 +167,22 @@ abstract class GitCommand {
     }
     
     /**
+     * Gets Project Environment
+     * @return type
+     */
+    public function getProjectEnvironment() {
+        return $this->projectEnvironment;
+    }
+
+        
+    /**
      * Splits a block of text on newlines and returns an array
      *  
      * @param string $text Text to split
      * @param boolean $trimSpaces If true then each line is trimmed of white spaces. Default true. 
      * @return array Array of lines
      */
-    protected function splitOnNewLine($text,$trimSpaces = true){
+    public function splitOnNewLine($text,$trimSpaces = true){
         if(!trim($text)){
             return array();
         }
@@ -306,7 +271,7 @@ abstract class GitCommand {
      * @param array  $data
      * @param int    $start
      */
-    protected function logCommand($command, $method, $data, $start)
+    public function logCommand($command, $method, $data, $start)
     {
         if (!$this->logger or !$this->logger instanceof GitCommandLogger) {
             return;
@@ -327,7 +292,41 @@ abstract class GitCommand {
     }
 
 
+    public function command($name){
+        switch (trim($name)) {
+            case 'branch':
+                $command = new Command\GitBranchCommand($this);
+                break;
+            case 'commit':
+                 $command = new Command\GitCommitCommand($this);
+                 break;
+            case 'diff':
+                 $command = new Command\GitDiffCommand($this);
+                 break;
+            case 'files':
+                 $command = new Command\GitFilesCommand($this);
+                 break;
+            case 'init':
+                 $command = new Command\GitInitCommand($this);
+                 break;
+            case 'log':
+                 $command = new Command\GitLogCommand($this);
+                 break;
+            case 'status':
+                 $command = new Command\GitStatusCommand($this);
+                 break;
+            case 'sync':
+                 $command = new Command\GitSyncCommand($this);
+                 break;
+            case 'undo':
+                 $command = new Command\GitUndoCommand($this);
+                 break;
+            default:
+                throw new InvalidArgumentException(sprintf('Unknown command instance called: "%s"', $name));
+        }
 
+        return $command;
+    }
 
     
 }

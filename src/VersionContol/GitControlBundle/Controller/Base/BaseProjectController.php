@@ -96,12 +96,12 @@ abstract class BaseProjectController extends Controller{
         }
         $this->checkProjectAuthorization($this->project,$grantType);
         
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
+        $this->gitCommands = $this->get('version_control.git_commands')->setProject($this->project);
         //$this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
-        
+ 
         $this->viewVariables = array_merge($this->viewVariables, array(
             'project'      => $this->project,
-            'branchName' => $this->gitCommands->getCurrentBranch(),
+            'branchName' => $this->gitCommands->command('branch')->getCurrentBranch(),
             ));
     }
     

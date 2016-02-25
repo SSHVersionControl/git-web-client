@@ -87,7 +87,7 @@ class ProjectHistoryController extends BaseProjectController
     public function commitHistoryAction($id,$commitHash){
         
         
-        $gitDiffCommand = $this->get('version_control.git_diff')->setProject($this->project);
+        $gitDiffCommand = $this->gitCommands->command('diff');
 
         $this->gitLogCommand
                 ->setLogCount(1)
@@ -119,7 +119,7 @@ class ProjectHistoryController extends BaseProjectController
     public function fileDiffAction($id,$commitHash,$filePath){
         
         
-        $gitDiffCommand = $this->get('version_control.git_diff')->setProject($this->project);
+        $gitDiffCommand = $this->gitCommands->command('diff');
 
         $difffile = urldecode($filePath);
         
@@ -142,7 +142,7 @@ class ProjectHistoryController extends BaseProjectController
     public function checkoutFileAction($id,$commitHash,$filePath){
         
         
-        $gitUndoCommand = $this->get('version_control.git_undo')->setProject($this->project);
+        $gitUndoCommand = $this->gitCommands->command('undo');
 
         $file = urldecode($filePath);
         
@@ -163,7 +163,7 @@ class ProjectHistoryController extends BaseProjectController
  
         parent::initAction($id,$grantType);
         
-        $this->gitLogCommand = $this->get('version_control.git_log')->setProject($this->project);
+        $this->gitLogCommand = $this->gitCommands->command('log');
  
     }
 }

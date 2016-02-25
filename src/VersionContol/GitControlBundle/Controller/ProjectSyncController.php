@@ -179,7 +179,7 @@ class ProjectSyncController extends BaseProjectController
      */
     public function initAction($id, $grantType = 'VIEW'){
         parent::initAction($id,$grantType);
-        $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
+        $this->gitSyncCommands = $this->gitCommands->command('sync');
     }
     
     /**
@@ -199,14 +199,14 @@ class ProjectSyncController extends BaseProjectController
         }
         
         //Local Branch choice
-        $branches = $this->gitCommands->getLocalBranches();
+        $branches = $this->gitCommands->command('branch')->getBranches(true);
         $branchChoices = array();
         foreach($branches as $branchName){
             $branchChoices[$branchName] = $branchName;
         }
                
         //Current branch
-        $currentBranch = $this->gitCommands->getCurrentBranch();
+        $currentBranch = $this->gitCommands->command('branch')->getCurrentBranch();
         
         reset($remoteChoices);
         $firstOrigin = key($remoteChoices);

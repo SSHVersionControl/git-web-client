@@ -70,7 +70,8 @@ class ProjectFilesController extends BaseProjectController{
     public function initAction($id,$grantType = 'VIEW'){
         
         parent::initAction($id,$grantType);
-        $this->gitFilesCommands = $this->get('version_control.git_files')->setProject($this->project);
+        
+        $this->gitFilesCommands = $this->gitCommands->command('files');
 
     }
     

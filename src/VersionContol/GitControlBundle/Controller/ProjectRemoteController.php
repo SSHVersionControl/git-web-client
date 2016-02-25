@@ -204,7 +204,7 @@ class ProjectRemoteController extends BaseProjectController
     public function initAction($id, $grantType = 'VIEW'){
         
         parent::initAction($id, $grantType);
-        $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
+        $this->gitSyncCommands = $this->gitCommands->command('sync');
 
     }
     

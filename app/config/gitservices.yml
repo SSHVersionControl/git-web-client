@@ -8,6 +8,15 @@ services:
             - [setLogger, ["@version_control.logger"]]
             - [setSshProcess, ["@version_control.ssh_process"]]
             
+    version_control.git_commands:
+        class: VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
+        calls:
+            - [setSecurityContext, ["@security.token_storage"]]
+            - [setProjectEnvironmentStorage, ["@version_control.project_environmnent_storage"]]
+            - [setDispatcher, ["@event_dispatcher"]]
+            - [setLogger, ["@version_control.logger"]]
+            - [setSshProcess, ["@version_control.ssh_process"]]       
+            
             
     version_control.git_log:
         class:  VersionContol\GitControlBundle\Utility\GitCommands\GitLogCommand

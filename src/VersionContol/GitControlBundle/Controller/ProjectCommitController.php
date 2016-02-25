@@ -70,7 +70,6 @@ class ProjectCommitController extends BaseProjectController
     public function listAction($id)
     {
         
-       $branchName = $this->gitSyncCommands->getCurrentBranch();
        $files =  $this->gitCommitCommand->getFilesToCommit();
        
        $commitEntity = new Commit();
@@ -80,13 +79,11 @@ class ProjectCommitController extends BaseProjectController
        $commitForm = $this->createCommitForm($commitEntity,$files);
        
        
-        return array(
-            'project'      => $this->project,
-            'branchName' => $branchName,
+        return array_merge($this->viewVariables, array(
             'files' => $files,
             'commit_form' => $commitForm->createView(),
             'issueCount' => $this->issuesCount
-        );
+        ));
     }
 
     
@@ -155,16 +152,13 @@ class ProjectCommitController extends BaseProjectController
 
         }
         
-        $branchName = $this->gitSyncCommands->getCurrentBranch();
         
         
-        return array(
-            'project'      => $this->project,
-            'branchName' => $branchName,
+        return array_merge($this->viewVariables, array(
             'files' => $files,
             'commit_form' => $commitForm->createView(),
             'issueCount' => $this->issuesCount
-        );
+        ));
 
     } 
     
@@ -176,8 +170,8 @@ class ProjectCommitController extends BaseProjectController
  
         parent::initAction($id,$grantType);
         
-        $this->gitCommitCommand = $this->get('version_control.git_commit')->setProject($this->project);
-        $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
+        $this->gitCommitCommand = $this->gitCommands->command('commit');
+        $this->gitSyncCommands = $this->gitCommands->command('sync');
         
         $em = $this->getDoctrine()->getManager();
         
@@ -221,7 +215,7 @@ class ProjectCommitController extends BaseProjectController
      */
     public function abortMergeAction($id){
         
-        $this->gitCommitCommand = $this->get('version_control.git_command')->setProject($this->project);
+        //$this->gitCommitCommand = $this->get('version_control.git_command')->setProject($this->project);
         
         return $this->redirect($this->generateUrl('project_commitlist'));
         
@@ -281,7 +275,7 @@ class ProjectCommitController extends BaseProjectController
      */
     public function fileDiffAction($id,$difffile){
         
-        $gitDiffCommand = $this->get('version_control.git_diff')->setProject($this->project);
+        $gitDiffCommand = $this->gitCommands->command('diff');
 
         $difffile = urldecode($difffile);
        
