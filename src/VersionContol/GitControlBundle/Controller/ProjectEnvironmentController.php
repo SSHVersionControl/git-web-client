@@ -327,7 +327,7 @@ class ProjectEnvironmentController extends BaseProjectController
     }
     
     protected function createEmptyGitRepository($projectEnvironment){
-        $gitCommands = $this->get('version_control.git_init')->overRideProjectEnvironment($projectEnvironment);
+        $gitCommands = $this->gitCommands->command('init')->overRideProjectEnvironment($projectEnvironment);
         
         $response = $gitCommands->initRepository();
             
@@ -336,7 +336,7 @@ class ProjectEnvironmentController extends BaseProjectController
     
     protected function cloneGitRepository($projectEnvironment){
         //$projectEnvironment->getGitCloneLocation();
-        $gitCommands = $this->get('version_control.git_init')->overRideProjectEnvironment($projectEnvironment);
+        $gitCommands = $this->gitCommands->command('init')->overRideProjectEnvironment($projectEnvironment);
         try{
             $response = $gitCommands->cloneRepository($projectEnvironment->getGitCloneLocation());
             $this->get('session')->getFlashBag()->add('notice', $response);

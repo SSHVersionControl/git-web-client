@@ -3,6 +3,7 @@ namespace VersionContol\GitControlBundle\Utility\GitCommands\Command;
 
 use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 use VersionContol\GitControlBundle\Entity\Project;
+use VersionContol\GitControlBundle\Entity\ProjectEnvironment;
 
 /**
  * Abstract Class for Git commands
@@ -82,5 +83,15 @@ class AbstractGitCommand implements InterfaceGitCommand{
     
     protected function triggerEvent($eventName,$event){
         $this->command->dispatcher->dispatch($eventName, $event);
+    }
+    
+    /**
+     * Allows you to override the project Environment
+     * @param ProjectEnvironment $projectEnvironment
+     * @return \VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
+     */
+    public function overRideProjectEnvironment(ProjectEnvironment $projectEnvironment){
+        $this->command->overRideProjectEnvironment($projectEnvironment);
+        return $this;
     }
 }

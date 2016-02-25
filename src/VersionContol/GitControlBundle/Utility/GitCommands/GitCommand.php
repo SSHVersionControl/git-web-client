@@ -147,7 +147,7 @@ class GitCommand {
         $this->setGitPath($this->projectEnvironment->getPath());
         return $this;
     }
-    
+   
     /**
      * Allows you to override the project Environment
      * @param ProjectEnvironment $projectEnvironment
