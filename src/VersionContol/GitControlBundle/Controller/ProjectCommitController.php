@@ -253,7 +253,7 @@ class ProjectCommitController extends BaseProjectController
      * @param Commit $commitEntity
      */
     protected function pushToRemote(\VersionContol\GitControlBundle\Entity\Commit $commitEntity){
-        $branch = $this->gitSyncCommands->getCurrentBranch();
+        $branch = $this->gitCommands->command('branch')->getCurrentBranch();
         
         $gitRemotes = $commitEntity->getPushRemote();
         if(count($gitRemotes) > 0){
