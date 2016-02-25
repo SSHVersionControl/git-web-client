@@ -34,13 +34,7 @@ class GitCommand {
      */
     protected $projectEnvironment;
     
-    /**
-     *
-     * @var type Git Status Hash.
-     * Used to make sure no changes has occurred since last check 
-     * @var string hash
-     */
-    protected $statusHash;
+
     
     /**
      * @var ProjectEnvironmentStorage

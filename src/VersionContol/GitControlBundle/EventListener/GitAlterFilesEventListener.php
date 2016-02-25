@@ -11,12 +11,12 @@ class GitAlterFilesEventListener
 {
     /**
      *
-     * @var VersionContol\GitControlBundle\Utility\GitCommands\GitFilesCommand 
+     * @var VersionContol\GitControlBundle\Utility\GitCommands\Command\GitFilesCommand 
      */
     protected $gitFilesCommand;
     
-    public function __construct(GitFilesCommand $gitFilesCommand) {
-        $this->gitFilesCommand = $gitFilesCommand;
+    public function __construct(GitCommand $gitCommand) {
+        $this->gitFilesCommand = $gitCommand->command('files');
     }
     
     public function changeFilePermissions(GitAlterFilesEvent $event)

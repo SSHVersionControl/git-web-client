@@ -10,6 +10,14 @@ namespace VersionContol\GitControlBundle\Utility\GitCommands\Command;
 class GitStatusCommand extends AbstractGitCommand {
     
     /**
+     *
+     * @var type Git Status Hash.
+     * Used to make sure no changes has occurred since last check 
+     * @var string hash
+     */
+    protected $statusHash;
+    
+    /**
      * Get hash of git status
      * @return String hash
      */
