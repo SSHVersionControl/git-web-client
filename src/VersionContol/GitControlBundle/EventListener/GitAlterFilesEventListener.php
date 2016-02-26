@@ -4,7 +4,7 @@ namespace VersionContol\GitControlBundle\EventListener;
 
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use VersionContol\GitControlBundle\Event\GitAlterFilesEvent;
-use VersionContol\GitControlBundle\Utility\GitCommands\GitFilesCommand;
+use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 
 
 class GitAlterFilesEventListener

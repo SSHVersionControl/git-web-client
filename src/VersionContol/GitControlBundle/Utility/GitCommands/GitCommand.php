@@ -43,7 +43,7 @@ class GitCommand {
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
-    protected $dispatcher;
+    public $dispatcher;
     
     /**
      * Git Command Logger
@@ -244,7 +244,12 @@ class GitCommand {
         return $this;
     }
 
-
+    /**
+     * Get git command groups
+     * @param string $name
+     * @return \VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
+     * @throws InvalidArgumentException
+     */
     public function command($name){
         switch (trim($name)) {
             case 'branch':

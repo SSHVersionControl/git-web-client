@@ -4,6 +4,7 @@ namespace VersionContol\GitControlBundle\Utility\GitCommands\Command;
 use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 use VersionContol\GitControlBundle\Entity\Project;
 use VersionContol\GitControlBundle\Entity\ProjectEnvironment;
+use VersionContol\GitControlBundle\Event\GitAlterFilesEvent;
 
 /**
  * Abstract Class for Git commands

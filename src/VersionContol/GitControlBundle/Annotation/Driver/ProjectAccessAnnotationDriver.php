@@ -35,26 +35,21 @@ class ProjectAccessAnnotationDriver{
         if (!is_array($controller = $event->getController())) { //return if no controller
             return;
         }
+        
         $object = new \ReflectionObject($controller[0]);// get controller
         $method = $object->getMethod($controller[1]);// get method
-        foreach ($this->reader->getMethodAnnotations($method) as $configuration) { //Start of annotations reading
+
+        $configurations = $this->reader->getMethodAnnotations($method);
+        
+        foreach ($configurations as $configuration) { //Start of annotations reading
             
             if(isset($configuration->grantType) && $controller[0] instanceof BaseProjectController){//Found our annotation
-
                 $controller[0]->setProjectGrantType($configuration->grantType);
-
                 $request = $controller[0]->get('request_stack')->getCurrentRequest();
                 $id = $request->get('id', false);
-                if($id){
+                if($id !== false){
                     $controller[0]->initAction($id,$configuration->grantType);
                 }
-                
-                //$perm = new Permission($controller[0]->get('doctrine.odm.mongodb.document_manager'));
-                //$userName = $controller[0]->get('security.context')->getToken()->getUser()->getUserName();
-                //if(!$perm->isAccess($userName,$configuration->perm)){
-                //           //if any throw 403
-                //           throw new AccessDeniedHttpException();
-                //}
              }
          }
     }
