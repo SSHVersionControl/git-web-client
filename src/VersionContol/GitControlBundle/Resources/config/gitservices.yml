@@ -10,7 +10,6 @@ services:
             - [setLogger, ["@version_control.logger"]]
             - [setSshProcess, ["@version_control.ssh_process"]]       
             
-              
     version_control.gitcommand_collector:
         class: VersionContol\GitControlBundle\Profiler\GitCommandCollector
         tags:
@@ -21,7 +20,8 @@ services:
                 #priority: 300
         public: false
         arguments:
-            - @version_control.logger
+            - @version_control.logger          
+            
         
     version_control.logger:  
         class: VersionContol\GitControlBundle\Logger\GitCommandLogger
