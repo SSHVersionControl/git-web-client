@@ -78,7 +78,7 @@ class ProjectEnvironmentController extends BaseProjectController
             $em = $this->getDoctrine()->getManager();
             
             //Set Project
-            $projectEnvironment->setProject($project);
+            $projectEnvironment->setProject($this->project);
            
             if($gitAction === 'new'){
                 //Create git repo

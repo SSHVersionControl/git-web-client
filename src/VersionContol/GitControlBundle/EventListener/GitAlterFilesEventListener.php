@@ -15,8 +15,11 @@ class GitAlterFilesEventListener
      */
     protected $gitFilesCommand;
     
+    protected $currentBranch;
+    
     public function __construct(GitCommand $gitCommand) {
         $this->gitFilesCommand = $gitCommand->command('files');
+        $this->currentBranch = $gitCommand->command('branch')->getCurrentBranch();
     }
     
     public function changeFilePermissions(GitAlterFilesEvent $event)
@@ -27,7 +30,7 @@ class GitAlterFilesEventListener
            if($projectEnvironmentFilePerm->getEnableFilePermissions()){
                 $this->gitFilesCommand->setProject($projectEnviroment->getProject());
        
-                $branch = $this->gitFilesCommand->getCurrentBranch();
+                $branch = $this->currentBranch;
 
                 $files = array();
                 if(count($event->getFilesAltered()) > 0){
