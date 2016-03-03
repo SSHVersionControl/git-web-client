@@ -13,13 +13,11 @@ class GitAlterFilesEventListener
      *
      * @var VersionContol\GitControlBundle\Utility\GitCommands\Command\GitFilesCommand 
      */
-    protected $gitFilesCommand;
+    protected $gitCommand;
     
-    protected $currentBranch;
     
     public function __construct(GitCommand $gitCommand) {
-        $this->gitFilesCommand = $gitCommand->command('files');
-        $this->currentBranch = $gitCommand->command('branch')->getCurrentBranch();
+        $this->gitCommand = $gitCommand;
     }
     
     public function changeFilePermissions(GitAlterFilesEvent $event)
@@ -28,25 +26,27 @@ class GitAlterFilesEventListener
        $projectEnvironmentFilePerm = $projectEnviroment->getProjectEnvironmentFilePerm();
        if($projectEnvironmentFilePerm !== null){
            if($projectEnvironmentFilePerm->getEnableFilePermissions()){
-                $this->gitFilesCommand->setProject($projectEnviroment->getProject());
+               
+                $gitFilesCommand = $this->gitCommand->command('files');
+                $gitFilesCommand->setProject($projectEnviroment->getProject());
        
-                $branch = $this->currentBranch;
+                $branch = $this->gitCommand->command('branch')->getCurrentBranch();
 
                 $files = array();
                 if(count($event->getFilesAltered()) > 0){
                      $files = $event->getFilesAltered();
                 }else{
-                    $fileInfos = $this->gitFilesCommand->listFiles('',$branch,true);
+                    $fileInfos = $gitFilesCommand->listFiles('',$branch,true);
 
                     foreach($fileInfos as $fileInfo){
                          $files[] =$fileInfo->getFullPath();
                     }
                 }
 
-                $this->gitFilesCommand->setFilesPermissions($files
+                $gitFilesCommand->setFilesPermissions($files
                         ,$projectEnvironmentFilePerm->getFileMode()
                         );
-                $this->gitFilesCommand->setFilesOwnerAndGroup($files,$projectEnvironmentFilePerm->getFileOwner(),$projectEnvironmentFilePerm->getFileGroup());
+                $gitFilesCommand->setFilesOwnerAndGroup($files,$projectEnvironmentFilePerm->getFileOwner(),$projectEnvironmentFilePerm->getFileGroup());
            }
        }
     }
