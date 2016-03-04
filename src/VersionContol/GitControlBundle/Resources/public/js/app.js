@@ -109,6 +109,9 @@ $(function(){
         var button = $(this)
             ,remoteName = button.data('remotename')
             ,localName = button.data('localname');
+            if(localName){
+                localName = localName.split('/').pop();
+            }
             $('#form_name').val(localName);
             $('#form_remotename').val(remoteName);
             $('#remote-branch-label').html(remoteName);
