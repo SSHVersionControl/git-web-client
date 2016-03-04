@@ -85,7 +85,11 @@
                     {% endif %}
                     {% if(issueCount > 0) %}
                         <fieldset class="issue-options-fieldset">
-                            <legend class="issue-options"><label><a href="#issue-options" data-toggle="collapse" class="collapse-icon collapsed">Issue Options</a></label></legend>
+                            <legend class="issue-options">
+                                <label>
+                                    <a href="#issue-options" data-toggle="collapse" class="collapse-icon collapsed">Issue Options</a>
+                                </label>
+                            </legend>
                             <div class="collapse" id="issue-options">
                                 <div class="form-group">
                                     {{ form_label(commit_form.issue) }}
@@ -141,15 +145,10 @@
             if (issue.loading) return issue.title;
 
             var markup = "<div class='select2-result-issues clearfix'>" +
-              "<div class='select2-result-issue_meta'>" +
+              "<i class='menu-icon fa fa-bug bg-green'></i><div class='select2-result-issue_meta'>" +
                 "<div class='select2-result-issue_title'>" + issue.title + "</div>";
-
-            if (issue.description) {
-              markup += "<div class='select2-result-issue_description'>" + issue.description + "</div>";
-            }
-
-            markup += "<div class='select2-result-issue_status'>" + issue.status + "</div>" +
-            "</div></div>";
+              markup += "<div class='select2-result-issue_description'>#" + issue.id + " opened by "+issue.author+"</div>";
+              markup += "</div></div>";
 
             return markup;
         }
@@ -157,11 +156,14 @@
         function formatIssueSelection (issue) {
           return issue.title;
         }
+        if($(".issue-select").val()){
+            $('#issue-options').collapse('show');
+        }
     
         $(".issue-select").select2({
             multiple: false
             ,ajax: {
-              url: "/issues/search/{{project.id}}",
+              url: "{{ path('issue_searchajax',{'id':project.id}) }}",
               dataType: 'json',
               delay: 250,
               data: function (term, page) {
@@ -203,10 +205,14 @@
                 // using its formatResult renderer - that way the movie name is shown preselected
                 var issueId=$(element).val();
                 if (issueId!=="") {
-                    $.ajax("issues/find/"+issueId, {
+                    $.ajax("{{ path('issue_findajax',{'id':project.id,'issueId':''}) }}/"+issueId, {
                         dataType: "json",
                         success:function(data){
-                            callback(data.result);
+                            if(data.success){
+                                callback(data.result);
+                            }else{
+                                alert(data.error)
+                            }
                         }
                     }
                     );
