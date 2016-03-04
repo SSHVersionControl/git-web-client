@@ -76,6 +76,11 @@ class ProjectCommitController extends BaseProjectController
        $commitEntity->setProject($this->project);
        $commitEntity->setStatusHash($this->gitCommitCommand->getStatusHash());
        
+       $issueNumber = $this->issueNumberfromBranch($this->branchName);
+       if($issueNumber !== false){
+           $commitEntity->setIssue($issueNumber);
+       }
+       
        $commitForm = $this->createCommitForm($commitEntity,$files);
        
        
@@ -284,6 +289,20 @@ class ProjectCommitController extends BaseProjectController
         return array_merge($this->viewVariables, array(
             'diffs' => $gitDiffs,
         ));
+    }
+    
+    protected function issueNumberfromBranch($branch){
+        $issueNumber = false;
+        $matches = array();
+        if (preg_match('/(issue|iss|issu)(\d+)/i', $branch, $matches)) {
+            foreach($matches as $issueId){
+                if(is_numeric($issueId)){
+                    $issueNumber = $issueId;
+                }
+            }
+        }
+        
+        return $issueNumber;
     }
     
 }

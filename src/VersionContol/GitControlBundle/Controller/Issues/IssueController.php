@@ -483,8 +483,22 @@ class IssueController extends BaseProjectController
         $keyword = $request->query->get('keyword', false);
         $filter = $request->query->get('filter', 'open');
         
+        if($keyword && is_numeric($keyword)){
+            $data = array();
+            //Get issue by id
+            try{
+                $issue = $this->issueRepository->findIssueById($keyword);
+                if($issue){
+                    $data[] = $issue;
+                }
+            }catch(\Exception $e){
+                //return new JsonResponse(array('success' => false, 'error' => $result));
+            }
+        }else{
+            $data = $this->issueRepository->findIssues($keyword, $filter);
+        }
         //$issueEntities = $em->getRepository('VersionContolGitControlBundle:Issue')->findByProjectAndStatus($project,$filter,$keyword,null,false);
-        $data = $this->issueRepository->findIssues($keyword, $filter);
+        
         if($data instanceof \Doctrine\ORM\QueryBuilder){
             
             $issueEntities = $data->getQuery()->getResult();
@@ -498,6 +512,7 @@ class IssueController extends BaseProjectController
                 ,'title' => $issueEntity->getTitle()
                 ,'description' => $issueEntity->getDescription() 
                 ,'status' => $issueEntity->getStatus()
+                ,'author' => $issueEntity->getUser()->getName()
             );
         }
         
@@ -512,14 +527,22 @@ class IssueController extends BaseProjectController
      * @TODO Pass in project id
      * @ProjectAccess(grantType="VIEW")
      */
-    public function findAjaxAction($id,$issueId)
+    public function findAjaxAction($id,$issueId = '')
     {
         //$em = $this->getDoctrine()->getManager();
         //$issueEntity = $em->getRepository('VersionContolGitControlBundle:Issue')->find($issueId);
         $issueEntity = $this->issueRepository->findIssueById($issueId);
         if (!$issueEntity) {
-            throw $this->createNotFoundException('Unable to find issue entity.');
+            return new JsonResponse(array('success' => false, 'error' => 'No issue exists matching this id.'));
         }
+        $result = array(
+            'id' => $issueEntity->getId()
+            ,'title' => $issueEntity->getTitle()
+            ,'description' => $issueEntity->getDescription() 
+            ,'status' => $issueEntity->getStatus()
+        );
+        
+        return new JsonResponse(array('success' => true, 'result' => $result));
 
     }
     
