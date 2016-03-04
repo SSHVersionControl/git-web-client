@@ -67,7 +67,7 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      */
     public function reOpenIssue($id){
         $this->authenticate();
-        $this->client->api('issues')->update($this->issueIntegrator->getProjectName(),$id,array('state' => 'open'));
+        $this->client->api('issues')->update($this->issueIntegrator->getProjectName(),$id,array('state_event' => 'reopen'));
     }
     
     /**
@@ -76,8 +76,9 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      */
     public function closeIssue($id){
         $this->authenticate();
-        $this->client->api('issues')->update( $this->issueIntegrator->getProjectName(),$id,array('state' => 'closed'));
-
+        $issue = $this->client->api('issues')->update( $this->issueIntegrator->getProjectName(),$id,array('state_event' => 'close'));
+        
+        return $this->mapIssueToEntity($issue);
     }
     
     /**
