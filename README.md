@@ -3,17 +3,17 @@ Online GIT Version Control System
 
 Welcome to the Online GIT Version Control System. This systems allows you to commit,search history,
 branch, push, pull, and many other action on git repositories, locate locally and on remote servers with 
-SSH access. 
+SSH access. This system has been build using symfony2. It comes with an inbuilt issue tracker, to help organise your bugs, but also integrates with
+Github or Gitlabs, issue tracker for better remote support.
 
-It has an issue tracking system, to help organise your bugs. (Hope to integrate with github, gitlab, and jira in the future).    
 
 ### Why Create another GIT Client
-I have been using GIT for a number of years now and love it. Been using it in IDEs, and mostly from command line.
-I also use you GIT to deploy changes to live servers. My typical set up is a Development Server, Staging Server, and
-Live server. My computer is Windows (I know, Sigh... ) and a servers for Development(Internal to office), Staging(Preview/Testing server), Live Servers running Debian/Ubuntu.
-
-A lot of the sites I run rely on certain OS packages and can be a nightmare to set up on Windows so usually work over the network 
-with samba. This cause the first of the issues. Access right to .git folder.     
+I have been using GIT for a number of years now and love it, using it in IDEs, and mostly from command line.
+I also use GIT to deploy changes to live servers. My typical set up is a Development Server, Staging Server, and
+Live server running Debian or Ubuntu server, with a remote git repository (Gitlab). While using the command line was 
+fine I found I missed having a nicer visual display of the files. I wanted to be able to switch between the environments 
+and quickly see the different commits. I have not found an adequate git client that allows for SSH access to remote servers,
+as the reasons for it is unconventional and possibly bad practice.      
 
 
 1) Installing the Online GIT Version Control System
