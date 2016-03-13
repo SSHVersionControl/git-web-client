@@ -17,12 +17,14 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use VersionContol\GitControlBundle\Form\CommitType;
 use VersionContol\GitControlBundle\Entity\Commit;
+
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
 /**
  * Project Commit controller.
  *
- * @Route("/project/commit")
+ * @Route("/project/{id}/commit")
  */
 class ProjectCommitController extends BaseProjectController
 {
@@ -31,7 +33,7 @@ class ProjectCommitController extends BaseProjectController
      *
      * @var GitCommand 
      */
-    protected $gitCommands;
+    protected $gitCommitCommand;
     
     /**
      *
@@ -46,78 +48,122 @@ class ProjectCommitController extends BaseProjectController
     protected $project;
     
     /**
+     * Number of issues for this project
+     * @var integer 
+     */
+    protected $issuesCount;
+    
+    /**
+     * Issue Respository
+     * @var VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryInterface 
+     */
+    protected $issueRepository;
+    
+    /**
      * List files to be commited.
      *
-     * @Route("/{id}", name="project_commitlist")
+     * @Route("/", name="project_commitlist")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="EDIT")
      */
     public function listAction($id)
     {
         
-       $this->initAction($id);
-
-       $branchName = $this->gitCommands->getCurrentBranch();
-       $files =  $this->gitCommands->getFilesToCommit();
+       $files =  $this->gitCommitCommand->getFilesToCommit();
        
        $commitEntity = new Commit();
        $commitEntity->setProject($this->project);
-       $commitEntity->setStatusHash($this->gitCommands->getStatusHash());
+       $commitEntity->setStatusHash($this->gitCommitCommand->getStatusHash());
        
-       $commitForm = $this->createCommitForm($commitEntity);
+       $issueNumber = $this->issueNumberfromBranch($this->branchName);
+       if($issueNumber !== false){
+           $commitEntity->setIssue($issueNumber);
+       }
        
-        return array(
-            'project'      => $this->project,
-            'branchName' => $branchName,
+       $commitForm = $this->createCommitForm($commitEntity,$files);
+       
+       
+        return array_merge($this->viewVariables, array(
             'files' => $files,
-            'commit_form' => $commitForm->createView()
-        );
+            'commit_form' => $commitForm->createView(),
+            'issueCount' => $this->issuesCount
+        ));
     }
 
     
     /**
-     * Creates a new Project entity.
+     * Handles the commit form
      *
-     * @Route("/{id}", name="project_commit")
+     * @Route("/", name="project_commit")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectCommit:list.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
-    public function commitAction(Request $request,$id)
+    public function commitAction(Request $request)
     {
-        $this->initAction($id);
+   
+        $files =  $this->gitCommitCommand->getFilesToCommit();
         
         $commitEntity = new Commit();
         $commitEntity->setProject($this->project);
-        $commitForm = $this->createCommitForm($commitEntity);
+        $commitForm = $this->createCommitForm($commitEntity,$files);
         $commitForm->handleRequest($request);
 
         if ($commitForm->isValid()) {
            
             $selectedGitFiles = $commitEntity->getFiles();
      
-            $selectedFiles = array();
-            foreach($selectedGitFiles as $gitFile){
-                $selectedFiles[] = $gitFile->getPath1();
+            try{
+                $selectedFiles = array();
+                $filesCommited = 0;
+                
+                if(is_array($selectedGitFiles)){
+                    foreach($selectedGitFiles as $gitFile){
+                        $selectedFiles[] = $gitFile->getPath1();
+                    }
+                
+                    $filesCommited = count($selectedFiles);
+                    //Git Stage selected files
+                    $this->gitCommitCommand->stageFiles($selectedFiles);
+                }else{
+                    //To many files
+                    if($selectedGitFiles === true){
+                         $this->gitCommitCommand->stageAll();
+                         
+                         $filesCommited = count($files);
+                    }
+                }
+
+                //Handle Issue Action eg Close issue. Update Commit message
+                $this->handleIssue($commitEntity);
+     
+                //Git Commit 
+                $this->gitCommitCommand->commit($commitEntity->getComment());
+                
+                //Set notice of successfull commit
+                $this->get('session')->getFlashBag()->add('notice'
+                , $filesCommited." files have been committed");
+                
+                //Git Push to remote repository
+                $this->pushToRemote($commitEntity);
+              
+                return $this->redirect($this->generateUrl('project_commitlist'));
+        
+            }catch(\Exception $e){
+                $this->get('session')->getFlashBag()->add('error'
+                , $e->getMessage());
             }
 
-            $this->gitCommands->stageFiles($selectedFiles);
-            $this->gitCommands->commit($commitEntity->getComment());
-
-            $this->get('session')->getFlashBag()->add('notice'
-                , count($selectedFiles)." files have been committed");
-
-            return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
         }
         
-        $branchName = $this->gitCommands->getCurrentBranch();
-        $files =  $this->gitCommands->getFilesToCommit();
         
-        return array(
-            'project'      => $this->project,
-            'branchName' => $branchName,
+        
+        return array_merge($this->viewVariables, array(
             'files' => $files,
-            'commit_form' => $commitForm->createView()
-        );
+            'commit_form' => $commitForm->createView(),
+            'issueCount' => $this->issuesCount
+        ));
 
     } 
     
@@ -125,27 +171,37 @@ class ProjectCommitController extends BaseProjectController
      * 
      * @param integer $id
      */
-    protected function initAction($id){
+    public function initAction($id, $grantType = 'EDIT'){
  
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($this->project,'EDIT');
+        parent::initAction($id,$grantType);
         
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
-        $this->gitSyncCommands = $this->get('version_control.git_sync')->setProject($this->project);
+        $this->gitCommitCommand = $this->gitCommands->command('commit');
+        $this->gitSyncCommands = $this->gitCommands->command('sync');
+        
+        $em = $this->getDoctrine()->getManager();
+        
+        $issueIntegrator= $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
+        $this->issueManager = $this->get('version_control.issue_repository_manager');
+        if($issueIntegrator){
+            $this->issueManager->setIssueIntegrator($issueIntegrator);
+        }else{
+            $this->issueManager->setProject($this->project);
+        }
+        $this->issueRepository = $this->issueManager->getIssueRepository();
+        $this->issuesCount = $this->issueRepository->countFindIssues('','open');
+
+      
     }
     
     
-    private function createCommitForm($commitEntity){
+    private function createCommitForm($commitEntity,$fileChoices){
  
-        $fileChoices = $this->gitCommands->getFilesToCommit();
-        $form = $this->createForm((new CommitType())->setFileChoices($fileChoices), $commitEntity, array(
-            'action' => $this->generateUrl('project_commit', array('id' => $this->project->getId())),
+        $includeIssues = ($this->issuesCount > 0)?true:false;
+        //$fileChoices = $this->gitCommitCommand->getFilesToCommit();
+        $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
+        
+        $form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
+            'action' => $this->generateUrl('project_commit'),
             'method' => 'POST',
         ));
 
@@ -158,17 +214,95 @@ class ProjectCommitController extends BaseProjectController
     /**
      * Aborts a merge action. Should only be called after a merge.
      *
-     * @Route("/about-merge/{id}", name="project_commit_abortmerge")
+     * @Route("/about-merge/", name="project_commit_abortmerge")
      * @Method("GET")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function abortMergeAction($id){
         
-        $this->initAction($id);
+        //$this->gitCommitCommand = $this->get('version_control.git_command')->setProject($this->project);
         
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
+        return $this->redirect($this->generateUrl('project_commitlist'));
         
-        return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
+    }
+    
+    /**
+     * Check if issue options have been set and updates git message 
+     * and closes issue if certain issue actions are set.
+     * 
+     * @param Commit $commitEntity]
+     */
+    protected function handleIssue(\VersionContol\GitControlBundle\Entity\Commit &$commitEntity){
+        $issueId = $commitEntity->getIssue();
+        $commitMessage = $commitEntity->getComment();
+        $issueCloseStatus = array('Fixed','Closed','Resolved');
+         
+        if($issueId){
+            $issueEntity = $this->issueRepository->findIssueById($issueId);
+            if($issueEntity){
+                $issueAction = $commitEntity->getIssueAction();
+                $commitMessage = $issueAction.' #'.$issueEntity->getId().':'.$commitMessage;
+                $commitEntity->setComment($commitMessage);
+                if(in_array($issueAction,$issueCloseStatus)){
+                    //Close Issue
+                    $this->issueRepository->closeIssue($issueEntity->getId());
+                }
+            }
+        }
+    } 
+    
+    
+    /**
+     * Push to remote repositories. Supports mulitple pushes
+     * 
+     * @param Commit $commitEntity
+     */
+    protected function pushToRemote(\VersionContol\GitControlBundle\Entity\Commit $commitEntity){
+        $branch = $this->gitCommands->command('branch')->getCurrentBranch();
         
+        $gitRemotes = $commitEntity->getPushRemote();
+        if(count($gitRemotes) > 0){
+
+            foreach($gitRemotes as $gitRemote){
+                $response = $this->gitSyncCommands->push($gitRemote,$branch);  
+                $this->get('session')->getFlashBag()->add('notice', $response);
+            }
+        }
+    }
+    
+    /**
+     * Show Git commit diff
+     *
+     * @Route("/filediff/{difffile}", name="project_filediff")
+     * @Method("GET")
+     * @Template()
+     * @ProjectAccess(grantType="EDIT")
+     */
+    public function fileDiffAction($id,$difffile){
+        
+        $gitDiffCommand = $this->gitCommands->command('diff');
+
+        $difffile = urldecode($difffile);
+       
+        $gitDiffs = $gitDiffCommand->getDiffFile($difffile);
+   
+        return array_merge($this->viewVariables, array(
+            'diffs' => $gitDiffs,
+        ));
+    }
+    
+    protected function issueNumberfromBranch($branch){
+        $issueNumber = false;
+        $matches = array();
+        if (preg_match('/(issue|iss|issu)(\d+)/i', $branch, $matches)) {
+            foreach($matches as $issueId){
+                if(is_numeric($issueId)){
+                    $issueNumber = $issueId;
+                }
+            }
+        }
+        
+        return $issueNumber;
     }
     
 }

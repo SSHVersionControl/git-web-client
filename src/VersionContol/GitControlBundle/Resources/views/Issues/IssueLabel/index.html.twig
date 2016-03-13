@@ -1,0 +1,78 @@
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+        Issue Label
+        <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li >
+            <i class="fa fa-bug"></i> <a href="{{path('issues', { 'id': project.id }) }}">Issues</a>
+        </li>
+        <li class="active">
+                <i class="fa fa-file"></i> label
+            </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            
+            <h3 class="box-title"><i class="fa fa-bug fa-fw"></i> Labels 
+            </h3>
+
+             <div class="box-tools">
+                 <a href="{{ path('issuelabel_new',{ 'id': project.id }) }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> New Label</a>
+             </div>
+
+        </div>
+        <div class="box-body">
+                <div class="list-group">
+                 {% for label in entities %}
+
+                    <div class="list-group-item">
+                        
+                                <div style="background-color:#{{ label.hexColor }};" class="issue-label">
+                                    <a href="{{ path('issuelabel_edit', { 'labelId': label.id, 'id': project.id }) }}" style="color:#{{label.hexColor|textcolor}};">
+                                         <i class="fa fa-tag fa-fw"></i>
+                                        {{ label.title }}
+                                    </a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="{{ path('issuelabel_edit', { 'labelId': label.id, 'id': project.id }) }}" class="btn btn-primary btn-sm btn-flat">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                    <a href="{{ path('issuelabel_delete', { 'labelId': label.id, 'id': project.id }) }}" class="btn btn-danger btn-sm btn-flat" data-confirm="Are you sure you wish to delete this issue label?" data-confirm-header="Confirm Delete">
+                                        <i class="fa fa-remove"></i> Delete
+                                    </a>
+                                </div>
+                        
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

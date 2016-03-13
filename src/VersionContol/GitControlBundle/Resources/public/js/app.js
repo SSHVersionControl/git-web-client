@@ -109,6 +109,9 @@ $(function(){
         var button = $(this)
             ,remoteName = button.data('remotename')
             ,localName = button.data('localname');
+            if(localName){
+                localName = localName.split('/').pop();
+            }
             $('#form_name').val(localName);
             $('#form_remotename').val(remoteName);
             $('#remote-branch-label').html(remoteName);
@@ -141,5 +144,12 @@ $(function(){
 		$('#dataConfirmModal').modal({show:true});
 		return false;
 	});
+        
+    $("#ajax-modal").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-body").load(link.attr("href"));
+    });
+        
+        
 
 });

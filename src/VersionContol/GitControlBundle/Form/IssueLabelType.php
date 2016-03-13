@@ -17,6 +17,9 @@ class IssueLabelType extends AbstractType
         $builder
             ->add('title')
             ->add('hexColor')
+            ->add('project', 'hidden_entity',array(
+                    'class' => 'VersionContol\GitControlBundle\Entity\Project'
+                ))
         ;
     }
     

@@ -3,9 +3,9 @@
 namespace VersionContol\GitControlBundle\Utility;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use VersionContol\GitControlBundle\Utility\SshProcessInterface;
 
-
-class SshProcess
+class SshProcess implements SshProcessInterface 
 {
 
 
@@ -62,10 +62,12 @@ class SshProcess
     public function getStdout($glue = "\n")
     {
         if (!$glue) {
-            return $this->stdout;
+            $output = $this->stdout;
+        }else{
+           $output = implode($glue, $this->stdout); 
         }
 
-        return implode($glue, $this->stdout);
+        return $output;
     }
 
     /**
@@ -95,17 +97,28 @@ class SshProcess
      */
     public function run(array $commands,$host,$username,$port=22,$password=null,$pubkeyFile=null,$privkeyFile=null,$passphrase=NULL)
     {
-        $this->connect($host,$username,$port,$password,$pubkeyFile,$privkeyFile,$passphrase);
+        $this->reset();
         
-        //$this->execute(array('type' => 'shell', 'command' => sprintf('cd %s', $connection['path'])));
-
+        if($this->shell === NULL){
+            $this->connect($host,$username,$port,$password,$pubkeyFile,$privkeyFile,$passphrase);
+        }
+        
         foreach ($commands as $command) {
             $this->execute($command);
         }
 
-        $this->disconnect();
+       //$this->disconnect();
 
         return $this->stdout;
+    }
+    
+    /**
+     * Resets out puts for next command
+     */
+    protected function reset(){
+        $this->stdout     = array();
+        $this->stdin      = array();
+        $this->stderr     = array();
     }
 
     /**
@@ -115,6 +128,7 @@ class SshProcess
      */
     protected function connect($host,$username,$port=22,$password=null,$pubkeyFile=null,$privkeyFile=null,$passphrase=NULL)
     {
+
         $this->session = ssh2_connect($host, $port);
 
         if (!$this->session) {
@@ -144,9 +158,11 @@ class SshProcess
     /**
      * @return void
      */
-    protected function disconnect()
+    public function disconnect()
     {
-        fclose($this->shell);
+        if($this->shell){
+            fclose($this->shell);
+        }
     }
 
     /**
@@ -173,8 +189,8 @@ class SshProcess
         }
 
         if (count($stderr) > 1) {
-            print_r($stderr);
-             throw new \RuntimeException(sprintf('Error in command shell:%s',$command));
+            //print_r($stderr);
+             throw new \RuntimeException(sprintf("Error in command shell:%s \n Error Response:%s",$command,implode("\n", $stderr)));
             //$this->dispatcher->dispatch(Events::onDeploymentRsyncFeedback, new FeedbackEvent('err', implode("\n", $stderr)));
         }
 
@@ -188,6 +204,10 @@ class SshProcess
 
         fclose($outStream);
         fclose($errStream);
+    }
+    
+    public function __destruct() {
+        $this->disconnect();
     }
 
 }

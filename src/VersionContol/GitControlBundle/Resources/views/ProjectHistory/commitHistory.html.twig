@@ -1,0 +1,230 @@
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+{% block includeCSSBefore %}
+    <link rel="stylesheet" href="{{ asset('bundles/versioncontolgitcontrol/theme/plugins/datatables/dataTables.bootstrap.css') }}" >
+
+{% endblock %}
+    
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    <h1 class="page-header">
+          Commit {{log.abbrHash}}
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li>
+            <a href="{{ path('project_log',{ 'id': project.id }) }}"><i class="fa fa-hourglass-start"></i> History</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file-code-o"></i> Commit Log
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+    <div class="row">
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-aqua">
+                  <i class="fa fa-plus-square"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Files Added</span>
+                <span class="info-box-number">{{files.addedCount}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-green">
+                  <i class="fa fa-pencil-square-o"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Files Modified</span>
+                <span class="info-box-number">{{files.modifiedCount}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-red">
+                  <i class="fa fa-trash-o"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Files Deleted</span>
+                <span class="info-box-number">{{files.deletedCount}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>      
+         <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-orange">
+                  <i class="fa fa-files-o"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Files Copied</span>
+                <span class="info-box-number">{{files.copiedCount}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-yellow">
+                  <i class="fa fa-clone"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Files Renamed</span>
+                <span class="info-box-number">{{files.renamedCount}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div class="info-box">
+              <span class="info-box-icon bg-navy">
+                  <i class="fa fa-code"></i>
+              </span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Other</span>
+                <span class="info-box-number">{{files.otherStatusCount}}</span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+    </div>
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-hourglass-start"></i> 
+                {{log.subject}}
+            </h3>
+            <div class="description">
+                <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
+            </div>
+        </div>
+        <div class="box-body">
+            <table id="difffiles" class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Status Change</th>
+                        <th>File</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td>
+                            {% if(file.statusChange == 'M') %}
+                                <span class="status status-modified">{{file.statusChange}}</span>
+                            {% elseif(file.statusChange == 'A') %}
+                                 <span class="status status-added">{{file.statusChange}}</span>
+                            {% elseif(file.statusChange == 'U') %}
+                                <span class="status status-unmerged">{{file.statusChange}}</span>
+                            {% elseif(file.statusChange == 'D') %}
+                                <span class="status status-deleted">{{file.statusChange}}</span>
+                            {% elseif(file.statusChange == 'C') %}
+                                <span class="status status-copied">{{file.statusChange}}</span>
+                            {% elseif(file.statusChange == '?') %}
+                                <span class="status status-untracked">{{file.statusChange}}</span>
+                            {% elseif(file.statusChange == '!') %}
+                                <span class="status status-ignore">{{file.statusChange}}</span>
+                            {% else %}
+                                <span class="status">{{file.statusChange}}</span>
+                            {% endif %} 
+                        </td>
+                        <td><a data-toggle="modal" href="{{ path('project_commitfilediff', { 'id': project.id, 'commitHash': log.abbrHash, 'filePath':file.filePath|url_encode }) }}" data-target="#diff">
+                            {{file.filePath}}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ path('project_checkout_file',{'id': project.id, 'commitHash': log.abbrHash, 'filePath':file.filePath|url_encode}) }}" data-confirm="Check out a previous version of a file. This turns the 'file' that resides in the working directory into an exact copy of the one from 'commit' and adds it to the staging area. Remember, unlike checking out a commit, this does affect the current state of your project. The old file revision will show up as a 'Change to be committed,' giving you the opportunity to revert back to the previous version of the file." data-confirm-header="Confirm Checkout File">
+                                Checkout file
+                            </a>
+                        </td>
+                    </tr>    
+                {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Status Change</th>
+                        <th>File</th>
+                    </tr>
+                </tfoot>
+              </table>
+  
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="diff" tabindex="-1" role="dialog" aria-labelledby="diff" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">Loading...</div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    
+{% endblock %}
+ {% block footerJS %}
+     <!-- DataTables -->
+     <script src="{{ asset('bundles/versioncontolgitcontrol/theme/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+     <script src="{{ asset('bundles/versioncontolgitcontrol/theme/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+     <script>
+        $(function () {
+            $(document).on("hidden.bs.modal", ".modal:not(.local-modal)", function (e) {
+                $(e.target).removeData("bs.modal").find(".modal-content").empty().html('<div class="modal-body">Loading...</div>');
+            });
+           
+            $('#difffiles').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "pageLength": 50,
+                "columnDefs": [
+                  { "width": "10%", "targets": 0 }
+                 ]
+              });
+        });
+
+    </script>
+{% endblock %} 
+
+

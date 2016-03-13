@@ -1,0 +1,68 @@
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+
+    <h1 class="page-header">
+          Rename Remote Respository
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-server"></i> Rename Remote Respository
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-server fa-fw"></i>  Current Branch: {{branchName|issueLink(project.id)|raw}}
+            </h3>
+        </div>
+        <div class="box-body">
+            
+                <p>Use the form below to change the referance name of the remote repository.</p>
+
+                {{ form_start(remote_form,{ 'attr': { 'class': 'form'}}) }}
+
+                    {{ form_errors(remote_form) }} 
+
+                    {{ form_errors(remote_form.remoteName) }}
+                    {{ form_widget(remote_form.remoteName) }}
+
+                     <div class="form-group">
+                         {{ form_label(remote_form.newRemoteName) }}
+                         {{ form_errors(remote_form.newRemoteName) }}
+                         {{ form_widget(remote_form.newRemoteName,{ 'attr': { 'class': 'form-control', 'placeholder':'Please enter url'}}) }}
+                     </div>
+                     <div class="row">
+                        <div class="col-md-12 text-right">
+                            <a href="{{ path('project_listremote',{ 'id': project.id }) }}" class="btn btn-default">
+                                Cancel
+                            </a>
+                            {{ form_widget(remote_form.submit, { 'attr': {'class': ' btn-success submit'} }) }}
+                        </div>
+                     </div>
+                 {{ form_end(remote_form) }}
+        </div>
+    </div>
+             
+{% endblock %}

@@ -1,0 +1,36 @@
+services:
+    version_control.issue_repository.gitlab:
+        class:  VersionControl\GitlabIssueBundle\Repository\IssueRepository
+        
+    version_control.issue_label_repository.gitlab:
+        class:  VersionControl\GitlabIssueBundle\Repository\IssueLabelRepository
+        
+    version_control.issue_milestone_repository.gitlab:
+        class:  VersionControl\GitlabIssueBundle\Repository\IssueMilestoneRepository
+       
+    #Form Types
+    version_control.issue_form_type.gitlab:
+        class:  VersionControl\GitlabIssueBundle\Form\IssueType
+        arguments:
+            - @version_control.issue_repository_manager
+            
+    version_control.issue_form_edit_type.gitlab:
+        class:  VersionControl\GitlabIssueBundle\Form\IssueEditType
+        arguments:
+            - @version_control.issue_repository_manager
+            
+    version_control.issue_label_form_type.gitlab:
+        class:  VersionControl\GitlabIssueBundle\Form\IssueLabelType
+    
+    version_control.issue_comment_form_type.gitlab:
+        class:  VersionControl\GitlabIssueBundle\Form\IssueCommentType
+        
+    version_control.issue_milestone_form_type.gitlab:
+        class:  VersionControl\GitlabIssueBundle\Form\IssueMilestoneType
+        
+   
+    version_control.form.field.gitlab_project_choice:
+        class: VersionControl\GitlabIssueBundle\Form\Field\GitlabProjectType
+        #arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+        - { name: form.type, alias: gitlab_project_choice }

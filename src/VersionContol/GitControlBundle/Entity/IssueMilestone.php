@@ -3,6 +3,7 @@
 namespace VersionContol\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use VersionContol\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
 
 /**
  * IssueMilestone
@@ -12,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\HasLifecycleCallbacks
  * 
  */
-class IssueMilestone
+class IssueMilestone implements IssueMilestoneInterface
 {
     /**
      * @var string
@@ -302,6 +303,14 @@ class IssueMilestone
      */
     public function getVerUser()
     {
+        return $this->verUser;
+    }
+    
+    /**
+     * 
+     * @return \VersionContol\GitControlBundle\Entity\User\User
+     */
+    public function getUser(){
         return $this->verUser;
     }
     

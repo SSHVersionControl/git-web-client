@@ -1,8 +1,10 @@
 
-<div class="collapse navbar-collapse navbar-ex1-collapse">
-    <ul class="nav navbar-nav side-nav">
-        <li {% if app.request.attributes.get('_route') == 'usermanagement' %}class="active"{% endif %}>
-            <a href="{{ path('usermanagement') }}"><i class="fa fa-fw fa-users"></i>User Management</a>
-        </li>
-    </ul>
-</div>
+<ul class="sidebar-menu">
+    <li class="header">ADMIN NAVIGATION</li>
+    <li {% if app.request.attributes.get('_route') == 'usermanagement' %}class="active"{% endif %}>
+        <a href="{{ path('usermanagement') }}"><i class="fa fa-fw fa-users"></i>User Management</a>
+    </li>
+    <li {% if app.request.attributes.get('_route') == 'admin_issuelabels' %}class="active"{% endif %}>
+        <a href="{{ path('admin_issuelabels') }}"><i class="fa fa-fw fa-tags"></i>Global Issue Labels</a>
+    </li>
+</ul>

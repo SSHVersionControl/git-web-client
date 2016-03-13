@@ -28,6 +28,8 @@ class SshDetailsValidator extends ConstraintValidator
      */
     public function validate($projectEnvironment, Constraint $constraint)
     {
+        $gitPath = rtrim(trim($projectEnvironment->getPath()),'/');
+        
         if($projectEnvironment->getSsh() === true){
            
             $sftp = new SFTP($projectEnvironment->getHost(), 22);
@@ -36,6 +38,13 @@ class SshDetailsValidator extends ConstraintValidator
                     $this->context->buildViolation($constraint->message)
                         ->atPath('title')
                         ->addViolation();
+                }else{
+                    //Validate path
+                     if ($sftp->is_dir($gitPath) === false){
+                        $this->context->buildViolation($constraint->messageFileDoesNotExist)
+                            ->atPath('path')
+                            ->addViolation();
+                    }
                 }
             }catch(\Exception $e){
                 $this->context->buildViolation($e->getMessage())

@@ -11,6 +11,8 @@ class SshDetails extends Constraint
 {
     public $message = 'validate.constraint.SshDetails';
     
+    public $messageFileDoesNotExist = 'validate.constraint.SshDetails.FileDoesNotExist';
+    
     public function validatedBy()
     {
         return 'ssh_details_validator';

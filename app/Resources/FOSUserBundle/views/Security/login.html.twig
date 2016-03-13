@@ -7,47 +7,63 @@
     <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
 {% endif %}
 
-<div class="container">
-    <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 hidden-xs hidden-sm">
-            <h1>Version Control System</h1>
-            <p>A web based git client. Used to commit, merge, branch code on unix based webservers.</p>
-        </div>
-        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
-            <div class="panel panel-success">
-                <div class="panel-heading">
-                    <h2>Login</h2>
+
+            <div class="login-box">
+                <div class="login-logo">
+                  <b>Version</b> Control System
                 </div>
-                <div class="panel-body">
-                    <form action="{{ path("fos_user_security_check") }}" method="post" >
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <p>A web based git client. Used to commit, merge, branch code on unix based webservers.</p>
+                    </div>
+                </div>
+                <!-- /.login-logo -->
+                <div class="login-box-body">
+                  <p class="login-box-msg">Sign in to start your session</p>
+                  
+
+                   <form action="{{ path("fos_user_security_check") }}" method="post" >
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                        <div class="form-group has-feedback">
+                          <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" class="form-control" placeholder="{{ 'security.login.username'|trans }}"/>
+                          <span class="glyphicon glyphicon-user form-control-feedback"></span>
+                        </div>
+                        <div class="form-group has-feedback">
+                          <input type="password" id="password" name="_password" required="required" class="form-control" placeholder="{{ 'security.login.password'|trans }}"/>
+                          <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                        </div>
+                          
+                        <div class="row">
+                          <div class="col-xs-8"> 
 
-                        <div class="form-group">
-                            <label for="username" class="control-label">{{ 'security.login.username'|trans }}</label>
-                            <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" class="form-control"/>
+                                <div class="checkbox">
+                                  <label >                           
+                                     <input type="checkbox" id="remember_me" name="_remember_me" value="on" />  
+                                     {{ 'security.login.remember_me'|trans }}
+                                  </label>
+                                </div>
+      
+                          </div>
+                          <!-- /.col -->
+                          <div class="col-xs-4">
+                            <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" class="btn btn-primary btn-block btn-flat"/>
+                          </div>
+                          <!-- /.col -->
                         </div>
+                          
+                  </form>
 
-                        <div class="form-group">
-                            <label for="password" class="control-label">{{ 'security.login.password'|trans }}</label>
-                            <input type="password" id="password" name="_password" required="required" class="form-control"/>
-                        </div>
+                  
+                  <!-- /.social-auth-links -->
+                  {% if( enable_registration ) %}
+                        <a href="{{ path('fos_user_registration_register') }}" class="">{{ 'layout.register'|trans({}, 'FOSUserBundle') }}</a>
+                   {% endif %}
 
-                        <div class="form-group">
-                            <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-                            <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
-                        </div>
-                        <div class="col-xs-6">
-                            <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" class="btn btn-success"/>
-                        </div>
-                        <div class="col-xs-6 text-right">
-                            {% if( enable_registration ) %}
-                                <a href="{{ path('fos_user_registration_register') }}" class="btn btn-default">{{ 'layout.register'|trans({}, 'FOSUserBundle') }}</a>
-                            {% endif %}
-                        </div>
-                    </form>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
+                <!-- /.login-box-body -->
+              </div>
+            
+            
+
+  
 {% endblock fos_user_content %}

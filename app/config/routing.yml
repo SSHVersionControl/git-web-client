@@ -37,3 +37,13 @@ fos_user_change_password:
     
 github_login:
     path: /login/check-github
+    
+version_contol_github_issue_control:
+    resource: "@VersionControlGithubIssueBundle/Controller/"
+    type:     annotation
+    prefix:   /
+    
+version_contol_gitlab_issue_control:
+    resource: "@VersionControlGitlabIssueBundle/Controller/"
+    type:     annotation
+    prefix:   /

@@ -8,12 +8,18 @@ use Symfony\Component\Process\ProcessBuilder;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use VersionContol\GitControlBundle\Entity\Project;
-use VersionContol\GitControlBundle\Utility\SshProcess;
+use VersionContol\GitControlBundle\Utility\SshProcessInterface;
 use VersionContol\GitControlBundle\Utility\ProjectEnvironmentStorage;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use VersionContol\GitControlBundle\Event\GitAlterFilesEvent;
+use VersionContol\GitControlBundle\Entity\ProjectEnvironment;
+use VersionContol\GitControlBundle\Logger\GitCommandLogger;
+use Symfony\Component\Stopwatch\Stopwatch;
 
-abstract class GitCommand {
+use VersionContol\GitControlBundle\Utility\GitCommands\Command as Command;
+use VersionContol\GitControlBundle\Utility\GitCommands\Exception\InvalidArgumentException;
+
+class GitCommand {
     
     protected $gitPath;
     
@@ -28,14 +34,7 @@ abstract class GitCommand {
      */
     protected $projectEnvironment;
     
-    /**
-     *
-     * @var type Git Status Hash.
-     * Used to make sure no changes has occurred since last check 
-     * @var string hash
-     */
-    protected $statusHash;
-    
+
     /**
      * @var ProjectEnvironmentStorage
      */
@@ -44,30 +43,27 @@ abstract class GitCommand {
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
-    protected $dispatcher;
+    public $dispatcher;
     
     /**
-     * Get current active Branch Name
-     * If there is no commits (eg new repo) then branch name is 'NEW REPO'
-     * This git command needs at least one commit before if show the correct branch name.
-     *  
-     * @return string The current branch name
+     * Git Command Logger
+     * @var \VersionContol\GitControlBundle\Logger\GitCommandLogger 
      */
-    public function getCurrentBranch(){
-        $branchName = '';
-        try{
-            //$branchName =  $this->runCommand('git rev-parse --abbrev-ref HEAD');
-            $branchName =  $this->runCommand('git symbolic-ref --short -q HEAD');
-        }catch(\RuntimeException $e){
-            if($this->getObjectCount() == 0){
-                $branchName = 'NEW REPO';
-            }
-        }
-        
-        return $branchName;
-        
-
-    }
+    protected $logger;
+    
+    /**
+     * Symfony's debugging Stopwatch.
+     *
+     * @var Stopwatch|null
+     */
+    private $stopwatch;
+    
+    /**
+     * SSH Process
+     * @var \VersionContol\GitControlBundle\Utility\SshProcessInterface 
+     */
+    private $sshProcess;
+    
     
     /**
      * Wrapper function to run shell commands. Supports local and remote commands
@@ -77,13 +73,20 @@ abstract class GitCommand {
      * @return string Result of command
      * @throws \RuntimeException
      */
-    protected function runCommand($command){
+    public function runCommand($command){
+        
+        if ($this->stopwatch) {
+            $this->stopwatch->start('git_request', 'version_control');
+        }
+        $start = microtime(true);
         
         if($this->projectEnvironment->getSsh() === true){
             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
-            $sshProcess = new SshProcess();
-            $sshProcess->run(array($fullCommand),$this->projectEnvironment->getHost(),$this->projectEnvironment->getUsername(),22,$this->projectEnvironment->getPassword());
-            return $sshProcess->getStdout();
+            //$sshProcess = new SshProcess();
+            $this->sshProcess->run(array($fullCommand),$this->projectEnvironment->getHost(),$this->projectEnvironment->getUsername(),22,$this->projectEnvironment->getPassword());
+            $this->logCommand($fullCommand,'remote',array('host'=>$this->projectEnvironment->getHost()),$start);
+            
+            return $this->sshProcess->getStdout();
         }else{
             if(is_array($command)){
                 //$finalCommands = array_merge(array('cd',$this->gitPath,'&&'),$command);
@@ -99,6 +102,8 @@ abstract class GitCommand {
             //print_r($process->getCommandLine());
             $process->run();
 
+            $this->logCommand($fullCommand,'local',array(),$start);
+            
             // executes after the command finishes
             if (!$process->isSuccessful()) {
                 if(trim($process->getErrorOutput()) !== ''){
@@ -142,28 +147,24 @@ abstract class GitCommand {
         $this->setGitPath($this->projectEnvironment->getPath());
         return $this;
     }
-    
+   
     /**
-     * Splits a block of text on newlines and returns an array
-     *  
-     * @param string $text Text to split
-     * @param boolean $trimSpaces If true then each line is trimmed of white spaces. Default true. 
-     * @return array Array of lines
+     * Allows you to override the project Environment
+     * @param ProjectEnvironment $projectEnvironment
+     * @return \VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
      */
-    protected function splitOnNewLine($text,$trimSpaces = true){
-        if(!trim($text)){
-            return array();
-        }
-        $lines = preg_split('/$\R?^/m', $text);
-        if($trimSpaces){
-            return array_map(array($this,'trimSpaces'),$lines); 
-        }else{
-            return $lines; 
-        }
+    public function overRideProjectEnvironment(ProjectEnvironment $projectEnvironment){
+        $this->projectEnvironment = $projectEnvironment;
+        $this->setGitPath($this->projectEnvironment->getPath());
+        return $this;
     }
     
-    public function trimSpaces($value){
-        return trim(trim($value),'\'');
+    /**
+     * Gets Project Environment
+     * @return type
+     */
+    public function getProjectEnvironment() {
+        return $this->projectEnvironment;
     }
     
     public function getSecurityContext() {
@@ -195,6 +196,94 @@ abstract class GitCommand {
     public function triggerGitAlterFilesEvent($eventName = 'git.alter_files'){
         $event = new GitAlterFilesEvent($this->projectEnvironment,array());
         $this->dispatcher->dispatch($eventName, $event);
+    }
+
+    public function getLogger() {
+        return $this->logger;
+    }
+
+    public function setLogger(GitCommandLogger $logger) {
+        $this->logger = $logger;
+        return $this;
+    }
+    
+    /**
+     * Sets a stopwatch instance for debugging purposes.
+     *
+     * @param Stopwatch $stopwatch
+     */
+    public function setStopwatch(Stopwatch $stopwatch = null)
+    {
+        $this->stopwatch = $stopwatch;
+    }
+    /**
+     * Log the query if we have an instance of ElasticaLogger.
+     *
+     * @param string $command
+     * @param string $method
+     * @param array  $data
+     * @param int    $start
+     */
+    public function logCommand($command, $method, $data, $start)
+    {
+        if (!$this->logger or !$this->logger instanceof GitCommandLogger) {
+            return;
+        }
+        $time = microtime(true) - $start;
+        
+        $this->logger->logCommand($command, $method, $data, $time);
+    }
+    
+    /**
+     * Sets the SSH Process
+     * @param SshProcess $sshProcess
+     * @return \VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
+     */
+    public function setSshProcess(\VersionContol\GitControlBundle\Utility\SshProcessInterface $sshProcess) {
+        $this->sshProcess = $sshProcess;
+        return $this;
+    }
+
+    /**
+     * Get git command groups
+     * @param string $name
+     * @return \VersionContol\GitControlBundle\Utility\GitCommands\GitCommand
+     * @throws InvalidArgumentException
+     */
+    public function command($name){
+        switch (trim($name)) {
+            case 'branch':
+                $command = new Command\GitBranchCommand($this);
+                break;
+            case 'commit':
+                 $command = new Command\GitCommitCommand($this);
+                 break;
+            case 'diff':
+                 $command = new Command\GitDiffCommand($this);
+                 break;
+            case 'files':
+                 $command = new Command\GitFilesCommand($this);
+                 break;
+            case 'init':
+                 $command = new Command\GitInitCommand($this);
+                 break;
+            case 'log':
+                 $command = new Command\GitLogCommand($this);
+                 break;
+            case 'status':
+                 $command = new Command\GitStatusCommand($this);
+                 break;
+            case 'sync':
+                 $command = new Command\GitSyncCommand($this);
+                 break;
+            case 'undo':
+                 $command = new Command\GitUndoCommand($this);
+                 break;
+            default:
+                throw new InvalidArgumentException(sprintf('Unknown command instance called: "%s"', $name));
+        }
+
+        return $command;
     }
 
     

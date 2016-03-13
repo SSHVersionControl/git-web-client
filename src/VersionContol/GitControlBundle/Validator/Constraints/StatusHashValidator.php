@@ -4,18 +4,19 @@ namespace VersionContol\GitControlBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use VersionContol\GitControlBundle\Utility\GitCommands\GitStatusCommand;
+use VersionContol\GitControlBundle\Utility\GitCommands\Command\GitStatusCommand;
+use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 
 class StatusHashValidator extends ConstraintValidator
 {
     /**
      *
-     * @var VersionContol\GitControlBundle\Utility\GitCommands\GitStatusCommand 
+     * @var VersionContol\GitControlBundle\Utility\GitCommands\Command\GitStatusCommand 
      */
     public $gitStatusCommand;
     
-    public function __construct(GitStatusCommand $gitStatusCommand) {
-        $this->gitStatusCommand = $gitStatusCommand;
+    public function __construct(GitCommand $gitCommand) {
+        $this->gitStatusCommand = $gitCommand->command('status');
     }
     
     public function validate($commitEntity, Constraint $constraint)
@@ -24,8 +25,6 @@ class StatusHashValidator extends ConstraintValidator
         $statusHash = $commitEntity->getStatusHash();
         $this->gitStatusCommand->setProject($commitEntity->getProject());
         $currentStatusHash = $this->gitStatusCommand->getStatusHash();
-        print_r($statusHash."<br/> \n");
-        print_r($currentStatusHash."<br/> \n");
         
         if($currentStatusHash !== $statusHash){
             $this->context->buildViolation($constraint->message)

@@ -1,0 +1,38 @@
+{% if(diffs|length > 0)%}
+    {% for diff in diffs %}
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             <h4 class="modal-title">{{diff.getFileName}} ({{diff.status}})</h4>
+        </div>
+        <div class="modal-body">
+                    <table class="table diff table-condensed">
+                    {% for diffLine in diff.diffLines %}
+                        <tr class="diff-type-{{diffLine.type}}">
+                            <td class="diff-number">
+                                {{diffLine.lineNumber}}
+                            </td>
+                            <td class="diff-line-content">
+                                {{diffLine.line}}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+    {% endfor %}
+{% else %}
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">No Diff Generated</h4>
+    </div>
+    <div class="modal-body">
+        <p>No diff comparsion could be generated for this file. Do not worry. This can occur due to a mulitude of reasons. 
+            The file could be a new file, a binary file, or a change to file endings.
+        </p>         
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+{% endif %}

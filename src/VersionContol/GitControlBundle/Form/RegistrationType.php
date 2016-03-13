@@ -10,12 +10,12 @@ class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('name')
+        $builder->add('name');
 
-                ->add('admin', 'checkbox', array(
+                /*->add('admin', 'checkbox', array(
                 'label'    => 'Admin',
                 'required' => false,
-                ));
+                ));*/
     }
 
     public function getParent()

@@ -1,36 +1,42 @@
 {% form_theme edit_form 'VersionContolGitControlBundle::FormTheme/_editproject-prototype.html.twig' %}
-{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
 
-{% block sidemenu -%}
- {% include 'VersionContolGitControlBundle::Project/modifiySideMenu.html.twig'  %}
+
+{% block topnavleft %}
+ 
 {% endblock %}
-
-{% block content -%}
+            
+{% block header %}
+     
     <h1 class="page-header">
-       Edit Project
-      <small>
-          {{ project.title }} 
-      </small>
-          {% if (is_granted('MASTER', project)) %}
-          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
-        {% endif %}
+           Edit Project
+          <small>{{ project.title }}</small>
     </h1>
-    
     <ol class="breadcrumb">
         <li>
-            <i class="fa fa-dashboard"></i>  <a href="index.html">Projects</a>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
         </li>
         <li class="active">
-            <i class="fa fa-file"></i> Edit
+            <i class="fa fa-edit"></i> Edit
         </li>
     </ol>
+{% endblock %}
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Partials/modifiySideMenu.html.twig'  %}
+{% endblock %} 
+
+
+{% block content -%}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
+        
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-product-hunt"></i> {{ project.title }}</h3>
         </div>
-        <div class="panel-body">
-            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
+        <div class="box-body">
+            
                 {{ form_start(edit_form,{ 'attr': { 'class': 'form'}}) }}
 
                     {{ form_errors(edit_form) }}                
@@ -44,10 +50,7 @@
                          {{ form_errors(edit_form.description) }}
                          {{ form_widget(edit_form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
                      </div>
-                     <div class="form-group">
-                        {{ form_errors(edit_form.projectEnvironment) }}
-                        {{ form_widget(edit_form.projectEnvironment,{'attr': {'class': 'curriculum'}}) }}
-                     </div>
+                     
                      <div class="text-right">
                          <a href="{{ path('project_log',{ 'id': project.id }) }}" class="btn btn-default">
                              Cancel
@@ -55,17 +58,59 @@
                          {{ form_widget(edit_form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
                      </div>
                  {{ form_end(edit_form) }}
-             </div>
-             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
-                 <div class="panel panel-default">
-                     <div class="panel-heading">
-                         <h4>Instructions</h4>
+                 <h3>Project Environments</h3>
+                 <div class="form-group">
+                     {% if(project.projectEnvironment|length > 0) %}
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        {% for projectEnvironment in project.projectEnvironment  %}
+                            <div class="panel panel-default">
+                               <div class="panel-heading" role="tab" id="heading{{projectEnvironment.id}}">
+                                 <h4 class="panel-title">
+                                   <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{projectEnvironment.id}}" aria-expanded="true" aria-controls="collapse{{projectEnvironment.id}}">
+                                     {{projectEnvironment.title}}
+                                   </a>
+                                 </h4>
+                               </div>
+                               <div id="collapse{{projectEnvironment.id}}" class="panel-collapse collapse {%if(loop.index == 1)%}in{% endif %}" role="tabpanel" aria-labelledby="heading{{projectEnvironment.id}}">
+                                 <div class="panel-body">
+                                     <p>{{projectEnvironment.description}}</p>
+                                     <div class="row">
+                                        <div class="col-md-6">
+                                           <ul class="list-group">
+                                              <li class="list-group-item"><strong>Path:</strong> {{projectEnvironment.path}}</li>
+                                              <li class="list-group-item"><strong>Uses SSH:</strong> {{ ('boolean.' ~ projectEnvironment.ssh) | trans }}</li>
+                                              <li class="list-group-item"><strong>SSH Host:</strong> {{projectEnvironment.host}}</li>
+                                           </ul>
+                                        </div>
+                                           <div class="col-md-6">
+                                                {% if(projectEnvironment.projectEnvironmentFilePerm) %}
+                                                   <ul class="list-group">
+                                                       <li class="list-group-item"><strong>Uses File Permissions:</strong> {{ ('boolean.' ~ projectEnvironment.projectEnvironmentFilePerm.enableFilePermissions) | trans }}</li>
+                                                      <li class="list-group-item"><strong>File Owner:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileOwner}}</li>
+                                                      <li class="list-group-item"><strong>File Group:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileGroup}}</li>
+                                                      <li class="list-group-item"><strong>Permissions:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileMode}}</li>
+                                                   </ul>
+                                                {% endif %}
+                                           </div>
+                                     </div>
+                                    <a href="{{ path('projectenvironment_edit', { 'id': project.id, 'projectEnvironmentId': projectEnvironment.id }) }}">Edit</a>
+                                 </div>
+                               </div>
+                             </div>
+                        {% endfor %}
                      </div>
-                     <div class="panel-body">
-                         <p>Description</p>
+                     <div class="text-right">
+                      <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary">Add Project Environment</button>
                      </div>
-
+                     {% else %}
+                         <div class="alert alert-info text-center" role="alert">
+                                <p>There are no Project Environments yet for this project. So what are you waiting for, go create one</p>
+                                <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary">Add a Project Environment</button>
+                         </div>
+                     {% endif %}
                  </div>
+             </div>
+             
                  {#
                 {% set user = app.security.getToken().getUser() %}
                 {% if(user.githubId) %}
@@ -93,5 +138,65 @@
                  #}
              </div>
         </div>
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Instructions</h3>
+            </div>
+            <div class="box-body">
+                <p>You can edit the projects title and description in the form and manage your "Project Environments".
+                When creating a new Project Environment you have 3 Options:</p>
+                <ul>
+                    <li>Existing: References a folder which already contains a git repository</li>
+                    <li>New: References a folder that DOESN't contain a git repository and initalize a new one</li>
+                    <li>Clone: References a folder that DOESN't contain a git repository and clones a git repository into this folder.</li>
+                </ul>
+            </div>
+
+        </div>
     </div>
+</div>
+             
+<div class="modal fade" id="newProjectEnvironment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">New Project Environment</h4>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">Existing</h4>
+                <p class="list-group-item-text">
+                    <a href="{{ path('projectenvironment_existing', { 'id': project.id }) }}" title="">
+                        Create New Project Environment with an existing Git Repository in source folder(E.g. Folder already contains a GIT Repository)
+                    </a>
+                </p>
+            </li>
+            <li class="list-group-item">
+                <h4 class="list-group-item-heading">New</h4>
+                <p class="list-group-item-text">
+                    <a href="{{ path('projectenvironment_new', { 'id': project.id }) }}" title="">
+                        Create New Project Environment and initalize a new Git repository in source folder.
+                    </a>
+                </p>
+            </li>
+            <li class="list-group-item">
+                 <h4 class="list-group-item-heading">Clone</h4>
+                 <p class="list-group-item-text">
+                    <a href="{{ path('projectenvironment_clone', { 'id': project.id }) }}" title="">
+                        Create New Project Environment and clone a Git repository into source folder.
+                    </a>
+                </p>
+            </li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

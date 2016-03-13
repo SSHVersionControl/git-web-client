@@ -1,23 +1,28 @@
-Symfony Standard Edition
+Online GIT Version Control System
 ========================
 
-Welcome to the Symfony Standard Edition - a fully-functional Symfony2
-application that you can use as the skeleton for your new applications.
+Welcome to the Online GIT Version Control System. This systems allows you to commit,search history,
+branch, push, pull, and many other action on git repositories, locate locally and on remote servers with 
+SSH access. 
 
-This document contains information on how to download, install, and start
-using Symfony. For a more detailed explanation, see the [Installation][1]
-chapter of the Symfony Documentation.
+It has an issue tracking system, to help organise your bugs. (Hope to integrate with github, gitlab, and jira in the future).    
 
-1) Installing the Standard Edition
+### Why Create another GIT Client
+I have been using GIT for a number of years now and love it. Been using it in IDEs, and mostly from command line.
+I also use you GIT to deploy changes to live servers. My typical set up is a Development Server, Staging Server, and
+Live server. My computer is Windows (I know, Sigh... ) and a servers for Development(Internal to office), Staging(Preview/Testing server), Live Servers running Debian/Ubuntu.
+
+A lot of the sites I run rely on certain OS packages and can be a nightmare to set up on Windows so usually work over the network 
+with samba. This cause the first of the issues. Access right to .git folder.     
+
+
+1) Installing the Online GIT Version Control System
 ----------------------------------
 
-When it comes to installing the Symfony Standard Edition, you have the
+When it comes to installing, you have the
 following options.
 
 ### Use Composer (*recommended*)
-
-As Symfony uses [Composer][2] to manage its dependencies, the recommended way
-to create a new project is to use it.
 
 If you don't have Composer yet, download it following the instructions on
 http://getcomposer.org/ or just run the following command:
@@ -26,21 +31,16 @@ http://getcomposer.org/ or just run the following command:
 
 Then, use the `create-project` command to generate a new Symfony application:
 
-    php composer.phar create-project symfony/framework-standard-edition path/to/install
+    php composer.phar create-project (project) path/to/install
 
-Composer will install Symfony and all its dependencies under the
+Composer will install the project and all its dependencies under the
 `path/to/install` directory.
 
 ### Download an Archive File
 
-To quickly test Symfony, you can also download an [archive][3] of the Standard
-Edition and unpack it somewhere under your web server root directory.
+To quickly to test the project, you can also download an of the Version Control
+System and unpack it somewhere under your web server root directory.
 
-If you downloaded an archive "without vendors", you also need to install all
-the necessary dependencies. Download composer (see above) and run the
-following command:
-
-    php composer.phar install
 
 2) Checking your System Configuration
 -------------------------------------
@@ -61,10 +61,13 @@ Access the `config.php` script from a browser:
 
 If you get any warnings or recommendations, fix them before moving on.
 
+3) Install the database
+--------------------------------
+
 3) Browsing the Demo Application
 --------------------------------
 
-Congratulations! You're now ready to use Symfony.
+Congratulations! You're now ready to use the Version Control System.
 
 From the `config.php` page, click the "Bypass configuration and go to the
 Welcome page" link to load up your first Symfony page.
@@ -75,12 +78,6 @@ Symfony Application online" link of the `config.php` page.
 To see a real-live Symfony page in action, access the following page:
 
     web/app_dev.php/demo/hello/Fabien
-
-4) Getting started with Symfony
--------------------------------
-
-5) Getting started with Symfony
--------------------------------
 
 
 

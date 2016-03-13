@@ -1,57 +1,69 @@
-{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
 
-{% block sidemenu -%}
- {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+           Remote Branches
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-code-fork"></i> Remote Branches
+        </li>
+    </ol>
 {% endblock %}
 
-{% block topcontent %}
-    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Partials/sidemenu.html.twig'  %}
 {% endblock %} 
 
 {% block content -%}
-    <h1 class="page-header">
-       Remote Branches
-      <small>
-          {{ project.title }} 
-      </small>
-        {% if (is_granted('MASTER', project)) %}
-          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
-        {% endif %}
-    </h1>
-        <ol class="breadcrumb">
-            <li>
-                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-            </li>
-            <li class="active">
-                <i class="fa fa-file"></i> Projects
-            </li>
-        </ol>
+    
+    <div class="callout callout-info">
+        <h4>Info</h4>
+        <p>Before you can start working on a remote branch, you will need to make a local branch (copy)
+            of the remote branch. To get the latest list of remote branches you may need to click the 
+            "Fetch all" button first, to download the latest changes to your local repositories. To create a local copy of a branch click on the "Checkout" button. The system will 
+            ask you to enter in the name of the new branch. You can use the same name as the remote branch
+            if it is not taken already or come up with a new distinct name. Remember you can checkout a remote branch as many times as you like using different local names.
+        </p>
+    </div>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-lg-10">
-                    <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
-                </div>
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName|issueLink(project.id)|raw}}
+            </h3>
+            <div class="box-tools pull-right">
+                {% if (is_granted('OPERATOR', project)) %}
+                    <a href="{{ path('project_branch_fetchall', { 'id': project.id}) }}" type="button" class="btn bg-olive btn-sm">
+                        <i class="fa fa-cloud-download"></i> Fetch All
+                    </a>
+
+                {% endif %}
             </div>
         </div>
           
-        <div class="panel-body">
-                 <div class="row spacer-top">
-                    <div class="col-md-12">
-                    <p>Before you can start working on a remote branch, you will need to make a local branch (copy)
-                        of the remote branch. To get the latest list of remote branches you may need to click the 
-                        "Fetch all" button first, to download the latest changes to your remote repositories. To create a local copy of a branch click on the "Checkout" button. The system will 
-                        ask you to enter in the name of the new branch. You can use the same name as the remote branch
-                        if it is not taken already or come up with a new distinct name. Remember you can checkout a remote branch as many times as you like.
-                    </p>
-                    </div>
-                </div>
-                <div class="row spacer-bottom">
-                    <div class="col-md-12 text-right">
-                        <a href="{{ path('project_branch_fetchall', { 'id': project.id}) }}" type="button" class="btn btn-info btn-sm">Fetch All</a>
-                    </div>
-                </div>     
+        <div class="box-body">
+                <p>
+                    List of Remote Branches. You can see below the list of branches that are on the remote git repositories. 
+                    The branches are listed in the format {name of remote repository}/{remote branch name}({text to state if local branch exists})
+                </p>
+                <p></p>
+     
                 <div class="list-group">
                 {% for branch in branches %}
 
@@ -65,7 +77,7 @@
                             </div>
                             <div class="col-md-4 text-right">
                                 {% if (is_granted('MASTER', project)) %}
-                                    <button  type="button" class="btn btn-default btn-sm checkout-remote" data-toggle="modal" data-target="#newBranch" data-remoteName="{{branch.name}}" data-localName="{%if(branch.local==false)%}{{branch.name}}{% endif %}">
+                                    <button  type="button" class="btn btn-primary btn-sm btn-flat checkout-remote" data-toggle="modal" data-target="#newBranch" data-remoteName="{{branch.name}}" data-localName="{%if(branch.local==false)%}{{branch.name}}{% endif %}">
                                         Checkout
                                     </button>
                                 {% endif %}

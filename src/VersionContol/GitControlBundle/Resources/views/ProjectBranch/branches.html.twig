@@ -1,54 +1,51 @@
-{% extends "VersionContolGitControlBundle::layout.html.twig" %}
+{% extends "VersionContolGitControlBundle::admin.layout.html.twig" %}
 
-{% block sidemenu -%}
- {% include 'VersionContolGitControlBundle::Project/sidemenu.html.twig'  %}
+
+{% block topnavleft %}
+    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+     
+    <h1 class="page-header">
+           Local Branches
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-code-fork"></i> Local Branches
+        </li>
+    </ol>
 {% endblock %}
 
-{% block topcontent %}
-    {% include 'VersionContolGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% block sidemenu -%}
+ {% include 'VersionContolGitControlBundle::Partials/sidemenu.html.twig'  %}
 {% endblock %} 
 
 {% block content -%}
-    <h1 class="page-header">
-       Local Branches
-      <small>
-          {{ project.title }} 
-      </small>
-        {% if (is_granted('MASTER', project)) %}
-          <span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>
-        {% endif %}
-    </h1>
-        <ol class="breadcrumb">
-            <li>
-                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-            </li>
-            <li class="active">
-                <i class="fa fa-file"></i> Projects
-            </li>
-        </ol>
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName|issueLink(project.id)|raw}}
+            </h3>
 
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-lg-10">
-                    <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName}}</h3>
-                </div>
-                <div class="col-lg-2">
-                    {% if (is_granted('OPERATOR', project)) %}
-                        <button  type="button" class="btn btn-primary" data-toggle="modal" data-target="#newBranch">
-                            New Branch
-                        </button>
-                    {% endif %}
-                </div>
+            <div class="box-tools pull-right">
+                {% if (is_granted('OPERATOR', project)) %}
+                    <button  type="button" class="btn bg-olive btn-sm" data-toggle="modal" data-target="#newBranch">
+                        <i class="fa fa-plus"></i> New Branch
+                    </button>
+                {% endif %}
             </div>
-        </div>
-        <div class="row spacer-top">
-            <div class="col-md-12 text-right">
-                <a href="{{ path('project_branch_remotes', { 'id': project.id}) }}" type="button" class="btn btn-info btn-sm">Show Remote Branches</a>
-            </div>
-        </div>        
-        <div class="panel-body">
-                
+        </div>       
+        <div class="box-body">
+            <p>List of local branches in repository</p>
                 <div class="list-group">
                 {% for branch in branches %}
 
@@ -59,17 +56,17 @@
                                 {% if(branch == branchName|trim) %}
                                     <strong>*</strong>
                                 {% endif %}
-                                <strong class="str-truncated">{{branch}}</strong>
+                                <strong class="str-truncated">{{branch|issueLink(project.id)|raw}}</strong>
                             </div>
                             <div class="col-md-4 text-right">
                                 {% if (is_granted('MASTER', project)) %}
                                     {% if(branch != branchName|trim) %}
-                                        <a href="{{ path('project_checkoutbranch', { 'id': project.id, 'branchName': branch}) }}" title="Checkout this branch" class="btn btn-default btn-sm">Checkout</a>
+                                        <a href="{{ path('project_checkoutbranch', { 'id': project.id, 'branchName': branch}) }}" title="Checkout this branch" class="btn btn-primary btn-sm btn-flat">Checkout</a>
                                         
                                     {% endif %}
-                                    <a href="{{ path('project_mergebranch', { 'id': project.id, 'branchName': branch}) }}" title="Merge this branch" class="btn btn-default btn-sm" data-confirm="Are you sure you wish to merge '{{branch}}' into '{{branchName}}'" data-confirm-header="Confirm Merge">Merge</a>
+                                    <a href="{{ path('project_mergebranch', { 'id': project.id, 'branchName': branch}) }}" title="Merge this branch" class="btn btn-primary btn-sm btn-flat" data-confirm="Are you sure you wish to merge '{{branch}}' into '{{branchName}}'" data-confirm-header="Confirm Merge">Merge</a>
                                     {% if(branch != branchName|trim) %}
-                                        <a href="{{ path('project_deletebranch', { 'id': project.id, 'branchName': branch}) }}" title="Delete this branch" class="btn btn-default btn-sm btn-danger" data-confirm="Are you sure you wish to delete this branch?" data-confirm-header="Confirm Delete">Delete</a>
+                                        <a href="{{ path('project_deletebranch', { 'id': project.id, 'branchName': branch}) }}" title="Delete this branch" class="btn btn-sm btn-danger btn-flat" data-confirm="Are you sure you wish to delete this branch?" data-confirm-header="Confirm Delete">Delete</a>
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -104,13 +101,14 @@
                       {{ form_errors(form.switch) }}
                       {{ form_widget(form.switch) }}
                   </div>
-                  <div class="alert-info">
-                      
-                      <h4>Branching from: {{branchName}}</h4>
+                  <div class="box box-info box-solid">
+                      <div class="box-header with-border">
+                        <h4 class="box-title">Branching from: {{branchName}}</h4>
+                      </div>
 
-                      <div class="list-group">
+                      <div class="box-body">
                         {% for log in gitLogs %}
-                            <div class="list-group-item">
+                   
                               <div class="row">
                                   <div class="col-md-10">
                                       <strong class="str-truncated">{{log.subject}}</strong>
@@ -127,7 +125,6 @@
                           {% endfor %}
                       </div>
                     </div>
-                  </div>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -139,3 +136,14 @@
     </div>
           
 {% endblock %}
+
+{% block footerJS %}
+    {% if(newBranchName) %}
+    <script>
+        $(function(){
+            $('#newBranch').modal('show');
+        });
+    </script>
+    {% endif %}
+    
+{% endblock %} 

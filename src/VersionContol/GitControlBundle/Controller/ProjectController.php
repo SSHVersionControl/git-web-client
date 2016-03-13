@@ -82,7 +82,7 @@ class ProjectController extends Controller
             $em->persist($project);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('project_commitlist', array('id' => $project->getId())));
+            return $this->redirect($this->generateUrl('project_edit', array('id' => $project->getId())));
         }
 
         return array(
@@ -152,13 +152,6 @@ class ProjectController extends Controller
 
         $editForm = $this->createEditForm($project);
         $deleteForm = $this->createDeleteForm($id);
-        
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        
-        //$client = new \Github\Client();
-        //$client->authenticate($user->getGithubAccessToken(), null, \Github\Client::AUTH_HTTP_TOKEN);
-        //$repositories = $client->api('currentUser')->repositories();
-       // print_r($repositories);
         
         return array(
             'project'      => $project,
@@ -266,119 +259,6 @@ class ProjectController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
-    }
-    
-    
-    /**
-     * Show Git commit diff
-     *
-     * @Route("commitdiff/{id}/{commitHash}", name="project_commitdiff")
-     * @Method("GET")
-     * @Template()
-     */
-    public function commitDiffAction($id,$commitHash){
-        $em = $this->getDoctrine()->getManager();
-
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($project,'VIEW');
-        
-        $gitCommands = $this->get('version_control.git_command')->setProject($project);
-        
-        $branchName = $gitCommands->getCurrentBranch();
-        $gitLog = $gitCommands->getCommitLog($commitHash,$branchName);
-        
-        $gitDiffs = $gitCommands->getCommitDiff($commitHash);
-        
-        return array(
-            'project'      => $project,
-            'branchName' => $branchName,
-            'log' => $gitLog,
-            'diffs' => $gitDiffs,
-        );
-    }
-    
-    /**
-     * Show Git commit diff
-     *
-     * @Route("filediff/{id}/{difffile}", name="project_filediff")
-     * @Method("GET")
-     * @Template()
-     */
-    public function fileDiffAction($id,$difffile){
-        $em = $this->getDoctrine()->getManager();
-
-        $difffile = urldecode($difffile);
-       
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($project,'VIEW');
-        
-        $gitCommands = $this->get('version_control.git_command')->setProject($project);
-        
-        $branchName = $gitCommands->getCurrentBranch();
-       // $gitLog = $gitCommands->getCommitLog($commitHash,$branchName);
-        
-        $gitDiffs = $gitCommands->getDiffFile($difffile);
-   
-        return array(
-            'project'      => $project,
-            'branchName' => $branchName,
-            'diffs' => $gitDiffs,
-        );
-    }
-    
-    /**
-     * Show Git commit diff
-     *
-     * @Route("/filediff/{id}/{currentDir}",defaults={"$currentDir" = ""}, name="project_filelist")
-     * @Method("GET")
-     * @Template()
-     */
-    public function fileListAction($id,$currentDir = ''){
-        $em = $this->getDoctrine()->getManager();
-
-       
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        
-        $this->checkProjectAuthorization($project,'VIEW');
-        
-        $gitCommands = $this->get('version_control.git_command')->setProject($project);
-        
-        $branchName = $gitCommands->getCurrentBranch();
-        $dir = '';
-        if($currentDir){
-            $dir = trim(urldecode($currentDir));
-        }
-        $files = $gitCommands->listFiles($dir, $branchName);
-        
-        $readme = '';
-        foreach($files as $file){
-            if(strtolower($file->getExtension()) == 'md' || strtolower($file->getExtension()) == 'markdown'){
-                $readme = $gitCommands->readFile($file);
-                break;
-            }
-        }
-   
-        return array(
-            'project'      => $project,
-            'branchName' => $branchName,
-            'files' => $files,
-            'currentDir' => $dir,
-            'readme' => $readme
-        );
     }
     
     

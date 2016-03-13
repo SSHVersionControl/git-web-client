@@ -1,0 +1,30 @@
+services:
+    version_control.issue_repository.github:
+        class:  VersionControl\GithubIssueBundle\Repository\IssueRepository
+        
+    version_control.issue_label_repository.github:
+        class:  VersionControl\GithubIssueBundle\Repository\IssueLabelRepository
+        
+    version_control.issue_milestone_repository.github:
+        class:  VersionControl\GithubIssueBundle\Repository\IssueMilestoneRepository
+       
+    #Form Types
+    version_control.issue_form_type.github:
+        class:  VersionControl\GithubIssueBundle\Form\IssueType
+        arguments:
+            - @version_control.issue_repository_manager
+            
+    version_control.issue_form_edit_type.github:
+        class:  VersionControl\GithubIssueBundle\Form\IssueEditType
+        arguments:
+            - @version_control.issue_repository_manager
+            
+    version_control.issue_label_form_type.github:
+        class:  VersionControl\GithubIssueBundle\Form\IssueLabelType
+    
+    version_control.issue_comment_form_type.github:
+        class:  VersionControl\GithubIssueBundle\Form\IssueCommentType
+        
+    version_control.issue_milestone_form_type.github:
+        class:  VersionControl\GithubIssueBundle\Form\IssueMilestoneType
+        

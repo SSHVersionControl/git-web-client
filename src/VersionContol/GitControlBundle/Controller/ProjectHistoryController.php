@@ -14,41 +14,36 @@ use VersionContol\GitControlBundle\Entity\UserProjects;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * Project controller.
  *
- * @Route("/history")
+ * @Route("/project/{id}/history")
  */
 class ProjectHistoryController extends BaseProjectController
 {
     /**
+     *
+     * @var GitCommand 
+     */
+    protected $gitLogCommand;
+    
+    
+    /**
      * Displays the project commit history for the current branch.
      *
-     * @Route("/{id}", name="project_log")
+     * @Route("/", name="project_log")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function listAction(Request $request,$id)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
         
-        $this->checkProjectAuthorization($project,'VIEW');
-
-        $gitCommands = $this->get('version_control.git_command')->setProject($project);
-        $branchName = $gitCommands->getCurrentBranch();
-        
-        $currentPage = $request->query->get('page', 1);
-        
-        
-        $gitLogCommand = $this->get('version_control.git_log')->setProject($project);
-        $gitLogCommand->setBranch($branchName)
+        $currentPage = $request->query->get('page', 1); 
+ 
+        $this->gitLogCommand->setBranch($this->branchName)
                 ->setPage(($currentPage-1));
         
         //Search
@@ -57,28 +52,118 @@ class ProjectHistoryController extends BaseProjectController
         if($keyword !== false && trim($keyword) !== ''){
             if($filter !== false){
                 if($filter === 'author'){
-                    $gitLogCommand->setFilterByAuthor($keyword);
+                    $this->gitLogCommand->setFilterByAuthor($keyword);
                 }elseif($filter === 'content'){
-                    $gitLogCommand->setFilterByContent($keyword);
+                    $this->gitLogCommand->setFilterByContent($keyword);
                 }else{
-                    $gitLogCommand->setFilterByMessage($keyword);
+                    $this->gitLogCommand->setFilterByMessage($keyword);
                 }
             }
         }
-        //print_r($gitLogCommand->getCommand());
-        $gitLogs = $gitLogCommand->execute()->getResults();
+
+        $gitLogs = $this->gitLogCommand->execute()->getResults();
         
         
  
-        return array(
-            'project'      => $project,
-            'branchName' => $branchName,
+        return array_merge($this->viewVariables, array(
+
             'gitLogs' => $gitLogs,
-            'totalCount' => $gitLogCommand->getTotalCount(),
-            'limit' => $gitLogCommand->getLimit(),
-            'currentPage' => $gitLogCommand->getPage()+1,
+            'totalCount' => $this->gitLogCommand->getTotalCount(),
+            'limit' => $this->gitLogCommand->getLimit(),
+            'currentPage' => $this->gitLogCommand->getPage()+1,
             'keyword' => $keyword,
             'filter' => $filter,
-        );
+        ));
+    }
+    
+    /**
+     * Show Git commit diff
+     *
+     * @Route("/commit/{commitHash}", name="project_commitdiff")
+     * @Method("GET")
+     * @Template()
+     * @ProjectAccess(grantType="VIEW")
+     */
+    public function commitHistoryAction($id,$commitHash){
+        
+        
+        $gitDiffCommand = $this->gitCommands->command('diff');
+
+        $this->gitLogCommand
+                ->setLogCount(1)
+                ->setCommitHash($commitHash);
+        
+        //$gitLog = $this->gitFilesCommands->getCommitLog($commitHash,$this->branchName);
+        $gitLog = $this->gitLogCommand->execute()->getFirstResult();
+        
+        //Get git Diff
+        //$gitDiffs = $gitDiffCommand->getCommitDiff($commitHash);
+        $files = $gitDiffCommand->getFilesInCommit($commitHash);
+
+        
+        return array_merge($this->viewVariables, array(
+            'log' => $gitLog,
+            //'diffs' => $gitDiffs,
+            'files' => $files,
+        ));
+    }
+    
+    /**
+     * Show Git commit diff
+     *
+     * @Route("/commitfile/{commitHash}/{filePath}", name="project_commitfilediff")
+     * @Method("GET")
+     * @Template()
+     * @ProjectAccess(grantType="VIEW")
+     */
+    public function fileDiffAction($id,$commitHash,$filePath){
+        
+        
+        $gitDiffCommand = $this->gitCommands->command('diff');
+
+        $difffile = urldecode($filePath);
+        
+        $previousCommitHash = $gitDiffCommand->getPreviousCommitHash($commitHash);
+        
+        $gitDiffs = $gitDiffCommand->getDiffFileBetweenCommits($difffile,$previousCommitHash,$commitHash);
+   
+        return array_merge($this->viewVariables, array(
+            'diffs' => $gitDiffs,
+        ));
+    }
+    
+    /**
+     * Show Git commit diff
+     *
+     * @Route("/checkout-file/{commitHash}/{filePath}", name="project_checkout_file")
+     * @Method("GET")
+     * @ProjectAccess(grantType="VIEW")
+     */
+    public function checkoutFileAction($id,$commitHash,$filePath){
+        
+        
+        $gitUndoCommand = $this->gitCommands->command('undo');
+
+        $file = urldecode($filePath);
+        
+        $response = $gitUndoCommand->checkoutFile($file,$commitHash);
+        
+        $this->get('session')->getFlashBag()->add('notice', $response);
+        $this->get('session')->getFlashBag()->add('warning', "Make sure to commit the changes.");
+            
+        return $this->redirect($this->generateUrl('project_commitdiff', array('id' => $id,'commitHash' => $commitHash)));
+       
+    }
+    
+    /**
+     * 
+     * @param integer $id Project Id
+     */
+    public function initAction($id, $grantType = 'VIEW'){
+ 
+        parent::initAction($id,$grantType);
+        
+        $this->gitLogCommand = $this->gitCommands->command('log');
+ 
     }
 }

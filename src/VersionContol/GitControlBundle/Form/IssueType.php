@@ -5,6 +5,9 @@ namespace VersionContol\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use VersionContol\GitControlBundle\Repository\IssueMilestoneRepository;
+//use VersionContol\GitControlBundle\Repository\IssueLabelRepository;
+use Doctrine\ORM\EntityRepository;
 
 class IssueType extends AbstractType
 {
@@ -14,6 +17,7 @@ class IssueType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $project = $builder->getData()->getProject();
         $builder
             ->add('title')
             ->add('description')
@@ -28,7 +32,13 @@ class IssueType extends AbstractType
                     'placeholder' => 'Choose a milestone',
                     'required' => false,
                     'property' => 'title', // Assuming that the entity has a "name" property
-                    'class' => 'VersionContol\GitControlBundle\Entity\IssueMilestone'
+                    'class' => 'VersionContol\GitControlBundle\Entity\IssueMilestone',
+                    'query_builder' => function (IssueMilestoneRepository $er) use ($project) {
+                        return $er->createQueryBuilder('a')
+                            ->where('a.project = :project')
+                            ->setParameter('project', $project)
+                            ->orderBy('a.id', 'ASC');
+                    },
                 ))
             ->add('project', 'hidden_entity',array(
                     'class' => 'VersionContol\GitControlBundle\Entity\Project'
@@ -39,7 +49,13 @@ class IssueType extends AbstractType
                     'expanded' => true,   // Render as checkboxes
                     'property' => 'title', // Assuming that the entity has a "name" property
                     'class' => 'VersionContol\GitControlBundle\Entity\IssueLabel',
-                    'required' => false
+                    'required' => false,
+                    'query_builder' => function (EntityRepository $er) use ($project) {
+                        return $er->createQueryBuilder('a')
+                            ->where('a.project = :project OR a.allProjects = 1')
+                            ->setParameter('project', $project)
+                            ->orderBy('a.id', 'ASC');
+                    },
                 ))
         ;
     }

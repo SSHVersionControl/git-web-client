@@ -3,7 +3,7 @@
 namespace VersionContol\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use VersionContol\GitControlBundle\Entity\Issues\IssueCommentInteface;
 /**
  * IssueComment
  *
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity
  * @ORM\HasLifecycleCallbacks
  */
-class IssueComment
+class IssueComment implements IssueCommentInteface
 {
     /**
      * @var string
@@ -174,12 +174,23 @@ class IssueComment
     {
         return $this->verUser;
     }
+    
+    /**
+     * Get User
+     *
+     * @return \VersionContol\GitControlBundle\Entity\Issues\IssueUserInterface
+     */
+    public function getUser()
+    {
+        return $this->verUser;
+    }
+    
     /**
      * Sets issue
      * @param \VersionContol\GitControlBundle\Entity\Issue $issue
      * @return \VersionContol\GitControlBundle\Entity\IssueComment
      */
-    public function setIssue(\VersionContol\GitControlBundle\Entity\Issue $issue) {
+    public function setIssue(\VersionContol\GitControlBundle\Entity\Issues\IssueInterface $issue) {
         $this->issue = $issue;
         return $this;
     }

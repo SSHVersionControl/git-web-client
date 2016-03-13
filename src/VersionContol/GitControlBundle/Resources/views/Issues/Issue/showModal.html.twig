@@ -1,0 +1,63 @@
+
+<div class="modal-header">
+    <h4 class="modal-title">
+        Issue #{{ entity.id }} : {{ entity.title }}
+    </h4>
+</div>
+<div class="modal-body">
+            
+<div class="box box-primary">
+    <div class="box-header with-border">
+       <h3 class="panel-title">
+           <div class="issue-state issue-state-{{ entity.status }}"> 
+               {{ entity.status|capitalize }} 
+           </div>
+           <strong>{{entity.user.name}}</strong> created this issue {{ entity.createdAt|time_ago_in_words }}
+
+       </h3>
+    </div>
+
+           
+    <div class="box-body">
+         <ul class="timeline">
+             <li class="timeline-inverted">
+                 <div class="timeline-badge success">
+                     <i class="fa fa-check"></i>
+                 </div>
+                 <div class="timeline-panel">
+                     <div class="timeline-heading">
+                         <p><small class="text-muted"><i class="fa fa-clock-o"></i> {{ entity.createdAt|time_ago_in_words }}</small>
+                         </p>
+                     </div>
+                     <div class="timeline-body">
+                         <p>{{ entity.description | markdown }}</p>
+                     </div>
+                 </div>
+
+             </li>
+             {% for comment in  entity.issueComments %}
+                 <li class="timeline-inverted">
+                     <div class="timeline-badge info">
+                         <i class="fa fa-comment"></i>
+                     </div>
+                     <div class="timeline-panel">
+                         <div class="timeline-heading">
+                             <p><small class="text-muted"><i class="fa fa-clock-o"></i> Created By {{comment.user.name}} {{ comment.createdAt|time_ago_in_words }}</small>
+                             </p>
+                         </div>
+                         <div class="timeline-body">
+                             <p>{{ comment.comment | markdown }}</p>
+                         </div>
+                     </div>
+
+                 </li>
+             {% endfor %}
+         </ul>
+
+     </div>
+</div>
+</div>
+<div class="modal-footer">
+    <a href="{{ path('issue_show',{'id':project.id, 'issueId':entity.id})}}" class="btn btn-info" >Open Issue</a>
+    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+</div>

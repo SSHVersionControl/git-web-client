@@ -3,7 +3,7 @@
 namespace VersionContol\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use VersionContol\GitControlBundle\Entity\Issues\IssueInterface;
 /**
  * Issue
  *
@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\IssueRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Issue
+class Issue implements IssueInterface
 {
     /**
      * @var string
@@ -170,7 +170,6 @@ class Issue
     public function setDescription($description)
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -321,7 +320,7 @@ class Issue
      *
      * @return Issue
      */
-    public function setIssueMilestone(\VersionContol\GitControlBundle\Entity\IssueMilestone $issueMilestone = null)
+    public function setIssueMilestone(\VersionContol\GitControlBundle\Entity\Issues\IssueMilestone $issueMilestone = null)
     {
         $this->issueMilestone = $issueMilestone;
 
@@ -375,6 +374,16 @@ class Issue
 
         return $this;
     }
+    
+    /**
+     * Get User
+     *
+     * @return \VersionContol\GitControlBundle\Entity\Issues\IssueUserInterface
+     */
+    public function getUser()
+    {
+        return $this->verUser;
+    }
 
     /**
      * Get verUser
@@ -393,7 +402,7 @@ class Issue
      *
      * @return Issue
      */
-    public function addIssueLabel(\VersionContol\GitControlBundle\Entity\IssueLabel $issueLabel)
+    public function addIssueLabel(\VersionContol\GitControlBundle\Entity\Issues\IssueLabel $issueLabel)
     {
         $this->issueLabel[] = $issueLabel;
 
@@ -405,7 +414,7 @@ class Issue
      *
      * @param \VersionContol\GitControlBundle\Entity\IssueLabel $issueLabel
      */
-    public function removeIssueLabel(\VersionContol\GitControlBundle\Entity\IssueLabel $issueLabel)
+    public function removeIssueLabel(\VersionContol\GitControlBundle\Entity\Issues\IssueLabel $issueLabel)
     {
         $this->issueLabel->removeElement($issueLabel);
     }
@@ -433,7 +442,7 @@ class Issue
      * @param \Doctrine\Common\Collections\Collection $issueComments
      * @return \VersionContol\GitControlBundle\Entity\Issue
      */
-    public function setIssueComments(\Doctrine\Common\Collections\Collection $issueComments) {
+    public function setIssueComments(array $issueComments) {
         $this->issueComments = $issueComments;
         return $this;
     }

@@ -1,0 +1,139 @@
+## YAML Template.
+imports:
+    - { resource: gitservices.yml }
+    
+services:
+    version_control.ssh_process:
+        class: VersionContol\GitControlBundle\Utility\SshProcess
+            
+    version_control.subscriberACL:
+        class: VersionContol\GitControlBundle\EventListener\ProjectAccessControlList
+        arguments: [@service_container]
+        tags:
+            - { name: doctrine.event_subscriber }
+
+    version_control.form.registration:
+        class: VersionContol\GitControlBundle\Form\RegistrationType
+        tags:
+            - { name: form.type, alias: version_control_user_registration }
+            
+        
+    version_control.twig.versioncontrol_textcolor:
+        class: VersionContol\GitControlBundle\Twig\Extension\TextColorExtension
+        tags:
+            - { name: twig.extension }
+            
+    version_control.project_environmnent_storage:
+        class: VersionContol\GitControlBundle\Utility\ProjectEnvironmentStorage
+        arguments:
+            - @session
+            - @doctrine.orm.entity_manager
+            
+    version_control.twig.versioncontrol_project_environmnent_storage:
+        class: VersionContol\GitControlBundle\Twig\Extension\ProjectEnvironmnentStorageExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @version_control.project_environmnent_storage
+            
+    version_control.twig.versioncontrol_parentdirectory:
+        class: VersionContol\GitControlBundle\Twig\Extension\ParentDirectoryExtension
+        tags:
+            - { name: twig.extension }  
+            
+     
+    version_control.twig.versioncontrol_pagination:
+        class: VersionContol\GitControlBundle\Twig\Extension\PaginationExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @router
+            - @request_stack
+            
+    version_control.twig.versioncontrol_issuelink:
+        class: VersionContol\GitControlBundle\Twig\Extension\IssueLinkExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @router
+            
+    version_control.twig.versioncontrol_commit_hash_link:
+        class: VersionContol\GitControlBundle\Twig\Extension\CommitHashLinkExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @router
+            
+    version_control.twig.versioncontrol_issue_number_link:
+        class: VersionContol\GitControlBundle\Twig\Extension\IssueNumberLinkExtension
+        tags:
+            - { name: twig.extension }
+        arguments:
+            - @router
+           
+    version_control.beforecontoller.action_listener:
+        class: VersionContol\GitControlBundle\EventListener\ProjectEnviromentBeforeListener
+        arguments: 
+            - @version_control.project_environmnent_storage
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+      
+    version_control.gitalterfiles.listener:
+        class: VersionContol\GitControlBundle\EventListener\GitAlterFilesEventListener
+        arguments: 
+            - @version_control.git_commands
+        tags:
+            - { name: kernel.event_listener, event: git.alter_files, method: changeFilePermissions }
+            
+    version_control.validator.ssh_details_validator:
+        class: VersionContol\GitControlBundle\Validator\Constraints\SshDetailsValidator
+        tags:
+            - { name: validator.constraint_validator, alias: ssh_details_validator }
+        arguments: 
+            - @version_control.ssh_process
+            
+    version_control.api_user_provider:
+        class: VersionContol\GitControlBundle\Security\Authentication\FOSVersionUserProvider
+        #this is the place where the properties are passed to the UserProvider - see config.yml
+        arguments: 
+            - @fos_user.user_manager
+            - {github:githubId}
+            
+    version_control.validator.status_hash_validator:
+        class: VersionContol\GitControlBundle\Validator\Constraints\StatusHashValidator
+        tags:
+            - { name: validator.constraint_validator, alias: status_hash_validator }
+        arguments: 
+            - @version_control.git_commands
+        
+    version_control.form.field.entity_hidden:
+        class: VersionContol\GitControlBundle\Form\Field\EntityHiddenType
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+        - { name: form.type, alias: entity_hidden }
+        
+    version_control.validator.git_folder_exists_validator:
+        class: VersionContol\GitControlBundle\Validator\Constraints\GitFolderExistsValidator
+        tags:
+            - { name: validator.constraint_validator, alias: git_folder_exists_validator }
+        arguments: 
+            - @version_control.ssh_process
+            
+    version_control.validator.git_folder_not_exists_validator:
+        class: VersionContol\GitControlBundle\Validator\Constraints\GitFolderNotExistsValidator
+        tags:
+            - { name: validator.constraint_validator, alias: git_folder_not_exists_validator }
+        arguments: 
+            - @version_control.ssh_process
+            
+
+    version_control.listener.doctrine_event_listener:
+        class: VersionContol\GitControlBundle\EventListener\DoctrineEventListener
+        arguments: [%version_control_dynamic_discriminator_map.mapping%]
+        tags:
+            - { name: doctrine.event_listener, event: loadClassMetadata }
+
+    version_control.project_access_annotation_driver:
+        class: VersionContol\GitControlBundle\Annotation\Driver\ProjectAccessAnnotationDriver #Point class
+        tags: [{name: kernel.event_listener, event: kernel.controller, method: onKernelController}]
+        arguments: [@annotation_reader] 

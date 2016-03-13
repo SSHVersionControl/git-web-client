@@ -19,13 +19,13 @@ class ProjectType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('projectEnvironment', new ProjectEnvironmentEmbbedType, array(
+            /*->add('projectEnvironment', new ProjectEnvironmentEmbbedType, array(
                                 'type' => new ProjectEnvironmentType(),
                                 'allow_add'    => true,
                                 //'prototype' => true,
                                 'by_reference' => false,
                                 'allow_delete' => true,
-                                ))
+                                ))*/
         ;
     }
     

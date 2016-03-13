@@ -2,15 +2,16 @@
 
 namespace VersionContol\GitControlBundle\Entity;
 
+use VersionContol\GitControlBundle\Entity\Issues\IssueLabel as BaseIssueLabel;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * IssueLabel
  *
  * @ORM\Table(name="issue_label")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\IssueLabelRepository")
  */
-class IssueLabel
+class IssueLabel extends BaseIssueLabel
 {
     /**
      * @var string
@@ -41,6 +42,23 @@ class IssueLabel
      * @ORM\ManyToMany(targetEntity="VersionContol\GitControlBundle\Entity\Issue", mappedBy="issueLabel")
      */
     private $issue;
+    
+    /**
+     * @var \VersionContol\GitControlBundle\Entity\Project
+     *
+     * @ORM\ManyToOne(targetEntity="VersionContol\GitControlBundle\Entity\Project")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * })
+     */
+    private $project;
+    
+    /**
+     * If set to true its available to all Projects
+     * @var boolean
+     * @ORM\Column(name="all_projects", type="boolean", nullable=true)
+     */
+    private $allProjects = false;
 
     /**
      * Constructor
@@ -116,7 +134,7 @@ class IssueLabel
      *
      * @return IssueLabel
      */
-    public function addIssue(\VersionContol\GitControlBundle\Entity\Issue $issue)
+    public function addIssue(\VersionContol\GitControlBundle\Entity\Issues\Issue $issue)
     {
         $this->issue[] = $issue;
 
@@ -128,7 +146,7 @@ class IssueLabel
      *
      * @param \VersionContol\GitControlBundle\Entity\Issue $issue
      */
-    public function removeIssue(\VersionContol\GitControlBundle\Entity\Issue $issue)
+    public function removeIssue(\VersionContol\GitControlBundle\Entity\Issues\Issue $issue)
     {
         $this->issue->removeElement($issue);
     }
@@ -142,4 +160,48 @@ class IssueLabel
     {
         return $this->issue;
     }
+    
+        /**
+     * Set project
+     *
+     * @param \VersionContol\GitControlBundle\Entity\Project $project
+     *
+     * @return IssueMilestone
+     */
+    public function setProject(\VersionContol\GitControlBundle\Entity\Project $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return \VersionContol\GitControlBundle\Entity\Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    public function getAllProjects() {
+        return $this->allProjects;
+    }
+
+    /**
+     * 
+     * @param boolean $allProjects
+     * @return \VersionContol\GitControlBundle\Entity\IssueLabel
+     */
+    public function setAllProjects($allProjects) {
+        $this->allProjects = $allProjects;
+        return $this;
+    }
+
+
 }

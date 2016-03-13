@@ -1,0 +1,21 @@
+
+<ul class="sidebar-menu">
+<li class="header">MANAGE PROJECT</li>
+    <li>
+        <a href="{{ path('project_log', { 'id': project.id }) }}"><i class="fa fa-fw fa-caret-square-o-left"></i><span>Back to project</span></a>
+    </li>
+    <li class="separate-item"></li>
+    <li {% if app.request.attributes.get('_route') == 'project_edit' %}class="active"{% endif %}>
+        <a href="{{ path('project_edit', { 'id': project.id }) }}"><i class="fa fa-fw fa-pencil-square-o"></i><span>Edit Project</span></a>
+    </li>
+    {% if is_granted('MASTER', project) %}
+        <li {% if app.request.attributes.get('_route') == 'members_list' %}class="active"{% endif %}>
+            <a href="{{ path('members_list', { 'id': project.id }) }}"><i class="fa fa-fw fa-users"></i><span>Members</span></a>
+        </li>
+    {% endif %}
+    {% if is_granted('OWNER', project) %}
+        <li {% if app.request.attributes.get('_route') == 'members_list' %}class="active"{% endif %}>
+            <a href="{{ path('project_issue_integrator', { 'id': project.id }) }}"><i class="fa fa-fw fa-users"></i><span>Issue Integrator</span></a>
+        </li>
+    {% endif %}
+</ul>

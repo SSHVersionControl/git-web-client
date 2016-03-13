@@ -15,52 +15,42 @@ use VersionContol\GitControlBundle\Utility\GitCommands\GitCommand;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
+
+use VersionContol\GitControlBundle\Annotation\ProjectAccess;
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
 /**
  * Project controller.
  *
- * @Route("/branch")
+ * @Route("/project/{id}/branch")
  */
 class ProjectBranchController extends BaseProjectController
 {
-    
-    /**
-     *
-     * @var GitCommand 
-     */
-    protected $gitCommands;
-    
-    /**
-     *
-     * @var GitCommand 
-     */
-    protected $gitBranchCommands;
-    
-    /**
-     * The current Project
-     * @var Project 
-     */
-    protected $project;
-   
-    
+
+
     /**
      * List Branches. Not sure how to list remote and local branches.
      *
-     * @Route("es/{id}", name="project_branches")
+     * @Route("es/{newBranchName}", name="project_branches")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
-    public function branchesAction($id)
+    public function branchesAction($id,$newBranchName = false)
     {
         
-        $this->initAction($id);
         $this->initListingView();
         
-        $form = $this->createNewBranchForm($this->project);
+        $defaultData = array();
+        if($newBranchName !== false){
+            $defaultData['name'] = $newBranchName; 
+        }
+        
+        $form = $this->createNewBranchForm($this->project,$defaultData);
   
         return array_merge($this->viewVariables, array(
             'form' => $form->createView(),
+            'newBranchName' => $newBranchName,
         ));
     }
     
@@ -69,13 +59,14 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/create/{id}", name="project_branch")
+     * @Route("/create/", name="project_branch")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectBranch:branches.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function createBranchAction(Request $request,$id)
     {
-        $this->initAction($id);
+
         
         $form = $this->createNewBranchForm($this->project);
         $form->handleRequest($request);
@@ -86,7 +77,7 @@ class ProjectBranchController extends BaseProjectController
             $switchToBranch= $data['switch'];
             try{
                 
-                $response = $this->gitBranchCommands->createLocalBranch($newBranchName,$switchToBranch);
+                $response = $this->gitCommands->command('branch')->createLocalBranch($newBranchName,$switchToBranch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
                 return $this->redirect($this->generateUrl('project_branches', array('id' => $id)));
                 
@@ -107,15 +98,15 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/checkoutbranch/{id}/{branchName}", name="project_checkoutbranch" , requirements={"branchName"=".+"})
+     * @Route("/checkoutbranch/{branchName}", name="project_checkoutbranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function checkoutBranchAction($id, $branchName){
         
-        $this->initAction($id);
         
-        $response = $this->gitBranchCommands->checkoutBranch($branchName);
+        $response = $this->gitCommands->command('branch')->checkoutBranch($branchName);
         
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -125,21 +116,20 @@ class ProjectBranchController extends BaseProjectController
     /**
      * List Branches. Not sure how to list remote and local branches.
      *
-     * @Route("/remotes/{id}", name="project_branch_remotes")
+     * @Route("/remotes", name="project_branch_remotes")
      * @Method("GET")
      * @Template()
+     * @ProjectAccess(grantType="VIEW")
      */
     public function remoteBranchesAction($id)
     {
         
-        $this->initAction($id);
-        
-        $branchName = $this->gitBranchCommands->getCurrentBranch();
+        $branchName = $this->gitCommands->command('branch')->getCurrentBranch();
         
         //Remote Server choice 
-        $gitRemoteBranches = $this->gitBranchCommands->getBranchRemoteListing();
+        $gitRemoteBranches = $this->gitCommands->command('branch')->getBranchRemoteListing();
         
-        $form = $this->createNewBranchForm($this->project,'project_branch_remote_checkout');
+        $form = $this->createNewBranchForm($this->project,array(),'project_branch_remote_checkout');
         $form->add('remotename', 'hidden', array(
                 'label' => 'Remote Branch Name'
                 ,'required' => true
@@ -159,19 +149,18 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/checkout-remote/{id}", name="project_branch_remote_checkout")
+     * @Route("/checkout-remote", name="project_branch_remote_checkout")
      * @Method("POST")
      * @Template("VersionContolGitControlBundle:ProjectBranch:remoteBranches.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function checkoutRemoteBranchAction(Request $request,$id)
     {
-
-        $this->initAction($id);
         
-        $branchName = $this->gitBranchCommands->getCurrentBranch();
-         $gitRemoteBranches = $this->gitBranchCommands->getBranchRemoteListing();
+        $branchName = $this->gitCommands->command('branch')->getCurrentBranch();
+         $gitRemoteBranches = $this->gitCommands->command('branch')->getBranchRemoteListing();
 
-        $form = $this->createNewBranchForm($this->project,'project_branch_remote_checkout');
+        $form = $this->createNewBranchForm($this->project,array(),'project_branch_remote_checkout');
         $form->add('remotename', 'hidden', array(
                 'label' => 'Remote Branch Name'
                 ,'required' => true
@@ -189,7 +178,7 @@ class ProjectBranchController extends BaseProjectController
             $switchToBranch= $data['switch'];
             
             try{
-                $response = $this->gitBranchCommands->createBranchFromRemote($newBranchName,$remoteBranchName,$switchToBranch);
+                $response = $this->gitCommands->command('branch')->createBranchFromRemote($newBranchName,$remoteBranchName,$switchToBranch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
                 return $this->redirect($this->generateUrl('project_branch_remotes', array('id' => $id)));
                 
@@ -211,15 +200,15 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/fetchall/{id}/", name="project_branch_fetchall")
+     * @Route("/fetchall/", name="project_branch_fetchall")
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:ProjectBranch:remoteBranches.html.twig")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function fetchAllAction($id){
         
-        $this->initAction($id);
         
-        $response = $this->gitBranchCommands->fetchAll();
+        $response = $this->gitCommands->command('branch')->fetchAll();
         
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -230,15 +219,14 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/deletebranch/{id}/{branchName}", name="project_deletebranch" , requirements={"branchName"=".+"})
+     * @Route("/deletebranch/{branchName}", name="project_deletebranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function deleteBranchAction($id, $branchName){
         
-        $this->initAction($id);
-        
-        $response = $this->gitBranchCommands->deleteBranch($branchName);
+        $response = $this->gitCommands->command('branch')->deleteBranch($branchName);
         
         $this->get('session')->getFlashBag()->add('notice', $response);
         
@@ -256,10 +244,10 @@ class ProjectBranchController extends BaseProjectController
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createNewBranchForm($project,$formAction = 'project_branch')
+    private function createNewBranchForm($project,$defaultData = array(),$formAction = 'project_branch')
     {
 
-        $defaultData = array();
+        //$defaultData = array();
         $form = $this->createFormBuilder($defaultData, array(
                 'action' => $this->generateUrl($formAction, array('id' => $project->getId())),
                 'method' => 'POST',
@@ -285,26 +273,25 @@ class ProjectBranchController extends BaseProjectController
     /**
      * Pulls git repository from remote to local.
      *
-     * @Route("/mergebranch/{id}/{branchName}", name="project_mergebranch" , requirements={"branchName"=".+"})
+     * @Route("/mergebranch/{branchName}", name="project_mergebranch" , requirements={"branchName"=".+"})
      * @Method("GET")
      * @Template("VersionContolGitControlBundle:Project:branches.html.twig")
+     * @ProjectAccess(grantType="MASTER")
      */
     public function mergeBranchAction($id,$branchName){
         
-        $this->initAction($id);
-        
-        $response = $this->gitBranchCommands->mergeBranch($branchName);
+        $response = $this->gitCommands->command('branch')->mergeBranch($branchName);
             
         $this->get('session')->getFlashBag()->add('notice', $response);
             
-        return $this->redirect($this->generateUrl('project_branches', array('id' => $id)));
+        return $this->redirect($this->generateUrl('project_branches'));
 
     }
     
     private function getBranchesToMerge(){
         
-        $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
-        $currentbranchName = $this->gitBranchCommands->getCurrentBranch();
+        $gitLocalBranches = $this->gitCommands->command('branch')->getBranches(true);
+        $currentbranchName = $this->gitCommands->command('branch')->getCurrentBranch();
         $mergeBranches = array();
         foreach($gitLocalBranches as $branchName){
             if($branchName !== $currentbranchName){
@@ -345,41 +332,26 @@ class ProjectBranchController extends BaseProjectController
         return $form;
     }
     
-    /**
-     * 
-     * @param integer $id
-     */
-    protected function initAction($id){
- 
-        $em = $this->getDoctrine()->getManager();
-
-        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
-
-        if (!$this->project) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
-        }
-        $this->checkProjectAuthorization($this->project,'EDIT');
-        
-        $this->gitCommands = $this->get('version_control.git_command')->setProject($this->project);
-        $this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
-        
-        $this->viewVariables = array_merge($this->viewVariables, array(
-            'project'      => $this->project,
-            'branchName' => $this->gitBranchCommands->getCurrentBranch(),
-            ));
-    }
     
     protected function initListingView(){
         
-        $branchName = $this->gitBranchCommands->getCurrentBranch();
+        $branchName = $this->gitCommands->command('branch')->getCurrentBranch();
         //Local Server choice 
-        $gitLocalBranches = $this->gitBranchCommands->getBranches(true);
+        $gitLocalBranches = $this->gitCommands->command('branch')->getBranches(true);
         
-        $gitLogs = $this->gitCommands->getLog(1,$branchName);
+        $gitLogCommand = $this->gitCommands->command('log');
+
+ 
+        $gitLogCommand->setBranch($branchName)->setLogCount(1);
+
+        
+        $gitLogs = $gitLogCommand->execute()->getFirstResult();
+        
+        //$gitLogs = $this->gitCommands->getLog(1,$branchName);
 
         $this->viewVariables = array_merge($this->viewVariables, array(
             'branches' => $gitLocalBranches,
-            'gitLogs' => $gitLogs
+            'gitLogs' => array($gitLogs)
         ));
     }
     

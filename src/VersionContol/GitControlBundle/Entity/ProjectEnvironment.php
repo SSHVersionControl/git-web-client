@@ -11,6 +11,8 @@ use VersionContol\GitControlBundle\Validator\Constraints as VersionContolAssert;
  * @ORM\Entity(repositoryClass="VersionContol\GitControlBundle\Repository\ProjectEnvironmentRepository")
  * @ORM\Table(name="project_environment")
  * @VersionContolAssert\SshDetails
+ * @VersionContolAssert\GitFolderExists(groups={"ExistingGit"})
+ * @VersionContolAssert\GitFolderNotExists(groups={"CloneGit","NewGit"})  
  */
 class ProjectEnvironment
 {
@@ -85,6 +87,13 @@ class ProjectEnvironment
      * })
      */
     private $projectEnvironmentFilePerm;
+    
+    /**
+     * @Assert\NotNull(groups={"CloneGit"}))
+     * @var string 
+     */
+    private $gitCloneLocation;
+    
 
     public function __construct()
     {
@@ -269,6 +278,24 @@ class ProjectEnvironment
 
     public function setProjectEnvironmentFilePerm(\VersionContol\GitControlBundle\Entity\ProjectEnvironmentFilePerm $projectEnvironmentFilePerm) {
         $this->projectEnvironmentFilePerm = $projectEnvironmentFilePerm;
+        return $this;
+    }
+
+    /**
+     * Sets Git Clone Location
+     * @return string
+     */
+    public function getGitCloneLocation() {
+        return $this->gitCloneLocation;
+    }
+
+    /**
+     * Gets Git Clone Location
+     * @param string $gitCloneLocation
+     * @return \VersionContol\GitControlBundle\Entity\ProjectEnvironment
+     */
+    public function setGitCloneLocation($gitCloneLocation) {
+        $this->gitCloneLocation = $gitCloneLocation;
         return $this;
     }
 

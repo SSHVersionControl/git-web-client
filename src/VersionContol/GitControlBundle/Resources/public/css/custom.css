@@ -357,3 +357,8 @@ table.diff >tbody>tr.diff-type-2>td{
 .status.status-ignore{
     background: #929292;
 }
+
+.alert-header {
+    position: relative;
+    padding: 15px 15px 0 15px;
+}
