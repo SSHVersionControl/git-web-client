@@ -42,26 +42,39 @@
         </div><!-- /.box-header -->
         <div class="box-body">
             <div class="row">    
-                <div class="col-xs-8 col-xs-offset-1">
-                    <form action="{{ path('project_log',{ 'id': project.id}) }}" method="GET">
-                        <div class="input-group">
-                            <div class="input-group-btn search-panel">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    <span id="search_concept">{{ filter ? filter : 'Filter by' }}</span> <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                  <li><a href="#messages">Commit Messages</a></li>
-                                  <li><a href="#author">Author</a></li>
-                                  <li><a href="#content">Content</a></li>
-                                </ul>
-                            </div>
-                            <input type="hidden" name="filter" value="{{ filter ? filter : '' }}" id="filter">         
-                            <input type="text" class="form-control" name="keyword" placeholder="Search term..." value="{{ keyword ? keyword : '' }}">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
-                            </span>
+                <div class="col-xs-12">
+                    
+                    {{ form_start(searchForm,{ 'attr': { 'class': 'form-inline'}}) }}
+                        {{ form_errors(searchForm) }} 
+                        <div class="form-group">
+                        {{ form_label(searchForm.branch) }}
+                        {{ form_errors(searchForm.branch) }}
+                        {{ form_widget(searchForm.branch,{ 'attr': { 'class': 'form-control'}}) }}
                         </div>
-                    </form>
+                        <div class="form-group">
+                            {{ form_label(searchForm.keyword) }}
+                            <div class="input-group">
+                                <div class="input-group-btn search-panel">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <span id="search_concept">{{ filter ? filter : 'Filter by' }}</span> <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                      <li><a href="#messages">Commit Messages</a></li>
+                                      <li><a href="#author">Author</a></li>
+                                      <li><a href="#content">Content</a></li>
+                                    </ul>
+                                </div>
+                                {{ form_widget(searchForm.filter) }}
+                                {{ form_widget(searchForm.keyword,{ 'attr': { 'class': 'form-control','placeholder':"Search term..."}}) }}
+                            
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                                </span>
+                        </div>
+                    </div>
+                    {{ form_end(searchForm) }}
+                    
+                            
                 </div>
             </div>
             <p></p>                    

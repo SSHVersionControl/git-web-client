@@ -190,6 +190,8 @@ class GitLogCommand extends AbstractGitCommand {
         if($this->branch){
             //Need to append -- do tell git that its a branch and not a file
             $this->logCommand .= ' '.escapeshellarg(trim($this->branch)).' --';
+        }else{
+            $this->logCommand .= ' --all';
         }
         
         if($this->notRemote){
