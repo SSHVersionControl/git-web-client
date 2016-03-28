@@ -85,9 +85,13 @@
                         <div class="row">
                             <div class="col-md-3">
                                 {% if(fileInfo.isDir()) %}
-                                    <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': fileInfo.gitPath| url_encode()})}}"><i class="fa fa-folder"></i><strong class="str-truncated">{{fileInfo.filename}}</strong></a>
+                                    <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': fileInfo.gitPath| url_encode()})}}">
+                                        <i class="fa fa-folder"></i><strong class="str-truncated">{{fileInfo.filename}}</strong>
+                                    </a>
                                 {% else %}
-                                    <i class="fa fa-file-text-o"></i><strong class="str-truncated">{{fileInfo.filename}}</strong>
+                                    <a href="{{ path('project_viewfile', { 'id': project.id, 'currentFile': fileInfo.gitPath| url_encode()})}}">
+                                        <i class="fa fa-file-text-o"></i><strong class="str-truncated">{{fileInfo.filename}}</strong>
+                                    </a>
                                 {% endif %}
                             </div>
                             {% if (fileInfo.gitLog)%}

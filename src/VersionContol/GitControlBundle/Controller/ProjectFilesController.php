@@ -62,6 +62,34 @@ class ProjectFilesController extends BaseProjectController{
         ));
     }
     
+    /**
+     * Show Git commit diff
+     *
+     * @Route("/{currentFile}",defaults={"$currentFile" = ""}, name="project_viewfile")
+     * @Method("GET")
+     * @Template()
+     * @ProjectAccess(grantType="VIEW")
+     */
+    public function viewFileAction($id,$currentFile = ''){
+        $filePath = '';
+        $dir = '';
+        if($currentFile){
+            $filePath = trim(urldecode($currentFile));
+
+            $file = $this->gitFilesCommands->getFile($filePath, $this->branchName);
+            $fileContents = $this->gitFilesCommands->readFile($file);
+            
+            $pathParts = pathinfo($filePath);
+            $dir = $pathParts['dirname'];
+        }
+        
+         return array_merge($this->viewVariables, array(
+            'currentDir' => $filePath,
+            'fileContents' => $fileContents,
+            'file' => $file
+        ));
+    }
+    
     
     /**
      * 
@@ -94,7 +122,6 @@ class ProjectFilesController extends BaseProjectController{
             
         return $this->redirect($this->generateUrl('project_filelist', array('id' => $id)));
     }
-    
-   
+      
 }
 

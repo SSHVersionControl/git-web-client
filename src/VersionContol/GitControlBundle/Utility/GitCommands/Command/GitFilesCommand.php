@@ -39,6 +39,55 @@ class GitFilesCommand extends AbstractGitCommand {
          return $files;
     }
     
+    public function getFile($path,$branch="master"){
+        $fileInfo = $this->getFileInfo($path);
+        $fileLastLog = $this->getLog(1,$branch,$fileInfo->getGitPath());
+        if(count($fileLastLog) > 0){
+            $fileInfo->setGitLog($fileLastLog[0]);
+        }
+        
+        return $fileInfo;
+    }
+    
+    protected function getFileInfo($path){
+        
+        $fileInfo = NULL;
+        
+        if($this->validPathStr($path) === false){
+             throw new \Exception('Directory path is not valid. Possible security issue.');
+         }
+        
+         $basePath = $this->addEndingSlash($this->command->getProjectEnvironment()->getPath());
+
+         if($this->command->getProjectEnvironment()->getSsh() === true){
+             //Remote Directory Listing
+            $sftp = new SFTP($this->command->getProjectEnvironment()->getHost(), 22);
+            if (!$sftp->login($this->command->getProjectEnvironment()->getUsername(), $this->command->getProjectEnvironment()->getPassword())) {
+                exit('Login Failed');
+            }
+
+            $fileData['fullPath'] = $basePath.$path;
+            $fileData['gitPath'] = $basePath.$path;
+            $fileData = $sftp->stat($basePath.$path);
+            $fileInfo = new RemoteFileInfo($fileData);
+
+         }else{
+            
+            $splFileInfo = new \SPLFileInfo($basePath.$path);
+            $splFileInfo->setInfoClass('\VersionContol\GitControlBundle\Entity\FileInfo');
+            
+            $newFileInfo = $splFileInfo->getFileInfo();
+
+            $newFileInfo->setGitPath($basePath.$path);
+
+            $fileInfo = $newFileInfo;
+          
+        }
+
+         return $fileInfo;
+ 
+    }
+    
     /**
      * Adds Ending slash where needed for unix and windows paths
      * 
