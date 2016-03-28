@@ -348,6 +348,31 @@ class ProjectEnvironmentController extends BaseProjectController
         
     }
     
+    /**
+     * 
+     * @param integer $id
+     */
+    public function initAction($id,$grantType = 'VIEW'){
+ 
+        $em = $this->getDoctrine()->getManager();
+
+        $this->project= $em->getRepository('VersionContolGitControlBundle:Project')->find($id);
+
+        if (!$this->project) {
+            throw $this->createNotFoundException('Unable to find Project entity.');
+        }
+        $this->checkProjectAuthorization($this->project,$grantType);
+        
+        $this->gitCommands = $this->get('version_control.git_commands')->setProject($this->project);
+        //$this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
+        
+        //$this->branchName = $this->gitCommands->command('branch')->getCurrentBranch();
+        $this->viewVariables = array_merge($this->viewVariables, array(
+            'project'      => $this->project,
+            'branchName' => $this->branchName,
+            ));
+    }
+    
 
 
 }

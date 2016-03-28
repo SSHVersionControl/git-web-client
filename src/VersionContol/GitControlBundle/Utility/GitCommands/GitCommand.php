@@ -144,7 +144,9 @@ class GitCommand {
     public function setProject(Project $project) {
         
         $this->projectEnvironment = $this->projectEnvironmentStorage->getProjectEnviromment($project);
-        $this->setGitPath($this->projectEnvironment->getPath());
+        if($this->projectEnvironment){
+            $this->setGitPath($this->projectEnvironment->getPath());
+        }
         return $this;
     }
    

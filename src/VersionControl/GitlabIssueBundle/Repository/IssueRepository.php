@@ -14,8 +14,11 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
      * @param string $keyword
      * @return array of issues
      */
-    public function findIssues($keyword = "",$state="open"){
+    public function findIssues($keyword = "",$state="opened"){
         //$project = new \Gitlab\Model\Project($this->issueIntegrator->getProjectName(), $this->client);
+        if($state === 'open'){
+            $state = 'opened';
+        }
         $this->authenticate();
         $issues = $this->client->api('issues')->all($this->issueIntegrator->getProjectName(), 1, 20,array('state' => $state));
         
@@ -24,6 +27,9 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
     
     public function countFindIssues($keyword,$state="open"){
         $this->authenticate();
+        if($state === 'open'){
+            $state = 'opened';
+        }
         $issues = $this->client->api('issues')->all($this->issueIntegrator->getProjectName(), 1, 20, array('state' => $state));
 
         return count($issues);
