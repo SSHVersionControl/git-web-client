@@ -62,10 +62,10 @@ class PaginationExtension extends \Twig_Extension {
 	 * @return string Text with trailing dot added if there was none before.
 	 * @throws \InvalidArgumentException If {@code $value} is not a string.
 	 */
-	public function paginationFilter($totalRecords, $currentPage, $recordsPerPage = 30, $routeName=false, $routeParameters = array(), $routeRelative = false) {
+	public function paginationFilter($totalRecords, $currentPage, $recordsPerPage = 30, $routeName=false, $routeParameters = array(), $routeRelative = true) {
             $this->routeName = $routeName;
             $this->routeParameters = $routeParameters;
-            $this->routeRelative = $routeRelative;
+            $this->routeRelative = $routeRelative?(UrlGeneratorInterface::RELATIVE_PATH):UrlGeneratorInterface::ABSOLUTE_URL;
             
                 if($totalRecords > 0){
                     $this->numPages = ceil($totalRecords / $recordsPerPage);

@@ -89,7 +89,7 @@ class CommitHashLinkExtension extends \Twig_Extension {
 
         $parameters = array($paramaterName => $commitHash,'id' => $projectId);
 
-        return $this->generator->generate($routeName, $parameters, false);
+        return $this->generator->generate($routeName, $parameters, UrlGeneratorInterface::RELATIVE_PATH);
     }
     
 }

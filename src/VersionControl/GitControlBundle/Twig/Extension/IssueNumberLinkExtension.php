@@ -71,8 +71,8 @@ class IssueNumberLinkExtension extends \Twig_Extension {
         protected function generateIssueUrl($issueId,$projectId,$routeName = 'issue_show',$issueParamaterName='issueId'){
 
             $parameters = array($issueParamaterName => $issueId,'id' => $projectId);
-            
-            return $this->generator->generate($routeName, $parameters, false);
+            //UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH;
+            return $this->generator->generate($routeName, $parameters, UrlGeneratorInterface::RELATIVE_PATH);
         }
     
 }
