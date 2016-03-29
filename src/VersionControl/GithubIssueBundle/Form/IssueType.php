@@ -42,7 +42,7 @@ class IssueType extends AbstractType
                             return $issueMilestone->getId();
                         }return;
                     },
-                    //'class' => 'VersionContol\GitControlBundle\Entity\IssueMilestone',
+                    //'class' => 'VersionControl\GitControlBundle\Entity\IssueMilestone',
                     /*'query_builder' => function (IssueMilestoneRepository $er) use ($project) {
                         return $er->createQueryBuilder('a')
                             ->where('a.project = :project')
@@ -51,7 +51,7 @@ class IssueType extends AbstractType
                     },*/
                 ))
             //->add('project', 'hidden_entity',array(
-             //       'class' => 'VersionContol\GitControlBundle\Entity\Project'
+             //       'class' => 'VersionControl\GitControlBundle\Entity\Project'
              //   ))
             //->add('verUser')
             ->add('issueLabel','choice',array(
@@ -59,7 +59,7 @@ class IssueType extends AbstractType
                     'multiple' => true,   // Multiple selection allowed
                     'expanded' => true,   // Render as checkboxes
                     //'property' => 'title', // Assuming that the entity has a "name" property
-                    //'class' => 'VersionContol\GitControlBundle\Entity\IssueLabel',
+                    //'class' => 'VersionControl\GitControlBundle\Entity\IssueLabel',
                     'required' => false,
                     'choices_as_values' => true,
                     'choice_label' => function($issueLabel) {
@@ -102,7 +102,7 @@ class IssueType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionContol\GitControlBundle\Entity\Issues\Issue'
+            'data_class' => 'VersionControl\GitControlBundle\Entity\Issues\Issue'
         ));
     }
 
@@ -111,6 +111,6 @@ class IssueType extends AbstractType
      */
     public function getName()
     {
-        return 'versioncontol_gitcontrolbundle_issue';
+        return 'versioncontrol_gitcontrolbundle_issue';
     }
 }

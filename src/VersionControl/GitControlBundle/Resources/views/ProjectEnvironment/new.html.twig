@@ -1,0 +1,234 @@
+{% form_theme form 'VersionControlGitControlBundle::FormTheme/_editproject-prototype.html.twig' %}
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+{% block topnavleft %}
+ 
+{% endblock %}
+            
+{% block header %}
+     
+    <h1 class="page-header">
+           New Project Environment
+          <small>{{ project.title }}</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li>
+            <i class="fa fa-dashboard"></i>  <a href="{{ path('project_edit', { 'id': project.id }) }}">Project</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-file"></i> New Project Environment
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Partials/modifiySideMenu.html.twig'  %}
+{% endblock %} 
+
+{% block content -%}
+ <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">New Project Environment</h3>
+            </div>
+            <div class="box-body">
+           
+                {{ form_start(form,{ 'attr': { 'class': 'form'}}) }}
+
+                        {{ form_errors(form) }}  
+
+                        {% if(form.gitaction.vars.value == 'clone')%}
+                            <div class="form-group {% if(form.gitaction.vars.value != 'clone')%}hidden{%endif%}">
+                                {{ form_label(form.gitCloneLocation) }}
+                                {{ form_errors(form.gitCloneLocation) }}           
+                                {{ form_widget(form.gitCloneLocation,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide Git Repository Location to clone'}}) }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="form-group">
+                            {{ form_label(form.title) }}
+                            {{ form_errors(form.title) }}           
+                            {{ form_widget(form.title,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for your project'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(form.description) }}
+                            {{ form_errors(form.description) }}
+                            {{ form_widget(form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.path) }}
+                            {{ form_errors(form.path) }}
+                            {{ form_widget(form.path,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a full path to the project folder'}}) }}
+                        </div>
+
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li role="presentation" class="active">
+                                    <a href="#sshdetails" aria-controls="sshdetails" role="tab" data-toggle="tab">SSH Details</a>
+                                </li>
+                                <li role="presentation">
+                                    <a href="#filepermissions" aria-controls="filepermissions" role="tab" data-toggle="tab">File Permissions</a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="sshdetails">
+                                    <p></p>
+                                    <fieldset>
+                                        <legend>SSH Details:</legend>
+                                        <p>Enter in SSH details below to run git commands on a remote server. The user must have the correct privileges to call git.</p>
+                                        <div class="form-group">
+                                            {{ form_label(form.ssh) }}
+                                            {{ form_errors(form.ssh) }}
+                                            {{ form_widget(form.ssh) }}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form_label(form.host) }}
+                                            {{ form_errors(form.host) }}
+                                            {{ form_widget(form.host,{ 'attr': { 'class': 'form-control', 'placeholder':'Name or IP address of the server host.'}}) }}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form_label(form.username) }}
+                                            {{ form_errors(form.username) }}
+                                            {{ form_widget(form.username,{ 'attr': { 'class': 'form-control', 'placeholder':'Name of user to connect with.'}}) }}
+                                        </div>
+                                        <div class="form-group">
+                                            {{ form_label(form.password) }}
+                                            {{ form_errors(form.password) }}
+                                            {{ form_widget(form.password,{ 'attr': { 'class': 'form-control', 'placeholder':'The users password'}}) }}
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="filepermissions">
+                                    <p></p>
+                                    <fieldset>
+                                       <legend>File Permissons Details:</legend>
+                                        <p>Git does not store file permissions other than executable scripts or files owners and groups.
+                                            You can set the default file permissions for all files in the form below. This will update 
+                                        all git versioned files when a project has been checked out or merged. If you need different files 
+                                        to have different permissions you will need to implement you own script/process (for example see <a href="http://david.hardeman.nu/software.php#metastore">metastore</a>).</p>
+
+                                           <div class="form-group">
+                                               <label for="versioncontrol_gitcontrolbundle_project_projectEnvironment_0_projectEnvironmentFilePerm_enableFilePermissions">
+                                                   Enable File Permissions
+                                               </label>
+                                               {{ form_label(form.projectEnvironmentFilePerm.enableFilePermissions) }}
+                                               {{ form_errors(form.projectEnvironmentFilePerm.enableFilePermissions) }}
+                                               {{ form_widget(form.projectEnvironmentFilePerm.enableFilePermissions) }}
+                                           </div>
+                                           <div class="form-group">
+                                               {{ form_label(form.projectEnvironmentFilePerm.fileOwner) }}
+                                               {{ form_errors(form.projectEnvironmentFilePerm.fileOwner) }}
+                                               {{ form_widget(form.projectEnvironmentFilePerm.fileOwner,{ 'attr': { 'class': 'form-control', 'placeholder':'test'}}) }}
+                                           </div>
+                                           <div class="form-group">
+                                               {{ form_label(form.projectEnvironmentFilePerm.fileGroup) }}
+                                               {{ form_errors(form.projectEnvironmentFilePerm.fileGroup) }}
+                                               {{ form_widget(form.projectEnvironmentFilePerm.fileGroup,{ 'attr': { 'class': 'form-control', 'placeholder':'test'}}) }}
+                                           </div>
+                                           <hr />
+                                           <div class="form-group">
+
+                                               <label class="control-label" for="">Permissions</label>
+                                               <div class='row'>
+                                               <div class="col-md-10">
+                                                   <div class='row'>
+                                                       <div class="col-xs-3 col-md-2">Owner</div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionOwnerRead) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionOwnerRead) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionOwnerWrite) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionOwnerWrite) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionOwnerExecute) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionOwnerExecute) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionStickyUid) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionStickyUid) }}
+                                                       </div>
+                                                   </div>
+                                                     <div class='row'>
+                                                       <div class="col-xs-3 col-md-2">Group</div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionGroupRead) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionGroupRead) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionGroupWrite) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionGroupWrite) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionGroupExecute) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionGroupExecute) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionStickyGid) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionStickyGid) }}
+                                                       </div>
+                                                   </div>
+                                                   <div class='row'>
+                                                       <div class="col-xs-3 col-md-2">Others</div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionOtherRead) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionOtherRead) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionOtherWrite) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionOtherWrite) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionOtherExecute) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionOtherExecute) }}
+                                                       </div>
+                                                       <div class="col-xs-2 ">
+                                                           {{ form_errors(form.projectEnvironmentFilePerm.permissionStickyBit) }}
+                                                           {{ form_widget(form.projectEnvironmentFilePerm.permissionStickyBit) }}
+                                                       </div>
+                                                   </div>
+                                                   <div class='row'>
+                                                       <div class="col-xs-3 col-md-2">Octal:</div>
+                                                       <div class="col-xs-4 ">
+                                                            {{ form_widget(form.projectEnvironmentFilePerm.fileMode,{ 'attr': { 'class': 'form-control', 'readonly':'true', 'maxlength':'4'}}) }}
+                                                       </div>
+                                                   </div>
+                                                </div>
+                                           </div>
+                                       </div>
+                                   </fieldset>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-right">
+                            <a href="{{ path('project_edit', { 'id': project.id }) }}" class="btn btn-default">
+                                Cancel
+                            </a>
+                            {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
+                        </div>
+                    {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+       
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h4>Instructions</h4>
+            </div>
+            <div class="box-body">
+                <p>Description</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

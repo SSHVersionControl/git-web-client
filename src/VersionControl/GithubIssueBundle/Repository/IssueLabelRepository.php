@@ -1,7 +1,7 @@
 <?php
 namespace VersionControl\GithubIssueBundle\Repository;
 
-use VersionContol\GitControlBundle\Repository\Issues\IssueLabelRepositoryInterface;
+use VersionControl\GitControlBundle\Repository\Issues\IssueLabelRepositoryInterface;
 use VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel;
 use VersionControl\GithubIssueBundle\DataTransformer\IssueLabelToEntityTransformer;
 
@@ -34,7 +34,7 @@ class  IssueLabelRepository extends GithubBase implements IssueLabelRepositoryIn
     /**
      * Gets a new Label entity
      * @param type $issue
-     * @return VersionContol\GitControlBundle\Entity\Labels\Label
+     * @return VersionControl\GitControlBundle\Entity\Labels\Label
      */
     public function newLabel(){
         $issueLabelEntity = new IssueLabel();

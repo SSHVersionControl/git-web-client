@@ -3,7 +3,7 @@
 namespace VersionControl\GitlabIssueBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
+use VersionControl\GitControlBundle\Entity\ProjectIssueIntegrator;
 
 /**
  * Project Issue Integrator Entity

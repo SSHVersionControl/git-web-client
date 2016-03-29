@@ -18,7 +18,7 @@ class IssueLabelType extends AbstractType
             ->add('title')
             ->add('hexColor')
             //->add('project', 'hidden_entity',array(
-            //        'class' => 'VersionContol\GitControlBundle\Entity\Project'
+            //        'class' => 'VersionControl\GitControlBundle\Entity\Project'
             //    ))
         ;
     }
@@ -38,6 +38,6 @@ class IssueLabelType extends AbstractType
      */
     public function getName()
     {
-        return 'versioncontol_gitcontrolbundle_issuelabel';
+        return 'versioncontrol_gitcontrolbundle_issuelabel';
     }
 }

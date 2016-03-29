@@ -1,0 +1,150 @@
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionControlGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+           History of Commits
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-hourglass-start"></i> Commit History
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName|issueLink(project.id)|raw}}</h3>
+          <div class="box-tools pull-right">
+            <!-- Buttons, labels, and many other things can be placed here! -->
+            <!-- Here is a label for example -->
+          </div><!-- /.box-tools -->
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">    
+                <div class="col-xs-12">
+                    
+                    {{ form_start(searchForm,{ 'attr': { 'class': 'form-inline'}}) }}
+                        {{ form_errors(searchForm) }} 
+                        <div class="form-group">
+                        {{ form_label(searchForm.branch) }}
+                        {{ form_errors(searchForm.branch) }}
+                        {{ form_widget(searchForm.branch,{ 'attr': { 'class': 'form-control'}}) }}
+                        </div>
+                        <div class="form-group">
+                            {{ form_label(searchForm.keyword) }}
+                            <div class="input-group">
+                                <div class="input-group-btn search-panel">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                        <span id="search_concept">{{ filter ? filter : 'Filter by' }}</span> <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                      <li><a href="#messages">Commit Messages</a></li>
+                                      <li><a href="#author">Author</a></li>
+                                      <li><a href="#content">Content</a></li>
+                                    </ul>
+                                </div>
+                                {{ form_widget(searchForm.filter) }}
+                                {{ form_widget(searchForm.keyword,{ 'attr': { 'class': 'form-control','placeholder':"Search term..."}}) }}
+                            
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                                </span>
+                        </div>
+                    </div>
+                    {{ form_end(searchForm) }}
+                    
+                            
+                </div>
+            </div>
+            <p></p>                    
+            <div class="list-group spacer-top">
+                    {% if(gitLogs|length > 0)%}
+                        {% for log in gitLogs %}
+
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <strong class="str-truncated">{{log.subject|escape|issueNumberLink(project.id)}}</strong>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}" class="">
+                                            <i class="fa fa-code-fork"></i>
+                                            {{log.abbrHash}}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <a href="#options{{ loop.index }}" data-toggle="collapse" class="">more options...</a>
+                                    </div>
+                                </div>
+                                <div id="options{{ loop.index }}" class="row collapse">
+                                     <div class="col-md-offset-6 col-md-6 text-right">
+                                        {% if(loop.first) %}
+                                            <a href="{{ path('undocommit_soft', { 'id': project.id}) }}" class="btn btn-sm bg-green btn-flat" >
+                                                <i class="fa fa-undo"></i>Undo Soft
+                                            </a>
+                                        {% endif %}
+                                         <a href="{{ path('project_checkout_commit', { 'id': project.id, 'commitHash': log.abbrHash}) }}" class="btn btn-sm bg-green btn-flat" data-confirm="You are about to checkout the commit '{{log.abbrHash}}'. This will but the repository in a read only state. You can browser all the files in this repository, but you will not be able to make any commits until you checkout current HEAD." data-confirm-header="Confirm Checkout of Commit">
+                                             <i class="fa fa-credit-card"></i>
+                                             Checkout
+                                         </a>
+                                         <a href="" class="btn btn-sm bg-green btn-flat" >
+                                             <i class="fa fa-retweet"></i>
+                                             Revert To
+                                         </a>
+                                         <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}" class="btn btn-sm bg-green btn-flat" >
+                                             Show files
+                                         </a>
+                                     </div>
+                                </div>
+                            </div>
+
+                        {% endfor %}
+                    {% elseif(keyword)%}
+                        <div class="list-group-item">
+                            <div class="alert alert-warning" role="alert">
+                                There are no result for your search
+                            </div>
+                        </div>
+                    {% else%}
+                        <div class="list-group-item">
+                            <div class="alert alert-warning" role="alert">
+                                This repository does not contain any history. This is most like due to it been a new repostiory with no commits.
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+        </div><!-- /.box-body -->
+        <div class="box-footer">
+         {{ totalCount|pagination(currentPage,limit)|raw }}
+        </div><!-- box-footer -->
+    </div><!-- /.box -->
+
+     
+    
+{% endblock %}

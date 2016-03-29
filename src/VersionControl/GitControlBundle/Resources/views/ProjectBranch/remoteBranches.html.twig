@@ -1,0 +1,132 @@
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionControlGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+           Remote Branches
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-code-fork"></i> Remote Branches
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %} 
+
+{% block content -%}
+    
+    <div class="callout callout-info">
+        <h4>Info</h4>
+        <p>Before you can start working on a remote branch, you will need to make a local branch (copy)
+            of the remote branch. To get the latest list of remote branches you may need to click the 
+            "Fetch all" button first, to download the latest changes to your local repositories. To create a local copy of a branch click on the "Checkout" button. The system will 
+            ask you to enter in the name of the new branch. You can use the same name as the remote branch
+            if it is not taken already or come up with a new distinct name. Remember you can checkout a remote branch as many times as you like using different local names.
+        </p>
+    </div>
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName|issueLink(project.id)|raw}}
+            </h3>
+            <div class="box-tools pull-right">
+                {% if (is_granted('OPERATOR', project)) %}
+                    <a href="{{ path('project_branch_fetchall', { 'id': project.id}) }}" type="button" class="btn bg-olive btn-sm">
+                        <i class="fa fa-cloud-download"></i> Fetch All
+                    </a>
+
+                {% endif %}
+            </div>
+        </div>
+          
+        <div class="box-body">
+                <p>
+                    List of Remote Branches. You can see below the list of branches that are on the remote git repositories. 
+                    The branches are listed in the format {name of remote repository}/{remote branch name}({text to state if local branch exists})
+                </p>
+                <p></p>
+     
+                <div class="list-group">
+                {% for branch in branches %}
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <strong class="str-truncated">{{branch.name}}</strong>
+                                {% if (branch.local) %}
+                                    (local exists)
+                                {% endif %}
+                            </div>
+                            <div class="col-md-4 text-right">
+                                {% if (is_granted('MASTER', project)) %}
+                                    <button  type="button" class="btn btn-primary btn-sm btn-flat checkout-remote" data-toggle="modal" data-target="#newBranch" data-remoteName="{{branch.name}}" data-localName="{%if(branch.local==false)%}{{branch.name}}{% endif %}">
+                                        Checkout
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+                
+                
+     <!-- Modal -->
+    <div class="modal fade" id="newBranch" tabindex="-1" role="dialog" aria-labelledby="newBranchLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          {{ form_start(form,{ 'attr': { 'class': 'form'}}) }}
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" >New Branch From Remote</h4>
+            </div>
+            <div class="modal-body">
+                 <div class="alert-info">
+                     <h4>Create a new branch from "<span id="remote-branch-label"></span>"</h4>
+                 </div> 
+                 {{ form_errors(form) }}                
+                  <div class="form-group">
+                      {{ form_label(form.name) }}
+                      {{ form_errors(form.name) }}           
+                      {{ form_widget(form.name,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for the new branch'}}) }}
+                      {{ form_errors(form.remotename) }}
+                      {{ form_widget(form.remotename) }}
+                  </div>
+                  <div class="form-group">
+                      {{ form_label(form.switch) }}
+                      {{ form_errors(form.switch) }}
+                      {{ form_widget(form.switch) }}
+                  </div>
+                   
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
+            </div>
+            {{ form_end(form) }}
+          </div>
+      </div>
+    </div>
+{% endblock %}

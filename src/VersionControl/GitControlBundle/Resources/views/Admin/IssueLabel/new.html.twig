@@ -1,0 +1,38 @@
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+{% block topnavleft %}
+ 
+{% endblock %}
+            
+{% block header %}
+     
+    <h1 class="page-header">
+           Global Issue Lables
+          <small></small>
+    </h1>
+    <ol class="breadcrumb">
+        <li class="active">
+            <a href="{{ path('home')}}"><i class="fa fa-users"></i> Issue Labels</a>
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Admin/sidemenu.html.twig'  %}
+{% endblock %}
+
+
+{% block content -%}
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-bug fa-fw"></i> New Label
+            </h3>
+        </div>
+        <div class="box-body">
+  
+                {{ form(form) }}
+                
+        </div>
+    </div>
+{% endblock %}

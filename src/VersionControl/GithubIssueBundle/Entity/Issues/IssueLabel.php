@@ -2,7 +2,7 @@
 
 namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueLabelInterface;
+use VersionControl\GitControlBundle\Entity\Issues\IssueLabelInterface;
 /**
  * IssueLabel
  *

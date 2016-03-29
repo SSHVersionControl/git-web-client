@@ -1,0 +1,65 @@
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+{% block topnavleft %}
+ 
+{% endblock %}
+            
+{% block header %}
+     
+    <h1 class="page-header">
+           Global Issue Lables
+          <small></small>
+    </h1>
+    <ol class="breadcrumb">
+        <li class="active">
+            <a href="{{ path('home')}}"><i class="fa fa-users"></i> Issue Labels</a>
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Admin/sidemenu.html.twig'  %}
+{% endblock %}
+
+
+{% block content -%}
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            
+            <h3 class="box-title"><i class="fa fa-bug fa-fw"></i> Labels 
+            </h3>
+
+             <div class="box-tools">
+                 <a href="{{ path('admin_issuelabel_new') }}" class="btn btn-primary btn-sm"><i class="fa fa-edit"></i> New Label</a>
+             </div>
+
+        </div>
+        <div class="box-body">
+                <div class="list-group">
+                 {% for label in entities %}
+
+                    <div class="list-group-item">
+                        
+                                <div style="background-color:#{{ label.hexColor }};" class="issue-label">
+                                    <a href="{{ path('admin_issuelabel_edit', { 'id': label.id }) }}" style="color:#{{label.hexColor|textcolor}};">
+                                         <i class="fa fa-tag fa-fw"></i>
+                                        {{ label.title }}
+                                    </a>
+                                </div>
+                                <div class="pull-right">
+                                    <a href="{{ path('admin_issuelabel_edit', { 'id': label.id }) }}" class="btn btn-primary btn-sm btn-flat">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </a>
+                                    <a href="" class="btn btn-danger btn-sm btn-flat">
+                                        <i class="fa fa-remove"></i> Delete
+                                    </a>
+                                </div>
+                        
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

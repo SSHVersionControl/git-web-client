@@ -78,7 +78,7 @@ swiftmailer:
 fos_user:
     db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
     firewall_name: main
-    user_class: VersionContol\GitControlBundle\Entity\User\User
+    user_class: VersionControl\GitControlBundle\Entity\User\User
     registration:
         form:
             type: version_control_user_registration

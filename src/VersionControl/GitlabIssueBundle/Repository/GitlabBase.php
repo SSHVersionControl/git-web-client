@@ -1,7 +1,7 @@
 <?php
 namespace VersionControl\GitlabIssueBundle\Repository;
 
-use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
+use VersionControl\GitControlBundle\Entity\ProjectIssueIntegrator;
 
 /**
  * Description of GitlabBase

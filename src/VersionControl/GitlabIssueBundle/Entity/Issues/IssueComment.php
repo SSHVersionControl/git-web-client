@@ -2,7 +2,7 @@
 
 namespace VersionControl\GitlabIssueBundle\Entity\Issues;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueCommentInteface;
+use VersionControl\GitControlBundle\Entity\Issues\IssueCommentInteface;
 
 /**
  * IssueComment
@@ -147,8 +147,8 @@ class IssueComment implements IssueCommentInteface
 
     /**
      * Sets issue
-     * @param \VersionContol\GitControlBundle\Entity\Issue $issue
-     * @return \VersionContol\GitControlBundle\Entity\IssueComment
+     * @param \VersionControl\GitControlBundle\Entity\Issue $issue
+     * @return \VersionControl\GitControlBundle\Entity\IssueComment
      */
     public function setIssue(\VersionControl\GitlabIssueBundle\Entity\Issues\Issue $issue) {
         $this->issue = $issue;
@@ -157,7 +157,7 @@ class IssueComment implements IssueCommentInteface
     
     /**
      * Gets issue
-     * @return \VersionContol\GitControlBundle\Entity\Issue
+     * @return \VersionControl\GitControlBundle\Entity\Issue
      */
     public function getIssue() {
         return $this->issue;

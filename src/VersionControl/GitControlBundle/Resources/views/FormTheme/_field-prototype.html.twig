@@ -1,0 +1,128 @@
+{% use "bootstrap_3_layout.html.twig" %}
+{% block collection_widget %}
+{% spaceless %}
+    <div class="wrapper-collection">
+        {% if prototype is defined %}
+
+            {% set attr = attr|merge({'data-prototype': block('collection_item_widget') }) %}
+        {% endif %}
+        <div {{ block('widget_container_attributes') }}>
+            {{ form_errors(form) }}
+            {% set rowNum = 0 %}
+            {% for rows in form %}
+                <div class="box curriculumbox" data-index="{{ rowNum }}">
+                {% set fieldNum = 1 %}
+                {% for row in rows %}
+                    <div class="field{{ fieldNum }}">
+                    {{ form_label(row) }}
+                    {{ form_widget(row) }}
+                    </div>
+                    {% set fieldNum = fieldNum + 1 %}
+                {% endfor %}
+                    <a class="remove right" title="Remove" href="#">
+                        {{'resource.delete'|trans }} <span class="icon icon-remove"></span>
+                    </a>
+                    <div class="clear"></div>
+                </div>
+                {% set rowNum = rowNum + 1 %}
+            {% endfor %}
+            
+            {{ form_rest(form) }}
+        </div>
+        <div class="clear"></div>
+    </div>
+    <div class="clear"></div>
+{% endspaceless %}
+{% endblock collection_widget %}
+
+{% block collection_item_widget %}
+{% spaceless %}
+    <div>
+    {% set fieldNum = 1 %}
+    {% for row in prototype %}
+        <div class="field{{ fieldNum }}">
+        {{ form_label(row) }}
+        {{ form_widget(row) }}
+        </div>
+        {% set fieldNum = fieldNum + 1 %}
+    {% endfor %}
+        <a class="remove right" title="Remove" href="#">
+            {{'Delete'|trans }} <span class="icon icon-remove"></span>
+        </a>
+        <div class="clear"></div>
+    </div>
+{% endspaceless %}
+{% endblock collection_item_widget %}
+
+
+             
+{% block form_errors %}
+    {% spaceless %}
+        {% if errors|length > 0 %}
+            <div class="alert alert-danger" role="alert">
+            {% for error in errors %}
+                {{ error.messageTemplate|trans(error.messageParameters, 'validators')|trans() }}<br />
+            {% endfor %}
+            </div>
+        {% endif %}
+    {% endspaceless %}
+{% endblock form_errors %}
+
+{% block _versioncontrol_gitcontrolbundle_commit_files_widget -%}
+    <div class="list-group">
+
+        {% if form.vars.compound %}
+            {%- for n,child in form %}
+                {% set file = form.vars.choices[n].data %}
+                <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-1">
+                                <label>
+
+                                  {{- form_widget(child) -}} 
+                                </label>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="index-status">
+                            {% include 'VersionControlGitControlBundle::Partials/gitStatus.html.twig' with {'status': file.indexStatus} %}
+                            </div>
+                            <div class="work-tree-status">
+                            {% include 'VersionControlGitControlBundle::Partials/gitStatus.html.twig' with {'status': file.workTreeStatus} %}
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff">
+                                {{file.path1}}
+                                {% if(file.path2) %}
+                                    -> {{file.path2}}
+                                {% endif %}
+
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-md-12">
+                            {{- form_widget(form) -}} 
+                        </div>
+                    </div>
+            </div>
+        {% endif %}
+    </div> 
+
+{%- endblock _versioncontrol_gitcontrolbundle_commit_files_widget %}  
+
+
+{% block checkbox_widget -%}
+    {% set parent_label_class = parent_label_class|default('') -%}
+
+    {% if unique_block_prefix == '_versioncontrol_gitcontrolbundle_commit_files_entry' %}
+        <input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} class="commit-file"/>
+    {% else %}
+        {{- parent() -}}
+        
+    {%- endif %}
+{%- endblock checkbox_widget %}

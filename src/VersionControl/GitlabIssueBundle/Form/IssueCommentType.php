@@ -38,6 +38,6 @@ class IssueCommentType extends AbstractType
      */
     public function getName()
     {
-        return 'versioncontol_gitcontrolbundle_issuecomment';
+        return 'versioncontrol_gitcontrolbundle_issuecomment';
     }
 }

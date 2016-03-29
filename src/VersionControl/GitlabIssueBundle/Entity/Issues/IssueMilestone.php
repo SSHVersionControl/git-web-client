@@ -1,7 +1,7 @@
 <?php
 namespace VersionControl\GitlabIssueBundle\Entity\Issues;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
+use VersionControl\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
 
 /**
  * IssueMilestone

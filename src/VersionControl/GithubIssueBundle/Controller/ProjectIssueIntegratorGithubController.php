@@ -2,19 +2,19 @@
 namespace VersionControl\GithubIssueBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
+use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use VersionContol\GitControlBundle\Entity\Project;
-use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
-use VersionContol\GitControlBundle\Form\ProjectIssueIntegratorType;
+use VersionControl\GitControlBundle\Entity\Project;
+use VersionControl\GitControlBundle\Entity\ProjectIssueIntegrator;
+use VersionControl\GitControlBundle\Form\ProjectIssueIntegratorType;
 
 use VersionControl\GithubIssueBundle\Entity\ProjectIssueIntegratorGithub;
 use VersionControl\GithubIssueBundle\Form\ProjectIssueIntegratorGithubType;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use VersionContol\GitControlBundle\Annotation\ProjectAccess;
+use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 /**
  * Project controller.
  *
@@ -114,7 +114,7 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
         
         $em = $this->getDoctrine()->getManager();
 
-        $issueIntegrator = $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
+        $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
 
         if (!$issueIntegrator) {
             throw $this->createNotFoundException('Unable to find ProjectIssueIntegrator entity.');
@@ -163,7 +163,7 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
         
         $em = $this->getDoctrine()->getManager();
 
-        $issueIntegrator = $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
+        $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
 
         if (!$issueIntegrator) {
             throw $this->createNotFoundException('Unable to find ProjectIssueIntegrator entity.');

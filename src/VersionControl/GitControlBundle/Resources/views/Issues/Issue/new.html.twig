@@ -1,0 +1,49 @@
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionControlGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+        New Issue 
+        <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li >
+            <i class="fa fa-bug"></i> <a href="{{path('issues', { 'id': project.id }) }}">Issues</a>
+        </li>
+        <li class="active">
+                <i class="fa fa-file"></i> Issue
+            </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-bug fa-fw"></i> New Issue
+            </h3>
+        </div>
+        <div class="box-body">
+  
+                {{ form(form) }}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionControlGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+     
+    <h1 class="page-header">
+           Local Branches
+          <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li class="active">
+            <i class="fa fa-code-fork"></i> Local Branches
+        </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %} 
+
+{% block content -%}
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">
+                <i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName|issueLink(project.id)|raw}}
+            </h3>
+
+            <div class="box-tools pull-right">
+                {% if (is_granted('OPERATOR', project)) %}
+                    <button  type="button" class="btn bg-olive btn-sm" data-toggle="modal" data-target="#newBranch">
+                        <i class="fa fa-plus"></i> New Branch
+                    </button>
+                {% endif %}
+            </div>
+        </div>       
+        <div class="box-body">
+            <p>List of local branches in repository</p>
+                <div class="list-group">
+                {% for branch in branches %}
+
+                    <div class="list-group-item">
+                        <div class="row">
+                            <div class="col-md-8">
+                                
+                                {% if(branch == branchName|trim) %}
+                                    <strong>*</strong>
+                                {% endif %}
+                                <strong class="str-truncated">{{branch|issueLink(project.id)|raw}}</strong>
+                            </div>
+                            <div class="col-md-4 text-right">
+                                {% if (is_granted('MASTER', project)) %}
+                                    {% if(branch != branchName|trim) %}
+                                        <a href="{{ path('project_checkoutbranch', { 'id': project.id, 'branchName': branch}) }}" title="Checkout this branch" class="btn btn-primary btn-sm btn-flat">Checkout</a>
+                                        
+                                    {% endif %}
+                                    <a href="{{ path('project_mergebranch', { 'id': project.id, 'branchName': branch}) }}" title="Merge this branch" class="btn btn-primary btn-sm btn-flat" data-confirm="Are you sure you wish to merge '{{branch}}' into '{{branchName}}'" data-confirm-header="Confirm Merge">Merge</a>
+                                    {% if(branch != branchName|trim) %}
+                                        <a href="{{ path('project_deletebranch', { 'id': project.id, 'branchName': branch}) }}" title="Delete this branch" class="btn btn-sm btn-danger btn-flat" data-confirm="Are you sure you wish to delete this branch?" data-confirm-header="Confirm Delete">Delete</a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                    </div>
+
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+            
+    <!-- Modal -->
+    <div class="modal fade" id="newBranch" tabindex="-1" role="dialog" aria-labelledby="newBranchLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          {{ form_start(form,{ 'attr': { 'class': 'form'}}) }}
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" >New Branch</h4>
+            </div>
+            <div class="modal-body">
+                 {{ form_errors(form) }}                
+                  <div class="form-group">
+                      {{ form_label(form.name) }}
+                      {{ form_errors(form.name) }}           
+                      {{ form_widget(form.name,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a name for the new branch'}}) }}
+                  </div>
+                  <div class="form-group">
+                      {{ form_label(form.switch) }}
+                      {{ form_errors(form.switch) }}
+                      {{ form_widget(form.switch) }}
+                  </div>
+                  <div class="box box-info box-solid">
+                      <div class="box-header with-border">
+                        <h4 class="box-title">Branching from: {{branchName}}</h4>
+                      </div>
+
+                      <div class="box-body">
+                        {% for log in gitLogs %}
+                   
+                              <div class="row">
+                                  <div class="col-md-10">
+                                      <strong class="str-truncated">{{log.subject}}</strong>
+                                  </div>
+                                  <div class="col-md-2">
+                                      <a href="#">{{log.abbrHash}}</a>
+                                  </div>
+                              </div>
+                              <div class="row">
+                                  <div class="col-md-12">
+                                      <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
+                                  </div>
+                              </div>
+                          {% endfor %}
+                      </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              {{ form_widget(form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
+            </div>
+            {{ form_end(form) }}
+          </div>
+      </div>
+    </div>
+          
+{% endblock %}
+
+{% block footerJS %}
+    {% if(newBranchName) %}
+    <script>
+        $(function(){
+            $('#newBranch').modal('show');
+        });
+    </script>
+    {% endif %}
+    
+{% endblock %} 

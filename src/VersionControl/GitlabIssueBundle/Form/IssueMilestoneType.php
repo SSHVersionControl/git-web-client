@@ -39,6 +39,6 @@ class IssueMilestoneType extends AbstractType
      */
     public function getName()
     {
-        return 'versioncontol_gitcontrolbundle_issuemilestone';
+        return 'versioncontrol_gitcontrolbundle_issuemilestone';
     }
 }

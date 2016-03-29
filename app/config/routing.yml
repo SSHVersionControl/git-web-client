@@ -1,5 +1,5 @@
 version_contol_git_control:
-    resource: "@VersionContolGitControlBundle/Controller/"
+    resource: "@VersionControlGitControlBundle/Controller/"
     type:     annotation
     prefix:   /
 

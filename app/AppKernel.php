@@ -17,7 +17,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new FOS\UserBundle\FOSUserBundle(),
-            new VersionContol\GitControlBundle\VersionContolGitControlBundle(),
+            new VersionControl\GitControlBundle\VersionControlGitControlBundle(),
             new VMelnik\DoctrineEncryptBundle\VMelnikDoctrineEncryptBundle(),
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),

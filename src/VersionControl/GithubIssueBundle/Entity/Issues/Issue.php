@@ -2,7 +2,7 @@
 
 namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueInterface;
+use VersionControl\GitControlBundle\Entity\Issues\IssueInterface;
 
 class Issue implements IssueInterface
 {
@@ -376,7 +376,7 @@ class Issue implements IssueInterface
     
     /**
      * Get Issue Comments
-     * @return array of \VersionContol\GitControlBundle\Entity\Issue\IssueComment
+     * @return array of \VersionControl\GitControlBundle\Entity\Issue\IssueComment
      */
     public function getIssueComments() {
         return $this->issueComments;
@@ -385,7 +385,7 @@ class Issue implements IssueInterface
     /**
      * Set Issue Comments
      * @param array $issueComments
-     * @return \VersionContol\GitControlBundle\Entity\Issue
+     * @return \VersionControl\GitControlBundle\Entity\Issue
      */
     public function setIssueComments(array $issueComments) {
         $this->issueComments = $issueComments;

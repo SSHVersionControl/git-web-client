@@ -1,6 +1,6 @@
 <?php
 namespace VersionControl\GitlabIssueBundle\Repository;
-use VersionContol\GitControlBundle\Repository\Issues\IssueRepositoryInterface;
+use VersionControl\GitControlBundle\Repository\Issues\IssueRepositoryInterface;
 use VersionControl\GitlabIssueBundle\Entity\Issues\Issue;
 use VersionControl\GitlabIssueBundle\Entity\Issues\IssueComment;
 use VersionControl\GitlabIssueBundle\Entity\Issues\IssueLabel;
@@ -49,7 +49,7 @@ class IssueRepository extends GitlabBase implements IssueRepositoryInterface{
     /**
      * Gets a new Issue entity
      * @param type $issue
-     * @return VersionContol\GitControlBundle\Entity\Issues\Issue
+     * @return VersionControl\GitControlBundle\Entity\Issues\Issue
      */
     public function newIssue(){
         $issueEntity = new Issue();

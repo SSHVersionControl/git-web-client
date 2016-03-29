@@ -1,0 +1,123 @@
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionControlGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+            
+{% block header %}
+    
+    
+    <h1 class="page-header">
+        Milestone #{{ entity.id }}: {{ entity.title }}
+        <small>{{ project.title }}
+            {% if (is_granted('MASTER', project)) %}
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+            {% endif %}
+        </small>
+    </h1>
+    <ol class="breadcrumb">
+        <li>
+            <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
+        </li>
+        <li >
+            <i class="fa fa-bug"></i> <a href="{{path('issues', { 'id': project.id }) }}">Issues</a>
+        </li>
+        <li class="active">
+                <i class="fa fa-file"></i> {{ entity.title }} 
+            </li>
+    </ol>
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+    
+    <div class="box box-primary">
+        <div class="box-header with-border">
+  
+            <h3 class="box-title">
+                <div class="issue-state issue-state-{{ entity.state }}"> 
+                    {{ entity.state|capitalize }} 
+                </div>
+                    <strong>{% if(entity.user is null)%}{%else%}{{entity.user.name}}{%endif%}</strong> created this Milestone {{ entity.createdAt|time_ago_in_words }}
+
+            </h3>
+
+             <div class="box-tools">
+                 <a href="{{ path('issuemilestone_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
+                 <a href="{{ path('issuemilestone_edit',{ 'id': project.id,'milestoneId': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-edit fa-fw"></i>Edit</a>
+                 <a href="{{ path('issuemilestone_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Milestone</a>
+             </div>
+
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="heading">
+                        <p><small class="text-muted"><i class="fa fa-clock-o"></i> Updated {{ entity.updatedAt|time_ago_in_words }}</small>
+                        </p>
+                    </div>
+                    <p>{{ entity.description | markdown }}</p>
+                </div>
+                <div class="col-md-6">
+                    {% if(closedCount == 0)%}
+                        {% set progress = 0 %}
+                    {% elseif(openCount == 0)%}
+                        {% set progress = 100 %}
+                    {% else %}
+                        {% set progress = ((openCount / (openCount + closedCount) ) * 100)%}
+                    {% endif %}
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em; width: {{progress}}%;">
+                          {{progress}}%
+                        </div>
+                    </div>
+                    <ul>
+                        <li>
+                            <strong>{{progress}}%</strong> complete
+                        </li>
+                        <li>
+                            <strong>{{openCount}}</strong> Open
+                        </li>
+                        <li>
+                            <strong>{{closedCount}}</strong> Closed
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+             <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-bug fa-fw"></i>Open Issues </h3>
+                </div>
+                 <div class="box-body">
+                      {{ render(controller(
+                'VersionControlGitControlBundle:Issues\\IssueMilestone:milestonesIssues',
+                { 'id':project.id, 'issueMilestone': entity }
+            )) }}
+                 </div>
+             </div>
+        </div>
+        <div class="col-md-6">
+             <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-bug fa-fw"></i>Closed Issues </h3>
+                </div>
+                <div class="box-body">
+                      {{ render(controller(
+                'VersionControlGitControlBundle:Issues\\IssueMilestone:milestonesIssues',
+                { 'id':project.id, 'issueMilestone': entity, 'filter': 'closed', pageParameterName:'pageClosed',keywordParamaterName:'keywordclosed' }
+            )) }}
+                 </div>
+             </div>
+        </div>
+    </div>
+
+{% endblock %}

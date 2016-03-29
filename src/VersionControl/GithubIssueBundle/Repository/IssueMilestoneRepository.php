@@ -1,7 +1,7 @@
 <?php
 namespace VersionControl\GithubIssueBundle\Repository;
 
-use VersionContol\GitControlBundle\Repository\Issues\IssueMilestoneRepositoryInterface;
+use VersionControl\GitControlBundle\Repository\Issues\IssueMilestoneRepositoryInterface;
 use VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone;
 use VersionControl\GithubIssueBundle\DataTransformer\IssueMilestoneToEntityTransformer;
 
@@ -46,7 +46,7 @@ class IssueMilestoneRepository extends GithubBase implements IssueMilestoneRepos
     /**
      * Gets a new Milestone entity
      * 
-     * @return VersionContol\GitControlBundle\Entity\Milestones\MilestoneInterface
+     * @return VersionControl\GitControlBundle\Entity\Milestones\MilestoneInterface
      */
     public function newMilestone(){
         $issueMilestoneEntity = new IssueMilestone();

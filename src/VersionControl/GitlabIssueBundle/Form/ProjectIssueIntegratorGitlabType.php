@@ -40,6 +40,6 @@ class ProjectIssueIntegratorGitlabType extends AbstractType
      */
     public function getName()
     {
-        return 'versioncontol_gitcontrolbundle_projectissueintegrator';
+        return 'versioncontrol_gitcontrolbundle_projectissueintegrator';
     }
 }

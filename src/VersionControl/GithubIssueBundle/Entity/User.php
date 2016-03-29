@@ -2,7 +2,7 @@
 // src/VersionControl/GithubIssueBundle/Entity/User.php
 namespace VersionControl\GithubIssueBundle\Entity;
 
-use VersionContol\GitControlBundle\Entity\Issues\IssueUserInterface;
+use VersionControl\GitControlBundle\Entity\Issues\IssueUserInterface;
 
 /**
  */

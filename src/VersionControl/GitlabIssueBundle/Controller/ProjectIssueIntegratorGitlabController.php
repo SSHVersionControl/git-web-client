@@ -2,17 +2,17 @@
 namespace VersionControl\GitlabIssueBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
-use VersionContol\GitControlBundle\Controller\Base\BaseProjectController;
+use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
+use VersionControl\GitControlBundle\Entity\ProjectIssueIntegrator;
 
 
 use VersionControl\GitlabIssueBundle\Entity\ProjectIssueIntegratorGitlab;
 use VersionControl\GitlabIssueBundle\Form\ProjectIssueIntegratorGitlabType;
 use VersionControl\GitlabIssueBundle\Form\ProjectIssueIntegratorGitlabNewType;
-use VersionContol\GitControlBundle\Annotation\ProjectAccess;
+use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
 /**
  * Project controller.
@@ -113,7 +113,7 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
         
         $em = $this->getDoctrine()->getManager();
 
-        $issueIntegrator = $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
+        $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
 
         if (!$issueIntegrator) {
             throw $this->createNotFoundException('Unable to find ProjectIssueIntegrator entity.');
@@ -162,7 +162,7 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
         
         $em = $this->getDoctrine()->getManager();
 
-        $issueIntegrator = $em->getRepository('VersionContolGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
+        $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
 
         if (!$issueIntegrator) {
             throw $this->createNotFoundException('Unable to find ProjectIssueIntegrator entity.');

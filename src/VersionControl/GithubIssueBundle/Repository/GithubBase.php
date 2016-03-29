@@ -1,7 +1,7 @@
 <?php
 namespace VersionControl\GithubIssueBundle\Repository;
 
-use VersionContol\GitControlBundle\Entity\ProjectIssueIntegrator;
+use VersionControl\GitControlBundle\Entity\ProjectIssueIntegrator;
 
 /**
  * Description of GithubBase
