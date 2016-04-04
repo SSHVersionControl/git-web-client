@@ -214,14 +214,22 @@ class GitSyncCommand extends AbstractGitCommand {
      * @param string $remote remote branch name
      * @return array
      */
-    public function commitCountWithRemote($branch,$remote){
-                
-        //$this->fetch($remote,$branch);
-            
-        $command = sprintf('git rev-list --count --left-right %s...%s 2>&1',escapeshellarg(trim($branch)),escapeshellarg(trim($remote)));
-        $response = $this->command->runCommand($command);
+    public function commitCountWithRemote($branch){
+        $pushCount = 0;
+        $pullCount = 0;
+        
+        $remotes = $this->getRemotes();
+        if(count($remotes) > 0){
+            $remoteBranch = $remotes[0].'/'.$branch;
+            try{
+                $command = sprintf('git rev-list --count --left-right %s...%s',escapeshellarg(trim($branch)),escapeshellarg(trim($remoteBranch)));
+                $response = $this->command->runCommand($command);
 
-        list($pushCount,$pullCount) = explode('	',$response);
+                list($pushCount,$pullCount) = explode('	',$response);
+            }catch(\RuntimeException $e){
+                //Remote branch does not exist. Do nothing
+            }
+        }
         
         return array('pushCount'=>$pushCount,'pullCount'=>$pullCount );
     }
