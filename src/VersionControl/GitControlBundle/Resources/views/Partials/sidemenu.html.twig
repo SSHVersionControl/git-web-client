@@ -25,12 +25,16 @@
             
             <li {% if app.request.attributes.get('_route') == 'project_push' %}class="active"{% endif %}>
                 <a href="{{ path('project_push', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-right"></i><span>Push</span>
-                    <span class="label bg-yellow pull-right">{{pushPullCommitCount.pushCount}}</span> 
+                    {% if(pushPullCommitCount.pushCount > 0) %}
+                        <span class="label bg-green pull-right">{{pushPullCommitCount.pushCount}}</span> 
+                    {% endif %}
                 </a>
             </li>
             <li {% if app.request.attributes.get('_route') == 'project_pull' %}class="active"{% endif %}>
-                <a href="{{ path('project_pull', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span>
-                    <span class="label bg-yellow pull-right">{{pushPullCommitCount.pullCount}}</span> 
+                <a href="{{ path('project_pull', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span> 
+                    {% if(pushPullCommitCount.pullCount > 0) %}
+                        <span class="label bg-green pull-right">{{pushPullCommitCount.pullCount}}</span> 
+                    {% endif %}
                 </a>
             </li>
             <li {% if app.request.attributes.get('_route') == 'project_listremote' %}class="active"{% endif %}>
