@@ -31,7 +31,7 @@
                 </a>
             </li>
             <li {% if app.request.attributes.get('_route') == 'project_pull' %}class="active"{% endif %}>
-                <a href="{{ path('project_pull', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span> 
+                <a href="{{ path('project_pull', { 'id': project.id }) }}" ><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span> 
                     {% if(pushPullCommitCount.pullCount > 0) %}
                         <span class="label bg-green pull-right">{{pushPullCommitCount.pullCount}}</span> 
                     {% endif %}

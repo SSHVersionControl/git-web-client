@@ -52,11 +52,10 @@ class ProjectRemoteController extends BaseProjectController
 
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
 
-        return array(
-            'project'      => $this->project,
+        return array_merge($this->viewVariables, array(
             'remotes' => $gitRemoteVersions,
             'branchName' => $this->branchName
-        );
+        ));
     }
     
     /**
@@ -73,11 +72,10 @@ class ProjectRemoteController extends BaseProjectController
         $remoteForm = $this->createRemoteForm();
         
         
-        return array(
-            'project'      => $this->project,
+        return array_merge($this->viewVariables, array(
             'remote_form' => $remoteForm->createView(),
             'branchName' => $this->branchName
-        );
+        ));
     }
     
 
@@ -111,11 +109,10 @@ class ProjectRemoteController extends BaseProjectController
         }
         
         
-        return array(
-            'project'      => $this->project,
+        return array_merge($this->viewVariables, array(
             'pull_form' => $addRemoteForm->createView(),
             'diffs' => array()
-        );
+        ));
     }
     
     /**
@@ -152,11 +149,10 @@ class ProjectRemoteController extends BaseProjectController
         $defaultData = array('remoteName' => $remote);
         $renameRemoteForm = $this->createRenameRemoteForm($defaultData);
         
-        return array(
-            'project'      => $this->project,
+        return array_merge($this->viewVariables, array(
             'remote_form' => $renameRemoteForm->createView(),
             'branchName' => $this->branchName
-        );
+        ));
                 
      }
      
@@ -187,11 +183,10 @@ class ProjectRemoteController extends BaseProjectController
         }
 
         
-        return array(
-            'project'      => $this->project,
+        return array_merge($this->viewVariables, array(
             'remote_form' => $renameRemoteForm->createView(),
             'branchName' => $this->branchName
-        );
+        ));
                 
      }
     

@@ -66,14 +66,13 @@ class IssueController extends BaseProjectController
         $openIssuesCount = $this->issueRepository->countFindIssues($keyword,'open');
         $closedIssuesCount = $this->issueRepository->countFindIssues($keyword,'closed');
         
-        return array(
+        return array_merge($this->viewVariables, array(
             //'entities' => $entities,
-            'project' => $this->project,
             'openIssuesCount' => $openIssuesCount,
             'closedIssuesCount' => $closedIssuesCount,
             'pagination' => $pagination
             
-        );
+        ));
     }
     
     /**
@@ -98,13 +97,11 @@ class IssueController extends BaseProjectController
 
         //$openIssuesCount = $em->getRepository('VersionControlGitControlBundle:Issue')->countIssuesForProjectWithStatus($project,'open',false);
         
-        return array(
-            //'entities' => $entities,
-            'project' => $this->project,
+        return array_merge($this->viewVariables, array(
             //'openIssuesCount' => $openIssuesCount,
             'pagination' => $pagination
             
-        );
+        ));
     }
     
     
@@ -132,11 +129,10 @@ class IssueController extends BaseProjectController
             return $this->redirect($this->generateUrl('issues', array('id' => $this->project->getId())));
         }
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity' => $issueEntity,
             'form'   => $form->createView(),
-            'project'   => $this->project,
-        );
+        ));
     }
 
     /**
@@ -175,11 +171,10 @@ class IssueController extends BaseProjectController
         $issueEntity = $this->issueRepository->newIssue();
         $form   = $this->createCreateForm($issueEntity);
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity' => $issueEntity,
             'form'   => $form->createView(),
-            'project' => $this->project
-        );
+        ));
     }
 
     /**
@@ -207,12 +202,11 @@ class IssueController extends BaseProjectController
         $issueComment->setIssue($issueEntity);
         $commentForm = $this->createCommentForm($issueComment,$issueId);
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity'      => $issueEntity,
             'delete_form' => $deleteForm->createView(),
-            'project' => $this->project,
             'comment_form' => $commentForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -231,12 +225,11 @@ class IssueController extends BaseProjectController
         $editForm = $this->createEditForm($issueEntity);
         $deleteForm = $this->createDeleteForm($issueId);
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'issue'      => $issueEntity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-            'project' => $this->project,
-        );
+        ));
     }
 
     /**
@@ -283,11 +276,11 @@ class IssueController extends BaseProjectController
             return $this->redirect($this->generateUrl('issue_edit', array('id'=>$this->project->getId(),'issueId' => $issueId)));
         }
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity'      => $entity,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
     /**
      * Deletes a Issue entity.
@@ -439,13 +432,12 @@ class IssueController extends BaseProjectController
         
         $deleteForm = $this->createDeleteForm($issueId);
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity'      => $issueEntity,
             'delete_form' => $deleteForm->createView(),
-            'project' => $this->project,
             'comment_form' => $commentForm->createView(),
 
-        );
+        ));
     }
     
     /**

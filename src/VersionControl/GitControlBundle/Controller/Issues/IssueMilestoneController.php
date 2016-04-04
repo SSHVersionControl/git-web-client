@@ -59,12 +59,11 @@ class IssueMilestoneController extends BaseProjectController
         $closedCount = $this->issueMilestoneRepository->countMilestones('closed');
         
 
-        return array(
-            'project' => $this->project,
+        return array_merge($this->viewVariables, array(
             'openCount' => $openCount,
             'closedCount' => $closedCount,
             'pagination' => $pagination
-        );
+        ));
 
             
     }
@@ -91,11 +90,10 @@ class IssueMilestoneController extends BaseProjectController
             return $this->redirect($this->generateUrl('issuemilestone_show', array('id' => $issueMilestone->getId())));
         }
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity' => $issueMilestone,
-            'project' => $this->project,
             'form'   => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -133,11 +131,10 @@ class IssueMilestoneController extends BaseProjectController
         $issueMilestone = $this->issueMilestoneRepository->newMilestone();
         $form   = $this->createCreateForm($issueMilestone);
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity' => $issueMilestone,
-            'project' => $this->project,
             'form'   => $form->createView(),
-        );
+        ));
     }
 
     /**
@@ -165,13 +162,12 @@ class IssueMilestoneController extends BaseProjectController
         $openIssuesCount = $issueRepository->countIssuesInMilestones($milestoneId,'open');
         $closedIssuesCount = $issueRepository->countIssuesInMilestones($milestoneId,'closed');
         
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity'      => $issueMilestone,
-            'project'      => $this->project,
             'delete_form' => $deleteForm->createView(),
             'openCount' => $openIssuesCount,
             'closedCount' => $closedIssuesCount,
-        );
+        ));
     }
 
     /**
@@ -195,12 +191,11 @@ class IssueMilestoneController extends BaseProjectController
         $editForm = $this->createEditForm($issueMilestone);
         $deleteForm = $this->createDeleteForm($id);
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'milestone'      => $issueMilestone,
-            'project'   => $this->project,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
 
     /**
@@ -251,11 +246,11 @@ class IssueMilestoneController extends BaseProjectController
             return $this->redirect($this->generateUrl('issuemilestone_edit', array('id' => $id, 'milestoneId' => $milestoneId)));
         }
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity'      => $issueMilestone,
             'edit_form'   => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-        );
+        ));
     }
     /**
      * Deletes a IssueMilestone entity.
@@ -368,16 +363,15 @@ class IssueMilestoneController extends BaseProjectController
             array('pageParameterName' => $pageParameterName)
         );
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'issueMilestone' => $issueMilestone,
-            'project' => $this->project,
             'pagination' => $pagination,
             'status' => $filter,
             'keywordParamaterName' => $keywordParamaterName,
             'keyword' => $keyword
              
             
-        );
+        ));
     }
     
     /**

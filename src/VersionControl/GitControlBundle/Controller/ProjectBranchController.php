@@ -138,12 +138,11 @@ class ProjectBranchController extends BaseProjectController
                 ))
             );  
         
-        return array(
-            'project'      => $this->project,
+        return array_merge($this->viewVariables, array(
             'branches' => $gitRemoteBranches,
             'branchName' => $branchName,
             'form' => $form->createView(),
-        );
+        ));
     }
     
     /**
@@ -189,12 +188,11 @@ class ProjectBranchController extends BaseProjectController
             
         }
 
-        return array(
-           'project'      => $this->project,
+        return array_merge($this->viewVariables, array(
             'branches' => $gitRemoteBranches,
             'branchName' => $branchName,
             'form' => $form->createView(),
-        );
+        ));
     }
     
     /**

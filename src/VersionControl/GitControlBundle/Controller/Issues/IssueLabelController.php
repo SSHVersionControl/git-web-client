@@ -45,10 +45,9 @@ class IssueLabelController extends BaseProjectController
         
         $issueLabels = $this->issueLabelRepository->listLabels();
         
-        return array(
+        return array_merge($this->viewVariables, array(
             'entities' => $issueLabels,
-            'project' => $this->project,
-        );
+        ));
     }
     /**
      * Creates a new IssueLabel entity.
@@ -75,11 +74,10 @@ class IssueLabelController extends BaseProjectController
             return $this->redirect($this->generateUrl('issuelabels', array('id' => $this->project->getId())));
         }
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity' => $issueLabel,
             'form'   => $form->createView(),
-            'project' => $this->project,
-        );
+        ));
     }
 
     /**
@@ -116,11 +114,10 @@ class IssueLabelController extends BaseProjectController
         $issueLabel = $this->issueLabelRepository->newLabel();
         $form   = $this->createCreateForm($issueLabel);
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity' => $issueLabel,
             'form'   => $form->createView(),
-            'project' => $this->project,
-        );
+        ));
     }
 
     
@@ -144,11 +141,10 @@ class IssueLabelController extends BaseProjectController
 
         $editForm = $this->createEditForm($issueLabel);
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity'      => $issueLabel,
             'edit_form'   => $editForm->createView(),
-            'project' => $this->project
-        );
+        ));
     }
 
     /**
@@ -200,11 +196,10 @@ class IssueLabelController extends BaseProjectController
             return $this->redirect($this->generateUrl('issuelabels', array('id' => $this->project->getId())));
         }
 
-        return array(
+        return array_merge($this->viewVariables, array(
             'entity'      => $issueLabel,
             'edit_form'   => $editForm->createView(),
-            'project' => $this->project
-        );
+        ));
     }
     /**
      * Deletes a IssueLabel entity.
