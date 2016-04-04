@@ -11,7 +11,12 @@
 
     {% if (is_granted('EDIT', project)) %}
         <li {% if app.request.attributes.get('_route') == 'project_commitlist' %}class="active"{% endif %}>
-            <a href="{{ path('project_commitlist', { 'id': project.id }) }}"><i class="fa fa-fw fa-history"></i><span>Commit</span></a>
+            <a href="{{ path('project_commitlist', { 'id': project.id }) }}" title="{{statusCount}} files to commit"><i class="fa fa-fw fa-history"></i>
+                <span>Commit</span>
+                {% if(statusCount > 0) %}
+                        <span class="label bg-blue pull-right">{{statusCount}}</span> 
+                {% endif %}
+            </a>
         </li>
     {% endif%}
    

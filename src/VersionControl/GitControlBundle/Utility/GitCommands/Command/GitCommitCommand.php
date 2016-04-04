@@ -199,4 +199,23 @@ class GitCommitCommand extends AbstractGitCommand{
         }
         return $this->statusHash;
     }
+    
+    /**
+     * Counts the number of files not commited
+     * @return integer
+     */
+    public function countStatus(){
+        $total = 0;
+        $command = 'git status -u -s';
+        
+        try{
+            $response = $this->command->runCommand($command);
+            $lines = $this->splitOnNewLine($response,false);
+            $total = count($lines);
+        }catch(\RuntimeException $e){
+            //continue
+        }
+        
+        return $total;
+    }
 }
