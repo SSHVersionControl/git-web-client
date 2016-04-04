@@ -204,4 +204,26 @@ class GitSyncCommand extends AbstractGitCommand {
         return $response;
     }
     
+    /**
+     * Gets the number of commits ahead and behind a remote branch.
+     * Needs to call fetch first
+     * 
+     * This request should support caching
+     * 
+     * @param string $branch local branch name
+     * @param string $remote remote branch name
+     * @return array
+     */
+    public function commitCountWithRemote($branch,$remote){
+                
+        //$this->fetch($remote,$branch);
+            
+        $command = sprintf('git rev-list --count --left-right %s...%s 2>&1',escapeshellarg(trim($branch)),escapeshellarg(trim($remote)));
+        $response = $this->command->runCommand($command);
+
+        list($pushCount,$pullCount) = explode('	',$response);
+        
+        return array('pushCount'=>$pushCount,'pullCount'=>$pullCount );
+    }
+    
 }

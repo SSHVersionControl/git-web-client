@@ -100,9 +100,14 @@ abstract class BaseProjectController extends Controller{
         //$this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
         
         $this->branchName = $this->gitCommands->command('branch')->getCurrentBranch();
+        
+        $pushPullCommitCount = $this->gitCommands->command('sync')->commitCountWithRemote($this->branchName,'origin/'.$this->branchName);
+        print_r($pushPullCommitCount);
+        
         $this->viewVariables = array_merge($this->viewVariables, array(
             'project'      => $this->project,
             'branchName' => $this->branchName,
+            'pushPullCommitCount' => $pushPullCommitCount,
             ));
     }
     
