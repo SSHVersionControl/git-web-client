@@ -137,3 +137,21 @@ services:
         class: VersionControl\GitControlBundle\Annotation\Driver\ProjectAccessAnnotationDriver #Point class
         tags: [{name: kernel.event_listener, event: kernel.controller, method: onKernelController}]
         arguments: [@annotation_reader] 
+        
+    version_control.installer.db_install:
+        class: VersionControl\GitControlBundle\Installer\DatabaseInstall
+        arguments: [@database_connection]
+        tags:
+            - {name: version_control.installer, type: initaldb}
+            
+    version_control.installer_command:
+        class: VersionControl\GitControlBundle\Command\InstallerCommand
+        arguments:
+            - @database_connection
+            - @version_control.installer.db_install
+            - @cache_clearer
+            - @filesystem
+            - %kernel.cache_dir%
+            - %kernel.environment%
+        tags:
+            - { name: console.command }

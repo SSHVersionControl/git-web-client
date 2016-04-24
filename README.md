@@ -3,7 +3,7 @@ Online GIT Version Control System
 
 Welcome to the Online GIT Version Control System. This systems allows you to commit,search history,
 branch, push, pull, and many other action on git repositories, locate locally and on remote servers with 
-SSH access. This system has been build using symfony2. It comes with an inbuilt issue tracker, to help organise your bugs, but also integrates with
+SFTP/SSH access. This system has been build using full stack symfony2 framework. It comes with an inbuilt issue tracker, to help organise your bugs, but also integrates with
 Github or Gitlabs, issue tracker for better remote support.
 
 
@@ -13,10 +13,16 @@ I also use GIT to deploy changes to live servers. My typical set up is a Develop
 Live server running Debian or Ubuntu server, with a remote git repository (Gitlab). While using the command line was 
 fine I found I missed having a nicer visual display of the files. I wanted to be able to switch between the environments 
 and quickly see the different commits. I have not found an adequate git client that allows for SSH access to remote servers,
-as the reasons for it is unconventional and possibly bad practice.      
+as the reasons for it is unconventional and possibly bad practice. 
+     
+1) Requirements
+----------------------------------
+* php > 5.6
+* mysql or mariadb
+* webserver ( apache, nginx, php server)
+* Git install on command line for server/computer with repository
 
-
-1) Installing the Online GIT Version Control System
+2) Installing the Online GIT Version Control System
 ----------------------------------
 
 When it comes to installing, you have the
@@ -26,58 +32,139 @@ following options.
 
 If you don't have Composer yet, download it following the instructions on
 http://getcomposer.org/ or just run the following command:
-
-    curl -s http://getcomposer.org/installer | php
-
-Then, use the `create-project` command to generate a new Symfony application:
-
-    php composer.phar create-project (project) path/to/install
-
-Composer will install the project and all its dependencies under the
-`path/to/install` directory.
+```
+    $ curl -s http://getcomposer.org/installer | php
+    $ php -d memory_limit=-1 composer.phar create-project version/control 
+    $ cd 
+```
+Composer will install the project and all its dependencies under the current directory.
 
 ### Download an Archive File
 
-To quickly to test the project, you can also download an of the Version Control
-System and unpack it somewhere under your web server root directory.
+You can also download a zip of the Version Control
+System and unpack it somewhere under your web server root directory. You will still need to run composer to download other dependencies.
+
+    $ curl -s http://getcomposer.org/installer | php
+    $ php -d memory_limit=-1 composer.phar run-script post-install-cmd
 
 
-2) Checking your System Configuration
+You will be prompted to enter in the database configuration.
+Please check the `app/config/parameters.yml` to make sure that the database settings are correct
+
+3) Checking your System Configuration
 -------------------------------------
 
-Before starting coding, make sure that your local system is properly
-configured for Symfony.
+Execute the `check.php` script from the command line, to check your system config:
 
-Execute the `check.php` script from the command line:
-
-    php app/check.php
+    $ php app/check.php
 
 The script returns a status code of `0` if all mandatory requirements are met,
 `1` otherwise.
 
-Access the `config.php` script from a browser:
-
-    http://localhost/path-to-project/web/config.php
-
-If you get any warnings or recommendations, fix them before moving on.
-
-3) Install the database
+4) Install the database
 --------------------------------
+If the database is not already created run:
 
-3) Browsing the Demo Application
+    $ php app/console doctrine:database:create
+    
+To install the schema and inital data run the following command:
+
+    $ php app/console version:install
+
+5) Web Server
+--------------------------------
+Below are examples of 3 different web servers configurations that you can use:
+
+### Apache Example Config
+
+The minimum configuration to get the application running under Apache is
+```
+    <VirtualHost *:80>
+        ServerName domain.tld
+        ServerAlias www.domain.tld
+
+        DocumentRoot /var/www/project/web
+        <Directory /var/www/project/web>
+            AllowOverride All
+            Order Allow,Deny
+            Allow from All
+        </Directory>
+
+        # uncomment the following lines if you install assets as symlinks
+        # or run into problems when compiling LESS/Sass/CoffeScript assets
+        # <Directory /var/www/project>
+        #     Options FollowSymlinks
+        # </Directory>
+
+        ErrorLog /var/log/apache2/project_error.log
+        CustomLog /var/log/apache2/project_access.log combined
+    </VirtualHost>
+```
+
+Check out [Symfony 2 web config page](http://symfony.com/doc/current/cookbook/configuration/web_server_configuration.html) for more details
+### Nginx Example Config
+The minimum configuration to get the application running under Nginx is
+```
+    server {
+        server_name domain.tld www.domain.tld;
+        root /var/www/project/web;
+
+        location / {
+            # try to serve file directly, fallback to app.php
+            try_files $uri /app.php$is_args$args;
+        }
+        # DEV
+        # This rule should only be placed on your development environment
+        # In production, don't include this and don't deploy app_dev.php or config.php
+        location ~ ^/(app_dev|config)\.php(/|$) {
+            fastcgi_pass unix:/var/run/php5-fpm.sock;
+            fastcgi_split_path_info ^(.+\.php)(/.*)$;
+            include fastcgi_params;
+            # When you are using symlinks to link the document root to the
+            # current version of your application, you should pass the real
+            # application path instead of the path to the symlink to PHP
+            # FPM.
+            # Otherwise, PHP's OPcache may not properly detect changes to
+            # your PHP files (see https://github.com/zendtech/ZendOptimizerPlus/issues/126
+            # for more information).
+            fastcgi_param  SCRIPT_FILENAME  $realpath_root$fastcgi_script_name;
+            fastcgi_param DOCUMENT_ROOT $realpath_root;
+        }
+        # PROD
+        location ~ ^/app\.php(/|$) {
+            fastcgi_pass unix:/var/run/php5-fpm.sock;
+            fastcgi_split_path_info ^(.+\.php)(/.*)$;
+            include fastcgi_params;
+            # When you are using symlinks to link the document root to the
+            # current version of your application, you should pass the real
+            # application path instead of the path to the symlink to PHP
+            # FPM.
+            # Otherwise, PHP's OPcache may not properly detect changes to
+            # your PHP files (see https://github.com/zendtech/ZendOptimizerPlus/issues/126
+            # for more information).
+            fastcgi_param  SCRIPT_FILENAME  $realpath_root$fastcgi_script_name;
+            fastcgi_param DOCUMENT_ROOT $realpath_root;
+            # Prevents URIs that include the front controller. This will 404:
+            # http://domain.tld/app.php/some-path
+            # Remove the internal directive to allow URIs like this
+            internal;
+        }
+
+        error_log /var/log/nginx/project_error.log;
+        access_log /var/log/nginx/project_access.log;
+    }
+```
+### Php Web Server
+If you just want to test out the application you can use the default php webserver.
+You will not need to configure anything, but this will run slower:
+
+```
+    $ php app/console server:run
+```
+
+5) Done
 --------------------------------
 
 Congratulations! You're now ready to use the Version Control System.
-
-From the `config.php` page, click the "Bypass configuration and go to the
-Welcome page" link to load up your first Symfony page.
-
-You can also use a web-based configurator by clicking on the "Configure your
-Symfony Application online" link of the `config.php` page.
-
-To see a real-live Symfony page in action, access the following page:
-
-    web/app_dev.php/demo/hello/Fabien
-
 
 
