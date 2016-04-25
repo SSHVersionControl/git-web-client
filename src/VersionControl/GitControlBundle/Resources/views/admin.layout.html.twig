@@ -29,6 +29,7 @@
     <link href="{{ asset('bundles/versioncontrolgitcontrol/theme/css/custom.css') }}" rel="stylesheet" type="text/css">
     
     <link href="{{ asset('bundles/versioncontrolgitcontrol/theme/plugins/prism/prism.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('bundles/versioncontrolgitcontrol/theme/plugins/pace/pace.min.css') }}" rel="stylesheet" type="text/css">
     
     {% block includeCSSAfter %}
     {% endblock %}
@@ -305,11 +306,11 @@
              <!-- Applications javascript for the full site-->
             <script src="{{ asset('bundles/versioncontrolgitcontrol/js/select2/v3.5/select2.min.js') }}"></script>
             
-            <script src="{{ asset('bundles/VersionControl/js/app.js') }}"></script>
-            
             <script src="{{ asset('bundles/versioncontrolgitcontrol/theme/plugins/prism/prism.js') }}"></script>
    
+            <script src="{{ asset('bundles/versioncontrolgitcontrol/theme/plugins/pace/pace.min.js') }}"></script>
             
+            <script src="{{ asset('bundles/VersionControl/js/app.js') }}"></script>
         {% endblock %} 
             
         {% block footerJS %}

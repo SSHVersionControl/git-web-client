@@ -1,0 +1,32 @@
+{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+
+
+{% block topnavleft %}
+    {% include 'VersionControlGitControlBundle::Partials/projectEnvironments.html.twig'  %}
+{% endblock %}
+
+{% block otherAlerts %}
+    {% include 'VersionControlGitControlBundle::Partials/detachedHead.html.twig'  %}
+{% endblock %}   
+
+{% block header %}
+
+{% endblock %}
+
+{% block sidemenu -%}
+ {% include 'VersionControlGitControlBundle::Partials/sidemenu.html.twig'  %}
+{% endblock %}
+
+{% block content -%}
+
+    
+            
+
+{% endblock %}
+
+ {% block footerJS %}
+     <script>
+        var defaultPage = "{{ path('project_commitlist', { 'id': project.id }) }}"; 
+     </script>
+     <script src="{{ asset('bundles/versioncontrolgitcontrol/js/ajaxifypage.js') }}"></script>
+{% endblock %} 

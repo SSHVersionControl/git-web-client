@@ -1,18 +1,13 @@
-{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+{% extends "VersionControlGitControlBundle::admincontent.layout.html.twig" %}
 
 
-{% block topnavleft %}
-    {% include 'VersionControlGitControlBundle::Partials/projectEnvironments.html.twig'  %}
-{% endblock %}
-            
+
 {% block header %}
-    
-    
     <h1 class="page-header">
           Issues
           <small>{{ project.title }}
             {% if (is_granted('MASTER', project)) %}
-                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}" class="non-ajax">edit</a></span>)
             {% endif %}
         </small>
     </h1>
@@ -26,9 +21,7 @@
     </ol>
 {% endblock %}
 
-{% block sidemenu -%}
- {% include 'VersionControlGitControlBundle::Partials/sidemenu.html.twig'  %}
-{% endblock %}
+
 
 {% block content -%}
     

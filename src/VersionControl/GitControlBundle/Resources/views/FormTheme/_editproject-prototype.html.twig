@@ -19,7 +19,7 @@
                     </div>
                     {% set fieldNum = fieldNum + 1 %}
                 {% endfor %}
-                    <a class="remove right" title="Remove" href="#">
+                    <a class="remove right" title="Remove" href="#" class="non-ajax">
                         {{'resource.delete'|trans }} <span class="icon icon-remove"></span>
                     </a>
                     <div class="clear"></div>
@@ -46,7 +46,7 @@
         </div>
         {% set fieldNum = fieldNum + 1 %}
     {% endfor %}
-        <a class="remove right" title="Remove" href="#">
+        <a class="remove right" title="Remove" href="#" class="non-ajax">
             {{'Delete'|trans }} <span class="icon icon-remove"></span>
         </a>
         <div class="clear"></div>
@@ -93,7 +93,7 @@
                 {% if(prototype.vars.value.title is defined) %}
                     {% set panelTitle = prototype.vars.value.title %}
                 {% endif %}
-                <a data-toggle="collapse" href="#collapse{{rowNum}}">{{panelTitle}}</a>
+                <a data-toggle="collapse" href="#collapse{{rowNum}}" class="non-ajax">{{panelTitle}}</a>
             </h4>
         </div>
         <div id="collapse{{rowNum}}" class="panel-collapse collapse in">
@@ -119,10 +119,10 @@
                 
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active">
-                        <a href="#sshdetails{{rowNum}}" aria-controls="sshdetails{{rowNum}}" role="tab" data-toggle="tab">SSH Details</a>
+                        <a href="#sshdetails{{rowNum}}" aria-controls="sshdetails{{rowNum}}" role="tab" data-toggle="tab" class="non-ajax">SSH Details</a>
                     </li>
                     <li role="presentation">
-                        <a href="#filepermissions{{rowNum}}" aria-controls="filepermissions{{rowNum}}" role="tab" data-toggle="tab">File Permissions</a>
+                        <a href="#filepermissions{{rowNum}}" aria-controls="filepermissions{{rowNum}}" role="tab" data-toggle="tab" class="non-ajax">File Permissions</a>
                     </li>
                 </ul>
                 <div class="tab-content">
@@ -160,7 +160,7 @@
                             <p>Git does not store file permissions other than executable scripts or files owners and groups.
                                 You can set the default file permissions for all files in the form below. This will update 
                             all git versioned files when a project has been checked out or merged. If you need different files 
-                            to have different permissions you will need to implement you own script/process (for example see <a href="http://david.hardeman.nu/software.php#metastore">metastore</a>).</p>
+                            to have different permissions you will need to implement you own script/process (for example see <a href="http://david.hardeman.nu/software.php#metastore" class="non-ajax">metastore</a>).</p>
 
                                <div class="form-group">
                                    <label for="versioncontrol_gitcontrolbundle_project_projectEnvironment_0_projectEnvironmentFilePerm_enableFilePermissions">
@@ -256,7 +256,7 @@
                     </div>
                 </div>
                 <hr />
-                <a class="btn btn-small btn-danger remove" title="Remove" href="#">
+                <a class="btn btn-small btn-danger remove non-ajax" title="Remove" href="#" >
                     <i class="fa fa-remove"></i>{{'Delete'|trans }}
                 </a>
             </div>

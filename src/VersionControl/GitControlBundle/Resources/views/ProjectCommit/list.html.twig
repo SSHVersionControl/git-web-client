@@ -1,6 +1,6 @@
 {% form_theme commit_form 'VersionControlGitControlBundle::FormTheme/_field-prototype.html.twig' %}
 
-{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+{% extends "VersionControlGitControlBundle::admincontent.layout.html.twig" %}
 
 
 {% block topnavleft %}
@@ -17,7 +17,7 @@
            Commit
           <small>{{ project.title }}
             {% if (is_granted('MASTER', project)) %}
-                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}" class="non-ajax">edit</a></span>)
             {% endif %}
         </small>
     </h1>
@@ -87,7 +87,7 @@
                         <fieldset class="issue-options-fieldset">
                             <legend class="issue-options">
                                 <label>
-                                    <a href="#issue-options" data-toggle="collapse" class="collapse-icon collapsed">Issue Options</a>
+                                    <a href="#issue-options" data-toggle="collapse" class="collapse-icon collapsed non-ajax">Issue Options</a>
                                 </label>
                             </legend>
                             <div class="collapse" id="issue-options">

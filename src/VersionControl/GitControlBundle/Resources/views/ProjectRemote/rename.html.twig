@@ -1,4 +1,4 @@
-{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+{% extends "VersionControlGitControlBundle::admincontent.layout.html.twig" %}
 
 
 {% block topnavleft %}
@@ -11,7 +11,7 @@
           Rename Remote Respository
           <small>{{ project.title }}
             {% if (is_granted('MASTER', project)) %}
-                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}" class="non-ajax">edit</a></span>)
             {% endif %}
         </small>
     </h1>

@@ -1,4 +1,4 @@
-{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+{% extends "VersionControlGitControlBundle::admincontent.layout.html.twig" %}
 
 {% block includeCSSBefore %}
     <link rel="stylesheet" href="{{ asset('bundles/versioncontrolgitcontrol/theme/plugins/datatables/dataTables.bootstrap.css') }}" >
@@ -15,7 +15,7 @@
           Commit {{log.abbrHash}}
           <small>{{ project.title }}
             {% if (is_granted('MASTER', project)) %}
-                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}">edit</a></span>)
+                (<span class="edit"><a href="{{ path('project_edit', { 'id': project.id }) }}" class="non-ajax">edit</a></span>)
             {% endif %}
         </small>
     </h1>
@@ -164,7 +164,7 @@
                                 <span class="status">{{file.statusChange}}</span>
                             {% endif %} 
                         </td>
-                        <td><a data-toggle="modal" href="{{ path('project_commitfilediff', { 'id': project.id, 'commitHash': log.abbrHash, 'filePath':file.filePath|url_encode }) }}" data-target="#diff">
+                        <td><a data-toggle="modal" href="{{ path('project_commitfilediff', { 'id': project.id, 'commitHash': log.abbrHash, 'filePath':file.filePath|url_encode }) }}" data-target="#diff" class="non-ajax">
                             {{file.filePath}}
                             </a>
                         </td>

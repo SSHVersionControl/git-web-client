@@ -1,6 +1,18 @@
 
 
 $(function(){
+    
+    $(document).ajaxStart(function() { Pace.restart(); });
+    
+    var $contentContainter = $('.content-wrapper');
+    
+    $('.sidebar-menu a').on('click',function(){
+        $contentContainter.load( this.href,function(){
+            
+        });
+        
+    });
+    
     $('#commit-select-all').on('click',function(){
         $('.commit-file').prop( "checked", true );
     });

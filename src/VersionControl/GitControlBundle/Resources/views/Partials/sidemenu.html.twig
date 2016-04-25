@@ -22,7 +22,7 @@
    
     {% if (is_granted('EDIT', project)) %}
     <li class="treeview {% if app.request.attributes.get('_route') in ['project_push','project_pull','project_listremote'] %}active{% endif %}">
-        <a href="#">
+        <a href="#" class="non-ajax">
             <i class="fa fa-fw fa-refresh"></i><span>Sync</span> 
             <i class="fa fa-angle-left pull-right"></i>
         </a>
@@ -49,7 +49,7 @@
     </li>
     {% endif%}
     <li class="treeview {% if app.request.attributes.get('_route') in ['project_branches','project_branch_remotes'] %}active{% endif %}">
-        <a href="#">
+        <a href="#" class="non-ajax">
             <i class="fa fa-fw fa-code-fork"></i><span>Branches</span> 
             <i class="fa fa-angle-left pull-right"></i>
         </a>
@@ -64,7 +64,7 @@
     </li>
     
     <li class="treeview {% if app.request.attributes.get('_route') in ['issues','issuemilestones','issuelabels'] %}active{% endif %}">
-        <a href="#">
+        <a href="#" class="non-ajax">
             <i class="fa fa-fw fa-bug"></i><span>Bug Tracking</span> 
             <i class="fa fa-angle-left pull-right"></i>
         </a>

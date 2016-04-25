@@ -19,7 +19,7 @@
                     </div>
                     {% set fieldNum = fieldNum + 1 %}
                 {% endfor %}
-                    <a class="remove right" title="Remove" href="#">
+                    <a class="remove right" title="Remove" href="#" class="non-ajax">
                         {{'resource.delete'|trans }} <span class="icon icon-remove"></span>
                     </a>
                     <div class="clear"></div>
@@ -46,7 +46,7 @@
         </div>
         {% set fieldNum = fieldNum + 1 %}
     {% endfor %}
-        <a class="remove right" title="Remove" href="#">
+        <a class="remove right" title="Remove" href="#" class="non-ajax">
             {{'Delete'|trans }} <span class="icon icon-remove"></span>
         </a>
         <div class="clear"></div>
@@ -91,7 +91,7 @@
                             </div>
                         </div>
                         <div class="col-md-9">
-                            <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff">
+                            <a data-toggle="modal" href="{{ path('project_filediff', { 'id': project.id, 'difffile':file.path1|url_encode }) }}" data-target="#diff" class="non-ajax">
                                 {{file.path1}}
                                 {% if(file.path2) %}
                                     -> {{file.path2}}

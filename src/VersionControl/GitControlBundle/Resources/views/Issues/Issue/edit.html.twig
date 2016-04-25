@@ -1,9 +1,7 @@
-{% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
+{% extends "VersionControlGitControlBundle::admincontent.layout.html.twig" %}
 
 
-{% block topnavleft %}
-    {% include 'VersionControlGitControlBundle::Partials/projectEnvironments.html.twig'  %}
-{% endblock %}
+
             
 {% block header %}
     
@@ -16,7 +14,7 @@
             <a href="{{ path('home')}}"><i class="fa fa-product-hunt"></i> Projects</a>
         </li>
         <li >
-            <i class="fa fa-bug"></i> <a href="{{path('issues', { 'id': project.id }) }}">Issues</a>
+            <i class="fa fa-bug"></i> <a href="{{path('issues', { 'id': project.id }) }}" class="non-ajax">Issues</a>
         </li>
         <li class="active">
                 <i class="fa fa-file"></i> Edit Issue
@@ -24,9 +22,7 @@
     </ol>
 {% endblock %}
 
-{% block sidemenu -%}
- {% include 'VersionControlGitControlBundle::Partials/sidemenu.html.twig'  %}
-{% endblock %}
+
 
 {% block content -%}
  

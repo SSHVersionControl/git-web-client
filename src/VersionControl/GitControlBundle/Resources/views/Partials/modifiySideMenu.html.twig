@@ -2,7 +2,7 @@
 <ul class="sidebar-menu">
 <li class="header">MANAGE PROJECT</li>
     <li>
-        <a href="{{ path('project_log', { 'id': project.id }) }}"><i class="fa fa-fw fa-caret-square-o-left"></i><span>Back to project</span></a>
+        <a href="{{ path('project', { 'id': project.id }) }}"><i class="fa fa-fw fa-caret-square-o-left"></i><span>Back to project</span></a>
     </li>
     <li class="separate-item"></li>
     <li {% if app.request.attributes.get('_route') == 'project_edit' %}class="active"{% endif %}>

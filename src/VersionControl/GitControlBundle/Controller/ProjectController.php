@@ -24,34 +24,6 @@ class ProjectController extends Controller
 {
 
     /**
-     * Lists all Project entities.
-     *
-     * @Route("/", name="project")
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAction(Request $request)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        //$entities = $em->getRepository('VersionControlGitControlBundle:Project')->findAll();
-        $keyword = $request->query->get('keyword', false);
-        
-        $query = $em->getRepository('VersionControlGitControlBundle:Project')->findByKeyword($keyword,true)->getQuery();
-        $paginator  = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1)/*page number*/,
-            15/*limit per page*/
-        );
-
-        return array(
-            'pagination' => $pagination,
-        );
-    }
-    
-    
-    /**
      * Creates a new Project entity.
      *
      * @Route("/", name="project_create")
