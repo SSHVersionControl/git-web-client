@@ -31,9 +31,14 @@ class ProjectIndexController extends BaseProjectController
      */
     public function indexAction(Request $request)
     {
+        //Get latest from updates from remot branches
+        $response = $this->gitCommands->command('branch')->fetchAll();
+        
         $pushPullCommitCount = $this->gitCommands->command('sync')->commitCountWithRemote($this->branchName);
         
         $statusCount = $this->gitCommands->command('commit')->countStatus();
+
+        //$this->get('session')->getFlashBag()->add('notice', $response);
         
         return array_merge($this->viewVariables, array(
             'pushPullCommitCount' => $pushPullCommitCount,

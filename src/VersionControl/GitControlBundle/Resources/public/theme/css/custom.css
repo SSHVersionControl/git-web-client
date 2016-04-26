@@ -376,3 +376,11 @@ table.diff >tbody>tr.diff-type-2>td{
     padding: 15px 15px 0 15px;
 }
 
+#refresh-nav{
+    border:none;
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    padding: 2px;
+}
+
