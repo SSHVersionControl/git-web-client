@@ -1,6 +1,6 @@
 
 <ul class="sidebar-menu">
-    <li class="header">PROJECT NAVIGATION <a href="#" class="non-ajax" id="refresh-nav"><i class="fa fa-refresh pull-right"></i></a></li>
+    <li class="header">PROJECT NAVIGATION <a href="{{ path('project_status_ajax', { 'id': project.id }) }}" class="non-ajax" id="refresh-nav"><i class="fa fa-refresh pull-right"></i></a></li>
     <li {% if app.request.attributes.get('_route') == 'project_filelist' %}class="active"{% endif %}>
         <a href="{{ path('project_filelist', { 'id': project.id }) }}"><i class="fa fa-fw fa-file-code-o"></i><span>Files</span></a>
     </li>
@@ -14,7 +14,7 @@
             <a href="{{ path('project_commitlist', { 'id': project.id }) }}" title="{{statusCount}} files to commit"><i class="fa fa-fw fa-history"></i>
                 <span>Commit</span>
                 {% if(statusCount > 0) %}
-                        <span class="label bg-blue pull-right">{{statusCount}}</span> 
+                        <span class="label bg-blue pull-right" id="statusCount">{{statusCount}}</span> 
                 {% endif %}
             </a>
         </li>
@@ -31,14 +31,14 @@
             <li {% if app.request.attributes.get('_route') == 'project_push' %}class="active"{% endif %}>
                 <a href="{{ path('project_push', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-right"></i><span>Push</span>
                     {% if(pushPullCommitCount.pushCount > 0) %}
-                        <span class="label bg-green pull-right">{{pushPullCommitCount.pushCount}}</span> 
+                        <span class="label bg-green pull-right" id="pushCount">{{pushPullCommitCount.pushCount}}</span> 
                     {% endif %}
                 </a>
             </li>
             <li {% if app.request.attributes.get('_route') == 'project_pull' %}class="active"{% endif %}>
                 <a href="{{ path('project_pull', { 'id': project.id }) }}" ><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span> 
                     {% if(pushPullCommitCount.pullCount > 0) %}
-                        <span class="label bg-green pull-right">{{pushPullCommitCount.pullCount}}</span> 
+                        <span class="label bg-green pull-right" id="pullCount">{{pushPullCommitCount.pullCount}}</span> 
                     {% endif %}
                 </a>
             </li>

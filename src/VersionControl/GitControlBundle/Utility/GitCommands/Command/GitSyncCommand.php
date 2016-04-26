@@ -231,7 +231,7 @@ class GitSyncCommand extends AbstractGitCommand {
             }
         }
         
-        return array('pushCount'=>$pushCount,'pullCount'=>$pullCount );
+        return array('pushCount'=>trim($pushCount),'pullCount'=>trim($pullCount) );
     }
     
 }

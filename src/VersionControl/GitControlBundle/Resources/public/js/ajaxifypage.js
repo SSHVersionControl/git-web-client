@@ -49,5 +49,26 @@ $(function(){
             }
         });
     });
+    
+    /**
+     * Refresh Icon in side navigation
+     */
+    $('#refresh-nav').on('click',function(e){
+       e.preventDefault();
+       $(this).trigger('stats-refresh');
+    });
+    
+    $('#refresh-nav').on('stats-refresh',function(){
+        
+        $.getJSON( $(this).attr('href'), function( data ) {
+            
+            console.log(data);
+            
+            $.each( data, function( id, val ) {
+              $('#'.id).html(val);
+            });
+
+         });
+    });
 
 });
