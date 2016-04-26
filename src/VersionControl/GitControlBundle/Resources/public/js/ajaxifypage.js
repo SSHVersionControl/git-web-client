@@ -8,8 +8,10 @@ $(function(){
 
         if($(this).hasClass('non-ajax') == false){
             e.preventDefault();
+            $contentContainter.mask({label:'Loading...'});
+            
             $contentContainter.load( this.href,function(){
-
+                $contentContainter.unmask();
             });  
         }
     });
@@ -17,8 +19,9 @@ $(function(){
     $contentContainter.on('click','a',function(e){
         if($(this).hasClass('non-ajax') == false){
             e.preventDefault();
+            $contentContainter.mask({label:'Loading...'});
             $contentContainter.load( this.href,function(){
-
+                $contentContainter.unmask();
             });  
         }
     });
@@ -28,6 +31,8 @@ $(function(){
 
         e.preventDefault();
 
+        $contentContainter.mask({label:'Form Submitted...'});
+         
         $.ajax({
             type: $(this).attr('method'),
             url: $(this).attr('action'),
@@ -35,10 +40,12 @@ $(function(){
             dataType: "html",
             success: function(data) {
                 $contentContainter.html(data);
+                $contentContainter.unmask();
             },
             error: function(e) 
             {
                 $contentContainter.html(e);
+                $contentContainter.unmask();
             }
         });
     });

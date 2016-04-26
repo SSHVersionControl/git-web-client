@@ -2,22 +2,11 @@
 
 $(function(){
     
-    $(document).ajaxStart(function() { Pace.restart(); });
-    
-    var $contentContainter = $('.content-wrapper');
-    
-    $('.sidebar-menu a').on('click',function(){
-        $contentContainter.load( this.href,function(){
-            
-        });
-        
-    });
-    
-    $('#commit-select-all').on('click',function(){
+    $('body').on('click','#commit-select-all',function(){
         $('.commit-file').prop( "checked", true );
     });
 
-    $('#commit-deselect-all').on('click',function(){
+    $('body').on('click','#commit-deselect-all',function(){
         $('.commit-file').prop( "checked", false );
     });
     
@@ -39,6 +28,8 @@ $(function(){
             });
         }
     });
+    
+    
     
     $("#versioncontrol_gitcontrolbundle_issuelabel_hexColor").pickAColor({
             showSpectrum            : true,
@@ -128,8 +119,8 @@ $(function(){
             $('#form_remotename').val(remoteName);
             $('#remote-branch-label').html(remoteName);
     });
-    
-    /**
+
+   /**
      * Confirm Delete
      */
     $('a[data-confirm]').click(function(ev) {
@@ -157,11 +148,82 @@ $(function(){
 		return false;
 	});
         
-    $("#ajax-modal").on("show.bs.modal", function(e) {
-        var link = $(e.relatedTarget);
-        $(this).find(".modal-body").load(link.attr("href"));
+        
+    /**
+     * Permissions Checkboxes
+     */
+    var $checkboxes = $('.permissions')
+    ,$checkboxesOwner = $('.permissions.owner')
+    ,$checkboxesGroup = $('.permissions.group')
+    ,$checkboxesOther = $('.permissions.other')
+    ,$checkboxesSticky = $('.permissions.sticky')
+    ,$octal = $('#octal')
+    ,$sticky = $('#versioncontrol_gitcontrolbundle_project_projectEnvironment_0_projectEnvironmentFilePerm_permissionSticky')
+    ,$owner = $('#versioncontrol_gitcontrolbundle_project_projectEnvironment_0_projectEnvironmentFilePerm_permissionOwner')
+    ,$group = $('#versioncontrol_gitcontrolbundle_project_projectEnvironment_0_projectEnvironmentFilePerm_permissionGroup')
+    ,$other = $('#versioncontrol_gitcontrolbundle_project_projectEnvironment_0_projectEnvironmentFilePerm_permissionOther');
+    
+    $checkboxes.change(function() {
+        updatePermissions();
     });
+    
+    function updatePermissions(){
+        var ownerVal = 0; 
+        $.each($checkboxesOwner, function(){
+           if(this.checked) {
+               ownerVal +=  parseInt($(this).val());
+           }
+        });
+        $owner.val(ownerVal);
         
+        var groupVal = 0; 
+        $.each($checkboxesGroup, function(){
+           if(this.checked) {
+               groupVal += parseInt($(this).val());
+           }
+        });
+        $group.val(groupVal);
         
+        var otherVal = 0; 
+        $.each($checkboxesOther, function(){
+           if(this.checked) {
+               otherVal += parseInt($(this).val());
+           }
+        });
+        $other.val(otherVal);
+        
+        var stickyVal = 0; 
+        $.each($checkboxesSticky, function(){
+           if(this.checked) {
+               stickyVal += parseInt($(this).val());
+           }
+        });
+        $sticky.val(stickyVal);
+        
+        $octal.val(stickyVal+''+ownerVal+''+groupVal+''+otherVal);
+    }
+    
+    function initPermissions(){
+        var ownerVal = $owner.val();
+        ownerVal
+    }
+    
+    $("#issueModal").on("show.bs.modal", function(e) {
+        var link = $(e.relatedTarget);
+        $(this).find(".modal-content").load(link.attr("href"));
+    });
 
+    /* SideBar Events: Load content only when side bar opens */
+    $(".control-sidebar").on('sidebar.opened',function(){
+        var issueData =  $('#control-sidebar-issue-tab').data();
+        if(issueData.loaded == false){
+             $('#control-sidebar-issue-tab').load(issueData.url);
+             $('#control-sidebar-issue-tab').data('loaded',true);
+        }
+        
+        //alert('open');
+    });
+    
+    //Open Default page
+    $('.content-wrapper').load( defaultPage,function(){});
 });
