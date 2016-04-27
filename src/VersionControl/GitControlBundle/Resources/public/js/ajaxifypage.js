@@ -65,7 +65,13 @@ $(function(){
                 console.log(data);
 
                 $.each( data, function( id, val ) {
-                  $('#'+id).html(val);
+                    var $label = $('#'+id);
+                    if(val == 0){
+                        $label.addClass('hide');
+                    }else{
+                       $label.removeClass('hide'); 
+                    }
+                    $label.html(val);
                 });
 
             });

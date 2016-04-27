@@ -13,9 +13,7 @@
         <li {% if app.request.attributes.get('_route') == 'project_commitlist' %}class="active"{% endif %}>
             <a href="{{ path('project_commitlist', { 'id': project.id }) }}" title="{{statusCount}} files to commit"><i class="fa fa-fw fa-history"></i>
                 <span>Commit</span>
-                {% if(statusCount > 0) %}
-                        <span class="label bg-blue pull-right" id="statusCount">{{statusCount}}</span> 
-                {% endif %}
+                <span class="label bg-blue pull-right {% if(statusCount == 0) %}hide{% endif %}" id="statusCount">{{statusCount}}</span> 
             </a>
         </li>
     {% endif%}
@@ -29,17 +27,17 @@
         <ul class="treeview-menu">
             
             <li {% if app.request.attributes.get('_route') == 'project_push' %}class="active"{% endif %}>
-                <a href="{{ path('project_push', { 'id': project.id }) }}"><i class="fa fa-fw fa-arrow-circle-right"></i><span>Push</span>
-                    {% if(pushPullCommitCount.pushCount > 0) %}
-                        <span class="label bg-green pull-right" id="pushCount">{{pushPullCommitCount.pushCount}}</span> 
-                    {% endif %}
+                <a href="{{ path('project_push', { 'id': project.id }) }}">
+                    <i class="fa fa-fw fa-arrow-circle-right"></i><span>Push</span>
+                <span class="label bg-green pull-right {% if(pushPullCommitCount.pushCount == 0) %}hide{% endif %}" id="pushCount">{{pushPullCommitCount.pushCount}}</span> 
+
                 </a>
             </li>
             <li {% if app.request.attributes.get('_route') == 'project_pull' %}class="active"{% endif %}>
-                <a href="{{ path('project_pull', { 'id': project.id }) }}" ><i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span> 
-                    {% if(pushPullCommitCount.pullCount > 0) %}
-                        <span class="label bg-green pull-right" id="pullCount">{{pushPullCommitCount.pullCount}}</span> 
-                    {% endif %}
+                <a href="{{ path('project_pull', { 'id': project.id }) }}" >
+                    <i class="fa fa-fw fa-arrow-circle-left"></i><span>Pull</span> 
+                    <span class="label bg-green pull-right {% if(pushPullCommitCount.pullCount == 0) %}hide{% endif %}" id="pullCount">{{pushPullCommitCount.pullCount}}</span> 
+
                 </a>
             </li>
             <li {% if app.request.attributes.get('_route') == 'project_listremote' %}class="active"{% endif %}>
