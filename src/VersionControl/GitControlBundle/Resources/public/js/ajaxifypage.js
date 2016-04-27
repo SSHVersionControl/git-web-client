@@ -55,20 +55,21 @@ $(function(){
      */
     $('#refresh-nav').on('click',function(e){
        e.preventDefault();
-       $(this).trigger('stats-refresh');
+       $(this).trigger('status-refresh');
     });
     
-    $('#refresh-nav').on('stats-refresh',function(){
-        
-        $.getJSON( $(this).attr('href'), function( data ) {
-            
-            console.log(data);
-            
-            $.each( data, function( id, val ) {
-              $('#'.id).html(val);
-            });
+    $('#refresh-nav').on('status-refresh',function(){
+        Pace.ignore(function(){
+            $.getJSON( $(this).attr('href'), function( data ) {
 
-         });
+                console.log(data);
+
+                $.each( data, function( id, val ) {
+                  $('#'+id).html(val);
+                });
+
+            });
+        });
     });
 
 });
