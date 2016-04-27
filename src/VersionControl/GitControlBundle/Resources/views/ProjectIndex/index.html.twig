@@ -27,6 +27,7 @@
  {% block footerJS %}
      <script>
         var defaultPage = "{{ path('project_commitlist', { 'id': project.id }) }}"; 
+
      </script>
      <script src="{{ asset('bundles/versioncontrolgitcontrol/js/ajaxifypage.js') }}"></script>
 {% endblock %} 

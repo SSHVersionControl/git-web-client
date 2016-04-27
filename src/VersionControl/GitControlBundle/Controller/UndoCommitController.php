@@ -44,6 +44,7 @@ class UndoCommitController extends BaseProjectController
         $response = $this->gitUndoCommands->undoCommit();
         $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
         $this->get('session')->getFlashBag()->add('notice', $response);
+        $this->get('session')->getFlashBag()->add('status-refresh','true');
         
         return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
     }
@@ -61,6 +62,7 @@ class UndoCommitController extends BaseProjectController
         $response = $this->gitUndoCommands->undoCommitHard();
         $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
         $this->get('session')->getFlashBag()->add('notice', $response);
+        $this->get('session')->getFlashBag()->add('status-refresh','true');
         
         return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
     }
@@ -82,6 +84,7 @@ class UndoCommitController extends BaseProjectController
         $response = $this->gitUndoCommands->checkoutCommit($commitHash);
         
         $this->get('session')->getFlashBag()->add('notice', $response);
+        $this->get('session')->getFlashBag()->add('status-refresh','true');
         
         return $this->redirect($this->generateUrl('project_log', array('id' => $this->project->getId())));
     }

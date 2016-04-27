@@ -85,6 +85,7 @@ class ProjectSyncController extends BaseProjectController
             $response = $this->gitSyncCommands->push($remote,$branch);
             
             $this->get('session')->getFlashBag()->add('notice', $response);
+            $this->get('session')->getFlashBag()->add('status-refresh','true');
             
             return $this->redirect($this->generateUrl('project_push', array('id' => $id)));
         }
@@ -157,7 +158,8 @@ class ProjectSyncController extends BaseProjectController
             }elseif($pullForm->get('pull')->isClicked()){
                 $response = $this->gitSyncCommands->pull($remote,$branch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
-
+                $this->get('session')->getFlashBag()->add('status-refresh','true');
+                
                 return $this->redirect($this->generateUrl('project_pull', array('id' => $id)));
             }
             

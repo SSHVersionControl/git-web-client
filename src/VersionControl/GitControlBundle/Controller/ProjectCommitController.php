@@ -145,6 +145,8 @@ class ProjectCommitController extends BaseProjectController
                 $this->get('session')->getFlashBag()->add('notice'
                 , $filesCommited." files have been committed");
                 
+                $this->get('session')->getFlashBag()->add('status-refresh','true');
+
                 //Git Push to remote repository
                 $this->pushToRemote($commitEntity);
               

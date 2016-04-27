@@ -71,4 +71,15 @@
   </section><!-- /.content -->  
 
 {% block footerJS %}
-{% endblock %}   
+    
+{% endblock %}
+
+
+{% if(app.session.flashbag.has('status-refresh')) %}
+    <script>
+        if( $('#refresh-nav').length > 0){
+            $('#refresh-nav').trigger('status-refresh');
+        }
+    </script>
+{% endif %}
+     
