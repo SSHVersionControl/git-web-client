@@ -59,7 +59,7 @@ $(function(){
     });
     
     $('#refresh-nav').on('status-refresh',function(){
-        Pace.ignore(function(){
+        //Pace.ignore(function(){
             $.getJSON( $(this).attr('href'), function( data ) {
 
                 console.log(data);
@@ -69,7 +69,7 @@ $(function(){
                 });
 
             });
-        });
+        //});
     });
 
 });
