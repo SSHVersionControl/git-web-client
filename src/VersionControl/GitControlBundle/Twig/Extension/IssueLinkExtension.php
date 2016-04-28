@@ -60,7 +60,7 @@ class IssueLinkExtension extends \Twig_Extension {
             foreach($matches as $issueId){
                 if(is_numeric($issueId)){
                     $issueUrl = $this->generateIssueUrl($issueId,$projectId);
-                    return '<a href="'.$issueUrl.'"  data-remote="false" data-toggle="modal" data-target="#issueModal" title="Related to issue'.$issueId.'" class="ajax-modal">'.$text.'</a>';
+                    return '<a href="'.$issueUrl.'"  data-remote="false" data-toggle="modal" data-target="#issueModal" title="Related to issue'.$issueId.'" class="ajax-modal non-ajax">'.$text.'</a>';
                 }
             }
         }
@@ -77,7 +77,7 @@ class IssueLinkExtension extends \Twig_Extension {
 
             $parameters = array($issueParamaterName => $issueId,'id' => $projectId);
             
-            return $this->generator->generate($routeName, $parameters, UrlGeneratorInterface::RELATIVE_PATH);
+            return $this->generator->generate($routeName, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
         }
     
 }

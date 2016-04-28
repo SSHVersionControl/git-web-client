@@ -85,7 +85,7 @@
                             <div class="list-group-item">
                                 <div class="row">
                                     <div class="col-md-10">
-                                        <strong class="str-truncated">{{log.subject|escape|issueNumberLink(project.id)}}</strong>
+                                        <strong class="str-truncated">{{log.subject|escape|issueNumberLink(project.id,true)}}</strong>
                                     </div>
                                     <div class="col-md-2">
                                         <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': log.abbrHash})}}" class="">

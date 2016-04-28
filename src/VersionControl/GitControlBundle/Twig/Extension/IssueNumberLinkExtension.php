@@ -45,16 +45,23 @@ class IssueNumberLinkExtension extends \Twig_Extension {
      * 
      * @param string $text
      * @param integer $projectId
+     * @param boolean $modal
      * @return string
      */
-    public function issueNumberLink($text, $projectId) {
+    public function issueNumberLink($text, $projectId,$modal=false) {
        
         $matches = array();
         if (preg_match('/\s(#)(\d+)/i', $text, $matches)) {
             foreach($matches as $issueId){
                 if(is_numeric($issueId)){
-                    $issueUrl = $this->generateIssueUrl($issueId,$projectId);
-                    $link = '<a href="'.$issueUrl.'"  title="Related to issue #'.$issueId.'" >#'.$issueId.'</a>';
+                    if($modal){
+                        $issueUrl = $this->generateIssueUrl($issueId,$projectId,'issue_show_modal');
+                        $link = '<a href="'.$issueUrl.'"  data-remote="false" data-toggle="modal" data-target="#issueModal" title="Related to issue'.$issueId.'" class="ajax-modal non-ajax">#'.$issueId.'</a>';
+                    }else{
+                        $issueUrl = $this->generateIssueUrl($issueId,$projectId);
+                        $link = '<a href="'.$issueUrl.'"  title="Related to issue #'.$issueId.'">#'.$issueId.'</a>';               
+                    }
+                    
                     $text = str_replace('#'.$issueId,$link,$text);
                 }
             }
@@ -72,7 +79,7 @@ class IssueNumberLinkExtension extends \Twig_Extension {
 
             $parameters = array($issueParamaterName => $issueId,'id' => $projectId);
             //UrlGeneratorInterface::ABSOLUTE_URL : UrlGeneratorInterface::ABSOLUTE_PATH;
-            return $this->generator->generate($routeName, $parameters, UrlGeneratorInterface::RELATIVE_PATH);
+            return $this->generator->generate($routeName, $parameters, UrlGeneratorInterface::ABSOLUTE_URL);
         }
     
 }

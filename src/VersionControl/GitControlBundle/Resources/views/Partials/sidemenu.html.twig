@@ -1,6 +1,10 @@
 
 <ul class="sidebar-menu">
-    <li class="header">PROJECT NAVIGATION <a href="{{ path('project_status_ajax', { 'id': project.id }) }}" class="non-ajax" id="refresh-nav"><i class="fa fa-refresh pull-right"></i></a></li>
+    <li class="header">PROJECT NAVIGATION 
+        <a href="{{ path('project_status_ajax', { 'id': project.id }) }}" class="non-ajax" id="refresh-nav" title="Refresh side menus status counts">
+            <i class="fa fa-refresh pull-right"></i>
+        </a>
+    </li>
     <li {% if app.request.attributes.get('_route') == 'project_filelist' %}class="active"{% endif %}>
         <a href="{{ path('project_filelist', { 'id': project.id }) }}"><i class="fa fa-fw fa-file-code-o"></i><span>Files</span></a>
     </li>
