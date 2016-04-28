@@ -14,9 +14,8 @@ use VersionControl\GitCommandBundle\GitCommands\Exception\InvalidArgumentExcepti
 use VersionControl\GitCommandBundle\Logger\GitCommandLogger;
 use VersionControl\GitCommandBundle\Event\GitAlterFilesEvent;
 
-use VersionControl\GitControlBundle\Entity\Project;
-use VersionControl\GitControlBundle\Utility\ProjectEnvironmentStorage;
-use VersionControl\GitControlBundle\Entity\ProjectEnvironment;
+
+use VersionControl\GitCommandBundle\GitCommands\GitEnvironmentInterface;
 
 
 
@@ -33,16 +32,11 @@ class GitCommand {
     protected $securityContext;
     
     /**
-     * The git projectEnvironment entity
-     * @var Project
+     * The git gitEnvironment entity
+     * @var GitEnvironmentInterface
      */
-    protected $projectEnvironment;
+    protected $gitEnvironment;
     
-
-    /**
-     * @var ProjectEnvironmentStorage
-     */
-    protected $projectEnvironmentStorage;
     
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
@@ -71,7 +65,7 @@ class GitCommand {
     
     /**
      * Wrapper function to run shell commands. Supports local and remote commands
-     * depending on the projectEnvironment details
+     * depending on the gitEnvironment details
      * 
      * @param string $command command to run
      * @return string Result of command
@@ -84,11 +78,11 @@ class GitCommand {
         }
         $start = microtime(true);
         
-        if($this->projectEnvironment->getSsh() === true){
+        if($this->gitEnvironment->getSsh() === true){
             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
             //$sshProcess = new SshProcess();
-            $this->sshProcess->run(array($fullCommand),$this->projectEnvironment->getHost(),$this->projectEnvironment->getUsername(),22,$this->projectEnvironment->getPassword());
-            $this->logCommand($fullCommand,'remote',array('host'=>$this->projectEnvironment->getHost()),$start);
+            $this->sshProcess->run(array($fullCommand),$this->gitEnvironment->getHost(),$this->gitEnvironment->getUsername(),22,$this->gitEnvironment->getPassword());
+            $this->logCommand($fullCommand,'remote',array('host'=>$this->gitEnvironment->getHost()),$start);
             
             return $this->sshProcess->getStdout();
         }else{
@@ -120,8 +114,7 @@ class GitCommand {
             
             return $process->getOutput();
         }
-    }
-    
+    }   
     
     /**
      * Gets the git path
@@ -141,53 +134,44 @@ class GitCommand {
         return $this;
     }
 
+    
     /**
-     * Sets the project entity
-     * @param Project $project
+     * Sets the Git Environment
+     * @param GitEnvironmentInterface $gitEnvironment
+     * @return \VersionControl\GitCommandBundle\GitCommands\GitCommand
      */
-    public function setProject(Project $project) {
-        
-        $this->projectEnvironment = $this->projectEnvironmentStorage->getProjectEnviromment($project);
-        if($this->projectEnvironment){
-            $this->setGitPath($this->projectEnvironment->getPath());
-        }
+    public function setGitEnvironment(GitEnvironmentInterface $gitEnvironment){
+        $this->gitEnvironment = $gitEnvironment;
+        $this->setGitPath($this->gitEnvironment->getPath());
         return $this;
     }
    
     /**
-     * Allows you to override the project Environment
-     * @param ProjectEnvironment $projectEnvironment
+     * Allows you to override the git Environment
+     * @param GitEnvironmentInterface $gitEnvironment
      * @return \VersionControl\GitCommandBundle\GitCommands\GitCommand
      */
-    public function overRideProjectEnvironment(ProjectEnvironment $projectEnvironment){
-        $this->projectEnvironment = $projectEnvironment;
-        $this->setGitPath($this->projectEnvironment->getPath());
+    public function overRideGitEnvironment(GitEnvironmentInterface $gitEnvironment){
+        $this->gitEnvironment = $gitEnvironment;
+        $this->setGitPath($this->gitEnvironment->getPath());
         return $this;
     }
     
     /**
-     * Gets Project Environment
+     * Gets git Environment
      * @return type
      */
-    public function getProjectEnvironment() {
-        return $this->projectEnvironment;
+    public function getGitEnvironment() {
+        return $this->gitEnvironment;
     }
     
     public function getSecurityContext() {
         return $this->securityContext;
     }
 
-    public function getProjectEnvironmentStorage() {
-        return $this->projectEnvironmentStorage;
-    }
-
     public function setSecurityContext(TokenStorage $securityContext) {
         $this->securityContext = $securityContext;
 
-    }
-
-    public function setProjectEnvironmentStorage(ProjectEnvironmentStorage $projectEnvironmentStorage) {
-        $this->projectEnvironmentStorage = $projectEnvironmentStorage;
     }
 
     public function getDispatcher() {
@@ -200,7 +184,7 @@ class GitCommand {
     }
 
     public function triggerGitAlterFilesEvent($eventName = 'git.alter_files'){
-        $event = new GitAlterFilesEvent($this->projectEnvironment,array());
+        $event = new GitAlterFilesEvent($this->gitEnvironment,array());
         $this->dispatcher->dispatch($eventName, $event);
     }
 
