@@ -46,7 +46,7 @@
             
                         
             {% if(files|length > 0)%}
-                {{ form_start(commit_form,{ 'attr': { 'class': 'form'}}) }}
+                {{ form_start(commit_form,{ 'attr': { 'class': 'form', 'data-masklabel': 'Committing Files...'}}) }}
                     {{ form_errors(commit_form) }} 
 
                     {% if(files|length > 200)%}
