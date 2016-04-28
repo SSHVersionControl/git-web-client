@@ -155,14 +155,15 @@ class ProjectSyncController extends BaseProjectController
                 $this->get('session')->getFlashBag()->add('notice', $response);
                 $diffs = $this->gitCommands->getDiffRemoteBranch($remote,$branch);
                 
-            }elseif($pullForm->get('pull')->isClicked()){
+            }else{
+                print_r('PULL DATA');
                 $response = $this->gitSyncCommands->pull($remote,$branch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
                 $this->get('session')->getFlashBag()->add('status-refresh','true');
                 
                 return $this->redirect($this->generateUrl('project_pull', array('id' => $id)));
             }
-            
+
         }
 
         return array_merge($this->viewVariables, array(

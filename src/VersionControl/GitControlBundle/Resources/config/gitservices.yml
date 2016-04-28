@@ -1,6 +1,8 @@
     
 services:
-   
+    version_control.ssh_process:
+        class: VersionControl\GitControlBundle\Utility\SshProcess
+        
     version_control.git_commands:
         class: VersionControl\GitControlBundle\Utility\GitCommands\GitCommand
         calls:

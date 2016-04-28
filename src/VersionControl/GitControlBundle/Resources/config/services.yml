@@ -3,8 +3,7 @@ imports:
     - { resource: gitservices.yml }
     
 services:
-    version_control.ssh_process:
-        class: VersionControl\GitControlBundle\Utility\SshProcess
+    
             
     version_control.subscriberACL:
         class: VersionControl\GitControlBundle\EventListener\ProjectAccessControlList
