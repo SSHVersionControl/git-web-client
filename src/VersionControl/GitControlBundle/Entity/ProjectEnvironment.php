@@ -6,6 +6,8 @@ use VMelnik\DoctrineEncryptBundle\Configuration\Encrypted;
 use Symfony\Component\Validator\Constraints as Assert;
 use VersionControl\GitControlBundle\Validator\Constraints as VersionControlAssert;
 
+use VersionControl\GitCommandBundle\GitCommands\GitEnvironmentInterface;
+
 /**
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="VersionControl\GitControlBundle\Repository\ProjectEnvironmentRepository")
@@ -14,7 +16,7 @@ use VersionControl\GitControlBundle\Validator\Constraints as VersionControlAsser
  * @VersionControlAssert\GitFolderExists(groups={"ExistingGit"})
  * @VersionControlAssert\GitFolderNotExists(groups={"CloneGit","NewGit"})  
  */
-class ProjectEnvironment
+class ProjectEnvironment implements GitEnvironmentInterface 
 {
     /**
      * @ORM\Id

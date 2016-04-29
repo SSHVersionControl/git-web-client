@@ -1,6 +1,6 @@
 ## YAML Template.
-imports:
-    - { resource: gitservices.yml }
+#imports:
+#    - { resource: gitservices.yml }
     
 services:
     
@@ -48,6 +48,13 @@ services:
         arguments:
             - @router
             - @request_stack
+        
+    version_control.issue_repository_manager:
+        class:  VersionControl\GitControlBundle\Repository\Issues\IssueRepositoryManager
+        arguments:
+            - @security.token_storage
+            - @doctrine.orm.entity_manager
+            - @service_container
             
     version_control.twig.versioncontrol_issuelink:
         class: VersionControl\GitControlBundle\Twig\Extension\IssueLinkExtension
@@ -104,6 +111,7 @@ services:
             - { name: validator.constraint_validator, alias: status_hash_validator }
         arguments: 
             - @version_control.git_commands
+            - @version_control.project_environmnent_storage
         
     version_control.form.field.entity_hidden:
         class: VersionControl\GitControlBundle\Form\Field\EntityHiddenType

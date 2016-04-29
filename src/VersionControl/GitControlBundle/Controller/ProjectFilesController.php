@@ -76,9 +76,11 @@ class ProjectFilesController extends BaseProjectController{
         if($currentFile){
             $filePath = trim(urldecode($currentFile));
 
+
             $file = $this->gitFilesCommands->getFile($filePath, $this->branchName);
+
             $fileContents = $this->gitFilesCommands->readFile($file);
-            
+
             $pathParts = pathinfo($filePath);
             $dir = $pathParts['dirname'];
         }

@@ -10,7 +10,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
 use VersionControl\GitControlBundle\Form\RegistrationType;
 use VersionControl\GitControlBundle\Form\EditUserType;
-use VersionControl\GitControlBundle\Utility\GitCommands;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use VersionControl\GitControlBundle\Entity\User\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;

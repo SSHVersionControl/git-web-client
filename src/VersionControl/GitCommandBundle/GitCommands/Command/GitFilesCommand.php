@@ -58,18 +58,19 @@ class GitFilesCommand extends AbstractGitCommand {
              throw new \Exception('Directory path is not valid. Possible security issue.');
          }
         
-         $basePath = $this->addEndingSlash($this->command->getProjectEnvironment()->getPath());
+         $basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
 
-         if($this->command->getProjectEnvironment()->getSsh() === true){
+         if($this->command->getGitEnvironment()->getSsh() === true){
              //Remote Directory Listing
-            $sftp = new SFTP($this->command->getProjectEnvironment()->getHost(), 22);
-            if (!$sftp->login($this->command->getProjectEnvironment()->getUsername(), $this->command->getProjectEnvironment()->getPassword())) {
+            $sftp = new SFTP($this->command->getGitEnvironment()->getHost(), 22);
+            if (!$sftp->login($this->command->getGitEnvironment()->getUsername(), $this->command->getGitEnvironment()->getPassword())) {
                 exit('Login Failed');
             }
 
+           
+            $fileData = $sftp->stat($basePath.$path);
             $fileData['fullPath'] = $basePath.$path;
             $fileData['gitPath'] = $basePath.$path;
-            $fileData = $sftp->stat($basePath.$path);
             $fileInfo = new RemoteFileInfo($fileData);
 
          }else{
@@ -142,17 +143,17 @@ class GitFilesCommand extends AbstractGitCommand {
          }
          
          $files = array();
-         $basePath = $this->addEndingSlash($this->command->getProjectEnvironment()->getPath());
+         $basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
          $relativePath = $dir;
          if($relativePath){
               $relativePath = $this->addEndingSlash($relativePath);
          }
          
         
-         if($this->command->getProjectEnvironment()->getSsh() === true){
+         if($this->command->getGitEnvironment()->getSsh() === true){
              //Remote Directory Listing
-            $sftp = new SFTP($this->command->getProjectEnvironment()->getHost(), 22);
-            if (!$sftp->login($this->command->getProjectEnvironment()->getUsername(), $this->command->getProjectEnvironment()->getPassword())) {
+            $sftp = new SFTP($this->command->getGitEnvironment()->getHost(), 22);
+            if (!$sftp->login($this->command->getGitEnvironment()->getUsername(), $this->command->getGitEnvironment()->getPassword())) {
                 exit('Login Failed');
             }
 
@@ -188,17 +189,17 @@ class GitFilesCommand extends AbstractGitCommand {
     }
     
     public function readFile($file){
-        $basePath = $this->addEndingSlash($this->command->getProjectEnvironment()->getPath());
+        //$basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
         $fileContents = '';
         
-         if($this->command->getProjectEnvironment()->getSsh() === true){
+         if($this->command->getGitEnvironment()->getSsh() === true){
              //Remote Directory Listing
-            $sftp = new SFTP($this->command->getProjectEnvironment()->getHost(), 22);
-            if (!$sftp->login($this->command->getProjectEnvironment()->getUsername(), $this->command->getProjectEnvironment()->getPassword())) {
+            $sftp = new SFTP($this->command->getGitEnvironment()->getHost(), 22);
+            if (!$sftp->login($this->command->getGitEnvironment()->getUsername(), $this->command->getGitEnvironment()->getPassword())) {
                 exit('Login Failed');
             }
             
-            $fileContents = $sftp->get($basePath.$file->getFullPath());
+            $fileContents = $sftp->get($file->getFullPath());
 
          }else{
             $fileContents = file_get_contents($file->getFullPath());
@@ -228,8 +229,8 @@ class GitFilesCommand extends AbstractGitCommand {
         
     
     public function setFilesPermissions($filePaths, $mode='0775'){
-        $basePath = trim($this->addEndingSlash($this->command->getProjectEnvironment()->getPath()));
-        if($this->command->getProjectEnvironment()->getSsh() === true){
+        $basePath = trim($this->addEndingSlash($this->command->getGitEnvironment()->getPath()));
+        if($this->command->getGitEnvironment()->getSsh() === true){
              //Remote Directory Listing
             $permissions = octdec($mode);
             foreach($filePaths as $filepath){
@@ -242,8 +243,8 @@ class GitFilesCommand extends AbstractGitCommand {
     }
     
     public function setFilesOwnerAndGroup($filePaths,$user ='www-data',$group = 'fr_user'){
-        $basePath = trim($this->addEndingSlash($this->command->getProjectEnvironment()->getPath()));
-        if($this->command->getProjectEnvironment()->getSsh() === true){
+        $basePath = trim($this->addEndingSlash($this->command->getGitEnvironment()->getPath()));
+        if($this->command->getGitEnvironment()->getSsh() === true){
              //Remote Directory Listing
             if(trim($user)){ 
                 foreach($filePaths as $filepath){
@@ -262,8 +263,8 @@ class GitFilesCommand extends AbstractGitCommand {
     }
     
     protected function connectToSftp(){
-        $sftp = new SFTP($this->command->getProjectEnvironment()->getHost(), 22);
-        if (!$sftp->login($this->command->getProjectEnvironment()->getUsername(), $this->command->getProjectEnvironment()->getPassword())) {
+        $sftp = new SFTP($this->command->getGitEnvironment()->getHost(), 22);
+        if (!$sftp->login($this->command->getGitEnvironment()->getUsername(), $this->command->getGitEnvironment()->getPassword())) {
             exit('Login Failed');
         }
         
@@ -343,8 +344,8 @@ class GitFilesCommand extends AbstractGitCommand {
      */
     public function fileExists($filePath){
         $fileExists = false;
-        $basePath = trim($this->addEndingSlash($this->command->getProjectEnvironment()->getPath()));
-        if($this->command->getProjectEnvironment()->getSsh() === true){
+        $basePath = trim($this->addEndingSlash($this->command->getGitEnvironment()->getPath()));
+        if($this->command->getGitEnvironment()->getSsh() === true){
             $sftp = $this->connectToSftp();
             $fileExists = $sftp->file_exists($basePath.$filePath);
         }else{

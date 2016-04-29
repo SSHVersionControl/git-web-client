@@ -1,6 +1,6 @@
 <?php
 
-namespace VersionControl\GitCommands\Logger;
+namespace VersionControl\GitCommandBundle\Logger;
 
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 

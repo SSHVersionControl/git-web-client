@@ -1,7 +1,7 @@
 <?php
-// src/VersionControl/GitControlBundle/Entity/FileInfo.php
+// src/VersionControl/GitCommandBundle/Entity/FileInfo.php
 
-namespace VersionControl\GitControlBundle\Entity;
+namespace VersionControl\GitCommandBundle\Entity;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
