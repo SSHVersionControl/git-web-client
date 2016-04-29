@@ -327,7 +327,7 @@ class ProjectEnvironmentController extends BaseProjectController
     }
     
     protected function createEmptyGitRepository($projectEnvironment){
-        $gitCommands = $this->gitCommands->command('init')->overRideProjectEnvironment($projectEnvironment);
+        $gitCommands = $this->gitCommands->command('init')->overRideGitEnvironment($projectEnvironment);
         
         $response = $gitCommands->initRepository();
             
@@ -336,7 +336,7 @@ class ProjectEnvironmentController extends BaseProjectController
     
     protected function cloneGitRepository($projectEnvironment){
         //$projectEnvironment->getGitCloneLocation();
-        $gitCommands = $this->gitCommands->command('init')->overRideProjectEnvironment($projectEnvironment);
+        $gitCommands = $this->gitCommands->command('init')->overRideGitEnvironment($projectEnvironment);
         try{
             $response = $gitCommands->cloneRepository($projectEnvironment->getGitCloneLocation());
             $this->get('session')->getFlashBag()->add('notice', $response);
@@ -363,7 +363,9 @@ class ProjectEnvironmentController extends BaseProjectController
         }
         $this->checkProjectAuthorization($this->project,$grantType);
         
-        $this->gitCommands = $this->get('version_control.git_commands')->setProject($this->project);
+        $projectEnvironment = $this->getProjectEnvironment();
+         
+        $this->gitCommands = $this->get('version_control.git_commands')->setGitEnvironment($projectEnvironment);
         //$this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
         
         //$this->branchName = $this->gitCommands->command('branch')->getCurrentBranch();
@@ -371,6 +373,14 @@ class ProjectEnvironmentController extends BaseProjectController
             'project'      => $this->project,
             'branchName' => $this->branchName,
             ));
+    }
+    
+    /**
+     * Gets the project Environment for the Project Environment Storage
+     */
+    public function getProjectEnvironment() {
+        $projectEnvironmentStorage = $this->get('version_control.project_environmnent_storage');
+        return $projectEnvironmentStorage->getProjectEnviromment($this->project);
     }
     
 

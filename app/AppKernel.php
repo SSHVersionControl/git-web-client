@@ -25,7 +25,7 @@ class AppKernel extends Kernel
             //new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new VersionControl\GithubIssueBundle\VersionControlGithubIssueBundle(),
             new VersionControl\GitlabIssueBundle\VersionControlGitlabIssueBundle(),
-            //new VersionControl\GitCommandBundle\VersionControlGitCommandBundle(),
+            new VersionControl\GitCommandBundle\VersionControlGitCommandBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

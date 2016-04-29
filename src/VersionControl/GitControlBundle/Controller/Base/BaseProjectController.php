@@ -9,7 +9,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
 use VersionControl\GitControlBundle\Form\ProjectType;
-use VersionControl\GitControlBundle\Utility\GitCommands;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use VersionControl\GitControlBundle\Entity\UserProjects;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -96,16 +95,25 @@ abstract class BaseProjectController extends Controller{
         }
         $this->checkProjectAuthorization($this->project,$grantType);
         
-        $this->gitCommands = $this->get('version_control.git_commands')->setProject($this->project);
-        //$this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
+        $projectEnvironment = $this->getProjectEnvironment();
+        
+        $this->gitCommands = $this->get('version_control.git_commands')->setGitEnvironment($projectEnvironment);
         
         $this->branchName = $this->gitCommands->command('branch')->getCurrentBranch();
-        
         
         $this->viewVariables = array_merge($this->viewVariables, array(
             'project'      => $this->project,
             'branchName' => $this->branchName,
             ));
+    }
+    
+    /**
+     * Sets the project entity
+     * @param Project $project
+     */
+    public function getProjectEnvironment() {
+        $projectEnvironmentStorage = $this->get('version_control.project_environmnent_storage');
+        return $projectEnvironmentStorage->getProjectEnviromment($this->project);
     }
     
     /**

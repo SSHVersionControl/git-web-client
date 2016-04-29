@@ -2,8 +2,8 @@
 namespace VersionControl\GitCommandBundle\GitCommands\Command;
 
 use VersionControl\GitCommandBundle\GitCommands\GitCommand;
-use VersionControl\GitControlBundle\Entity\Project;
-use VersionControl\GitControlBundle\Entity\ProjectEnvironment;
+
+use VersionControl\GitCommandBundle\GitCommands\GitEnvironmentInterface;
 use VersionControl\GitCommandBundle\Event\GitAlterFilesEvent;
 
 /**
@@ -19,14 +19,6 @@ class AbstractGitCommand implements InterfaceGitCommand{
         $this->command = $command;
     }
     
-    /**
-     * Sets the project entity
-     * @param Project $project
-     */
-    public function setProject(Project $project) {
-        $this->command->setProject($project);
-        return $this;
-    }
     
     public function runCommand($command){
         return $this->command->runCommand($command);
@@ -78,7 +70,7 @@ class AbstractGitCommand implements InterfaceGitCommand{
     }
     
     protected function triggerGitAlterFilesEvent($eventName = 'git.alter_files'){
-        $event = new GitAlterFilesEvent($this->command->getProjectEnvironment(),array());
+        $event = new GitAlterFilesEvent($this->command->getGitEnvironment(),array());
         $this->triggerEvent($eventName, $event);
     }
     
@@ -87,12 +79,12 @@ class AbstractGitCommand implements InterfaceGitCommand{
     }
     
     /**
-     * Allows you to override the project Environment
-     * @param ProjectEnvironment $projectEnvironment
+     * Allows you to override the git Environment
+     * @param GitEnvironmentInterface $gitEnvironment
      * @return \VersionControl\GitCommandBundle\GitCommands\GitCommand
      */
-    public function overRideProjectEnvironment(ProjectEnvironment $projectEnvironment){
-        $this->command->overRideProjectEnvironment($projectEnvironment);
+    public function overRideGitEnvironment(GitEnvironmentInterface $gitEnvironment){
+        $this->command->setGitEnvironment($gitEnvironment);
         return $this;
     }
 }

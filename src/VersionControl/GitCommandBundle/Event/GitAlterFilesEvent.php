@@ -7,32 +7,34 @@ namespace VersionControl\GitCommandBundle\Event;
  * @author paul
  */
 use Symfony\Component\EventDispatcher\Event;
+use VersionControl\GitCommandBundle\GitCommands\GitEnvironmentInterface;
  
 class GitAlterFilesEvent extends Event
 {
     /**
      *
-     * @var VersionControl\GitControlBundle\Entity\ProjectEnvironment
+     * @var VersionControl\GitCommandBundle\Entity\ProjectEnvironment
      */
-    private $projectEnviroment;
+    private $gitEnvironment;
     
     private $filesAltered = array();
     
     /**
      * 
-     * @param VersionControl\GitControlBundle\Entity\ProjectEnvironment $projectEnviroment
+     * @param GitEnvironmentInterface $gitEnvironment
+     * @param List of files altered
      */
-    public function __construct(\VersionControl\GitControlBundle\Entity\ProjectEnvironment $projectEnviroment, $files) {
-        $this->projectEnviroment = $projectEnviroment;
+    public function __construct(GitEnvironmentInterface $gitEnvironment, $files) {
+        $this->gitEnvironment = $gitEnvironment;
         $this->filesAltered = $files;
     }
     
-    public function getProjectEnviroment() {
-        return $this->projectEnviroment;
+    public function getGitEnvironment() {
+        return $this->gitEnvironment;
     }
 
-    public function setProjectEnviroment(VersionControl\GitControlBundle\Entity\ProjectEnvironment $projectEnviroment) {
-        $this->projectEnviroment = $projectEnviroment;
+    public function setGitEnvironment(GitEnvironmentInterface $gitEnvironment) {
+        $this->gitEnvironment = $gitEnvironment;
         return $this;
     }
     

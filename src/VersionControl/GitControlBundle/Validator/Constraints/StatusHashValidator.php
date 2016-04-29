@@ -4,26 +4,33 @@ namespace VersionControl\GitControlBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use VersionControl\GitControlBundle\Utility\GitCommands\Command\GitStatusCommand;
-use VersionControl\GitControlBundle\Utility\GitCommands\GitCommand;
+
+use VersionControl\GitCommandBundle\GitCommands\GitCommand;
+use VersionControl\GitControlBundle\Utility\ProjectEnvironmentStorage;
 
 class StatusHashValidator extends ConstraintValidator
 {
     /**
      *
-     * @var VersionControl\GitControlBundle\Utility\GitCommands\Command\GitStatusCommand 
+     * @var VersionControl\GitCommandBundle\GitCommands\Command\GitStatusCommand 
      */
     public $gitStatusCommand;
     
-    public function __construct(GitCommand $gitCommand) {
+    public $projectEnvironmentStorage;
+    
+    public function __construct(GitCommand $gitCommand,ProjectEnvironmentStorage $projectEnvironmentStorage) {
         $this->gitStatusCommand = $gitCommand->command('status');
+        $this->projectEnvironmentStorage = $projectEnvironmentStorage;
     }
     
     public function validate($commitEntity, Constraint $constraint)
     {
-     
         $statusHash = $commitEntity->getStatusHash();
-        $this->gitStatusCommand->setProject($commitEntity->getProject());
+
+        $this->projectEnvironment = $this->projectEnvironmentStorage->getProjectEnviromment($commitEntity->getProject());
+    
+        $this->gitStatusCommand->overRideGitEnvironment($this->projectEnvironment);
+        
         $currentStatusHash = $this->gitStatusCommand->getStatusHash();
         
         if($currentStatusHash !== $statusHash){
