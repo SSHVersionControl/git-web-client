@@ -67,9 +67,10 @@ class GitFilesCommand extends AbstractGitCommand {
                 exit('Login Failed');
             }
 
+           
+            $fileData = $sftp->stat($basePath.$path);
             $fileData['fullPath'] = $basePath.$path;
             $fileData['gitPath'] = $basePath.$path;
-            $fileData = $sftp->stat($basePath.$path);
             $fileInfo = new RemoteFileInfo($fileData);
 
          }else{
@@ -188,7 +189,7 @@ class GitFilesCommand extends AbstractGitCommand {
     }
     
     public function readFile($file){
-        $basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
+        //$basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
         $fileContents = '';
         
          if($this->command->getGitEnvironment()->getSsh() === true){
@@ -198,7 +199,7 @@ class GitFilesCommand extends AbstractGitCommand {
                 exit('Login Failed');
             }
             
-            $fileContents = $sftp->get($basePath.$file->getFullPath());
+            $fileContents = $sftp->get($file->getFullPath());
 
          }else{
             $fileContents = file_get_contents($file->getFullPath());
