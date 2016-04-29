@@ -99,7 +99,7 @@
 
                             </a>
                             {% if((file.workTreeStatus == 'M') or (file.workTreeStatus == 'D') ) %}
-                                <a href="" class="pull-right btn btn-sm btn-default btn-flat non-ajax" data-confirm="Are you sure you wish to undo all the changes to this file? Warning: You will not be able to revert back." data-confirm-header="Reset File">Reset to head</a>
+                                <a href="{{ path('project_reset_file', { 'id': project.id,'filePath':file.path1|url_encode })}}" class="pull-right btn btn-sm btn-default btn-flat non-ajax" data-confirm="Are you sure you wish to undo all the changes to this file? Warning: You will not be able to revert back." data-confirm-header="Reset File">Reset to head</a>
                             {% endif %}
                         </div>
                     </div>
