@@ -292,6 +292,27 @@ class ProjectCommitController extends BaseProjectController
         ));
     }
     
+    /**
+     * Reset a File bakc to head
+     *
+     * @Route("/reset-file/{filePath}", name="project_reset_file")
+     * @Method("GET")
+     * @ProjectAccess(grantType="EDIT")
+     */
+    public function resetFileAction($filePath){
+        
+        $gitUndoCommand = $this->gitCommands->command('undo');
+
+        $file = urldecode($filePath);
+        
+        $response = $gitUndoCommand->checkoutFile($file,'HEAD');
+        
+        $this->get('session')->getFlashBag()->add('notice', $response);
+            
+        return $this->redirect($this->generateUrl('project_commitlist'));
+       
+    }
+    
     protected function issueNumberfromBranch($branch){
         $issueNumber = false;
         $matches = array();

@@ -109,7 +109,7 @@
                                 </div> 
                                 <div class="col-md-2">
                                     {% if (is_granted('MASTER', project) and fileInfo.isDir() == false and fileInfo.filename != '.gitignore') %}
-                                        <a href="{{path('project_fileignore',{ 'id': project.id,'filePath':fileInfo.gitPath| url_encode()  })}}" title="Add file to .gitignore and remove from git index" class="btn btn-sm btn-info btn-flat" data-confirm="Are you sure you wish to add this file to gitignore. This file will no longer be tracked by git." data-confirm-header="Confirm Ignore of File">
+                                        <a href="{{path('project_fileignore',{ 'id': project.id,'filePath':fileInfo.gitPath| url_encode()  })}}" title="Add file to .gitignore and remove from git index" class="btn btn-sm btn-info btn-flat non-ajax" data-confirm="Are you sure you wish to add this file to gitignore. This file will no longer be tracked by git." data-confirm-header="Confirm Ignore of File">
                                             ignore</a>
                                     {% endif %}
                                 </div> 

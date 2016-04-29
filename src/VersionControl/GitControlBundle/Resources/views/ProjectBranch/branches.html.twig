@@ -64,9 +64,9 @@
                                         <a href="{{ path('project_checkoutbranch', { 'id': project.id, 'branchName': branch}) }}" title="Checkout this branch" class="btn btn-primary btn-sm btn-flat">Checkout</a>
                                         
                                     {% endif %}
-                                    <a href="{{ path('project_mergebranch', { 'id': project.id, 'branchName': branch}) }}" title="Merge this branch" class="btn btn-primary btn-sm btn-flat" data-confirm="Are you sure you wish to merge '{{branch}}' into '{{branchName}}'" data-confirm-header="Confirm Merge">Merge</a>
+                                    <a href="{{ path('project_mergebranch', { 'id': project.id, 'branchName': branch}) }}" title="Merge this branch" class="btn btn-primary btn-sm btn-flat non-ajax" data-confirm="Are you sure you wish to merge '{{branch}}' into '{{branchName}}'" data-confirm-header="Confirm Merge">Merge</a>
                                     {% if(branch != branchName|trim) %}
-                                        <a href="{{ path('project_deletebranch', { 'id': project.id, 'branchName': branch}) }}" title="Delete this branch" class="btn btn-sm btn-danger btn-flat" data-confirm="Are you sure you wish to delete this branch?" data-confirm-header="Confirm Delete">Delete</a>
+                                        <a href="{{ path('project_deletebranch', { 'id': project.id, 'branchName': branch}) }}" title="Delete this branch" class="btn btn-sm btn-danger btn-flat non-ajax" data-confirm="Are you sure you wish to delete this branch?" data-confirm-header="Confirm Delete">Delete</a>
                                     {% endif %}
                                 {% endif %}
                             </div>

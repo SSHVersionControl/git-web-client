@@ -109,7 +109,7 @@
                                                 <i class="fa fa-undo"></i>Undo Soft
                                             </a>
                                         {% endif %}
-                                         <a href="{{ path('project_checkout_commit', { 'id': project.id, 'commitHash': log.abbrHash}) }}" class="btn btn-sm bg-green btn-flat" data-confirm="You are about to checkout the commit '{{log.abbrHash}}'. This will but the repository in a read only state. You can browser all the files in this repository, but you will not be able to make any commits until you checkout current HEAD." data-confirm-header="Confirm Checkout of Commit">
+                                         <a href="{{ path('project_checkout_commit', { 'id': project.id, 'commitHash': log.abbrHash}) }}" class="btn btn-sm bg-green btn-flat non-ajax" data-confirm="You are about to checkout the commit '{{log.abbrHash}}'. This will but the repository in a read only state. You can browser all the files in this repository, but you will not be able to make any commits until you checkout current HEAD." data-confirm-header="Confirm Checkout of Commit">
                                              <i class="fa fa-credit-card"></i>
                                              Checkout
                                          </a>
