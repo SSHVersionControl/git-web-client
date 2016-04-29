@@ -124,7 +124,7 @@ $(function(){
      * Confirm Delete
      */
     $('body').on('click','a[data-confirm]',function(ev) {
-            ev.preventDafault();
+            ev.preventDefault();
             var href = $(this).attr('href')
             ,confirmHeader = $(this).data('confirm-header')?$(this).data('confirm-header'):'Confirm Action?';
 
