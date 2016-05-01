@@ -1,7 +1,7 @@
     
 services:
     version_control.ssh_process:
-        class: VersionControl\GitCommandBundle\Service\SshProcess
+        class: VersionControl\GitCommandBundle\Service\SecLibSshProcess
         
     version_control.git_commands:
         class: VersionControl\GitCommandBundle\GitCommands\GitCommand

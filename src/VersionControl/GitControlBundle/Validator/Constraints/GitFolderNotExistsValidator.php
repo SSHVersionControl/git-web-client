@@ -4,7 +4,7 @@ namespace VersionControl\GitControlBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use VersionControl\GitCommandBundle\Service\SshProcess;
+use VersionControl\GitCommandBundle\Service\SshProcessInterface;
 
 use phpseclib\Net\SFTP;
 
@@ -12,11 +12,11 @@ class GitFolderNotExistsValidator extends ConstraintValidator
 {
     /**
      *
-     * @var VersionControl\GitCommandBundle\Service\SshProcess 
+     * @var VersionControl\GitCommandBundle\Service\SshProcessInterface 
      */
     public $sshProcess;
     
-    public function __construct(SshProcess $sshProcess) {
+    public function __construct(SshProcessInterface $sshProcess) {
         $this->sshProcess = $sshProcess;
     }
     
