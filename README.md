@@ -17,7 +17,7 @@ as the reasons for it is unconventional and possibly bad practice.
      
 1) Requirements
 ----------------------------------
-* php > 5.6
+* php > 5.6 (mcrypt)
 * mysql or mariadb
 * webserver ( apache, nginx, php server)
 * Git install on command line for server/computer with repository
@@ -45,7 +45,7 @@ You can also download a zip of the Version Control
 System and unpack it somewhere under your web server root directory. You will still need to run composer to download other dependencies.
 
     $ curl -s http://getcomposer.org/installer | php
-    $ php -d memory_limit=-1 composer.phar run-script post-install-cmd
+    $ php -d memory_limit=-1 composer.phar install
 
 
 You will be prompted to enter in the database configuration.
@@ -70,6 +70,10 @@ If the database is not already created run:
 To install the schema and inital data run the following command:
 
     $ php app/console version:install
+
+To create a new administrator run the following command:
+
+    $ php app/console version:admin:create
 
 5) Web Server
 --------------------------------
