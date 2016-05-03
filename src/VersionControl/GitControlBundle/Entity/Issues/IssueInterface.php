@@ -75,7 +75,7 @@ interface IssueInterface
     /**
      * Get issueMilestone
      *
-     * @return \VersionControl\GitControlBundle\Entity\Issues\IssueMilestone
+     * @return \VersionControl\GitControlBundle\Entity\IssueMilestone
      */
     public function getIssueMilestone();
 

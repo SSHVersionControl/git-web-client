@@ -56,7 +56,7 @@ abstract class Issue
     private $id;
 
     /**
-     * @var \VersionControl\GitControlBundle\Entity\Issues\IssueMilestone
+     * @var \VersionControl\GitControlBundle\Entity\IssueMilestone
      *
      */
     private $issueMilestone;
@@ -277,11 +277,11 @@ abstract class Issue
     /**
      * Set issueMilestone
      *
-     * @param \VersionControl\GitControlBundle\Entity\Issues\IssueMilestone $issueMilestone
+     * @param \VersionControl\GitControlBundle\Entity\IssueMilestone $issueMilestone
      *
      * @return Issue
      */
-    public function setIssueMilestone(\VersionControl\GitControlBundle\Entity\Issues\IssueMilestone $issueMilestone = null)
+    public function setIssueMilestone(\VersionControl\GitControlBundle\IssueMilestone $issueMilestone = null)
     {
         $this->issueMilestone = $issueMilestone;
 
@@ -291,7 +291,7 @@ abstract class Issue
     /**
      * Get issueMilestone
      *
-     * @return \VersionControl\GitControlBundle\Entity\Issues\IssueMilestone
+     * @return \VersionControl\GitControlBundle\Entity\IssueMilestone
      */
     public function getIssueMilestone()
     {

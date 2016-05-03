@@ -327,7 +327,7 @@ class Issue implements IssueInterface
      *
      * @return Issue
      */
-    public function setIssueMilestone(\VersionControl\GitControlBundle\Entity\Issues\IssueMilestone $issueMilestone = null)
+    public function setIssueMilestone(\VersionControl\GitControlBundle\Entity\IssueMilestone $issueMilestone = null)
     {
         $this->issueMilestone = $issueMilestone;
 
