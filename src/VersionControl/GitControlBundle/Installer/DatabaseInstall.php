@@ -1,10 +1,12 @@
 <?php
 
-/**
- * This file is part of the eZ Publish Kernel package.
+/*
+ * This file is part of the GitControlBundle package.
  *
- * @copyright Copyright (C) eZ Systems AS. All rights reserved.
- * @license For full copyright and license information view LICENSE file distributed with this source code.
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 namespace VersionControl\GitControlBundle\Installer;
 

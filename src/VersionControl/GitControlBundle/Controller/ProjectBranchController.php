@@ -1,5 +1,12 @@
 <?php
-
+/*
+ * This file is part of the GitControlBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitControlBundle\Controller;
 
 use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
@@ -15,7 +22,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
- /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
 /**
  * Project controller.

@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of the GitControlBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitControlBundle\Annotation\Driver;
 
 use Doctrine\Common\Annotations\Reader;
@@ -6,6 +14,11 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
 
+/**
+ * Annotation driver to check a user project access rights
+ * 
+ * @author Paul Schweppe <paulschweppe@gmail.com>
+ */
 class ProjectAccessAnnotationDriver{
     
     /**

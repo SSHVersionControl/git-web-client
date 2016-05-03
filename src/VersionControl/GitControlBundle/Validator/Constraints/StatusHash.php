@@ -1,5 +1,14 @@
 <?php
-// src/VersionControl/GitControlBundle/Validator/Constraints/NoProfanity.php
+// src/VersionControl/GitControlBundle/Validator/Constraints/StatusHash.php
+
+/*
+ * This file is part of the GitControlBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitControlBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;

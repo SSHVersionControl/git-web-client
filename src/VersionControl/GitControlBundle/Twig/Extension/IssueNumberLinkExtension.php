@@ -1,16 +1,22 @@
 <?php
-
+/*
+ * This file is part of the GitControlBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitControlBundle\Twig\Extension;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Twig extension to create a link for arround text starting with issue{number} 
+ * Twig extension to create a link for around text starting with issue{number} 
  * or iss{number}
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
- * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
 class IssueNumberLinkExtension extends \Twig_Extension {
     

@@ -1,5 +1,12 @@
 <?php
-
+/*
+ * This file is part of the GitControlBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitControlBundle\Twig\Extension;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -10,7 +17,6 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * or iss{number}
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
- * @license http://www.opensource.org/licenses/mit-license.php MIT License
  */
 class CommitHashLinkExtension extends \Twig_Extension {
     

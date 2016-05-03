@@ -1,16 +1,21 @@
 <?php
-
+/*
+ * This file is part of the GitControlBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitControlBundle\Twig\Extension;
 
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
- * Twig extension providing filters for locale-aware formatting of numbers and currencies.
+ * Twig extension to provide pagination
  *
- * @author Christian Raue <christian.raue@gmail.com>
- * @copyright 2011-2013 Christian Raue
- * @license http://www.opensource.org/licenses/mit-license.php MIT License
+ * @author Paul Schweppe <paulschweppe@gmail.com>
  */
 class PaginationExtension extends \Twig_Extension {
 

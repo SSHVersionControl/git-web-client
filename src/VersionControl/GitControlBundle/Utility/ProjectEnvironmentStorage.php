@@ -1,5 +1,15 @@
 <?php
-// src/Acme/UserBundle/Entity/User.php
+// src/VersionControl/GitControlBundle/Utility/ProjectEnvironmentStorage.php
+
+/*
+ * This file is part of the GitControlBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace VersionControl\GitControlBundle\Utility;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -9,7 +19,7 @@ use VersionControl\GitControlBundle\Entity\ProjectEnvironment;
 /**
  * Description of ProjectEnvironmentSelection
  *
- * @author paul
+ * @author Paul Schweppe <paulschweppe@gmail.com>
  */
 class ProjectEnvironmentStorage {
    
