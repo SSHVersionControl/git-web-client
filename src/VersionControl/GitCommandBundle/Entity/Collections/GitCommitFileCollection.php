@@ -1,10 +1,24 @@
 <?php
 // src/VersionControl/GitCommandBundle/Entity/Collections/GitCommitFileCollection.php
+
+/*
+ * This file is part of the GitCommandBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace VersionControl\GitCommandBundle\Entity\Collections;
 
 use VersionControl\GitCommandBundle\Entity\GitCommitFile;
 
-
+/**
+ * Array of committed file with statistics on added, copied, deleted, renamed and modified 
+ * 
+ * @author Paul Schweppe <paulschweppe@gmail.com>
+ */
 class GitCommitFileCollection implements \Iterator{
     
     private $gitCommitFiles = [];

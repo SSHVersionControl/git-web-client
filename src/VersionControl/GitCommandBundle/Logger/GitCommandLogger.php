@@ -1,16 +1,21 @@
 <?php
+/*
+ * This file is part of the GitCommandBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace VersionControl\GitCommandBundle\Logger;
 
 use Symfony\Component\HttpKernel\Log\LoggerInterface;
 
 /**
- * Logger for the Elastica.
+ * Logger for the git commands.
  *
- * The {@link logQuery()} method is configured as the logger callable in the
- * service container.
- *
- * @author Gordon Franke <info@nevalon.de>
+ * @author Paul Schweppe <paulschweppe@gmail.com>
  */
 class GitCommandLogger
 {
@@ -31,9 +36,9 @@ class GitCommandLogger
     }
 
     /**
-     * Logs a query.
+     * Logs a git command.
      *
-     * @param string $path   Path to call
+     * @param string $command   Git command called
      * @param string $method Local or remote command
      * @param array  $data   arguments
      * @param float  $time   execution time
@@ -56,9 +61,9 @@ class GitCommandLogger
     }
 
     /**
-     * Returns the number of queries that have been logged.
+     * Returns the number of git commands that have been logged.
      *
-     * @return integer The number of queries logged
+     * @return integer The number of commands logged
      */
     public function getCommandsCount()
     {
@@ -66,9 +71,9 @@ class GitCommandLogger
     }
 
     /**
-     * Returns a human-readable array of queries logged.
+     * Returns a array of commands logged.
      *
-     * @return array An array of queries
+     * @return array An array of git commands
      */
     public function getCommands()
     {

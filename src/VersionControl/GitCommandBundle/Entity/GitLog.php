@@ -1,6 +1,14 @@
 <?php
 // src/VersionControl/GitCommandBundle/Entity/GitLog.php
 
+/*
+ * This file is part of the GitCommandBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitCommandBundle\Entity;
 
 
@@ -27,6 +35,8 @@ namespace VersionControl\GitCommandBundle\Entity;
  * You may be wondering what the difference is between author and committer. The author is the person who originally wrote the work, 
  * whereas the committer is the person who last applied the work. So, if you send in a patch to a project and one of the core members 
  * applies the patch, both of you get credit – you as the author, and the core member as the committer. 
+ * 
+ * @author Paul Schweppe <paulschweppe@gmail.com>
  */
 class GitLog
 {

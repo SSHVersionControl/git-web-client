@@ -1,5 +1,13 @@
 <?php
 
+/*
+ * This file is part of the GitCommandBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitCommandBundle\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -7,6 +15,12 @@ use VersionControl\GitCommandBundle\Service\SshProcessInterface;
 
 use phpseclib\Net\SSH2;
 
+/**
+ * Use PhpSecLib to make SSH2 requests
+ * 
+ * @link https://github.com/phpseclib/phpseclib
+ * @author Paul Schweppe <paulschweppe@gmail.com>
+ */
 class SecLibSshProcess implements SshProcessInterface 
 {
 

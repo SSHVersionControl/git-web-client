@@ -1,6 +1,14 @@
 <?php
 // src/VersionControl/GitCommandBundle/Entity/GitFile.php
 
+/*
+ * This file is part of the GitCommandBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 namespace VersionControl\GitCommandBundle\Entity;
 
 
@@ -46,6 +54,8 @@ U           U    unmerged, both modified
 !           !    ignored
 -------------------------------------------------
 If -b is used the short-format status is preceded by a line
+
+ * @author Paul Schweppe <paulschweppe@gmail.com>
  */
 class GitFile
 {

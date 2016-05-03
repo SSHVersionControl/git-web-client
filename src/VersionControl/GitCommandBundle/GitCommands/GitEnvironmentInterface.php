@@ -1,17 +1,21 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This file is part of the GitCommandBundle package.
+ *
+ * (c) Paul Schweppe <paulschweppe@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace VersionControl\GitCommandBundle\GitCommands;
 
 /**
- * Description of GitEnvironmentInterface
+ * Interface to the Git Environment. Implement to object to 
+ * store location of git path and ssh details   
  *
- * @author fr_user
+ * @author Paul Schweppe <paulschweppe@gmail.com>
  */
 interface GitEnvironmentInterface {
     
@@ -22,7 +26,7 @@ interface GitEnvironmentInterface {
 
    
     /**
-     * Get SSH value
+     * Get SSH value, true or false to use SSH
      * @return boolean
      */
     public function getSsh();
