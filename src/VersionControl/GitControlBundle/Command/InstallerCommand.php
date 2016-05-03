@@ -52,7 +52,6 @@ class InstallerCommand extends Command
     const EXIT_DATABASE_NOT_FOUND_ERROR = 3;
     const EXIT_GENERAL_DATABASE_ERROR = 4;
     const EXIT_PARAMETERS_NOT_FOUND = 5;
-    const EXIT_UNKNOWN_INSTALL_TYPE = 6;
     const EXIT_MISSING_PERMISSIONS = 7;
 
     public function __construct(
@@ -92,7 +91,6 @@ class InstallerCommand extends Command
         $this->installer->importData();
         
         $this->cacheClear($output);
-        $this->indexData($output);
     }
 
     private function checkPermissions()
@@ -112,23 +110,7 @@ class InstallerCommand extends Command
         }
     }
 
-    /**
-     * @throws \Exception if an unexpected database error occurs
-     */
-    private function configuredDatabaseExists()
-    {
-        try {
-            $this->db->connect();
-        } catch (ConnectionException $e) {
-            // @todo 1049 is MySQL's code for "database doesn't exist", refactor
-            if ($e->getPrevious()->getCode() == 1049) {
-                return false;
-            }
-            throw $e;
-        }
-
-        return true;
-    }
+    
 
     private function checkDatabase()
     {
@@ -150,6 +132,24 @@ class InstallerCommand extends Command
             exit(self::EXIT_GENERAL_DATABASE_ERROR);
         }
     }
+    
+    /**
+     * @throws \Exception if an unexpected database error occurs
+     */
+    private function configuredDatabaseExists()
+    {
+        try {
+            $this->db->connect();
+        } catch (ConnectionException $e) {
+            // @todo 1049 is MySQL's code for "database doesn't exist", refactor
+            if ($e->getPrevious()->getCode() == 1049) {
+                return false;
+            }
+            throw $e;
+        }
+
+        return true;
+    }
 
     private function cacheClear(OutputInterface $output)
     {
@@ -169,21 +169,5 @@ class InstallerCommand extends Command
         $this->filesystem->rename($this->cacheDir, $oldCacheDir);
         $this->filesystem->remove($oldCacheDir);
     }
-    
-    private function createDatabase(){
-         try {
-            if (!$this->configuredDatabaseExists()) {
-                $this->output->writeln(
-                    sprintf(
-                        "The configured database '%s' does not exist. Will try and create Database",
-                        $this->db->getDatabase()
-                    )
-                );
-                
-                exit(self::EXIT_DATABASE_NOT_FOUND_ERROR);
-            }
-        } catch (ConnectionException $e) {
-            
-        }
-    }
+
 }
