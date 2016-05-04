@@ -17,5 +17,5 @@ parameters:
     debug_toolbar:          true
     debug_redirects:        false
     use_assetic_controller: true
-    enable_registration: true
+    enable_registration: false
     secret_key: ThisTokenIsNotSoSecretChangeIt
