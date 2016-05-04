@@ -78,8 +78,9 @@ class GitFilesCommand extends AbstractGitCommand {
 
            
             $fileData = $sftp->stat($basePath.$path);
+            $fileData['filename'] = basename($path);
             $fileData['fullPath'] = $basePath.$path;
-            $fileData['gitPath'] = $basePath.$path;
+            $fileData['gitPath'] = $path;
             $fileInfo = new RemoteFileInfo($fileData);
 
          }else{
@@ -168,7 +169,7 @@ class GitFilesCommand extends AbstractGitCommand {
 
             foreach($sftp->rawlist($basePath.$relativePath) as $filename => $fileData) {
                 if($filename !== '.' && $filename !== '..' && $filename !== '.git'){
-                    $fileData['fullPath'] = rtrim($relativePath,'/').'/'.$filename;
+                    $fileData['fullPath'] = $basePath.rtrim($relativePath,'/').'/'.$filename;
                     $fileData['gitPath'] = $relativePath.$filename;
 
                     $remoteFileInfo = new RemoteFileInfo($fileData);
@@ -386,7 +387,7 @@ class GitFilesCommand extends AbstractGitCommand {
     public function getGitIgnoreFile(){
         $ignoreFiles = array();
         
-        
+        $basePath = trim($this->addEndingSlash($this->command->getGitEnvironment()->getPath()));
         $fileData['fullPath'] = '.gitignore';
         $fileData['gitPath'] = '.gitignore';
 

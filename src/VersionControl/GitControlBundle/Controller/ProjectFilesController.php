@@ -80,20 +80,24 @@ class ProjectFilesController extends BaseProjectController{
     public function viewFileAction($id,$currentFile = ''){
         $filePath = '';
         $dir = '';
+        $currentDir = '';
         if($currentFile){
             $filePath = trim(urldecode($currentFile));
 
 
             $file = $this->gitFilesCommands->getFile($filePath, $this->branchName);
-
             $fileContents = $this->gitFilesCommands->readFile($file);
 
             $pathParts = pathinfo($filePath);
             $dir = $pathParts['dirname'];
+            
+            $pathParts = pathinfo($filePath);
+            $currentDir = ($pathParts['dirname'] !== '.')?$pathParts['dirname']:'';
         }
         
          return array_merge($this->viewVariables, array(
-            'currentDir' => $filePath,
+            'currentDir' => $currentDir,
+            'filePath' => $filePath,
             'fileContents' => $fileContents,
             'file' => $file
         ));

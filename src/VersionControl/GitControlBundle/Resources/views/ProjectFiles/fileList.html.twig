@@ -69,8 +69,7 @@
                 {% if(currentDir) %}
                     <div class="list-group-item">
                         <div class="row">
-                            <div class="col-md-12">
-                                
+                            <div class="col-md-12"> 
                                 <a href="{{ path('project_filelist', { 'id': project.id, 'currentDir': currentDir|parentDir() | url_encode()})}}" title="Back to {{currentDir|parentDir()}}">
                                     <strong class="str-truncated">..</strong>
                                 </a>   

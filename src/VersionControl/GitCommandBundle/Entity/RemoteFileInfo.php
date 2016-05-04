@@ -20,16 +20,45 @@ namespace VersionControl\GitCommandBundle\Entity;
 class RemoteFileInfo{
     
     /**
-     * File full path to file
+     * Absolute path to file
      * @var string 
      */
     protected $fullPath;
     
+    /**
+     * File Extension
+     * @var string 
+     */
     protected $extension;
+    
+    /**
+     * File name without any path information
+     * @var string 
+     */
     protected $filename;
+    
+    /**
+     * Path without the filename
+     * @var string 
+     */
     protected $path;
+    
+    /**
+     * File permissions
+     * @var string 
+     */
     protected $perms;
+    
+    /**
+     * Filesize in bytes
+     * @var integer 
+     */
     protected $size;
+    
+    /**
+     *
+     * @var type 
+     */
     protected $uid;
     protected $gid;
     protected $mode;
@@ -40,9 +69,7 @@ class RemoteFileInfo{
     
     protected $gitPath;
     
-    
-    
-    
+
     /**
      * Git log Entity
      * @var GitLog 
