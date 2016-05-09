@@ -45,7 +45,7 @@ vmelnik_doctrine_encrypt:
     encryptor:            aes256 
     #  If you want, you can use your own Encryptor. Encryptor must implements EncryptorInterface interface
     #  Default: VMelnik\DoctrineEncryptBundle\Encryptors\AES256Encryptor
-    #encryptor_class:      ~ 
+    encryptor_class:      VersionControl\GitControlBundle\Encryptors\AES256Encryptor
     #  You can optionally provide a service as an encryptor instead of specifying a class.  The service 
     #  must implement EncryptorInterface.  You do not need to provide encryptor_class if you provide the service.
     #encryptor_service:    ~
