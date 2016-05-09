@@ -96,11 +96,25 @@
                                             {{ form_errors(form.username) }}
                                             {{ form_widget(form.username,{ 'attr': { 'class': 'form-control', 'placeholder':'Name of user to connect with.'}}) }}
                                         </div>
-                                        <div class="form-group">
-                                            {{ form_label(form.password) }}
-                                            {{ form_errors(form.password) }}
-                                            {{ form_widget(form.password,{ 'attr': { 'class': 'form-control', 'placeholder':'The users password'}}) }}
-                                        </div>
+                                        <fieldset>
+                                            <legend>Authentication Parameters:</legend>
+                                            <div class="form-group">
+                                                {{ form_label(form.password) }}
+                                                {{ form_errors(form.password) }}
+                                                {{ form_widget(form.password,{ 'attr': { 'class': 'form-control', 'placeholder':'The users password'}}) }}
+                                            </div>
+                                            <h3 class="text-center large">OR</h3>
+                                            <div class="form-group">
+                                                {{ form_label(form.privateKey) }}
+                                                {{ form_errors(form.privateKey) }}
+                                                {{ form_widget(form.privateKey,{ 'attr': { 'class': 'form-control', 'placeholder':'Private Key contents'}}) }}
+                                            </div>
+                                            <div class="form-group">
+                                                {{ form_label(form.privateKeyPassword) }}
+                                                {{ form_errors(form.privateKeyPassword) }}
+                                                {{ form_widget(form.privateKeyPassword,{ 'attr': { 'class': 'form-control', 'placeholder':'Private keys password'}}) }}
+                                            </div>
+                                        </fieldset>
                                     </fieldset>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="filepermissions">

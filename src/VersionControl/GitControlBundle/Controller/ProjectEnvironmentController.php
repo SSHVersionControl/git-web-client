@@ -372,7 +372,12 @@ class ProjectEnvironmentController extends BaseProjectController
         
         $projectEnvironment = $this->getProjectEnvironment();
          
-        $this->gitCommands = $this->get('version_control.git_commands')->setGitEnvironment($projectEnvironment);
+        if($projectEnvironment){
+            $this->gitCommands = $this->get('version_control.git_commands')->setGitEnvironment($projectEnvironment);
+        }else{
+            $this->gitCommands = $this->get('version_control.git_commands');
+        }
+        $this->gitCommands = $this->get('version_control.git_commands');
         //$this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
         
         //$this->branchName = $this->gitCommands->command('branch')->getCurrentBranch();

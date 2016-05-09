@@ -96,7 +96,7 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: ssh_details_validator }
         arguments: 
-            - @version_control.ssh_process
+            - @version_control.sftp_process
             
     version_control.api_user_provider:
         class: VersionControl\GitControlBundle\Security\Authentication\FOSVersionUserProvider
@@ -124,7 +124,7 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: git_folder_exists_validator }
         arguments: 
-            - @version_control.ssh_process
+            - @version_control.sftp_process
             
     version_control.validator.git_folder_not_exists_validator:
         class: VersionControl\GitControlBundle\Validator\Constraints\GitFolderNotExistsValidator

@@ -17,6 +17,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 use VersionControl\GitCommandBundle\Service\SshProcessInterface;
+use VersionControl\GitCommandBundle\Service\SftpProcessInterface;
 use VersionControl\GitCommandBundle\GitCommands\Command as Command;
 use VersionControl\GitCommandBundle\GitCommands\Exception\InvalidArgumentException;
 use VersionControl\GitCommandBundle\Logger\GitCommandLogger;
@@ -69,6 +70,12 @@ class GitCommand {
      */
     private $sshProcess;
     
+     /**
+     * Sftp Process
+     * @var \VersionControl\GitCommandBundle\Service\SftpProcessInterface 
+     */
+    private $sftpProcess;
+    
     
     /**
      * Wrapper function to run shell commands. Supports local and remote commands
@@ -88,7 +95,9 @@ class GitCommand {
         if($this->gitEnvironment->getSsh() === true){
             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
             //$sshProcess = new SshProcess();
-            $this->sshProcess->run(array($fullCommand),$this->gitEnvironment->getHost(),$this->gitEnvironment->getUsername(),22,$this->gitEnvironment->getPassword());
+            $this->sshProcess->run(array($fullCommand),$this->gitEnvironment->getHost(),$this->gitEnvironment->getUsername()
+                    ,22,$this->gitEnvironment->getPassword(),null
+                    ,$this->gitEnvironment->getPrivateKey(),$this->gitEnvironment->getPrivateKeyPassword());
             $this->logCommand($fullCommand,'remote',array('host'=>$this->gitEnvironment->getHost()),$start);
             
             return $this->sshProcess->getStdout();
@@ -239,6 +248,26 @@ class GitCommand {
     public function setSshProcess(SshProcessInterface $sshProcess) {
         $this->sshProcess = $sshProcess;
         return $this;
+    }
+    
+    /**
+     * Sets the SFTP Process
+     * @param SshProcess $sftpProcess
+     * @return \VersionControl\GitCommandBundle\GitCommands\GitCommand
+     */
+    public function setSftpProcess(SftpProcessInterface $sftpProcess) {
+        $this->sftpProcess = $sftpProcess;
+        return $this;
+    }
+    
+    /**
+     * Gets the SFTP Process
+     * 
+     * @return \VersionControl\GitCommandBundle\Service\SftpProcessInterface
+     */
+    public function getSftpProcess() {
+        $this->sftpProcess->setGitEnviroment($this->gitEnvironment);
+        return $this->sftpProcess;
     }
 
     /**

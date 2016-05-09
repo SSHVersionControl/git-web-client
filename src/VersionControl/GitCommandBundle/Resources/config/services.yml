@@ -3,13 +3,17 @@ services:
     version_control.ssh_process:
         class: VersionControl\GitCommandBundle\Service\SecLibSshProcess
         
+    version_control.sftp_process:
+        class: VersionControl\GitCommandBundle\Service\SecLibSftpProcess
+        
     version_control.git_commands:
         class: VersionControl\GitCommandBundle\GitCommands\GitCommand
         calls:
             - [setSecurityContext, ["@security.token_storage"]]
             - [setDispatcher, ["@event_dispatcher"]]
             - [setLogger, ["@version_control.logger"]]
-            - [setSshProcess, ["@version_control.ssh_process"]]       
+            - [setSshProcess, ["@version_control.ssh_process"]]
+            - [setSftpProcess, ["@version_control.sftp_process"]]
             
     version_control.gitcommand_collector:
         class: VersionControl\GitCommandBundle\Profiler\GitCommandCollector

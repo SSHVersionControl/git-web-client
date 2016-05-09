@@ -88,6 +88,20 @@ class ProjectEnvironment implements GitEnvironmentInterface
     private $project;
     
     /**
+     * @var string
+     * @ORM\Column(name="private_key", type="string", nullable=true)
+     * @Encrypted
+     */
+    private $privateKey;
+    
+    /**
+     * @var string
+     * @ORM\Column(name="private_key_password", type="string", nullable=true)
+     * @Encrypted
+     */
+    private $privateKeyPassword;
+    
+    /**
      * @var \VersionControl\GitControlBundle\Entity\ProjectEnvironmentFilePerm
      *
      * @ORM\OneToOne(targetEntity="VersionControl\GitControlBundle\Entity\ProjectEnvironmentFilePerm", inversedBy="projectEnvironment", cascade={"persist"})
@@ -306,6 +320,51 @@ class ProjectEnvironment implements GitEnvironmentInterface
     public function setGitCloneLocation($gitCloneLocation) {
         $this->gitCloneLocation = $gitCloneLocation;
         return $this;
+    }
+
+    /**
+     * Get Private Key
+     * @return string
+     */
+    public function getPrivateKey() {
+        return $this->privateKey;
+    }
+
+    /**
+     * Get Private Key Password
+     * @return string
+     */
+    public function getPrivateKeyPassword() {
+        return $this->privateKeyPassword;
+    }
+
+    /**
+     * Set Private Key
+     * @param string $privateKey
+     * @return \VersionControl\GitControlBundle\Entity\ProjectEnvironment
+     */
+    public function setPrivateKey($privateKey) {
+
+        if (!is_null($privateKey)) {
+            $this->privateKey = $privateKey;
+        }
+        return $this;
+    }
+
+    /**
+     * Set Private Key Password
+     * @param type $privateKeyPassword
+     * @return \VersionControl\GitControlBundle\Entity\ProjectEnvironment
+     */
+    public function setPrivateKeyPassword($privateKeyPassword) {
+        if (!is_null($privateKeyPassword)) {
+            $this->privateKeyPassword = $privateKeyPassword;
+        }
+        return $this;
+    }
+    
+    public function getPort() {
+        return 22;
     }
 
 

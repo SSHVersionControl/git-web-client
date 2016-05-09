@@ -13,20 +13,20 @@ namespace VersionControl\GitControlBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use VersionControl\GitCommandBundle\Service\SshProcessInterface;
+use VersionControl\GitCommandBundle\Service\SftpProcessInterface;
 
-use phpseclib\Net\SFTP;
+use VersionControl\GitCommandBundle\GitCommands\Exception\SshLoginException;
 
 class SshDetailsValidator extends ConstraintValidator
 {
     /**
      *
-     * @var VersionControl\GitCommandBundle\Service\SshProcessInterface 
+     * @var VersionControl\GitCommandBundle\Service\SftpProcessInterface 
      */
-    public $sshProcess;
+    public $sftpProcess;
     
-    public function __construct(SshProcessInterface $sshProcess) {
-        $this->sshProcess = $sshProcess;
+    public function __construct(SftpProcessInterface $sftpProcess) {
+        $this->sftpProcess = $sftpProcess;
     }
     
     /**
@@ -40,23 +40,20 @@ class SshDetailsValidator extends ConstraintValidator
         $gitPath = rtrim(trim($projectEnvironment->getPath()),'/');
         
         if($projectEnvironment->getSsh() === true){
-           
-            $sftp = new SFTP($projectEnvironment->getHost(), 22);
+            
+            $this->sftpProcess->setGitEnviroment($projectEnvironment);
             try{
-                if (!$sftp->login($projectEnvironment->getUsername(), $projectEnvironment->getPassword())) {
-                    $this->context->buildViolation($constraint->message)
+                if ($this->sftpProcess->isDir($gitPath) === false){
+                    $this->context->buildViolation($constraint->messageFileDoesNotExist)
+                        ->atPath('path')
+                        ->addViolation();
+                }
+            } catch(SshLoginException $sshLoginException){
+                $this->context->buildViolation($sshLoginException->message)
                         ->atPath('title')
                         ->addViolation();
-                }else{
-                    //Validate path
-                     if ($sftp->is_dir($gitPath) === false){
-                        $this->context->buildViolation($constraint->messageFileDoesNotExist)
-                            ->atPath('path')
-                            ->addViolation();
-                    }
-                }
-            }catch(\Exception $e){
-                $this->context->buildViolation($e->getMessage())
+            } catch (\Exception $ex) {
+                $this->context->buildViolation($constraint->message)
                         ->atPath('title')
                         ->addViolation();
             }

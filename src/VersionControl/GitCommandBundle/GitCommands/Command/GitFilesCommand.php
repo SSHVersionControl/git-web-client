@@ -17,7 +17,6 @@ use VersionControl\GitCommandBundle\Entity\GitLog;
 
 use VersionControl\GitCommandBundle\GitCommands\GitDiffParser;
 
-use phpseclib\Net\SFTP;
 
 /**
  * Description of GitFilesCommand
@@ -71,13 +70,9 @@ class GitFilesCommand extends AbstractGitCommand {
 
          if($this->command->getGitEnvironment()->getSsh() === true){
              //Remote Directory Listing
-            $sftp = new SFTP($this->command->getGitEnvironment()->getHost(), 22);
-            if (!$sftp->login($this->command->getGitEnvironment()->getUsername(), $this->command->getGitEnvironment()->getPassword())) {
-                exit('Login Failed');
-            }
-
-           
-            $fileData = $sftp->stat($basePath.$path);
+            
+            $fileData = $this->command->getSftpProcess()->getFileStats($basePath.$path);
+            
             $fileData['filename'] = basename($path);
             $fileData['fullPath'] = $basePath.$path;
             $fileData['gitPath'] = $path;
@@ -162,12 +157,9 @@ class GitFilesCommand extends AbstractGitCommand {
         
          if($this->command->getGitEnvironment()->getSsh() === true){
              //Remote Directory Listing
-            $sftp = new SFTP($this->command->getGitEnvironment()->getHost(), 22);
-            if (!$sftp->login($this->command->getGitEnvironment()->getUsername(), $this->command->getGitEnvironment()->getPassword())) {
-                exit('Login Failed');
-            }
+            $directoryList = $this->command->getSftpProcess()->getDirectoryList($basePath.$relativePath);
 
-            foreach($sftp->rawlist($basePath.$relativePath) as $filename => $fileData) {
+            foreach($directoryList as $filename => $fileData) {
                 if($filename !== '.' && $filename !== '..' && $filename !== '.git'){
                     $fileData['fullPath'] = $basePath.rtrim($relativePath,'/').'/'.$filename;
                     $fileData['gitPath'] = $relativePath.$filename;
@@ -203,13 +195,10 @@ class GitFilesCommand extends AbstractGitCommand {
         $fileContents = '';
         
          if($this->command->getGitEnvironment()->getSsh() === true){
-             //Remote Directory Listing
-            $sftp = new SFTP($this->command->getGitEnvironment()->getHost(), 22);
-            if (!$sftp->login($this->command->getGitEnvironment()->getUsername(), $this->command->getGitEnvironment()->getPassword())) {
-                exit('Login Failed');
-            }
-            
-            $fileContents = $sftp->get($file->getFullPath());
+             
+
+            $fileContents = $this->command->getSftpProcess()->getFileContents($file->getFullPath());
+
 
          }else{
             $fileContents = file_get_contents($file->getFullPath());
@@ -272,14 +261,6 @@ class GitFilesCommand extends AbstractGitCommand {
        
     }
     
-    protected function connectToSftp(){
-        $sftp = new SFTP($this->command->getGitEnvironment()->getHost(), 22);
-        if (!$sftp->login($this->command->getGitEnvironment()->getUsername(), $this->command->getGitEnvironment()->getPassword())) {
-            exit('Login Failed');
-        }
-        
-        return $sftp;
-    }
     
     /**
      * Gets the git log (history) of commits
@@ -356,8 +337,8 @@ class GitFilesCommand extends AbstractGitCommand {
         $fileExists = false;
         $basePath = trim($this->addEndingSlash($this->command->getGitEnvironment()->getPath()));
         if($this->command->getGitEnvironment()->getSsh() === true){
-            $sftp = $this->connectToSftp();
-            $fileExists = $sftp->file_exists($basePath.$filePath);
+            $fileExists = $this->command->getSftpProcess()->fileExists($basePath.$filePath);
+            
         }else{
             $fileExists = file_exists($basePath.$filePath);
         }

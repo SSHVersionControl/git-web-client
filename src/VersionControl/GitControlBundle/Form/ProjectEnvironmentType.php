@@ -38,6 +38,8 @@ class ProjectEnvironmentType extends AbstractType
             ->add('host')
             ->add('username')
             ->add('password','password',array('required' => false))
+            ->add('privateKey','textarea',array('required' => false))
+            ->add('privateKeyPassword','password',array('required' => false))
             ->add('projectEnvironmentFilePerm',  new ProjectEnvironmentFilePermType(), array('required'  => false));
         
         if($this->useCloneLocation === true){

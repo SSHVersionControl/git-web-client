@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use VersionControl\GitCommandBundle\Service\SshProcessInterface;
 
 use phpseclib\Net\SSH2;
-
+use phpseclib\Crypt\RSA;
 /**
  * Use PhpSecLib to make SSH2 requests
  * 
@@ -134,17 +134,22 @@ class SecLibSshProcess implements SshProcessInterface
      * @param array $connection
      * @return void
      */
-    protected function connect($host,$username,$port=22,$password=null,$pubkeyFile=null,$privkeyFile=null,$passphrase=NULL)
+    protected function connect($host,$username,$port=22,$password=null,$pubkeyFile=null,$privateKey=null,$privateKeyPassword=NULL)
     {
         $this->shell = new SSH2($host,$port);
 
         if (!$this->shell) {
             throw new \InvalidArgumentException(sprintf('SSH connection failed on "%s:%s"', $host, $port));
         }
-
-        if (isset($username) && $pubkeyFile != null && $privkeyFile != null) {
-            if (!ssh2_auth_pubkey_file($username, $pubkeyFile, $privkeyFile, $passphrase)) {
-                throw new \InvalidArgumentException(sprintf('SSH authentication failed for user "%s" with public key "%s"', $username, $pubkeyFile));
+        
+        if (isset($username) && trim($privateKey)) {
+            $key = new RSA();
+            if($privateKeyPassword){
+                $key->setPassword($privateKeyPassword);
+            }
+            $key->loadKey($privateKey);
+            if (!$this->shell->login($username, $key)) {
+                throw new \InvalidArgumentException(sprintf('SSH authentication failed for user "%s" using private key', $username, $pubkeyFile));
             }
         } else if ($username && $password) {
             if (!$this->shell->login($username, $password)) {

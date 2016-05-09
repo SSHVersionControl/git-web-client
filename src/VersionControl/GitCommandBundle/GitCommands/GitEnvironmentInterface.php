@@ -38,6 +38,12 @@ interface GitEnvironmentInterface {
      */
     public function getHost();
     
+    /**
+     * Get SSH host
+     * @return string
+     */
+    public function getPort();
+    
 
     /**
      * Get SSH username
@@ -51,5 +57,17 @@ interface GitEnvironmentInterface {
      * @return string
      */
     public function getPassword();
+    
+    /**
+     * Get Private Key Content
+     * @return string
+     */
+    public function getPrivateKey();
+    
+    /**
+     * Get Private Key Password
+     * @return string
+     */
+    public function getPrivateKeyPassword();
     
 }

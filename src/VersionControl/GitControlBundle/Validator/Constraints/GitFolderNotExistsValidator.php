@@ -13,20 +13,20 @@ namespace VersionControl\GitControlBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
-use VersionControl\GitCommandBundle\Service\SshProcessInterface;
+use VersionControl\GitCommandBundle\Service\SftpProcessInterface;
 
-use phpseclib\Net\SFTP;
+use VersionControl\GitCommandBundle\GitCommands\Exception\SshLoginException;
 
 class GitFolderNotExistsValidator extends ConstraintValidator
 {
     /**
      *
-     * @var VersionControl\GitCommandBundle\Service\SshProcessInterface 
+     * @var VersionControl\GitCommandBundle\Service\SftpProcessInterface 
      */
-    public $sshProcess;
+    public $sftpProcess;
     
-    public function __construct(SshProcessInterface $sshProcess) {
-        $this->sshProcess = $sshProcess;
+    public function __construct(SftpProcessInterface $sftpProcess) {
+        $this->sftpProcess = $sftpProcess;
     }
     
     /**
@@ -40,20 +40,26 @@ class GitFolderNotExistsValidator extends ConstraintValidator
         $gitPath = rtrim(trim($projectEnvironment->getPath()),'/');
         if($projectEnvironment->getSsh() === true){
            
-            $sftp = new SFTP($projectEnvironment->getHost(), 22);
+            $this->sftpProcess->setGitEnviroment($projectEnvironment);
             try{
-                if ($sftp->login($projectEnvironment->getUsername(), $projectEnvironment->getPassword())) {
-                    if ($sftp->file_exists($gitPath.'/.git') === true){
+                if ($this->sftpProcess->fileExists($gitPath.'/.git') === true){
                         $this->context->buildViolation($constraint->message)
                             ->atPath('path')
                             ->addViolation();
                     }
-                }
-            }catch(\Exception $e){
-                $this->context->buildViolation($e->getMessage())
+            }
+            catch(SshLoginException $sshLoginException){
+                $this->context->buildViolation($sshLoginException->message)
                         ->atPath('path')
                         ->addViolation();
             }
+            catch (Exception $ex) {
+                $this->context->buildViolation($ex->getMessage())
+                        ->atPath('path')
+                        ->addViolation();
+            }
+            
+            
         }else{
             if (file_exists($gitPath.'/.git') === true){
                 $this->context->buildViolation($constraint->message)
