@@ -174,4 +174,6 @@ You will not need to configure anything, but this will run slower:
 
 Congratulations! You're now ready to use the Version Control System.
 
-
+#### Windows Install:
+If you install this onto a windows machine using WAMP you will have issues with connection to remote
+repositories using a ssh key. To resolve this check out [/Documentation/WindowsGit.md](Documentation/WindowsGit.md) 
