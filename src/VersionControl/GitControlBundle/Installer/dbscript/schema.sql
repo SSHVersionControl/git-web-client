@@ -1,11 +1,4 @@
--- phpMyAdmin SQL Dump
--- version 4.1.14
--- http://www.phpmyadmin.net
---
--- Host: 127.0.0.1
--- Generation Time: Apr 24, 2016 at 05:46 PM
--- Server version: 5.6.17
--- PHP Version: 5.5.12
+-- Version Contorl SQL Structure
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -260,6 +253,8 @@ CREATE TABLE IF NOT EXISTS project_environment (
   key_file varchar(225) DEFAULT NULL,
   project_id int(11) NOT NULL,
   project_environment_file_perm_id int(11) DEFAULT NULL,
+  private_key longtext,
+  private_key_password longtext,
   PRIMARY KEY (id),
   KEY fk_project_environment_project1_idx (project_id),
   KEY fk_project_environment_project_environment_file_perm1_idx (project_environment_file_perm_id)
