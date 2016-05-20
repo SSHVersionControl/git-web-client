@@ -57,7 +57,7 @@
                     <a href="{{ path('project_newremote', { 'id': project.id})}}" title="Manage Remote Repositories">Click here to add a remote repository</a></div>
             {% else %}
 
-                {{ form_start(pull_form,{ 'attr': { 'class': 'form'}}) }}
+                {{ form_start(pull_form,{ 'attr': { 'class': 'form','data-masklabel': 'Pulling changes from remote repository...'}}) }}
 
                     {{ form_errors(pull_form) }} 
                     

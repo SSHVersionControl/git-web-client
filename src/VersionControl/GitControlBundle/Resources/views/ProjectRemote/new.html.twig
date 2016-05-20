@@ -42,7 +42,7 @@
                 <p>Git supports many ways to reference a remote repository. Two of the easiest ways to access a remote repo are via the <strong>HTTP</strong> and the <strong>SSH</strong> protocols. 
                     <strong>HTTP</strong> is an easy way to allow anonymous, read-only access to a repository. For read-write access, you should use <strong>SSH</strong> instead:</p>
 
-                {{ form_start(remote_form,{ 'attr': { 'class': 'form'}}) }}
+                {{ form_start(remote_form,{ 'attr': { 'class': 'form','data-masklabel':'Creating new remote...'}}) }}
 
                     {{ form_errors(remote_form) }} 
                     
