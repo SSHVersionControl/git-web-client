@@ -233,7 +233,7 @@ class GitFilesCommand extends AbstractGitCommand {
              //Remote Directory Listing
             $permissions = octdec($mode);
             foreach($filePaths as $filepath){
-                $this->command->runCommand(sprintf("chmod -R %s %s",$mode,escapeshellarg($basePath.$filepath)));
+                $this->command->runCommand(sprintf("chmod -R %s %s",$mode,escapeshellarg($filepath)));
             }
 
         }else{
@@ -247,12 +247,12 @@ class GitFilesCommand extends AbstractGitCommand {
              //Remote Directory Listing
             if(trim($user)){ 
                 foreach($filePaths as $filepath){
-                    $this->command->runCommand(sprintf("chown -R %s %s",$user,escapeshellarg($basePath.$filepath)));
+                    $this->command->runCommand(sprintf("chown -R %s %s",$user,escapeshellarg($filepath)));
                 }  
             }
             if(trim($group)){ 
                 foreach($filePaths as $filepath){
-                    $this->command->runCommand(sprintf("chgrp -R %s %s",$group,escapeshellarg($basePath.$filepath)));
+                    $this->command->runCommand(sprintf("chgrp -R %s %s",$group,escapeshellarg($filepath)));
                 }  
             }
         }else{
