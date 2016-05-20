@@ -1,19 +1,22 @@
-Online GIT Version Control System
+Web GIT Version Control System
 ========================
 
-Welcome to the Online GIT Version Control System. This systems allows you to commit,search history,
+Welcome to the Web GIT Version Control System. This systems allows you to commit,search history,
 branch, push, pull, and many other action on git repositories, locate locally and on remote servers with 
 SFTP/SSH access. This system has been build using full stack symfony2 framework. It comes with an inbuilt issue tracker, to help organise your bugs, but also integrates with
 Github or Gitlabs, issue tracker for better remote support.
 
 
 ### Why Create another GIT Client
-I have been using GIT for a number of years now and love it, using it in IDEs, and mostly from command line.
-I also use GIT to deploy changes to live servers. My typical set up is a Development Server, Staging Server, and
-Live server running Debian or Ubuntu server, with a remote git repository (Gitlab). While using the command line was 
-fine I found I missed having a nicer visual display of the files. I wanted to be able to switch between the environments 
+I have been using GIT for a number of years now and love it, using it in IDEs, but mostly from the command line.
+I also use GIT to deploy changes to live servers. While using the command line was 
+fine I found I missed having a nicer visual display of the files. I wanted to be able to switch between the environments(dev, staging, live, etc) 
 and quickly see the different commits. I have not found an adequate git client that allows for SSH access to remote servers,
-as the reasons for it is unconventional and possibly bad practice. 
+and for this reason I start to build my own starting from a simple php script into a full web application.
+
+### Note:
+**This application is still very much in alpha state, so expect some issues. If you get any issue try viewing the application
+using /app_dev.php/* wich uses the Symfony 2 debugging tool which should help in figuring out the problem.**  
      
 1) Requirements
 ----------------------------------
@@ -22,7 +25,7 @@ as the reasons for it is unconventional and possibly bad practice.
 * webserver ( apache, nginx, php server)
 * Git install on command line for server/computer with repository
 
-2) Installing the Online GIT Version Control System
+2) Installing the Web GIT Version Control System
 ----------------------------------
 
 When it comes to installing, you have the
