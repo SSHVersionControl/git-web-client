@@ -1,5 +1,5 @@
 {
-    "name": "sshversioncontrol/git-web-client ",
+    "name": "sshversioncontrol/git-web-client",
     "license": "MIT",
     "type": "project",
     "keywords": ["git","git client","git web client","php","symfony","ssh","git remote", "git shell"],
