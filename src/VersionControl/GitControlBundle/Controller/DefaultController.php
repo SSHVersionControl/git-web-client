@@ -48,6 +48,7 @@ class DefaultController extends Controller
         return array(
             'userProjects' => $pagination,
             'user' => $user,
+            'keyword' => $keyword
         );
     }
     
