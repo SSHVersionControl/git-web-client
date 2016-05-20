@@ -1,8 +1,16 @@
 {
-    "name": "symfony/framework-standard-edition",
+    "name": "SSHVersionControl/git-web-client",
     "license": "MIT",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
+    "keywords": ["git","git client","git web client","php","symfony","ssh","git remote", "git shell"],
+    "description": "Web Git client using full stack Symfony2 with SSH/SFTP support ",
+    "homepage": "https://github.com/SSHVersionControl/git-web-client",
+    "authors": [
+        {
+            "name": "Paul Schweppe",
+            "homepage": "https://github.com/SSHVersionControl"
+        }
+    ],
     "autoload": {
         "psr-0": { "": "src/", "SymfonyStandard": "app/" }
     },
