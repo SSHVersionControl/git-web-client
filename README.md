@@ -37,8 +37,10 @@ If you don't have Composer yet, download it following the instructions on
 http://getcomposer.org/ or just run the following command:
 ```
     $ curl -s http://getcomposer.org/installer | php
+```
+Create a new folder somewhere under your web server root directory ( eg /var/www/version-control/) and run the following command:
+```
     $ php -d memory_limit=-1 composer.phar create-project -s dev sshversioncontrol/git-web-client 
-    $ cd 
 ```
 Composer will install the project and all its dependencies under the current directory.
 
