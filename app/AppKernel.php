@@ -18,7 +18,6 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new VersionControl\GitControlBundle\VersionControlGitControlBundle(),
-            new VMelnik\DoctrineEncryptBundle\VMelnikDoctrineEncryptBundle(),
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
@@ -26,6 +25,7 @@ class AppKernel extends Kernel
             new VersionControl\GithubIssueBundle\VersionControlGithubIssueBundle(),
             new VersionControl\GitlabIssueBundle\VersionControlGitlabIssueBundle(),
             new VersionControl\GitCommandBundle\VersionControlGitCommandBundle(),
+            new VersionControl\DoctrineEncryptBundle\VersionControlDoctrineEncryptBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

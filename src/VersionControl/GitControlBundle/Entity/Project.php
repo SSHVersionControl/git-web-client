@@ -9,7 +9,7 @@
  */
 namespace VersionControl\GitControlBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
-use VMelnik\DoctrineEncryptBundle\Configuration\Encrypted;
+use VersionControl\DoctrineEncryptBundle\Configuration\Encrypted;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**

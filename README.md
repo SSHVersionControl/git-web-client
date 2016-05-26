@@ -16,7 +16,7 @@ and for this reason I start to build my own starting from a simple php script in
 
 ### Note:
 **This application is still very much in alpha state, so expect some issues. If you get any issue try viewing the application
-using /app_dev.php/* wich uses the Symfony 2 debugging tool which should help in figuring out the problem.**  
+using /app_dev.php/* which uses the Symfony 2 debugging tool which should help in figuring out the problem.**  
      
 1) Requirements
 ----------------------------------

@@ -108,7 +108,7 @@ $(function(){
      * Sets the correct values in the New Branch form when the 
      * checkout button is clicked
      */
-    $(".checkout-remote").on('click',function(){
+    $("body").on('click','.checkout-remote',function(){
         var button = $(this)
             ,remoteName = button.data('remotename')
             ,localName = button.data('localname');

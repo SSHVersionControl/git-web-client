@@ -28,7 +28,6 @@
         "incenteev/composer-parameter-handler": "~2.0",
 	"friendsofsymfony/user-bundle": "~2.0@dev",
         "lrotherfield/form": "1.1.x-dev",
-        "vmelnik/doctrine-encrypt-bundle": "~2.0",
         "salavert/time-ago-in-words": "1.*",
         "phpseclib/phpseclib": "^2.0",
         "knplabs/knp-markdown-bundle": "~1.3",

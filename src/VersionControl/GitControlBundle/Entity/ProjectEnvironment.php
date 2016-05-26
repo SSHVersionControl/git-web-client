@@ -9,7 +9,7 @@
  */
 namespace VersionControl\GitControlBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
-use VMelnik\DoctrineEncryptBundle\Configuration\Encrypted;
+use VersionControl\DoctrineEncryptBundle\Configuration\Encrypted;
 use Symfony\Component\Validator\Constraints as Assert;
 use VersionControl\GitControlBundle\Validator\Constraints as VersionControlAssert;
 
@@ -92,14 +92,14 @@ class ProjectEnvironment implements GitEnvironmentInterface
      * @ORM\Column(name="private_key", type="string", nullable=true)
      * @Encrypted
      */
-    private $privateKey;
+    private $privateKey = null;
     
     /**
      * @var string
      * @ORM\Column(name="private_key_password", type="string", nullable=true)
      * @Encrypted
      */
-    private $privateKeyPassword;
+    private $privateKeyPassword = null;
     
     /**
      * @var \VersionControl\GitControlBundle\Entity\ProjectEnvironmentFilePerm
