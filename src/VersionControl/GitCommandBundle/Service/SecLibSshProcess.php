@@ -195,7 +195,7 @@ class SecLibSshProcess implements SshProcessInterface
         $stderr = explode("\n", $stdError);
 
 
-        if (count($stderr) > 1) {
+        if ($exitStatus != 0) {
             //print_r($stderr);
              throw new \RuntimeException(sprintf("Error in command shell:%s \n Error Response:%s",$command,implode("\n", $stderr)));
         }
@@ -204,6 +204,7 @@ class SecLibSshProcess implements SshProcessInterface
 
         if (is_array($stderr)) {
             $this->stderr = array_merge($this->stderr, $stderr);
+            //$this->stdout = array_merge($this->stdout, $stderr);
         }
     }
     

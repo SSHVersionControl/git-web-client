@@ -227,4 +227,6 @@ $(function(){
     
     //Open Default page
     $('.content-wrapper').load( defaultPage,function(){});
+    
+    
 });

@@ -25,6 +25,8 @@ use VersionControl\GitControlBundle\Form\CommitType;
 use VersionControl\GitControlBundle\Entity\Commit;
 
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
+
+
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
 /**
@@ -181,8 +183,10 @@ class ProjectCommitController extends BaseProjectController
      */
     public function initAction($id, $grantType = 'EDIT'){
  
-        parent::initAction($id,$grantType);
-        
+        $redirectUrl = parent::initAction($id,$grantType);
+        if($redirectUrl){
+            return $redirectUrl;
+        }
         $this->gitCommitCommand = $this->gitCommands->command('commit');
         $this->gitSyncCommands = $this->gitCommands->command('sync');
         
@@ -197,6 +201,8 @@ class ProjectCommitController extends BaseProjectController
         }
         $this->issueRepository = $this->issueManager->getIssueRepository();
         $this->issuesCount = $this->issueRepository->countFindIssues('','open');
+        
+        
 
       
     }

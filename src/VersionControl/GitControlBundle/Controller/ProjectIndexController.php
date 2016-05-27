@@ -30,6 +30,12 @@ class ProjectIndexController extends BaseProjectController
 {
 
     /**
+     * Allow access by ajax only request
+     * @var boolean 
+     */
+    protected $ajaxOnly = false;
+    
+    /**
      * Lists all Project entities.
      *
      * @Route("/", name="project")

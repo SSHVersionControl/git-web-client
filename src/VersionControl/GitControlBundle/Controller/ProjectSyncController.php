@@ -188,7 +188,10 @@ class ProjectSyncController extends BaseProjectController
      * 
      */
     public function initAction($id, $grantType = 'VIEW'){
-        parent::initAction($id,$grantType);
+        $redirectUrl = parent::initAction($id,$grantType);
+        if($redirectUrl){
+            return $redirectUrl;
+        }
         $this->gitSyncCommands = $this->gitCommands->command('sync');
     }
     

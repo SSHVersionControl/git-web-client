@@ -56,6 +56,12 @@ abstract class BaseProjectController extends Controller{
     protected $projectGrantType = 'VIEW';
     
     /**
+     * Allow access by ajax only request
+     * @var boolean 
+     */
+    protected $ajaxOnly = true;
+    
+    /**
      * 
      * @param VersionControl\GitControlBundle\Entity\Project $project
      * @throws AccessDeniedException
@@ -100,6 +106,13 @@ abstract class BaseProjectController extends Controller{
         if (!$this->project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
+        
+        //Redirect is not ajax
+        $request  = $this->getRequest();
+        if( $this->ajaxOnly == true && !$request->isXmlHttpRequest()){
+             return $this->generateUrl('project');
+        }
+        
         $this->checkProjectAuthorization($this->project,$grantType);
         
         $projectEnvironment = $this->getProjectEnvironment();
@@ -112,6 +125,9 @@ abstract class BaseProjectController extends Controller{
             'project'      => $this->project,
             'branchName' => $this->branchName,
             ));
+        
+       
+       
     }
     
     /**

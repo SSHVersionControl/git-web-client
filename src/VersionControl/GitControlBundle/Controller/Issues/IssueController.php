@@ -573,7 +573,10 @@ class IssueController extends BaseProjectController
      * @param integer $id
      */
     public function initAction($id,$grantType='VIEW'){
-        parent::initAction($id,$grantType);
+        $redirectUrl = parent::initAction($id,$grantType);
+        if($redirectUrl){
+            return $redirectUrl;
+        }
         
         $em = $this->getDoctrine()->getManager();
         $issueIntegrator= $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);

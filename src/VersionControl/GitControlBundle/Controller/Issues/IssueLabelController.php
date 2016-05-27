@@ -232,7 +232,10 @@ class IssueLabelController extends BaseProjectController
      * @param integer $id
      */
     public function initAction($id,$grantType='VIEW'){
-        parent::initAction($id,$grantType);
+        $redirectUrl = parent::initAction($id,$grantType);
+        if($redirectUrl){
+            return $redirectUrl;
+        }
         
         $em = $this->getDoctrine()->getManager();
 

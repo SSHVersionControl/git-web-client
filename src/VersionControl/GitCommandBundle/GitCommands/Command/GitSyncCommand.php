@@ -204,7 +204,7 @@ class GitSyncCommand extends AbstractGitCommand {
             $command .= ' --rebase';
         }
         
-        $command = sprintf($command.' %s %s 2>&1',escapeshellarg($remote),escapeshellarg($branch));
+        $command = sprintf($command.' %s %s',escapeshellarg($remote),escapeshellarg($branch));
         
         $response = $this->command->runCommand($command);
         

@@ -13,6 +13,7 @@ use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Annotation driver to check a user project access rights
@@ -61,7 +62,13 @@ class ProjectAccessAnnotationDriver{
                 $request = $controller[0]->get('request_stack')->getCurrentRequest();
                 $id = $request->get('id', false);
                 if($id !== false){
-                    $controller[0]->initAction($id,$configuration->grantType);
+                    $redirectUrl = $controller[0]->initAction($id,$configuration->grantType);
+                    if($redirectUrl){
+                        $event->setController(
+                            function() use ($redirectUrl) {
+                                return new RedirectResponse($redirectUrl);
+                            });
+                    }
                 }
              }
          }

@@ -388,7 +388,10 @@ class IssueMilestoneController extends BaseProjectController
     public function initAction($id,$grantType='VIEW'){
         $em = $this->getDoctrine()->getManager();
         
-        parent::initAction($id,$grantType);
+        $redirectUrl = parent::initAction($id,$grantType);
+        if($redirectUrl){
+            return $redirectUrl;
+        }
         
         $issueIntegrator= $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
         
