@@ -197,7 +197,7 @@ class SecLibSshProcess implements SshProcessInterface
 
         if ($exitStatus != 0) {
             //print_r($stderr);
-             throw new \RuntimeException(sprintf("Error in command shell:%s \n Error Response:%s",$command,implode("\n", $stderr)));
+             throw new \RuntimeException(sprintf("Error in command shell:%s \n Error Response:%s%s",$command,implode("\n", $stderr),$stdOutput));
         }
 
         $this->stdout = array_merge($this->stdout, $stdout);

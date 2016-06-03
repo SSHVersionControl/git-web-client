@@ -146,6 +146,16 @@ class SecLibSftpProcess implements SftpProcessInterface {
     }
     
     /**
+     * 
+     * @param string $filePahh
+     * @param string $content
+     */
+    public function appendToFile($filePath,$content){
+        //echo "hello" >> <filename>
+        $this->getSFTP()->put($filePath, $content, SFTP::RESUME);
+    }
+    
+    /**
      * Disconnect from SFTP
      */
     public function disconnect(){

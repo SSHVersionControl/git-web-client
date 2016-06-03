@@ -37,6 +37,11 @@ class ProjectFilesController extends BaseProjectController{
      */
     protected $gitFilesCommands;
     
+    /**
+     * Allow access by ajax only request
+     * @var boolean 
+     */
+    protected $ajaxOnly = false;
     
     /**
      * Show Git commit diff
@@ -129,14 +134,22 @@ class ProjectFilesController extends BaseProjectController{
      */
     public function ignoreAction($id,$filePath){
         //$this->initAction($id,'MASTER');
+        $params = array('id' => $id);
         
         $filePath = trim(urldecode($filePath));
-        
+        $pathInfo = pathinfo($filePath);
+
+        if(trim($pathInfo['dirname']) && $pathInfo['dirname'] != '.'){
+            $currentDir = $pathInfo['dirname'];
+            $params['currentDir'] = $currentDir.'/';
+        }
+        //print_r($filePath);
+        //die();
         $response = $this->gitFilesCommands->ignoreFile($filePath, $this->branchName);
         
         $this->get('session')->getFlashBag()->add('notice', $response);
             
-        return $this->redirect($this->generateUrl('project_filelist', array('id' => $id)));
+        return $this->redirect($this->generateUrl('project_filelist', $params));
     }
       
 }

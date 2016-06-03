@@ -36,6 +36,12 @@ class ProjectIssueIntegratorController extends BaseProjectController{
     protected $projectGrantType = 'OWNER';
     
     /**
+     * Allow access by ajax only request
+     * @var boolean 
+     */
+    protected $ajaxOnly = false;
+    
+    /**
      * Deletes a ProjectIssueIntegrator entity.
      *
      * @Route("/delete/{integratorId}", name="project_issue_integrator_delete")

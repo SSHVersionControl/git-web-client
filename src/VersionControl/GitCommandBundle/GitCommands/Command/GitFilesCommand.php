@@ -165,6 +165,9 @@ class GitFilesCommand extends AbstractGitCommand {
                     $fileData['gitPath'] = $relativePath.$filename;
 
                     $remoteFileInfo = new RemoteFileInfo($fileData);
+                    if($remoteFileInfo->isFile()){
+                        
+                    }
                     $files[] = $remoteFileInfo;
                 }
             }
@@ -307,6 +310,26 @@ class GitFilesCommand extends AbstractGitCommand {
         return $logs;
     }
     
+    /**
+     * Check if a file is ignored
+     * @param type $filePath
+     * @return boolean
+     */
+    public function checkIgnore($filePath){
+        $response = $this->command->runCommand(sprintf('git check-ignore %s',escapeshellarg($filePath)));
+        return $response?true:false;
+    }
+    
+    /**
+     * Check if a file is been tracked by git
+     * @param string $filePath
+     * @return boolean
+     */
+    public function isFileTracked($filePath){
+        $response = $this->command->runCommand(sprintf('git ls-files %s',escapeshellarg($filePath)));
+        return $response?true:false;
+    }
+    
     
     public function ignoreFile($filePath){
         $response = '';
@@ -380,9 +403,15 @@ class GitFilesCommand extends AbstractGitCommand {
         return $ignoreFiles;
     }
     
-    public function addToGitIgnore(){
+    public function addToGitIgnore($filePath){
         if($this->fileExists('.gitignore')){
             //Update git ignore file
+            if($this->command->getGitEnvironment()->getSsh() === true){
+                //$fileContents = $this->command->getSftpProcess()->appendToFile('.gitignore',PHP_EOL.$filePath.PHP_EOL);
+                $response = $this->command->runCommand(sprintf('echo %s >> .gitignore',escapeshellarg(PHP_EOL.$filePath)));
+            }else{
+                $fileContents = file_put_contents('.gitignore', PHP_EOL.$filePath , FILE_APPEND);
+            }
         }else{
             //create file
         }

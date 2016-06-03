@@ -30,6 +30,12 @@ use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 class ProjectIssueIntegratorGitlabController extends BaseProjectController{
     
    /**
+     * Allow access by ajax only request
+     * @var boolean 
+     */
+    protected $ajaxOnly = false;
+    
+   /**
      * Creates a new ProjectIssueIntegrator entity.
      *
      * @Route("/", name="project_issue_integrator_gitlab_create")
