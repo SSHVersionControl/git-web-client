@@ -36,6 +36,33 @@ class ProjectIndexController extends BaseProjectController
     protected $ajaxOnly = false;
     
     /**
+     * Get stats as json object.
+     *
+     * @Route("/status", name="project_status_ajax")
+     * @Method("GET")
+     * @ProjectAccess(grantType="VIEW")
+     */
+    public function statusAction(Request $request)
+    {
+        //Get latest from updates from remot branches
+        $this->gitCommands->command('branch')->fetchAll();
+        
+        $pushPullCommitCount = $this->gitCommands->command('sync')->commitCountWithRemote($this->branchName);
+        
+        $statusCount = $this->gitCommands->command('commit')->countStatus();
+        
+        $response = array(
+            'success' => true,
+            'pushCount' => $pushPullCommitCount['pushCount'],
+            'pullCount' => $pushPullCommitCount['pullCount'],
+            'statusCount' => $statusCount
+        );
+        
+        return new JsonResponse($response);
+        
+    }
+    
+    /**
      * Lists all Project entities.
      *
      * @Route("/{section}", defaults={"$section" = ""}, name="project")
@@ -65,30 +92,5 @@ class ProjectIndexController extends BaseProjectController
             ));
     }
     
-    /**
-     * Get stats as json object.
-     *
-     * @Route("/status", name="project_status_ajax")
-     * @Method("GET")
-     * @ProjectAccess(grantType="VIEW")
-     */
-    public function statusAction(Request $request)
-    {
-        //Get latest from updates from remot branches
-        $this->gitCommands->command('branch')->fetchAll();
-        
-        $pushPullCommitCount = $this->gitCommands->command('sync')->commitCountWithRemote($this->branchName);
-        
-        $statusCount = $this->gitCommands->command('commit')->countStatus();
-        
-        $response = array(
-            'success' => true,
-            'pushCount' => $pushPullCommitCount['pushCount'],
-            'pullCount' => $pushPullCommitCount['pullCount'],
-            'statusCount' => $statusCount
-        );
-        
-        return new JsonResponse($response);
-        
-    }
+   
 }

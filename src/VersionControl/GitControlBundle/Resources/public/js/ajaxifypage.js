@@ -82,10 +82,11 @@ $(function(){
     /* Trigger for side menu refresh status */
     $('#refresh-nav').on('status-refresh',function(){
         //Pace.ignore(function(){
-            $.getJSON( $(this).attr('href'), function( data ) {
-
-                console.log(data);
-
+        
+         $.ajax({
+            url: $(this).attr('href'),
+            dataType: "json",
+            success: function(data) {
                 $.each( data, function( id, val ) {
                     var $label = $('#'+id);
                     if(val == 0){
@@ -95,9 +96,12 @@ $(function(){
                     }
                     $label.html(val);
                 });
-
-            });
-        //});
+            },
+            error: function(e) 
+            {
+                 console.log(e);
+            }
+        });
     });
     
     function loadUrl($element,url,loadingText){
@@ -137,7 +141,7 @@ $(function(){
             Safari emits a popstate event on page load - check if firstLoad is true before animating
             if it's false - the page has just been loaded 
             */
-           console.log(location.pathname);
+           //console.log(location.pathname);
             //var newPageArray = location.pathname.split('/'),
             //this is the url of the page to be loaded 
             //newPage = newPageArray[newPageArray.length - 1].replace('.html', '');
