@@ -1,0 +1,7 @@
+# Make GitHub ignore vendor libraries while computing language stats.
+# See https://github.com/github/linguist#overrides.
+
+/src/VersionControl/GitControlBundle/Resources/public/* linguist-vendored=true
+/src/VersionControl/GitCommandBundle/Resources/public/* linguist-vendored=true
+/src/VersionControl/GithubIssueBundle/Resources/public/* linguist-vendored=true
+/src/VersionControl/GitlabIssueBundle/Resources/public/* linguist-vendored=true
