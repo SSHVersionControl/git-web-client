@@ -188,8 +188,6 @@ class SecLibSshProcess implements SshProcessInterface
         //print_r($stdOutput);
         //print_r($stdError);
        // print_r($exitStatus);
-        
-        //$exitStatus = $this->shell->getExitStatus();
 
         $stdout = explode("\n", $stdOutput);
         $stderr = explode("\n", $stdError);
@@ -206,6 +204,10 @@ class SecLibSshProcess implements SshProcessInterface
             $this->stderr = array_merge($this->stderr, $stderr);
             //$this->stdout = array_merge($this->stdout, $stderr);
         }
+    }
+    
+    public function getExitStatus(){
+        return $this->shell->getExitStatus();
     }
     
     public function __destruct() {

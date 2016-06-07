@@ -130,8 +130,13 @@ class GitCommand {
             
             return $process->getOutput();
         }
-    }   
+    }  
     
+    public function getLastExitStatus(){
+        return $this->sshProcess->getExitStatus();
+    }
+
+
     /**
      * Gets the git path
      * @return type

@@ -312,11 +312,32 @@ class GitFilesCommand extends AbstractGitCommand {
     
     /**
      * Check if a file is ignored
-     * @param type $filePath
+     * EXIT STATUS
+            0
+            One or more of the provided paths is ignored.
+
+            1
+            None of the provided paths are ignored.
+
+            128
+            A fatal error was encountered.
+     * 
+     * @param string $filePath
      * @return boolean
      */
-    public function checkIgnore($filePath){
-        $response = $this->command->runCommand(sprintf('git check-ignore %s',escapeshellarg($filePath)));
+    public function isFileIgnored($filePath){
+        try{
+            $response = $this->command->runCommand(sprintf('git check-ignore %s',escapeshellarg($filePath)));
+        }catch(\RuntimeException $e){
+            if($this->command->getLastExitStatus() == 128){
+                throw $e;
+            }elseif($this->command->getLastExitStatus() == 1){
+                $response = false; 
+            }else{
+               $response = true; 
+            }
+        }
+        
         return $response?true:false;
     }
     
