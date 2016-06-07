@@ -110,7 +110,9 @@ abstract class BaseProjectController extends Controller{
         //Redirect is not ajax
         $request  = $this->getRequest();
         if( $this->ajaxOnly == true && !$request->isXmlHttpRequest()){
-             return $this->generateUrl('project');
+
+             //print_r($request->getRequestUri());
+             return $this->generateUrl('project',array('section'=> urlencode($request->getRequestUri())));
         }
         
         $this->checkProjectAuthorization($this->project,$grantType);

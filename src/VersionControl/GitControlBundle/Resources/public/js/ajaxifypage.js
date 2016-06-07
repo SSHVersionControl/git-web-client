@@ -106,7 +106,20 @@ $(function(){
         setUrlHistory(url);
         $element.load( url,function(){
             $element.unmask();
-        });  
+        }); 
+        
+        //Side Navigation state
+        $('.sidebar-menu a').each(function(){
+            $this = $(this);
+            if( url.indexOf(($(this).attr('href'))) >= 0){
+                var $parentUl = $(this).parent('li').addClass('active').parent('ul');
+                if($parentUl.hasClass('treeview-menu')){
+                    $parentUl.closest('li').addClass('active');
+                }
+            }else{
+                $(this).parent('li').removeClass('active');
+            }
+        });
     }
     
     function setUrlHistory(url){
@@ -132,5 +145,8 @@ $(function(){
         }
         firstLoad = true;
     });
+    
+    //Open Default page
+    loadUrl( $contentContainter,defaultPage,'Loading...');
 
 });

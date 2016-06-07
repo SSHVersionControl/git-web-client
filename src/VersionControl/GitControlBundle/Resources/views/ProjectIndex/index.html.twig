@@ -26,7 +26,11 @@
 
  {% block footerJS %}
      <script>
-        var defaultPage = "{{ path('project_commitlist', { 'id': project.id }) }}"; 
+        {% if (section) %}
+            var defaultPage = "{{ section }}";
+        {% else %}
+            var defaultPage = "{{ path('project_commitlist', { 'id': project.id }) }}"; 
+        {% endif %}
 
      </script>
      <script src="{{ asset('bundles/versioncontrolgitcontrol/js/ajaxifypage.js') }}"></script>

@@ -38,13 +38,17 @@ class ProjectIndexController extends BaseProjectController
     /**
      * Lists all Project entities.
      *
-     * @Route("/", name="project")
+     * @Route("/{section}", defaults={"$section" = ""}, name="project")
      * @Method("GET")
      * @Template()
      * @ProjectAccess(grantType="VIEW")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request,$section= "")
     {
+        if($section){
+            $section = urldecode($section);
+        }
+        
         //Get latest from updates from remot branches
         $response = $this->gitCommands->command('branch')->fetchAll();
         
@@ -57,6 +61,7 @@ class ProjectIndexController extends BaseProjectController
         return array_merge($this->viewVariables, array(
             'pushPullCommitCount' => $pushPullCommitCount,
             'statusCount' => $statusCount,
+            'section' => $section,
             ));
     }
     

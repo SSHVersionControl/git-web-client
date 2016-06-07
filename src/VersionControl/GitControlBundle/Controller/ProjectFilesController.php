@@ -37,11 +37,6 @@ class ProjectFilesController extends BaseProjectController{
      */
     protected $gitFilesCommands;
     
-    /**
-     * Allow access by ajax only request
-     * @var boolean 
-     */
-    protected $ajaxOnly = false;
     
     /**
      * Show Git commit diff
