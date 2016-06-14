@@ -33,6 +33,7 @@ class GitStatusCommand extends AbstractGitCommand {
     public function getStatusHash() {
         if(!$this->statusHash){
             $stausData = $this->getStatus();
+            print_r('Status Hash data:'.$stausData);
             $this->statusHash = hash('md5',$stausData);
         }
         return $this->statusHash;   

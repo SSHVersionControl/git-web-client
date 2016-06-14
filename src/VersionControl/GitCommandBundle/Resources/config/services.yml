@@ -14,6 +14,7 @@ services:
             - [setLogger, ["@version_control.logger"]]
             - [setSshProcess, ["@version_control.ssh_process"]]
             - [setSftpProcess, ["@version_control.sftp_process"]]
+            - [setCache, ["@array_cache"]]
             
     version_control.gitcommand_collector:
         class: VersionControl\GitCommandBundle\Profiler\GitCommandCollector

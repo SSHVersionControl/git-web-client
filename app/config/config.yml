@@ -95,3 +95,13 @@ knp_paginator:
         sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
 
 craue_twig_extensions: ~
+
+doctrine_cache:
+    aliases:
+        cache_array: version_control_array_cache
+        
+    providers:
+        version_control_array_cache:
+            type: array
+            aliases:
+                - array_cache

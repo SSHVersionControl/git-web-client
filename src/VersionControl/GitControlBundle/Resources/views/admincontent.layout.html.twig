@@ -76,6 +76,9 @@
 
 
 {% if(app.session.flashbag.has('status-refresh')) %}
+    
+    {% for statusRefreshMessage in app.session.flashbag.get('status-refresh') %}
+    {% endfor %}
     <script>
         if( $('#refresh-nav').length > 0){
             $('#refresh-nav').trigger('status-refresh');

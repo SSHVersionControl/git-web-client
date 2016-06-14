@@ -76,6 +76,12 @@ class GitCommand {
      */
     private $sftpProcess;
     
+    /**
+     * Cache in memory 
+     * @var \Doctrine\Common\Cache\CacheProvider 
+     */
+    private $cache;
+    
     
     /**
      * Wrapper function to run shell commands. Supports local and remote commands
@@ -85,7 +91,7 @@ class GitCommand {
      * @return string Result of command
      * @throws \RuntimeException
      */
-    public function runCommand($command){
+    public function runCommand($command,$cacheCommand = true){
         
         if ($this->stopwatch) {
             $this->stopwatch->start('git_request', 'version_control');
@@ -93,14 +99,21 @@ class GitCommand {
         $start = microtime(true);
         
         if($this->gitEnvironment->getSsh() === true){
+            //Run remote command over ssh
             $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
-            //$sshProcess = new SshProcess();
-            $this->sshProcess->run(array($fullCommand),$this->gitEnvironment->getHost(),$this->gitEnvironment->getUsername()
-                    ,22,$this->gitEnvironment->getPassword(),null
-                    ,$this->gitEnvironment->getPrivateKey(),$this->gitEnvironment->getPrivateKeyPassword());
-            $this->logCommand($fullCommand,'remote',array('host'=>$this->gitEnvironment->getHost()),$start,$this->sshProcess->getStdout(),$this->sshProcess->getStderr(),$this->sshProcess->getExitStatus());
-            
-            return $this->sshProcess->getStdout();
+            $cacheId = md5($fullCommand);
+            if($cacheCommand === true){
+                $response = $this->cache->fetch($cacheId);
+                if ($response === false) {
+                    $response = $this->runRemoteCommand($fullCommand);
+                    $this->cache->save($cacheId, $response);
+                    return $response;
+                }else{
+                    return $response;
+                }
+            }else{
+                return $this->runRemoteCommand($fullCommand);
+            }
         }else{
             if(is_array($command)){
                 //$finalCommands = array_merge(array('cd',$this->gitPath,'&&'),$command);
@@ -131,6 +144,17 @@ class GitCommand {
             return $process->getOutput();
         }
     }  
+    
+    private function runRemoteCommand($fullCommand){
+        $start = microtime(true);
+        
+        $this->sshProcess->run(array($fullCommand),$this->gitEnvironment->getHost(),$this->gitEnvironment->getUsername()
+                ,22,$this->gitEnvironment->getPassword(),null
+                ,$this->gitEnvironment->getPrivateKey(),$this->gitEnvironment->getPrivateKeyPassword());
+        $this->logCommand($fullCommand,'remote',array('host'=>$this->gitEnvironment->getHost()),$start,$this->sshProcess->getStdout(),$this->sshProcess->getStderr(),$this->sshProcess->getExitStatus());
+
+        return $this->sshProcess->getStdout();
+    }
     
     public function getLastExitStatus(){
         return $this->sshProcess->getExitStatus();
@@ -273,6 +297,10 @@ class GitCommand {
     public function getSftpProcess() {
         $this->sftpProcess->setGitEnviroment($this->gitEnvironment);
         return $this->sftpProcess;
+    }
+    
+    public function setCache(\Doctrine\Common\Cache\CacheProvider $cache){
+        $this->cache = $cache;
     }
 
     /**
