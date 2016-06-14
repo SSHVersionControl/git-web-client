@@ -98,7 +98,7 @@ class GitCommand {
             $this->sshProcess->run(array($fullCommand),$this->gitEnvironment->getHost(),$this->gitEnvironment->getUsername()
                     ,22,$this->gitEnvironment->getPassword(),null
                     ,$this->gitEnvironment->getPrivateKey(),$this->gitEnvironment->getPrivateKeyPassword());
-            $this->logCommand($fullCommand,'remote',array('host'=>$this->gitEnvironment->getHost()),$start);
+            $this->logCommand($fullCommand,'remote',array('host'=>$this->gitEnvironment->getHost()),$start,$this->sshProcess->getStdout(),$this->sshProcess->getStderr(),$this->sshProcess->getExitStatus());
             
             return $this->sshProcess->getStdout();
         }else{
@@ -235,14 +235,14 @@ class GitCommand {
      * @param array  $data
      * @param int    $start
      */
-    public function logCommand($command, $method, $data, $start)
+    public function logCommand($command, $method, $data, $start, $response='', $error='', $exitStatus=0)
     {
         if (!$this->logger or !$this->logger instanceof GitCommandLogger) {
             return;
         }
         $time = microtime(true) - $start;
         
-        $this->logger->logCommand($command, $method, $data, $time);
+        $this->logger->logCommand($command, $method, $data, $time, $response, $error, $exitStatus);
     }
     
     /**

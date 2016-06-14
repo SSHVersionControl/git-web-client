@@ -180,17 +180,13 @@ class SecLibSshProcess implements SshProcessInterface
     {
 
         $this->shell->enableQuietMode(); 
-        //print_r($command);
+
         $stdOutput = $this->shell->exec($command);
         $stdError = $this->shell->getStdError();
         $exitStatus = $this->shell->getExitStatus();
-        
-        //print_r($stdOutput);
-        //print_r($stdError);
-       // print_r($exitStatus);
 
         $stdout = explode("\n", $stdOutput);
-        $stderr = explode("\n", $stdError);
+        $stderr = array_filter(explode("\n", $stdError));
 
 
         if ($exitStatus != 0) {
@@ -202,7 +198,11 @@ class SecLibSshProcess implements SshProcessInterface
 
         if (is_array($stderr)) {
             $this->stderr = array_merge($this->stderr, $stderr);
-            //$this->stdout = array_merge($this->stdout, $stderr);
+            
+            if($exitStatus === 0){
+                $this->stdout = array_merge($this->stdout, $stderr);
+            }
+            
         }
     }
     

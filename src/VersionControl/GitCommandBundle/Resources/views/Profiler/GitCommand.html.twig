@@ -79,6 +79,18 @@
                         <th>Time</th>
                         <td><code>{{ '%0.2f'|format(query.executionMS * 1000) }}</code></td>
                     </tr>
+                    <tr>
+                        <th>Response</th>
+                        <td><code>{{ query.response }}</code></td>
+                    </tr>
+                    <tr>
+                        <th>Error</th>
+                        <td><code>{{ query.error }}</code></td>
+                    </tr>
+                    <tr>
+                        <th>Exit Status</th>
+                        <td><code>{{ query.exitStatus }}</code></td>
+                    </tr>
                 </tbody>
                 </table>
             {% endfor %}

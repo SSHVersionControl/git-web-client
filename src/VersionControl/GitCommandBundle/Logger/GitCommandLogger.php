@@ -42,15 +42,21 @@ class GitCommandLogger
      * @param string $method Local or remote command
      * @param array  $data   arguments
      * @param float  $time   execution time
+     * @param string  $response   execution time
+     * @param string  $error   execution time
+     * @param int  $exitStatus   execution time
      */
-    public function logCommand($command, $method, $data, $time)
+    public function logCommand($command, $method, $data, $time, $response='', $error='', $exitStatus=0)
     {
         if ($this->debug) {
             $this->commands[] = array(
                 'command' => $command,
                 'method' => $method,
                 'data' => $data,
-                'executionMS' => $time
+                'executionMS' => $time,
+                'response' => $response,
+                'error' => $error,
+                'exitStatus' => $exitStatus
             );
         }
 

@@ -161,7 +161,7 @@ class GitSyncCommand extends AbstractGitCommand {
      */
     public function push($remote,$branch){
         
-        $command = sprintf('git push %s %s 2>&1',escapeshellarg(trim($remote)),escapeshellarg(trim($branch)));
+        $command = sprintf('git push %s %s',escapeshellarg(trim($remote)),escapeshellarg(trim($branch)));
 
         return $this->command->runCommand($command);
     }
@@ -174,7 +174,7 @@ class GitSyncCommand extends AbstractGitCommand {
      */
     public function pushAll($remote){
         
-        $command = sprintf('git push %s --all 2>&1',escapeshellarg($remote));
+        $command = sprintf('git push %s --all',escapeshellarg($remote));
         return $this->command->runCommand($command);
     }
     
