@@ -93,58 +93,42 @@ class GitCommand {
      */
     public function runCommand($command,$cacheCommand = true){
         
+        $response = '';
         if ($this->stopwatch) {
             $this->stopwatch->start('git_request', 'version_control');
         }
-        $start = microtime(true);
+       
+        $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
+        $cacheId = md5($this->gitEnvironment->getId().$fullCommand);
         
         if($this->gitEnvironment->getSsh() === true){
             //Run remote command over ssh
-            $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
-            $cacheId = md5($fullCommand);
+            
             if($cacheCommand === true){
                 $response = $this->cache->fetch($cacheId);
                 if ($response === false) {
                     $response = $this->runRemoteCommand($fullCommand);
                     $this->cache->save($cacheId, $response);
-                    return $response;
-                }else{
-                    return $response;
                 }
             }else{
-                return $this->runRemoteCommand($fullCommand);
+                $response = $this->runRemoteCommand($fullCommand);
             }
         }else{
-            if(is_array($command)){
-                //$finalCommands = array_merge(array('cd',$this->gitPath,'&&'),$command);
-                $builder = new ProcessBuilder($command);
-                $builder->setPrefix('cd '.$this->gitPath.' && ');
-                $process = $builder->getProcess();
-                
-            }else{
-                $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
-                $process = new Process($fullCommand);
-            }
-            //return exec($fullCommand);
-            //print_r($process->getCommandLine());
-            $process->run();
-
+            //Run local commands
+            $start = microtime(true);
+            $response = $this->runLocalCommand($command);
+            
             $this->logCommand($fullCommand,'local',array(),$start);
-            
-            // executes after the command finishes
-            if (!$process->isSuccessful()) {
-                if(trim($process->getErrorOutput()) !== ''){
-                    throw new \RuntimeException($process->getErrorOutput());
-                }else{
-                    //Git returns a false with a reponse. So return as if successfull
-                    return $process->getOutput();
-                }
-            }
-            
-            return $process->getOutput();
         }
+        
+        return $response;
     }  
     
+    /**
+     * Run remote command over ssh
+     * @param string $fullCommand
+     * @return string Commands response
+     */
     private function runRemoteCommand($fullCommand){
         $start = microtime(true);
         
@@ -154,6 +138,38 @@ class GitCommand {
         $this->logCommand($fullCommand,'remote',array('host'=>$this->gitEnvironment->getHost()),$start,$this->sshProcess->getStdout(),$this->sshProcess->getStderr(),$this->sshProcess->getExitStatus());
 
         return $this->sshProcess->getStdout();
+    }
+    
+    /**
+     * Run local command 
+     * @param string $command
+     * @return string Commands response
+     */
+    private function runLocalCommand($command){
+        
+        $fullCommand = sprintf('cd %s && %s',$this->gitPath,$command);
+        
+        //Run local commands
+        if(is_array($command)){
+            //$finalCommands = array_merge(array('cd',$this->gitPath,'&&'),$command);
+            $builder = new ProcessBuilder($command);
+            $builder->setPrefix('cd '.$this->gitPath.' && ');
+            $process = $builder->getProcess();
+        }else{
+            $process = new Process($fullCommand);
+        }
+
+        //Run Proccess
+        $process->run();
+
+        // executes after the command finishes
+        if (!$process->isSuccessful()) {
+            if(trim($process->getErrorOutput()) !== ''){
+                throw new \RuntimeException($process->getErrorOutput());
+            }
+        }
+
+        return $process->getOutput();
     }
     
     public function getLastExitStatus(){
