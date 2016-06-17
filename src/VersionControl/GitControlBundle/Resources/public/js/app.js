@@ -225,7 +225,17 @@ $(function(){
         //alert('open');
     });
     
+    $('.close-info').on('click',function(e){
+        e.preventDefault();
+        $(this).closest('.environment-info-content').removeClass('is-visible');
+    });
     
+    $('.environment-info-btn').on('click',function(e){
+        e.preventDefault();
+        $('.environment-info-content').removeClass('is-visible');
+        $id = $(this).data('id');
+        $('#'+$id).addClass('is-visible');
+    });
     
     
 });

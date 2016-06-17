@@ -384,3 +384,89 @@ table.diff >tbody>tr.diff-type-2>td{
     padding: 2px;
 }
 
+.environment-selection li .fa{
+    line-height: 20px;
+}
+
+.environment-info-content {
+  /* drowpdown with search suggestions - hidden on small devices */
+  display: none;
+}
+@media only screen and (min-width: 1024px) {
+  .environment-info-content {
+    
+    position: absolute;
+    top: 52px;
+    left: 0;
+    /* same width of <form> element */
+    width: calc( 90% - 286px);
+    padding: 2em;
+    /* same margin of <form> element */
+    margin: 0 calc(5% + 116px) 0 calc(5% + 170px);
+    background-color: #ffffff;
+    box-shadow: 0 4px 40px rgba(0, 0, 0, 0.39);
+  }
+  .environment-info-content::after {
+    clear: both;
+    content: "";
+    display: table;
+  }
+
+ .environment-info-content.is-visible {
+    /* trigger the dropdown animation if <header> has the .animate-search class */
+    display: block;
+    -webkit-transform-origin: center top;
+    -moz-transform-origin: center top;
+    -ms-transform-origin: center top;
+    -o-transform-origin: center top;
+    transform-origin: center top;
+    /* Force Hardware Acceleration */
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-animation: cd-3d-rotation 0.5s;
+    -moz-animation: cd-3d-rotation 0.5s;
+    animation: cd-3d-rotation 0.5s;
+    -webkit-animation-fill-mode: backwards;
+    -moz-animation-fill-mode: backwards;
+    animation-fill-mode: backwards;
+  }
+}
+
+@-webkit-keyframes cd-3d-rotation {
+  0% {
+    -webkit-transform: perspective(1000px) rotateX(-90deg);
+  }
+  100% {
+    -webkit-transform: perspective(1000px) translateY(0);
+  }
+}
+@-moz-keyframes cd-3d-rotation {
+  0% {
+    -moz-transform: perspective(1000px) rotateX(-90deg);
+  }
+  100% {
+    -moz-transform: perspective(1000px) translateY(0);
+  }
+}
+@keyframes cd-3d-rotation {
+  0% {
+    -webkit-transform: perspective(1000px) rotateX(-90deg);
+    -moz-transform: perspective(1000px) rotateX(-90deg);
+    -ms-transform: perspective(1000px) rotateX(-90deg);
+    -o-transform: perspective(1000px) rotateX(-90deg);
+    transform: perspective(1000px) rotateX(-90deg);
+  }
+  100% {
+    -webkit-transform: perspective(1000px) translateY(0);
+    -moz-transform: perspective(1000px) translateY(0);
+    -ms-transform: perspective(1000px) translateY(0);
+    -o-transform: perspective(1000px) translateY(0);
+    transform: perspective(1000px) translateY(0);
+  }
+}
+
