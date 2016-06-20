@@ -49,6 +49,9 @@ $(function(){
         if($(this).data('masklabel')){
             loadingText = $(this).data('masklabel');
         }
+        
+        //hide modals if open
+        $(".modal.in").modal('hide');
 
         $contentContainter.mask({label:loadingText});
         //loadUrl($(this).attr('action'));

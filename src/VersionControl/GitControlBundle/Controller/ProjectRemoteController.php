@@ -56,9 +56,12 @@ class ProjectRemoteController extends BaseProjectController
      * @ProjectAccess(grantType="MASTER")
      */
     public function listAction($id){
-
-        $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
-
+        $gitRemoteVersions = array();
+        try{
+            $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
         return array_merge($this->viewVariables, array(
             'remotes' => $gitRemoteVersions,
             'branchName' => $this->branchName
@@ -107,11 +110,13 @@ class ProjectRemoteController extends BaseProjectController
             $remote = $data['remoteName'];
             $url = $data['remoteUrl'];
 
-            //Remote Server choice 
-            $response = $this->gitSyncCommands->addRemote($remote,$url);
-            
-            $this->get('session')->getFlashBag()->add('notice', $response);
-            
+            try{
+                //Remote Server choice 
+                $response = $this->gitSyncCommands->addRemote($remote,$url);
+                $this->get('session')->getFlashBag()->add('notice', $response);
+            }catch (\Exception $e) {
+                $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+            }
             return $this->redirect($this->generateUrl('project_listremote', array('id' => $id)));
         }
         
@@ -133,11 +138,12 @@ class ProjectRemoteController extends BaseProjectController
      */
      public function deleteAction(Request $request,$id,$remote){
         
-         
-        $response = $this->gitSyncCommands->deleteRemote($remote);
-            
-        $this->get('session')->getFlashBag()->add('notice', $response);
-            
+        try{
+            $response = $this->gitSyncCommands->deleteRemote($remote);
+            $this->get('session')->getFlashBag()->add('notice', $response);
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }    
         return $this->redirect($this->generateUrl('project_listremote', array('id' => $id)));
      }
      
@@ -182,9 +188,12 @@ class ProjectRemoteController extends BaseProjectController
             $remoteName = $data['remoteName'];
             $newRemoteName = $data['newRemoteName'];
             
-            $response = $this->gitSyncCommands->renameRemote($remoteName,$newRemoteName);
-            
-            $this->get('session')->getFlashBag()->add('notice',$response);
+            try{
+                $response = $this->gitSyncCommands->renameRemote($remoteName,$newRemoteName);
+                $this->get('session')->getFlashBag()->add('notice',$response);
+            }catch (\Exception $e) {
+                $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+            }
 
             return $this->redirect($this->generateUrl('project_listremote', array('id' => $id)));
         }

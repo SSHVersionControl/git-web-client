@@ -89,10 +89,14 @@ class ProjectSyncController extends BaseProjectController
             $data = $pushForm->getData();
             $remote = $data['remote'];
             $branch = $data['branch'];
-            $response = $this->gitSyncCommands->push($remote,$branch);
-            
-            $this->get('session')->getFlashBag()->add('notice', $response);
-            $this->get('session')->getFlashBag()->add('status-refresh','true');
+            try{
+                $response = $this->gitSyncCommands->push($remote,$branch);
+
+                $this->get('session')->getFlashBag()->add('notice', $response);
+                $this->get('session')->getFlashBag()->add('status-refresh','true');
+            }catch (\Exception $e) {
+                $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+            }
             
             return $this->redirect($this->generateUrl('project_push', array('id' => $id)));
         }
@@ -163,11 +167,13 @@ class ProjectSyncController extends BaseProjectController
                 $diffs = $this->gitCommands->getDiffRemoteBranch($remote,$branch);
                 
             }else{
-                print_r('PULL DATA');
-                $response = $this->gitSyncCommands->pull($remote,$branch);
-                $this->get('session')->getFlashBag()->add('notice', $response);
-                $this->get('session')->getFlashBag()->add('status-refresh','true');
-                
+                try{
+                    $response = $this->gitSyncCommands->pull($remote,$branch);
+                    $this->get('session')->getFlashBag()->add('notice', $response);
+                    $this->get('session')->getFlashBag()->add('status-refresh','true');
+                }catch (\Exception $e) {
+                    $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+                }
                 return $this->redirect($this->generateUrl('project_pull', array('id' => $id)));
             }
 

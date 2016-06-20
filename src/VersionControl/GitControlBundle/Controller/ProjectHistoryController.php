@@ -178,12 +178,14 @@ class ProjectHistoryController extends BaseProjectController
         $gitUndoCommand = $this->gitCommands->command('undo');
 
         $file = urldecode($filePath);
-        
-        $response = $gitUndoCommand->checkoutFile($file,$commitHash);
-        
-        $this->get('session')->getFlashBag()->add('notice', $response);
-        $this->get('session')->getFlashBag()->add('warning', "Make sure to commit the changes.");
-            
+        try{
+            $response = $gitUndoCommand->checkoutFile($file,$commitHash);
+
+            $this->get('session')->getFlashBag()->add('notice', $response);
+            $this->get('session')->getFlashBag()->add('warning', "Make sure to commit the changes.");
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
         return $this->redirect($this->generateUrl('project_commitdiff', array('id' => $id,'commitHash' => $commitHash)));
        
     }

@@ -278,8 +278,12 @@ class ProjectCommitController extends BaseProjectController
         if(count($gitRemotes) > 0){
 
             foreach($gitRemotes as $gitRemote){
-                $response = $this->gitSyncCommands->push($gitRemote,$branch);  
-                $this->get('session')->getFlashBag()->add('notice', $response);
+                try{
+                    $response = $this->gitSyncCommands->push($gitRemote,$branch);  
+                    $this->get('session')->getFlashBag()->add('notice', $response);
+                }catch (\Exception $e) {
+                    $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+                }
             }
         }
     }
@@ -314,13 +318,14 @@ class ProjectCommitController extends BaseProjectController
      */
     public function resetFileAction($filePath){
         
-        $gitUndoCommand = $this->gitCommands->command('undo');
-
-        $file = urldecode($filePath);
-        
-        $response = $gitUndoCommand->checkoutFile($file,'HEAD');
-        
-        $this->get('session')->getFlashBag()->add('notice', $response);
+        try{
+            $gitUndoCommand = $this->gitCommands->command('undo');
+            $file = urldecode($filePath);
+            $response = $gitUndoCommand->checkoutFile($file,'HEAD');
+            $this->get('session')->getFlashBag()->add('notice', $response);
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
             
         return $this->redirect($this->generateUrl('project_commitlist'));
        
