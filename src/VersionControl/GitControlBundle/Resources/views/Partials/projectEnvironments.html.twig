@@ -6,7 +6,7 @@
         <li class="btn-group {% if(projectEnvironment.id == currentEnvironment.id) %} active{%endif%}">
 
             <a class="btn" href="{{ path(route, params | merge({ 'projenv': projectEnvironment.id })) }}">{{projectEnvironment.title}}</a>
-            <a class="btn environment-info-btn" href="#" data-id="info-{{projectEnvironment.id}}"><i class="fa fa-info pull-right"></i></a>
+            <a class="btn environment-info-btn" href="#" data-id="info-{{projectEnvironment.id}}"><i class="fa fa-angle-left pull-right"></i></a>
 
         </li>
     {% endfor %}

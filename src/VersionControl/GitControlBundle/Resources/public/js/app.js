@@ -232,9 +232,17 @@ $(function(){
     
     $('.environment-info-btn').on('click',function(e){
         e.preventDefault();
-        $('.environment-info-content').removeClass('is-visible');
         $id = $(this).data('id');
-        $('#'+$id).addClass('is-visible');
+        var $info = $('#'+$id);
+        if($info.hasClass('is-visible')){
+            $('.environment-info-content').removeClass('is-visible'); 
+            $('.environment-info-btn').removeClass('active');
+        }else{
+            $('.environment-info-content').removeClass('is-visible');
+            $('.environment-info-btn').removeClass('active');
+            $info.addClass('is-visible');
+            $(this).addClass('active');
+        }
     });
     
     

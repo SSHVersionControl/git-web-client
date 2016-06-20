@@ -415,6 +415,7 @@ table.diff >tbody>tr.diff-type-2>td{
  .environment-info-content.is-visible {
     /* trigger the dropdown animation if <header> has the .animate-search class */
     display: block;
+    border-bottom: 3px solid #008d4c;
     -webkit-transform-origin: center top;
     -moz-transform-origin: center top;
     -ms-transform-origin: center top;
@@ -436,6 +437,8 @@ table.diff >tbody>tr.diff-type-2>td{
     animation-fill-mode: backwards;
   }
 }
+
+
 
 @-webkit-keyframes cd-3d-rotation {
   0% {
@@ -468,5 +471,20 @@ table.diff >tbody>tr.diff-type-2>td{
     -o-transform: perspective(1000px) translateY(0);
     transform: perspective(1000px) translateY(0);
   }
+}
+
+.main-header .navbar .nav>.active>a.environment-info-btn{
+    background: transparent;
+}
+
+a.environment-info-btn{
+    border-right: 1px solid #008d4c;
+}
+
+a.environment-info-btn.active>.fa-angle-left {
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    transform: rotate(-90deg);
 }
 
