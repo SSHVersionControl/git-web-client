@@ -146,8 +146,10 @@ class ProjectCommitController extends BaseProjectController
                 //Handle Issue Action eg Close issue. Update Commit message
                 $this->handleIssue($commitEntity);
      
+                $user = $this->get('security.token_storage')->getToken()->getUser();
+                $author = $user->getName().' <'.$user->getEmail().'>';
                 //Git Commit 
-                $this->gitCommitCommand->commit($commitEntity->getComment());
+                $this->gitCommitCommand->commit($commitEntity->getComment(),$author);
                 
                 //Set notice of successfull commit
                 $this->get('session')->getFlashBag()->add('notice'
@@ -323,6 +325,7 @@ class ProjectCommitController extends BaseProjectController
             $file = urldecode($filePath);
             $response = $gitUndoCommand->checkoutFile($file,'HEAD');
             $this->get('session')->getFlashBag()->add('notice', $response);
+            $this->get('session')->getFlashBag()->add('status-refresh','true');
         }catch (\Exception $e) {
             $this->get('session')->getFlashBag()->add('error', $e->getMessage());
         }

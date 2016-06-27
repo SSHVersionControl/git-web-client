@@ -20,6 +20,12 @@ namespace VersionControl\GitCommandBundle\GitCommands;
 interface GitEnvironmentInterface {
     
     /**
+     * Unique identifier
+     */
+    public function getId();
+
+    
+    /**
      * Get Path to git folder
      */
     public function getPath();

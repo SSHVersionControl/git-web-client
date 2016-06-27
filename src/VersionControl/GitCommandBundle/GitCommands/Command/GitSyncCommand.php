@@ -236,7 +236,7 @@ class GitSyncCommand extends AbstractGitCommand {
                 $response = $this->command->runCommand($command);
 
                 list($pushCount,$pullCount) = explode('	',$response);
-            }catch(\RuntimeException $e){
+            }catch(\VersionControl\GitCommandBundle\GitCommands\Exception\RunGitCommandException $e){
                 //Remote branch does not exist. Do nothing
             }
         }

@@ -22,6 +22,7 @@ use VersionControl\GitCommandBundle\GitCommands\Command as Command;
 use VersionControl\GitCommandBundle\GitCommands\Exception\InvalidArgumentException;
 use VersionControl\GitCommandBundle\Logger\GitCommandLogger;
 use VersionControl\GitCommandBundle\Event\GitAlterFilesEvent;
+use VersionControl\GitCommandBundle\GitCommands\Exception\RunGitCommandException;
 
 
 use VersionControl\GitCommandBundle\GitCommands\GitEnvironmentInterface;
@@ -82,16 +83,24 @@ class GitCommand {
      */
     private $cache;
     
+    /**
+     * Last Exit code of local command
+     * @var integer 
+     */
+    private $exitCode;
+    
     
     /**
      * Wrapper function to run shell commands. Supports local and remote commands
      * depending on the gitEnvironment details
      * 
      * @param string $command command to run
+     * @param boolean $cacheCommand command to run
+     * @param boolean $trim do not trim response. Maybe need for some command responses
      * @return string Result of command
      * @throws \RuntimeException
      */
-    public function runCommand($command,$cacheCommand = true){
+    public function runCommand($command,$cacheCommand = true,$trim=true){
         
         $response = '';
         if ($this->stopwatch) {
@@ -121,7 +130,7 @@ class GitCommand {
             $this->logCommand($fullCommand,'local',array(),$start);
         }
         
-        return $response;
+        return $trim===true?trim($response):$response;
     }  
     
     /**
@@ -161,19 +170,31 @@ class GitCommand {
 
         //Run Proccess
         $process->run();
+        
+        $this->exitCode = $process->getExitCode();
 
+        $response = '';
         // executes after the command finishes
-        if (!$process->isSuccessful()) {
+        if ($process->isSuccessful()) {
+            $response = $process->getOutput();
             if(trim($process->getErrorOutput()) !== ''){
-                throw new \RuntimeException($process->getErrorOutput());
+                $response = $process->getErrorOutput();
+            }
+        }else{
+            if(trim($process->getErrorOutput()) !== ''){
+                throw new RunGitCommandException($process->getErrorOutput());
             }
         }
 
-        return $process->getOutput();
+        return $response;
     }
     
     public function getLastExitStatus(){
-        return $this->sshProcess->getExitStatus();
+        if($this->gitEnvironment->getSsh() === true){
+            return $this->sshProcess->getExitStatus();
+        }else{
+            return $this->exitCode;
+        }
     }
 
 

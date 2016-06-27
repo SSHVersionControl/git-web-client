@@ -12,7 +12,9 @@
 namespace VersionControl\GitCommandBundle\GitCommands\Command;
 
 use VersionControl\GitCommandBundle\GitCommands\GitCommand;
-
+use VersionControl\GitCommandBundle\GitCommands\Exception\DeleteBranchException;
+use VersionControl\GitCommandBundle\GitCommands\Exception\RunGitCommandException;
+use VersionControl\GitCommandBundle\GitCommands\Exception\InvalidBranchNameException;
 /**
  * 
  * @author Paul Schweppe <paulschweppe@gmail.com>
@@ -31,21 +33,21 @@ class GitBranchCommand extends AbstractGitCommand{
         try{
             //$branchName =  $this->runCommand('git rev-parse --abbrev-ref HEAD');
             $branchName =  $this->command->runCommand('git symbolic-ref --short -q HEAD');
-        }catch(\RuntimeException $e){
+        }catch(RunGitCommandException $e){
             $branchName = $this->getCurrentBranchOldGit();
         }
         if(!$branchName){
             $branchName = "(No Branch)";
         }
         
-        return $branchName;
+        return trim($branchName);
     }
     
     /**
      * Git "--short" does not work on older Git versions.
      * @TODO Check for git version
      * @return string
-     * @throws Exception
+     * @throws RunGitCommandException
      */
     public function getCurrentBranchOldGit(){
         $branchName = '';
@@ -54,11 +56,11 @@ class GitBranchCommand extends AbstractGitCommand{
             $response =  $this->command->runCommand('git symbolic-ref HEAD');
             $tmp = explode('/', $response);
             $branchName = $tmp['2'];
-        }catch(\RuntimeException $e){
+        }catch(RunGitCommandException $e){
             if($this->getObjectCount() == 0){
                 $branchName = 'NEW REPO';
             }else{
-                throw new \Exception($e->getMessage());
+                throw $e;
             }
         }
         
@@ -143,7 +145,7 @@ class GitBranchCommand extends AbstractGitCommand{
      */
     public function createLocalBranch($branchName,$switchToBranch = false){
         if($this->validateBranchName($branchName)){
-            $output = $this->command->runCommand(sprintf('git branch "%s"',$branchName));
+            $output = $this->command->runCommand(sprintf('git branch %s',escapeshellarg($branchName)));
 
             if($switchToBranch){
                 $output .= $this->command->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));
@@ -152,7 +154,7 @@ class GitBranchCommand extends AbstractGitCommand{
                 $this->triggerGitAlterFilesEvent();
             }
         }else{
-            throw new \Exception('This is not a valid branch name');
+            throw new InvalidBranchNameException('This is not a valid branch name');
 
         }
         
@@ -170,7 +172,7 @@ class GitBranchCommand extends AbstractGitCommand{
      */
     public function createBranchFromRemote($branchName,$remoteBranchName, $switchToBranch = false){
         if($this->validateBranchName($branchName)){
-            $output = $this->command->runCommand(sprintf('git branch %s %s 2>&1',$branchName, $remoteBranchName));
+            $output = $this->command->runCommand(sprintf('git branch %s %s 2>&1',escapeshellarg($branchName), escapeshellarg($remoteBranchName)));
 
             if($switchToBranch){
                 $output .= $this->command->runCommand(sprintf('git checkout %s 2>&1',  escapeshellarg($branchName)));;
@@ -178,7 +180,7 @@ class GitBranchCommand extends AbstractGitCommand{
                 $this->triggerGitAlterFilesEvent();
             }
         }else{
-            throw new \Exception('This is not a valid branch name');
+            throw new InvalidBranchNameException('This is not a valid branch name');
 
         }
         
@@ -197,9 +199,10 @@ class GitBranchCommand extends AbstractGitCommand{
         if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
              return true;
         } else {
-           $output = $this->command->runCommand(sprintf('(git check-ref-format "refs/heads/%s");echo -e "\n$?"',$branchName));
+           //$output = $this->command->runCommand(sprintf('(git check-ref-format "refs/heads/%s");echo -e "\n$?"',$branchName));
+           $response = $this->command->runCommand(sprintf('git check-ref-format "refs/heads/%s"',$branchName),false);
            
-            if(trim($output) == 1){
+            if($this->command->getLastExitStatus() !== 0){
                 return false;
             }
         }
@@ -212,14 +215,14 @@ class GitBranchCommand extends AbstractGitCommand{
      * 
      * @param string $branchName
      * @return string command output
-     * @throws \Exception
+     * @throws InvalidBranchNameException
      */
     public function renameCurrentBranch($branchName){
         $output = '';
         if($this->validateBranchName($branchName)){
             $output = $this->command->runCommand(sprintf('git branch -m "%s"',$branchName));
         }else{
-            throw new \Exception('This is not a valid branch name');
+            throw new InvalidBranchNameException('This is not a valid branch name');
 
         }
         
@@ -259,7 +262,7 @@ class GitBranchCommand extends AbstractGitCommand{
     public function deleteBranch($branchName,$forceDelete = false){
         $currentBranch = $this->getCurrentBranch();
         if($branchName === $currentBranch){
-            throw new \Exception('You cannot delete the current branch. Please checkout a different branch before deleting.');
+            throw new DeleteBranchException('You cannot delete the current branch. Please checkout a different branch before deleting.');
         }
         if($forceDelete === true){
             $deleteFlag = '-D';
