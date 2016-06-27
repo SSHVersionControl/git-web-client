@@ -41,6 +41,11 @@ $(function(){
         }
     });
     
+    var buttonClicked = '';
+    $contentContainter.on('click', 'form button[type=submit]', function(){
+        buttonClicked = $(this).attr('name');
+    });
+    
     /* Ajaxify all Forms in container*/
     $contentContainter.on('submit', 'form', function (e) {
 
@@ -55,10 +60,13 @@ $(function(){
 
         $contentContainter.mask({label:loadingText});
         //loadUrl($(this).attr('action'));
+        console.log(buttonClicked);
+        var formData = $(this).serializeArray();
+        formData.push( {'name':buttonClicked});
         $.ajax({
             type: $(this).attr('method'),
             url: $(this).attr('action'),
-            data: $(this).serialize(),
+            data: formData,
             dataType: "html",
             success: function(data, textStatus, jqXHR) {
                 $contentContainter.html(data);
