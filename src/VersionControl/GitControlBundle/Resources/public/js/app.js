@@ -218,5 +218,13 @@ $(function(){
         }
     });
     
+    /* History Filters*/
+    $('body').on('click','.history-filter a',function(e){
+        console.log($(this));
+        e.preventDefault();
+        var filter = $(this).data('filter');
+        $('#form_filter').val(filter);
+    })
+    
     
 });

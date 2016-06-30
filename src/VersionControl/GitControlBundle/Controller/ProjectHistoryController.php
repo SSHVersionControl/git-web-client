@@ -50,6 +50,7 @@ class ProjectHistoryController extends BaseProjectController
         
         $currentPage = $request->query->get('page', 1); 
         $filter = false;
+        $keyword = '';
         //Search
         /*$keyword = $request->query->get('keyword', false);
         $filter= $request->query->get('filter', false);
@@ -103,7 +104,7 @@ class ProjectHistoryController extends BaseProjectController
             'totalCount' => $this->gitLogCommand->getTotalCount(),
             'limit' => $this->gitLogCommand->getLimit(),
             'currentPage' => $this->gitLogCommand->getPage()+1,
-            //'keyword' => $keyword,
+            'keyword' => $keyword,
             'filter' => $filter,
             'searchForm' => $searchForm->createView()
         ));
