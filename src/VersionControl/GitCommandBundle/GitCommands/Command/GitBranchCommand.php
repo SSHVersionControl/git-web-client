@@ -60,7 +60,7 @@ class GitBranchCommand extends AbstractGitCommand{
             if($this->getObjectCount() == 0){
                 $branchName = 'NEW REPO';
             }else{
-                throw $e;
+                $branchName = "(No Branch)";
             }
         }
         
