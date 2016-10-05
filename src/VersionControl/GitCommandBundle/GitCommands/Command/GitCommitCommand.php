@@ -141,12 +141,11 @@ class GitCommitCommand extends AbstractGitCommand{
      * Commits any file that was been staged
      *  
      * @param string $message
+     * @param string $author name<email>
      * @return string response
      */
-    public function commit($message){
-        $user = $this->command->getSecurityContext()->getToken()->getUser();
-        $author = $user->getName().' <'.$user->getEmail().'>';
-        
+    public function commit($message,$author){
+  
         return $this->command->runCommand('git commit -m '.escapeshellarg($message).' --author='.escapeshellarg($author)); 
         
     }
@@ -172,7 +171,7 @@ class GitCommitCommand extends AbstractGitCommand{
      * @return string Command Response
      */
     public function getStatus(){
-        return $this->command->runCommand('git status -u --porcelain');
+        return $this->command->runCommand('git status -u --porcelain',true,false);
     }
     
     /**
@@ -221,7 +220,7 @@ class GitCommitCommand extends AbstractGitCommand{
             $response = $this->command->runCommand($command);
             $lines = $this->splitOnNewLine($response,false);
             $total = count($lines);
-        }catch(\RuntimeException $e){
+        }catch(\VersionControl\GitCommandBundle\GitCommands\Exception\RunGitCommandException $e){
             //continue
         }
         

@@ -14,6 +14,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
+
 class EditUserProjectsType extends AbstractType
 {
     
@@ -27,7 +30,7 @@ class EditUserProjectsType extends AbstractType
     {
 
         $builder
-            ->add('roles','choice', array(
+            ->add('roles',ChoiceType::class, array(
                     'label' => 'User Role'
                     ,'choices'  => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master')
                     ,'required' => false

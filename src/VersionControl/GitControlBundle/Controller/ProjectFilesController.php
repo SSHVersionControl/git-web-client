@@ -84,10 +84,13 @@ class ProjectFilesController extends BaseProjectController{
         if($currentFile){
             $filePath = trim(urldecode($currentFile));
 
-
-            $file = $this->gitFilesCommands->getFile($filePath, $this->branchName);
-            $fileContents = $this->gitFilesCommands->readFile($file);
-
+            try{
+                $file = $this->gitFilesCommands->getFile($filePath, $this->branchName);
+                $fileContents = $this->gitFilesCommands->readFile($file);
+            }catch (\Exception $e) {
+                $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+            }
+            
             $pathParts = pathinfo($filePath);
             $dir = $pathParts['dirname'];
             
@@ -138,11 +141,13 @@ class ProjectFilesController extends BaseProjectController{
             $currentDir = $pathInfo['dirname'];
             $params['currentDir'] = $currentDir.'/';
         }
-        //print_r($filePath);
-        //die();
-        $response = $this->gitFilesCommands->ignoreFile($filePath, $this->branchName);
         
-        $this->get('session')->getFlashBag()->add('notice', $response);
+        try{
+            $response = $this->gitFilesCommands->ignoreFile($filePath, $this->branchName);
+            $this->get('session')->getFlashBag()->add('notice', $response);
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
             
         return $this->redirect($this->generateUrl('project_filelist', $params));
     }

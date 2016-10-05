@@ -13,6 +13,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+
 class IssueMilestoneType extends AbstractType
 {
     /**
@@ -25,7 +28,7 @@ class IssueMilestoneType extends AbstractType
             ->add('title')
             ->add('description')
             //->add('dueOn')
-            ->add('dueOn', 'datetime', array('date_widget' => "single_text", 'time_widget' => "single_text" ,'required' => false,))
+            ->add('dueOn', DateTimeType::class, array('date_widget' => "single_text", 'time_widget' => "single_text" ,'required' => false,))
 
             ->add('project', 'hidden_entity',array(
                     'class' => 'VersionControl\GitControlBundle\Entity\Project'

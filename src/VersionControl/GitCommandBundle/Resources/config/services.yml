@@ -9,7 +9,7 @@ services:
     version_control.git_commands:
         class: VersionControl\GitCommandBundle\GitCommands\GitCommand
         calls:
-            - [setSecurityContext, ["@security.token_storage"]]
+            #- [setSecurityContext, ["@security.token_storage"]]
             - [setDispatcher, ["@event_dispatcher"]]
             - [setLogger, ["@version_control.logger"]]
             - [setSshProcess, ["@version_control.ssh_process"]]

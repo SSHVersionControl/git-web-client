@@ -41,6 +41,11 @@ $(function(){
         }
     });
     
+    var buttonClicked = '';
+    $contentContainter.on('click', 'form button[type=submit]', function(){
+        buttonClicked = $(this).attr('name');
+    });
+    
     /* Ajaxify all Forms in container*/
     $contentContainter.on('submit', 'form', function (e) {
 
@@ -49,13 +54,19 @@ $(function(){
         if($(this).data('masklabel')){
             loadingText = $(this).data('masklabel');
         }
+        
+        //hide modals if open
+        $(".modal.in").modal('hide');
 
         $contentContainter.mask({label:loadingText});
         //loadUrl($(this).attr('action'));
+        console.log(buttonClicked);
+        var formData = $(this).serializeArray();
+        formData.push( {'name':buttonClicked});
         $.ajax({
             type: $(this).attr('method'),
             url: $(this).attr('action'),
-            data: $(this).serialize(),
+            data: formData,
             dataType: "html",
             success: function(data, textStatus, jqXHR) {
                 $contentContainter.html(data);
@@ -69,6 +80,41 @@ $(function(){
                 $contentContainter.unmask();
             }
         });
+    });
+    
+    /**
+     * Confirm Delete
+     */
+    $('body').on('click','a[data-confirm]',function(ev) {
+        ev.preventDefault();
+        var href = $(this).attr('href')
+        ,confirmHeader = $(this).data('confirm-header')?$(this).data('confirm-header'):'Confirm Action?';
+        $('#dataConfirmModal').remove();
+        if (!$('#dataConfirmModal').length) {
+                $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">\n\
+                    <div class="modal-dialog" role="document">\n\
+                        <div class="modal-content">\n\
+                            <div class="modal-header">\n\
+                                <h3 id="dataConfirmLabel">'+confirmHeader+'</h3>\n\
+                            </div>\n\
+                            <div class="modal-body"></div>\n\
+                            <div class="modal-footer">\n\
+                                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>\n\
+                                <a class="btn btn-primary" id="dataConfirmOK">OK</a>\n\
+                            </div>\n\
+                        </div>\n\
+                    </div></div>');
+        } 
+        $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
+        $('#dataConfirmOK').attr('href', href).on('click',function(e){
+            if($contentContainter.length > 0){
+                e.preventDefault();
+                $(".modal.in").modal('hide');
+                loadUrl($contentContainter,this.href,'Loading...',true); 
+            }
+        });
+        $('#dataConfirmModal').modal({show:true});
+        return false;
     });
     
     /**
@@ -104,10 +150,12 @@ $(function(){
         });
     });
     
-    function loadUrl($element,url,loadingText){
+    function loadUrl($element,url,loadingText,noHistory){
         
         $element.mask({label:loadingText});
-        setUrlHistory(url);
+        if(noHistory !== true){
+            setUrlHistory(url);
+        }
         $element.load( url,function(){
             $element.unmask();
         }); 

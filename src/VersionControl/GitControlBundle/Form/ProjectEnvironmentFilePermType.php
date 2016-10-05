@@ -12,6 +12,8 @@ namespace VersionControl\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
 class ProjectEnvironmentFilePermType extends AbstractType
 {
@@ -24,57 +26,57 @@ class ProjectEnvironmentFilePermType extends AbstractType
         $builder
             ->add('fileOwner')
             ->add('fileGroup')
-            ->add('enableFilePermissions','checkbox', array(
+            ->add('enableFilePermissions',CheckboxType::class, array(
                 'label'    => 'Update file permissions when git alters files?',
                 'required' => false,
                 ))
-            ->add('permissionOwnerRead','checkbox', array(
+            ->add('permissionOwnerRead',CheckboxType::class, array(
                 'label'    => 'Read',
                 'required' => false,
                 ))
-            ->add('permissionOwnerWrite','checkbox', array(
+            ->add('permissionOwnerWrite',CheckboxType::class, array(
                 'label'    => 'Write',
                 'required' => false,
                 ))
-            ->add('permissionOwnerExecute','checkbox', array(
+            ->add('permissionOwnerExecute',CheckboxType::class, array(
                 'label'    => 'Execute',
                 'required' => false,
                 ))
-            ->add('permissionStickyUid','checkbox', array(
+            ->add('permissionStickyUid',CheckboxType::class, array(
                 'label'    => 'Set UID',
                 'required' => false,
                 ))
                 
-            ->add('permissionGroupRead','checkbox', array(
+            ->add('permissionGroupRead',CheckboxType::class, array(
                 'label'    => 'Read',
                 'required' => false,
                 ))
-            ->add('permissionGroupWrite','checkbox', array(
+            ->add('permissionGroupWrite',CheckboxType::class, array(
                 'label'    => 'Write',
                 'required' => false,
                 ))
-            ->add('permissionGroupExecute','checkbox', array(
+            ->add('permissionGroupExecute',CheckboxType::class, array(
                 'label'    => 'Execute',
                 'required' => false,
                 ))
-            ->add('permissionStickyGid','checkbox', array(
+            ->add('permissionStickyGid',CheckboxType::class, array(
                 'label'    => 'Set GID',
                 'required' => false,
                 ))
                 
-            ->add('permissionOtherRead','checkbox', array(
+            ->add('permissionOtherRead',CheckboxType::class, array(
                 'label'    => 'Read',
                 'required' => false,
                 ))
-            ->add('permissionOtherWrite','checkbox', array(
+            ->add('permissionOtherWrite',CheckboxType::class, array(
                 'label'    => 'Write',
                 'required' => false,
                 ))
-            ->add('permissionOtherExecute','checkbox', array(
+            ->add('permissionOtherExecute',CheckboxType::class, array(
                 'label'    => 'Execute',
                 'required' => false,
                 ))
-            ->add('permissionStickyBit','checkbox', array(
+            ->add('permissionStickyBit',CheckboxType::class, array(
                 'label'    => 'Set UID',
                 'required' => false,
                 ))

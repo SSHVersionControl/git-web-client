@@ -50,6 +50,7 @@ class ProjectHistoryController extends BaseProjectController
         
         $currentPage = $request->query->get('page', 1); 
         $filter = false;
+        $keyword = '';
         //Search
         /*$keyword = $request->query->get('keyword', false);
         $filter= $request->query->get('filter', false);
@@ -103,7 +104,7 @@ class ProjectHistoryController extends BaseProjectController
             'totalCount' => $this->gitLogCommand->getTotalCount(),
             'limit' => $this->gitLogCommand->getLimit(),
             'currentPage' => $this->gitLogCommand->getPage()+1,
-            //'keyword' => $keyword,
+            'keyword' => $keyword,
             'filter' => $filter,
             'searchForm' => $searchForm->createView()
         ));
@@ -138,6 +139,7 @@ class ProjectHistoryController extends BaseProjectController
             'log' => $gitLog,
             //'diffs' => $gitDiffs,
             'files' => $files,
+            'commitHash' => $commitHash
         ));
     }
     
@@ -178,12 +180,14 @@ class ProjectHistoryController extends BaseProjectController
         $gitUndoCommand = $this->gitCommands->command('undo');
 
         $file = urldecode($filePath);
-        
-        $response = $gitUndoCommand->checkoutFile($file,$commitHash);
-        
-        $this->get('session')->getFlashBag()->add('notice', $response);
-        $this->get('session')->getFlashBag()->add('warning', "Make sure to commit the changes.");
-            
+        try{
+            $response = $gitUndoCommand->checkoutFile($file,$commitHash);
+
+            $this->get('session')->getFlashBag()->add('notice', $response);
+            $this->get('session')->getFlashBag()->add('warning', "Make sure to commit the changes.");
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
         return $this->redirect($this->generateUrl('project_commitdiff', array('id' => $id,'commitHash' => $commitHash)));
        
     }

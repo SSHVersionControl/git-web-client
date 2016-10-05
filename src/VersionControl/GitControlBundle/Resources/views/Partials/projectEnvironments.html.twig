@@ -1,11 +1,43 @@
 
-    <ul class="nav navbar-nav environment-selection">
-        <li><a><span class="title">Project Environments:</span></a></li>
-        {% set currentEnvironment = currentprojectenvironmnent(project) %}
-        {% for projectEnvironment in project.projectEnvironment %}
-            <li {% if(projectEnvironment.id == currentEnvironment.id) %} class="active"{%endif%}>
-                <a href="{{ path(route, params | merge({ 'projenv': projectEnvironment.id })) }}">{{projectEnvironment.title}}</a>
-            </li>
-        {% endfor %}
-    </ul>
+<ul class="nav navbar-nav environment-selection">
+    <li><a><span class="title">Project Environments:</span></a></li>
+                {% set currentEnvironment = currentprojectenvironmnent(project) %}
+                {% for projectEnvironment in project.projectEnvironment %}
+        <li class="btn-group {% if(projectEnvironment.id == currentEnvironment.id) %} active{%endif%}">
 
+            <a class="btn" href="{{ path(route, params | merge({ 'projenv': projectEnvironment.id })) }}">{{projectEnvironment.title}}</a>
+            <a class="btn environment-info-btn" href="#" data-id="info-{{projectEnvironment.id}}"><i class="fa fa-angle-left pull-right"></i></a>
+
+        </li>
+    {% endfor %}
+</ul>
+{% for projectEnvironment in project.projectEnvironment %}
+    <div class="environment-info-content" id="info-{{projectEnvironment.id}}">
+        <div class="info-body">
+            <a href="" class="close-info pull-right">
+                <i class="fa fa-close"></i>
+            </a>
+            <p>{{projectEnvironment.description}}</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="list-group">
+                        <li class="list-group-item"><strong>Path:</strong> {{projectEnvironment.path}}</li>
+                        <li class="list-group-item"><strong>Uses SSH:</strong> {{ ('boolean.' ~ projectEnvironment.ssh) | trans }}</li>
+                        <li class="list-group-item"><strong>SSH Host:</strong> {{projectEnvironment.host}}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    {% if(projectEnvironment.projectEnvironmentFilePerm) %}
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>Uses File Permissions:</strong> {{ ('boolean.' ~ projectEnvironment.projectEnvironmentFilePerm.enableFilePermissions) | trans }}</li>
+                            <li class="list-group-item"><strong>File Owner:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileOwner}}</li>
+                            <li class="list-group-item"><strong>File Group:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileGroup}}</li>
+                            <li class="list-group-item"><strong>Permissions:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileMode}}</li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+                
+        </div>
+    </div>
+{% endfor %}

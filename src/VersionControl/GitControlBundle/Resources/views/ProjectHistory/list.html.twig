@@ -58,10 +58,10 @@
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                         <span id="search_concept">{{ filter ? filter : 'Filter by' }}</span> <span class="caret"></span>
                                     </button>
-                                    <ul class="dropdown-menu" role="menu">
-                                      <li><a href="#messages">Commit Messages</a></li>
-                                      <li><a href="#author">Author</a></li>
-                                      <li><a href="#content">Content</a></li>
+                                    <ul class="dropdown-menu history-filter" role="menu">
+                                      <li><a href="#messages" data-filter="messages" class="non-ajax">Commit Messages</a></li>
+                                      <li><a href="#author" data-filter="author" class="non-ajax">Author</a></li>
+                                      <li><a href="#content" data-filter="content" class="non-ajax">Content</a></li>
                                     </ul>
                                 </div>
                                 {{ form_widget(searchForm.filter) }}

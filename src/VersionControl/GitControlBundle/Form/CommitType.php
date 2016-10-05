@@ -12,7 +12,12 @@ namespace VersionControl\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class CommitType extends AbstractType
 {
@@ -22,10 +27,7 @@ class CommitType extends AbstractType
     
     protected $gitRemoteVersions;
     
-    public function __construct($includeIssues = false,$gitRemoteVersions = array()) {
-        $this->includeIssues = $includeIssues;
-        $this->gitRemoteVersions = $gitRemoteVersions;
-    }
+    
 
     /**
      * @param FormBuilderInterface $builder
@@ -33,8 +35,12 @@ class CommitType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->includeIssues = $options['includeIssues'];
+        $this->gitRemoteVersions = $options['gitRemoteVersions'];
+        $this->fileChoices = $options['fileChoices'];
+        
         $builder     
-            ->add('comment', 'textarea', array(
+            ->add('comment', TextareaType::class, array(
             'label' => 'Comment'
             ,'required' => false
             //,'constraints' => array(
@@ -48,7 +54,7 @@ class CommitType extends AbstractType
             //)
             ));
         if(count($this->getFileChoices()) > 0){
-            $builder->add('files', 'choice', array(
+            $builder->add('files', ChoiceType::class, array(
                 'choices' => $this->getFileChoices(),
                 //'class' => '\VersionControl\GitControlBundle\Entity\GitFile',
                 'multiple'     => true,
@@ -67,7 +73,7 @@ class CommitType extends AbstractType
                 //)
                 ));
         }else{
-            $builder->add('files','checkbox', array(
+            $builder->add('files',CheckboxType::class, array(
                 'label'    => 'Commit all files',
                 'required' => false,
             )); 
@@ -75,8 +81,8 @@ class CommitType extends AbstractType
  
                 
         if($this->includeIssues === true){
-            $builder->add('issue', 'hidden')
-            ->add('issueAction','choice', [
+            $builder->add('issue', HiddenType::class)
+            ->add('issueAction',ChoiceType::class, [
                     'choices' => [
                         'Close Issue' => [
                             'Fixed Issue' => 'Fixed',
@@ -98,7 +104,7 @@ class CommitType extends AbstractType
             foreach($this->gitRemoteVersions as $remoteVersion){
                 $remoteChoices[$remoteVersion[0]] = $remoteVersion[0].'('.$remoteVersion[1].')'; 
             }
-            $builder->add('pushRemote','choice', [
+            $builder->add('pushRemote',ChoiceType::class, [
                 'choices' => $remoteChoices,
                 'multiple'     => true,
                 'expanded'  => true,
@@ -117,9 +123,14 @@ class CommitType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GitControlBundle\Entity\Commit'
+            'data_class' => 'VersionControl\GitControlBundle\Entity\Commit',
+            'includeIssues' => false,
+            'gitRemoteVersions' => array(),
+            'fileChoices' => array(),
         ));
     }
+    
+    
 
     /**
      * @return string

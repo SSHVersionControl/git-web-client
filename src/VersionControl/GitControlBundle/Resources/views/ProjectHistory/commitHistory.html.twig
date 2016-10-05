@@ -164,7 +164,7 @@
                                 <span class="status">{{file.statusChange}}</span>
                             {% endif %} 
                         </td>
-                        <td><a data-toggle="modal" href="{{ path('project_commitfilediff', { 'id': project.id, 'commitHash': log.abbrHash, 'filePath':file.filePath|url_encode }) }}" data-target="#diff" class="non-ajax">
+                        <td><a data-toggle="modal" href="{{ path('project_commitfilediff', { 'id': project.id, 'commitHash': commitHash, 'filePath':file.filePath|url_encode }) }}" data-target="#diff" class="non-ajax">
                             {{file.filePath}}
                             </a>
                         </td>

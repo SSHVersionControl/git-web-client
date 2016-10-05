@@ -16,6 +16,7 @@ use VersionControl\GitCommandBundle\Entity\GitFile;
 use VersionControl\GitCommandBundle\Entity\GitLog;
 
 use VersionControl\GitCommandBundle\GitCommands\GitDiffParser;
+use \VersionControl\GitCommandBundle\GitCommands\Exception\RunGitCommandException;
 
 
 /**
@@ -288,11 +289,11 @@ class GitFilesCommand extends AbstractGitCommand {
             }
             $logData = $this->command->runCommand($command);
             
-        }catch(\RuntimeException $e){
+        }catch(RunGitCommandException $e){
             if($this->getObjectCount() == 0){
                 return $logs;
             }else{
-                throw new \Exception('Error in get log Command:'.$e->getMessage());
+                throw new RunGitCommandException('Error in get log Command:'.$e->getMessage());
                 //Throw exception
             }
         }
@@ -328,7 +329,7 @@ class GitFilesCommand extends AbstractGitCommand {
     public function isFileIgnored($filePath){
         try{
             $response = $this->command->runCommand(sprintf('git check-ignore %s',escapeshellarg($filePath)));
-        }catch(\RuntimeException $e){
+        }catch(RunGitCommandException $e){
             if($this->command->getLastExitStatus() == 128){
                 throw $e;
             }elseif($this->command->getLastExitStatus() == 1){

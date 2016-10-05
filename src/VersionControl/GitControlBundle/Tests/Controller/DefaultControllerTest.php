@@ -2,16 +2,19 @@
 
 namespace VersionControl\GitControlBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use VersionControl\GitControlBundle\Tests\Controller\BaseControllerTestCase;
 
-class DefaultControllerTest extends WebTestCase
+class DefaultControllerTest extends BaseControllerTestCase
 {
+    
     public function testIndex()
     {
-        $client = static::createClient();
+        $this->createAuthorizedClient();
 
-        $crawler = $client->request('GET', '/hello/Fabien');
+        $crawler = $this->client->request('GET', '/');
 
-        $this->assertTrue($crawler->filter('html:contains("Hello Fabien")')->count() > 0);
+        $this->assertTrue($crawler->filter('html:contains("Your Git Projects")')->count() > 0);
+
     }
+    
 }

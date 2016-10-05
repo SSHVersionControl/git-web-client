@@ -26,6 +26,8 @@ use VersionControl\GitControlBundle\Entity\Commit;
 
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
@@ -146,8 +148,10 @@ class ProjectCommitController extends BaseProjectController
                 //Handle Issue Action eg Close issue. Update Commit message
                 $this->handleIssue($commitEntity);
      
+                $user = $this->get('security.token_storage')->getToken()->getUser();
+                $author = $user->getName().' <'.$user->getEmail().'>';
                 //Git Commit 
-                $this->gitCommitCommand->commit($commitEntity->getComment());
+                $this->gitCommitCommand->commit($commitEntity->getComment(),$author);
                 
                 //Set notice of successfull commit
                 $this->get('session')->getFlashBag()->add('notice'
@@ -214,12 +218,20 @@ class ProjectCommitController extends BaseProjectController
         //$fileChoices = $this->gitCommitCommand->getFilesToCommit();
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
-        $form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
+        //$form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
+        //    'action' => $this->generateUrl('project_commit'),
+        //    'method' => 'POST',
+        //));
+        
+        $form = $this->createForm(CommitType::class, $commitEntity, array(
             'action' => $this->generateUrl('project_commit'),
             'method' => 'POST',
+            'includeIssues' => $includeIssues,
+            'gitRemoteVersions' => $gitRemoteVersions,
+            'fileChoices' => $fileChoices,
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Commit'));
+        $form->add('submit', SubmitType::class, array('label' => 'Commit'));
 
         return $form;
 
@@ -278,8 +290,12 @@ class ProjectCommitController extends BaseProjectController
         if(count($gitRemotes) > 0){
 
             foreach($gitRemotes as $gitRemote){
-                $response = $this->gitSyncCommands->push($gitRemote,$branch);  
-                $this->get('session')->getFlashBag()->add('notice', $response);
+                try{
+                    $response = $this->gitSyncCommands->push($gitRemote,$branch);  
+                    $this->get('session')->getFlashBag()->add('notice', $response);
+                }catch (\Exception $e) {
+                    $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+                }
             }
         }
     }
@@ -314,13 +330,15 @@ class ProjectCommitController extends BaseProjectController
      */
     public function resetFileAction($filePath){
         
-        $gitUndoCommand = $this->gitCommands->command('undo');
-
-        $file = urldecode($filePath);
-        
-        $response = $gitUndoCommand->checkoutFile($file,'HEAD');
-        
-        $this->get('session')->getFlashBag()->add('notice', $response);
+        try{
+            $gitUndoCommand = $this->gitCommands->command('undo');
+            $file = urldecode($filePath);
+            $response = $gitUndoCommand->checkoutFile($file,'HEAD');
+            $this->get('session')->getFlashBag()->add('notice', $response);
+            $this->get('session')->getFlashBag()->add('status-refresh','true');
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
             
         return $this->redirect($this->generateUrl('project_commitlist'));
        

@@ -120,34 +120,7 @@ $(function(){
             $('#remote-branch-label').html(remoteName);
     });
 
-   /**
-     * Confirm Delete
-     */
-    $('body').on('click','a[data-confirm]',function(ev) {
-            ev.preventDefault();
-            var href = $(this).attr('href')
-            ,confirmHeader = $(this).data('confirm-header')?$(this).data('confirm-header'):'Confirm Action?';
-
-            if (!$('#dataConfirmModal').length) {
-                    $('body').append('<div id="dataConfirmModal" class="modal" role="dialog" aria-labelledby="dataConfirmLabel" aria-hidden="true">\n\
-                        <div class="modal-dialog" role="document">\n\
-                            <div class="modal-content">\n\
-                                <div class="modal-header">\n\
-                                    <h3 id="dataConfirmLabel">'+confirmHeader+'</h3>\n\
-                                </div>\n\
-                                <div class="modal-body"></div>\n\
-                                <div class="modal-footer">\n\
-                                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>\n\
-                                    <a class="btn btn-primary" id="dataConfirmOK">OK</a>\n\
-                                </div>\n\
-                            </div>\n\
-                        </div></div>');
-            } 
-            $('#dataConfirmModal').find('.modal-body').text($(this).attr('data-confirm'));
-            $('#dataConfirmOK').attr('href', href);
-            $('#dataConfirmModal').modal({show:true});
-            return false;
-	});
+   
         
         
     /**
@@ -225,7 +198,33 @@ $(function(){
         //alert('open');
     });
     
+    $('.close-info').on('click',function(e){
+        e.preventDefault();
+        $(this).closest('.environment-info-content').removeClass('is-visible');
+    });
     
+    $('.environment-info-btn').on('click',function(e){
+        e.preventDefault();
+        $id = $(this).data('id');
+        var $info = $('#'+$id);
+        if($info.hasClass('is-visible')){
+            $('.environment-info-content').removeClass('is-visible'); 
+            $('.environment-info-btn').removeClass('active');
+        }else{
+            $('.environment-info-content').removeClass('is-visible');
+            $('.environment-info-btn').removeClass('active');
+            $info.addClass('is-visible');
+            $(this).addClass('active');
+        }
+    });
+    
+    /* History Filters*/
+    $('body').on('click','.history-filter a',function(e){
+        console.log($(this));
+        e.preventDefault();
+        var filter = $(this).data('filter');
+        $('#form_filter').val(filter);
+    })
     
     
 });

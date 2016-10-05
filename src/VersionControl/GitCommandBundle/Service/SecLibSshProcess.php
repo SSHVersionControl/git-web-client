@@ -12,6 +12,7 @@ namespace VersionControl\GitCommandBundle\Service;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use VersionControl\GitCommandBundle\Service\SshProcessInterface;
+use VersionControl\GitCommandBundle\GitCommands\Exception\RunGitCommandException;
 
 use phpseclib\Net\SSH2;
 use phpseclib\Crypt\RSA;
@@ -191,7 +192,7 @@ class SecLibSshProcess implements SshProcessInterface
 
         if ($exitStatus != 0) {
             //print_r($stderr);
-             throw new \RuntimeException(sprintf("Error in command shell:%s \n Error Response:%s%s",$command,implode("\n", $stderr),$stdOutput));
+             throw new RunGitCommandException(sprintf("Error in command shell:%s \n Error Response:%s%s",$command,implode("\n", $stderr),$stdOutput));
         }
 
         $this->stdout = array_merge($this->stdout, $stdout);

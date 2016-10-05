@@ -48,10 +48,14 @@ class UndoCommitController extends BaseProjectController
      */
     public function undoSoftCommitAction($id, Request $request){
 
-        $response = $this->gitUndoCommands->undoCommit();
-        $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
-        $this->get('session')->getFlashBag()->add('notice', $response);
-        $this->get('session')->getFlashBag()->add('status-refresh','true');
+        try{
+            $response = $this->gitUndoCommands->undoCommit();
+            $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
+            $this->get('session')->getFlashBag()->add('notice', $response);
+            $this->get('session')->getFlashBag()->add('status-refresh','true');
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
         
         return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
     }
@@ -66,10 +70,14 @@ class UndoCommitController extends BaseProjectController
      */
     public function undoHardCommitAction($id, Request $request){    
         
-        $response = $this->gitUndoCommands->undoCommitHard();
-        $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
-        $this->get('session')->getFlashBag()->add('notice', $response);
-        $this->get('session')->getFlashBag()->add('status-refresh','true');
+        try{
+            $response = $this->gitUndoCommands->undoCommitHard();
+            $response .= ' If you pushed the last commit to a remote server you will have to pull from remote before it will allow you to push again.';
+            $this->get('session')->getFlashBag()->add('notice', $response);
+            $this->get('session')->getFlashBag()->add('status-refresh','true');
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
         
         return $this->redirect($this->generateUrl('project_commitlist', array('id' => $this->project->getId())));
     }
@@ -87,12 +95,14 @@ class UndoCommitController extends BaseProjectController
      */
     public function checkoutCommitAction($id,$commitHash){
         
+        try{
+            $response = $this->gitUndoCommands->checkoutCommit($commitHash);
 
-        $response = $this->gitUndoCommands->checkoutCommit($commitHash);
-        
-        $this->get('session')->getFlashBag()->add('notice', $response);
-        $this->get('session')->getFlashBag()->add('status-refresh','true');
-        
+            $this->get('session')->getFlashBag()->add('notice', $response);
+            $this->get('session')->getFlashBag()->add('status-refresh','true');
+        }catch (\Exception $e) {
+            $this->get('session')->getFlashBag()->add('error', $e->getMessage());
+        }
         return $this->redirect($this->generateUrl('project_log', array('id' => $this->project->getId())));
     }
     

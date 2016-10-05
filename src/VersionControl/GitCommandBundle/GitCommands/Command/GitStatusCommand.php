@@ -60,7 +60,7 @@ class GitStatusCommand extends AbstractGitCommand {
      * @return string Command Response
      */
     public function getStatus(){
-        return $this->command->runCommand('git status -u --porcelain');
+        return $this->command->runCommand('git status -u --porcelain',true,false);
     }
     
     /**
@@ -168,19 +168,7 @@ class GitStatusCommand extends AbstractGitCommand {
          $this->stageFiles(array($file));
     }
     
-    /**
-     * Commits any file that was been staged
-     *  
-     * @param string $message
-     * @return string response
-     */
-    public function commit($message){
-        $user = $this->command->getSecurityContext()->getToken()->getUser();
-        $author = $user->getName().' <'.$user->getEmail().'>';
-        
-        return $this->command->runCommand('git commit -m '.escapeshellarg($message).' --author='.escapeshellarg($author)); 
-        
-    }
+    
     
     /**
      * Process the git status data into GitFile objects

@@ -12,6 +12,9 @@ namespace VersionControl\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class ProjectIssueIntegratorType extends AbstractType
 {
@@ -22,7 +25,7 @@ class ProjectIssueIntegratorType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('repoType','choice', [
+            ->add('repoType',ChoiceType::class, [
                     'choices' => [
                         'Github' => 'Github',
                         'GitLab' => 'GitLab',
