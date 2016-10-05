@@ -43,7 +43,7 @@ class EditUserProjectsType extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * @inheritDoc
      */
     public function configureOptions(OptionsResolver  $resolver)
     {
@@ -55,7 +55,7 @@ class EditUserProjectsType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'versioncontrol_gitcontrolbundle_userprojects';
     }

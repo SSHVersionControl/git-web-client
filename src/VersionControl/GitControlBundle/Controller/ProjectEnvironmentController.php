@@ -25,6 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 /**
  * Project controller.
  *
@@ -135,7 +136,7 @@ class ProjectEnvironmentController extends BaseProjectController
             'data'=>$gitaction
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -248,7 +249,7 @@ class ProjectEnvironmentController extends BaseProjectController
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }
@@ -328,7 +329,7 @@ class ProjectEnvironmentController extends BaseProjectController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('projectenvironment_delete', array('projectEnvironmentId' => $projectEnvironmentId)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', SubmitType::class, array('label' => 'Delete'))
             ->getForm()
         ;
     }

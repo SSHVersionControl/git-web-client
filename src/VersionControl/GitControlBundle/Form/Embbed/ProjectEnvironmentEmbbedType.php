@@ -20,7 +20,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ProjectEnvironmentEmbbedType extends AbstractType{
 
     //put your code here
-    public function getName(){
+    public function getBlockPrefix(){
         return 'projectenvironmentembbed';
     }
     

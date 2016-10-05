@@ -50,7 +50,7 @@ class IssueMilestoneType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'versioncontrol_gitcontrolbundle_issuemilestone';
     }

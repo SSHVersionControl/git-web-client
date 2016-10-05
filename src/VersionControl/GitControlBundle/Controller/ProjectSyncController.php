@@ -24,6 +24,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 /**
  * Project controller.
  *
@@ -59,7 +61,7 @@ class ProjectSyncController extends BaseProjectController
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
         $pushForm = $this->createPushPullForm($this->project);
-        $pushForm->add('push', 'submit', array('label' => 'Push'));
+        $pushForm->add('push', SubmitType::class, array('label' => 'Push'));
 
         return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
@@ -82,7 +84,7 @@ class ProjectSyncController extends BaseProjectController
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
         $pushForm = $this->createPushPullForm($this->project);
-        $pushForm->add('push', 'submit', array('label' => 'Push'));
+        $pushForm->add('push', SubmitType::class, array('label' => 'Push'));
         $pushForm->handleRequest($request);
 
         if ($pushForm->isValid()) {
@@ -126,8 +128,8 @@ class ProjectSyncController extends BaseProjectController
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
 
         $pullForm = $this->createPushPullForm($this->project,"project_pulllocal");
-        $pullForm->add('pull', 'submit', array('label' => 'Pull'));
-        $pullForm->add('viewDiff', 'submit', array('label' => 'View Diff'));
+        $pullForm->add('pull', SubmitType::class, array('label' => 'Pull'));
+        $pullForm->add('viewDiff', SubmitType::class, array('label' => 'View Diff'));
         
          return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
@@ -152,8 +154,8 @@ class ProjectSyncController extends BaseProjectController
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
         $pullForm = $this->createPushPullForm($this->project,"project_pulllocal");
-        $pullForm->add('pull', 'submit', array('label' => 'Pull'));
-        $pullForm->add('viewDiff', 'submit', array('label' => 'View Diff'));
+        $pullForm->add('pull', SubmitType::class, array('label' => 'Pull'));
+        $pullForm->add('viewDiff', SubmitType::class, array('label' => 'View Diff'));
         $pullForm->handleRequest($request);
 
         if ($pullForm->isValid()) {
@@ -256,7 +258,7 @@ class ProjectSyncController extends BaseProjectController
             )   
             ->getForm();
 
-        //$form->add('submitMain', 'submit', array('label' => 'Push'));
+        //$form->add('submitMain', SubmitType::class, array('label' => 'Push'));
         return $form;
     }
 

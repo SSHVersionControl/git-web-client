@@ -11,7 +11,7 @@ namespace VersionControl\GitControlBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -47,7 +47,7 @@ class CommitType extends AbstractType
                // new NotBlank(array('message'=>'Please add a commit comment.'))
             //)
             ))
-        ->add('statushash', 'hidden', array(
+        ->add('statushash', HiddenType::class, array(
             //'data' => $this->gitCommands->getStatusHash(),
             //'constraints' => array(
                 //new NotBlank()
@@ -102,14 +102,14 @@ class CommitType extends AbstractType
         if(is_array($this->gitRemoteVersions) && count($this->gitRemoteVersions) > 0){
             $remoteChoices = array();
             foreach($this->gitRemoteVersions as $remoteVersion){
-                $remoteChoices[$remoteVersion[0]] = $remoteVersion[0].'('.$remoteVersion[1].')'; 
+                $remoteChoices[$remoteVersion[0].'('.$remoteVersion[1].')'] = $remoteVersion[0];
             }
             $builder->add('pushRemote',ChoiceType::class, [
                 'choices' => $remoteChoices,
                 'multiple'     => true,
                 'expanded'  => true,
                 'required'  => false,
-                'choices_as_values' => false,
+                'choices_as_values' => true,
                 'label' => 'Push changes immediately to:'
                 
             ]);
@@ -118,9 +118,9 @@ class CommitType extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * @inheritDoc
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitControlBundle\Entity\Commit',
@@ -135,7 +135,7 @@ class CommitType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'versioncontrol_gitcontrolbundle_commit';
     }

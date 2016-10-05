@@ -217,11 +217,7 @@ class ProjectCommitController extends BaseProjectController
         $includeIssues = ($this->issuesCount > 0)?true:false;
         //$fileChoices = $this->gitCommitCommand->getFilesToCommit();
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
-        
-        //$form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
-        //    'action' => $this->generateUrl('project_commit'),
-        //    'method' => 'POST',
-        //));
+       
         
         $form = $this->createForm(CommitType::class, $commitEntity, array(
             'action' => $this->generateUrl('project_commit'),

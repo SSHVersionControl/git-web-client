@@ -24,6 +24,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 /**
  * Project controller.
  * @Method("GET")
@@ -112,7 +114,7 @@ class UserManagementController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -160,7 +162,7 @@ class UserManagementController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }

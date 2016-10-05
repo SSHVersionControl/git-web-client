@@ -11,7 +11,7 @@ namespace VersionControl\GitControlBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EntityType;
@@ -52,9 +52,9 @@ class IssueEditType extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * @inheritDoc
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitControlBundle\Entity\Issue'
@@ -64,7 +64,7 @@ class IssueEditType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'versioncontrol_gitcontrolbundle_issue';
     }

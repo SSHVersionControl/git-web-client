@@ -12,7 +12,7 @@ namespace VersionControl\GitControlBundle\Form\Field;
 use Symfony\Component\Form\AbstractType;
 use Dpn\ToolsBundle\Form\DataTransformer\EntityToIdTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\Common\Persistence\ObjectManager;
 
 class EntityHiddenType extends AbstractType
@@ -33,7 +33,10 @@ class EntityHiddenType extends AbstractType
         $builder->addModelTransformer($transformer);
     }
     
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    /**
+     * @inheritDoc
+     */
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             ->setRequired(array('class'))
@@ -48,7 +51,7 @@ class EntityHiddenType extends AbstractType
         return 'hidden';
     }
     
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'entity_hidden';
     }

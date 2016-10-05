@@ -21,6 +21,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * Project controller.
@@ -256,7 +257,7 @@ class ProjectBranchController extends BaseProjectController {
                 )
                 ->getForm();
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
         return $form;
     }
 
@@ -318,7 +319,7 @@ class ProjectBranchController extends BaseProjectController {
                 )
                 ->getForm();
 
-        $form->add('submit', 'submit', array('label' => 'Merge'));
+        $form->add('submit', SubmitType::class, array('label' => 'Merge'));
         return $form;
     }
 

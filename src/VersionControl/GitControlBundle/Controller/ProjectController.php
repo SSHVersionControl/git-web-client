@@ -19,6 +19,7 @@ use VersionControl\GitControlBundle\Form\ProjectType;
 use VersionControl\GitControlBundle\Utility\GitCommands;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use VersionControl\GitControlBundle\Entity\UserProjects;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -85,7 +86,7 @@ class ProjectController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -153,7 +154,7 @@ class ProjectController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }
@@ -235,7 +236,7 @@ class ProjectController extends Controller
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('project_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', SubmitType::class, array('label' => 'Delete'))
             ->getForm()
         ;
     }

@@ -24,6 +24,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
+
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 /**
  * Project controller.
  *
@@ -243,7 +245,7 @@ class ProjectRemoteController extends BaseProjectController
             ,'constraints' => array(
                 new NotBlank()
             ))
-        )->add('submit', 'submit', array('label' => 'Add'))
+        )->add('submit', SubmitType::class, array('label' => 'Add'))
           
         ->getForm();
 
@@ -268,7 +270,7 @@ class ProjectRemoteController extends BaseProjectController
             ,'constraints' => array(
                 new NotBlank()
             ))
-        )->add('submit', 'submit', array('label' => 'Rename'))
+        )->add('submit', SubmitType::class, array('label' => 'Rename'))
           
         ->getForm();
 

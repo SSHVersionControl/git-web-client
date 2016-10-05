@@ -16,6 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * IssueMilestone controller.
@@ -118,7 +119,7 @@ class IssueMilestoneController extends BaseProjectController
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -220,7 +221,7 @@ class IssueMilestoneController extends BaseProjectController
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }
@@ -295,7 +296,7 @@ class IssueMilestoneController extends BaseProjectController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('issuemilestone_delete', array('id' => $this->project->getId(),'milestoneId'=>$id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', SubmitType::class, array('label' => 'Delete'))
             ->getForm()
         ;
     }

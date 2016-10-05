@@ -18,6 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Issues\IssueLabelInterface;
 use VersionControl\GitControlBundle\Form\IssueLabelType;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * IssueLabel controller.
@@ -102,7 +103,7 @@ class IssueLabelController extends BaseProjectController
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -169,7 +170,7 @@ class IssueLabelController extends BaseProjectController
             'method' => 'PUT',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }

@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 use VersionControl\GitControlBundle\Repository\Issues\IssueRepositoryInterface;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * Issue controller.
@@ -159,7 +160,7 @@ class IssueController extends BaseProjectController
 
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create'));
 
         return $form;
     }
@@ -255,7 +256,7 @@ class IssueController extends BaseProjectController
             'data_class' => get_class($entity)
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
 
         return $form;
     }
@@ -399,7 +400,7 @@ class IssueController extends BaseProjectController
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('issue_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', SubmitType::class, array('label' => 'Delete'))
             ->getForm()
         ;
     }
@@ -463,8 +464,8 @@ class IssueController extends BaseProjectController
             'data_class' => get_class($entity),
         ));
 
-        $form->add('create', 'submit', array('label' => 'Create'));
-        $form->add('createClose', 'submit', array('label' => 'Create & Close'));
+        $form->add('create', SubmitType::class, array('label' => 'Create'));
+        $form->add('createClose', SubmitType::class, array('label' => 'Create & Close'));
 
         return $form;
     }

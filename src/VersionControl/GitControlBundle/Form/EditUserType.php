@@ -33,7 +33,7 @@ class EditUserType extends AbstractType
         return 'fos_user_profile';
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'version_control_user_edit';
     }

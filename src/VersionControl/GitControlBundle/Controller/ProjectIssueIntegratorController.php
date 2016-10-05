@@ -25,6 +25,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 /**
  * Project controller.
  *
@@ -83,7 +85,7 @@ class ProjectIssueIntegratorController extends BaseProjectController{
         return $this->createFormBuilder()
             ->setAction($this->generateUrl('project_issue_integrator_delete', array('integratorId' => $integratorId)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
+            ->add('submit', SubmitType::class, array('label' => 'Delete'))
             ->getForm()
         ;
     }

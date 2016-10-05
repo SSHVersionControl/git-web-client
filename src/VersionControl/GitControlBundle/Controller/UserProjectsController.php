@@ -21,6 +21,8 @@ use VersionControl\GitControlBundle\Form\EditUserProjectsType;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 /**
  * UserProjects controller.
  *
@@ -122,7 +124,7 @@ class UserProjectsController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Add'));
+        $form->add('submit', SubmitType::class, array('label' => 'Add'));
 
         return $form;
     }
@@ -153,7 +155,7 @@ class UserProjectsController extends Controller
                 ))
             ->getForm();
 
-        $form->add('submit', 'submit', array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update'));
         return $form;
         
     }
