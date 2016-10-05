@@ -13,13 +13,16 @@ namespace VersionControl\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+
+
 class EditUserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name')
 
-                ->add('admin', 'checkbox', array(
+                ->add('admin', CheckboxType::class, array(
                 'label'    => 'Admin',
                 'required' => false,
                 ));

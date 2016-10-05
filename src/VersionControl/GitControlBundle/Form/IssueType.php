@@ -16,6 +16,13 @@ use VersionControl\GitControlBundle\Repository\IssueMilestoneRepository;
 //use VersionControl\GitControlBundle\Repository\IssueLabelRepository;
 use Doctrine\ORM\EntityRepository;
 
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\EntityType;
+
 class IssueType extends AbstractType
 {
     /**
@@ -33,7 +40,7 @@ class IssueType extends AbstractType
             //->add('createdAt')
             //->add('updatedAt')
             //->add('githubNumber')
-            ->add('issueMilestone','entity',array(
+            ->add('issueMilestone',EntityType::class,array(
                     'multiple' => false,   // Multiple selection allowed
                     //'expanded' => true,   // Render as checkboxes
                     'placeholder' => 'Choose a milestone',
@@ -51,7 +58,7 @@ class IssueType extends AbstractType
                     'class' => 'VersionControl\GitControlBundle\Entity\Project'
                 ))
             //->add('verUser')
-            ->add('issueLabel','entity',array(
+            ->add('issueLabel',EntityType::class,array(
                     'multiple' => true,   // Multiple selection allowed
                     'expanded' => true,   // Render as checkboxes
                     'property' => 'title', // Assuming that the entity has a "name" property

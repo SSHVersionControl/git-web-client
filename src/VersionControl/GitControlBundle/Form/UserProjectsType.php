@@ -13,6 +13,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class UserProjectsType extends AbstractType
 {
@@ -32,13 +35,13 @@ class UserProjectsType extends AbstractType
     {
         $projectId = $this->getProjectId();
         $builder
-            ->add('roles','choice', array(
+            ->add('roles',ChoiceType::class, array(
                     'label' => 'User Role'
                     ,'choices'  => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master')
                     ,'required' => false
                     ,'empty_value' => 'Please select a role'
                 ))
-            ->add('user','entity', array(
+            ->add('user',EntityType::class, array(
                     'class' => 'VersionControl\GitControlBundle\Entity\User\User',
                     'choice_label' => 'username',
                     'empty_value' => 'Please select a user',

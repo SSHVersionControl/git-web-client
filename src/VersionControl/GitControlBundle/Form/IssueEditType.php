@@ -13,6 +13,10 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\EntityType;
+
+
 class IssueEditType extends AbstractType
 {
     /**
@@ -24,12 +28,12 @@ class IssueEditType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('status','choice',array('label' => 'State'
+            ->add('status',ChoiceType::class,array('label' => 'State'
                     ,'choices'  => array('open' => 'Open', 'closed' => 'Close')
                     ,'required' => false
                     ,'empty_value' => 'Please select a State')
                     )
-            ->add('issueMilestone','entity',array(
+            ->add('issueMilestone',EntityType::class,array(
                     'multiple' => false,   // Multiple selection allowed
                     //'expanded' => true,   // Render as checkboxes
                     'placeholder' => 'Choose a milestone',
@@ -37,7 +41,7 @@ class IssueEditType extends AbstractType
                     'property' => 'title', // Assuming that the entity has a "name" property
                     'class' => 'VersionControl\GitControlBundle\Entity\IssueMilestone'
                 ))
-             ->add('issueLabel','entity',array(
+             ->add('issueLabel',EntityType::class,array(
                     'multiple' => true,   // Multiple selection allowed
                     'expanded' => true,   // Render as checkboxes
                     'property' => 'title', // Assuming that the entity has a "name" property

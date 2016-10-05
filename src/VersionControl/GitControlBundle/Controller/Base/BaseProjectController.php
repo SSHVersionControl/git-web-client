@@ -108,7 +108,8 @@ abstract class BaseProjectController extends Controller{
         }
         
         //Redirect is not ajax
-        $request  = $this->getRequest();
+        $request  = $this->container->get('request_stack')->getCurrentRequest();
+        //$request  = $this->getRequest();
         if( $this->ajaxOnly == true && !$request->isXmlHttpRequest()){
 
              //print_r($request->getRequestUri());

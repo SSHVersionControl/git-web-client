@@ -26,6 +26,8 @@ use VersionControl\GitControlBundle\Entity\Commit;
 
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 
  /** ///Route("/example", service="example_bundle.controller.example_controller") */
 
@@ -216,12 +218,20 @@ class ProjectCommitController extends BaseProjectController
         //$fileChoices = $this->gitCommitCommand->getFilesToCommit();
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         
-        $form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
+        //$form = $this->createForm((new CommitType($includeIssues,$gitRemoteVersions))->setFileChoices($fileChoices), $commitEntity, array(
+        //    'action' => $this->generateUrl('project_commit'),
+        //    'method' => 'POST',
+        //));
+        
+        $form = $this->createForm(CommitType::class, $commitEntity, array(
             'action' => $this->generateUrl('project_commit'),
             'method' => 'POST',
+            'includeIssues' => $includeIssues,
+            'gitRemoteVersions' => $gitRemoteVersions,
+            'fileChoices' => $fileChoices,
         ));
 
-        $form->add('submit', 'submit', array('label' => 'Commit'));
+        $form->add('submit', SubmitType::class, array('label' => 'Commit'));
 
         return $form;
 

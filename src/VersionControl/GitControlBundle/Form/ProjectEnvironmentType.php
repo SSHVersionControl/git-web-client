@@ -13,6 +13,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ProjectEnvironmentType extends AbstractType
 {
@@ -31,19 +36,19 @@ class ProjectEnvironmentType extends AbstractType
             ->add('title')
             ->add('description')
             ->add('path')
-            ->add('ssh','checkbox', array(
+            ->add('ssh',CheckboxType::class, array(
                 'label'    => 'Use SSH?',
                 'required' => false,
                 ))
             ->add('host')
             ->add('username')
-            ->add('password','password',array('required' => false))
-            ->add('privateKey','textarea',array('required' => false))
-            ->add('privateKeyPassword','password',array('required' => false))
+            ->add('password',PasswordType::class,array('required' => false))
+            ->add('privateKey',TextareaType::class,array('required' => false))
+            ->add('privateKeyPassword',PasswordType::class,array('required' => false))
             ->add('projectEnvironmentFilePerm',  new ProjectEnvironmentFilePermType(), array('required'  => false));
         
         if($this->useCloneLocation === true){
-            $builder->add('gitCloneLocation','text',array('required' => false)) ; 
+            $builder->add('gitCloneLocation',TextType::class,array('required' => false)) ; 
         }
         
     }

@@ -139,6 +139,7 @@ class ProjectHistoryController extends BaseProjectController
             'log' => $gitLog,
             //'diffs' => $gitDiffs,
             'files' => $files,
+            'commitHash' => $commitHash
         ));
     }
     
