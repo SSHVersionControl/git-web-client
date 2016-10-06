@@ -122,10 +122,13 @@ class IssueRepositoryManager {
         
     public function getIssueFormType(){
         if($this->issueIntegrator){ 
+            
             $repoType = $this->issueIntegrator->getRepoType();
-            $issueFormType = $this->serviceContainer->get('version_control.issue_form_type.'.strtolower($repoType));
+            $issueFormType = 'VersionControl\\'.$repoType.'IssueBundle\Form\IssueType';
+
         }else{
-            $issueFormType = new IssueType($this);
+            $issueFormType = IssueType::class;
+
         }
         return $issueFormType;
     }
@@ -134,9 +137,9 @@ class IssueRepositoryManager {
 
          if($this->issueIntegrator){ 
             $repoType = $this->issueIntegrator->getRepoType();
-            $issueEditFormType = $this->serviceContainer->get('version_control.issue_form_edit_type.'.strtolower($repoType));
+            $issueEditFormType = "VersionControl\\".$repoType."IssueBundle\Form\IssueEditType";
         }else{
-            $issueEditFormType = new IssueEditType($this);
+            $issueEditFormType = IssueEditType::class;
         }
         
         return $issueEditFormType;
@@ -145,9 +148,10 @@ class IssueRepositoryManager {
     public function getIssueCommentFormType(){
         if($this->issueIntegrator){ 
             $repoType = $this->issueIntegrator->getRepoType();
-            $issueFormType = $this->serviceContainer->get('version_control.issue_comment_form_type.'.strtolower($repoType));
+            //$issueFormType = $this->serviceContainer->get("version_control.issue_comment_form_type.'.strtolower($repoType));
+            $issueFormType = 'VersionControl\\'.$repoType.'IssueBundle\Form\IssueCommentType';
         }else{
-            $issueFormType = new IssueCommentType($this);
+            $issueFormType = IssueCommentType::class;
         }
         return $issueFormType;
     }
@@ -155,9 +159,10 @@ class IssueRepositoryManager {
     public function getIssueLabelFormType(){
         if($this->issueIntegrator){ 
             $repoType = $this->issueIntegrator->getRepoType();
-            $issueFormType = $this->serviceContainer->get('version_control.issue_label_form_type.'.strtolower($repoType));
+            //$issueFormType = $this->serviceContainer->get('version_control.issue_label_form_type.'.strtolower($repoType));
+            $issueFormType = 'VersionControl\\'.$repoType.'IssueBundle\Form\IssueLabelType';
         }else{
-            $issueFormType = new IssueLabelType($this);
+            $issueFormType = IssueLabelType::class;
         }
         return $issueFormType;
     }
@@ -165,9 +170,10 @@ class IssueRepositoryManager {
     public function getIssueMilestoneFormType(){
         if($this->issueIntegrator){ 
             $repoType = $this->issueIntegrator->getRepoType();
-            $issueFormType = $this->serviceContainer->get('version_control.issue_milestone_form_type.'.strtolower($repoType));
+            //$issueFormType = $this->serviceContainer->get('version_control.issue_milestone_form_type.'.strtolower($repoType));
+            $issueFormType = 'VersionControl\\'.$repoType.'IssueBundle\Form\IssueMilestoneType';
         }else{
-            $issueFormType = new IssueMilestoneType($this);
+            $issueFormType = IssueMilestoneType::class;
         }
         return $issueFormType;
     }

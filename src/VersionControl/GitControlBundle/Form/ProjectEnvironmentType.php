@@ -60,7 +60,7 @@ class ProjectEnvironmentType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitControlBundle\Entity\ProjectEnvironment'
-            ,'cascade_validation' => true
+            //,'cascade_validation' => true
             ,'validation_groups' => function (FormInterface $form) {
                 
                 if($form->has('gitaction')){

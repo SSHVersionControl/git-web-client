@@ -11,7 +11,7 @@ namespace VersionControl\GitlabIssueBundle\Form\Field;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use VersionControl\GitlabIssueBundle\Form\DataTransformer\IdToGitlabProjectTransformer;
 
@@ -29,7 +29,7 @@ class GitlabProjectType extends AbstractType
         $builder->addModelTransformer(new IdToGitlabProjectTransformer());
     }
     
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
             //->setRequired(array('class'))
@@ -44,7 +44,7 @@ class GitlabProjectType extends AbstractType
         return 'choice';
     }
     
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'gitlab_project_choice';
     }

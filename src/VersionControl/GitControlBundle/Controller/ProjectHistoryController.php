@@ -23,6 +23,12 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+
+
+
 /**
  * Project controller.
  *
@@ -238,18 +244,19 @@ class ProjectHistoryController extends BaseProjectController
                 'action' => $this->generateUrl('project_log', array('id' => $this->project->getId())),
                 'method' => 'GET',
             ))
-            ->add('branch', 'choice', array(
+            ->add('branch', ChoiceType::class, array(
                 'label' => 'Branch'
                 ,'choices'  => $branchChoices
                 ,'preferred_choices' => array($currentBranch)
                 ,'data' => trim($currentBranch)
                 ,'required' => false
+                ,'choices_as_values' => true
                 ,'constraints' => array(
                     //new NotBlank()
                 ))
             )   
-            ->add('filter','hidden')
-            ->add('keyword','text',array('required' => false))
+            ->add('filter',HiddenType::class)
+            ->add('keyword',TextType::class,array('required' => false))
             ->getForm();
 
         //$form->add('submitMain', 'submit', array('label' => 'Push'));

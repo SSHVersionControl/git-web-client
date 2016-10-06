@@ -43,8 +43,11 @@ class SshDetailsValidator extends ConstraintValidator
             
             $this->sftpProcess->setGitEnviroment($projectEnvironment);
             try{
+                
                 if ($this->sftpProcess->isDir($gitPath) === false){
-                    $this->context->buildViolation($constraint->messageFileDoesNotExist)
+                    $this->context->buildViolation('This directory (%gitPath%) does not exist. Please check that you have entered the correct path in %projectEnviromentTitle%')
+                        ->setParameter('%gitPath%', $gitPath)
+                        ->setParameter('%projectEnviromentTitle%', $projectEnvironment->getTitle())
                         ->atPath('path')
                         ->addViolation();
                 }
@@ -54,6 +57,7 @@ class SshDetailsValidator extends ConstraintValidator
                         ->addViolation();
             } catch (\Exception $ex) {
                 $this->context->buildViolation($constraint->message)
+                        
                         ->atPath('title')
                         ->addViolation();
             }

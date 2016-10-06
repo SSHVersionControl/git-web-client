@@ -43,7 +43,6 @@ class ProjectType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitControlBundle\Entity\Project'
-            ,'cascade_validation' => true
         ));
     }
 

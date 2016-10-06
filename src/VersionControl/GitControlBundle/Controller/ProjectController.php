@@ -81,12 +81,12 @@ class ProjectController extends Controller
      */
     private function createCreateForm(Project $entity)
     {
-        $form = $this->createForm(new ProjectType(), $entity, array(
+        $form = $this->createForm(ProjectType::class, $entity, array(
             'action' => $this->generateUrl('project_create'),
             'method' => 'POST',
         ));
 
-        $form->add('submit', SubmitType::class, array('label' => 'Create'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create','validation_groups' => 'New'));
 
         return $form;
     }
@@ -149,12 +149,12 @@ class ProjectController extends Controller
     */
     private function createEditForm(Project $entity)
     {
-        $form = $this->createForm(new ProjectType(), $entity, array(
+        $form = $this->createForm(ProjectType::class, $entity, array(
             'action' => $this->generateUrl('project_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
-        $form->add('submit', SubmitType::class, array('label' => 'Update'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update','validation_groups' => 'Edit'));
 
         return $form;
     }

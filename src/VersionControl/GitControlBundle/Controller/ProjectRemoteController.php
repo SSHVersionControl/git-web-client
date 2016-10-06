@@ -26,6 +26,8 @@ use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 /**
  * Project controller.
  *
@@ -232,14 +234,14 @@ class ProjectRemoteController extends BaseProjectController
             'action' => $this->generateUrl('project_createremote', array('id' => $this->project->getId())),
             'method' => 'POST',
         ))
-        ->add('remoteName', 'text', array(
+        ->add('remoteName', TextType::class, array(
             'label' => 'Remote Name'
             ,'required' => false
             ,'constraints' => array(
                 new NotBlank()
             ))
         )
-        ->add('remoteUrl', 'text', array(
+        ->add('remoteUrl', TextType::class, array(
             'label' => 'Remote Url'
             ,'required' => false
             ,'constraints' => array(
@@ -259,12 +261,12 @@ class ProjectRemoteController extends BaseProjectController
             'action' => $this->generateUrl('project_createremote', array('id' => $this->project->getId())),
             'method' => 'POST',
         ))
-        ->add('remoteName', 'hidden', array(
+        ->add('remoteName', HiddenType::class, array(
             'constraints' => array(
                 new NotBlank()
             ))
         )
-        ->add('newRemoteName', 'text', array(
+        ->add('newRemoteName', TextType::class, array(
             'label' => 'New Remote Name'
             ,'required' => false
             ,'constraints' => array(

@@ -11,7 +11,8 @@ namespace VersionControl\GitlabIssueBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class IssueCommentType extends AbstractType
 {
@@ -22,7 +23,7 @@ class IssueCommentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('comment','textarea')
+            ->add('comment',TextareaType::class)
             //->add('issue', 'hidden_entity',array(
             //        'class' => 'VersionControl\GitlabIssueBundle\Entity\Issues\Issue'
             //    ))
@@ -31,9 +32,9 @@ class IssueCommentType extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * @inheritDoc
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitlabIssueBundle\Entity\Issues\IssueComment'
@@ -43,7 +44,7 @@ class IssueCommentType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'versioncontrol_gitcontrolbundle_issuecomment';
     }

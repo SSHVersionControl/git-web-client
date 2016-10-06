@@ -20,7 +20,7 @@ class SshDetails extends Constraint
 {
     public $message = 'validate.constraint.SshDetails';
     
-    public $messageFileDoesNotExist = 'validate.constraint.SshDetails.FileDoesNotExist';
+    public $messageFileDoesNotExist = 'This directory (%gitPath%) does not exist. Please check that you have entered the correct path in %projectEnviromentTitle%';
     
     public function validatedBy()
     {

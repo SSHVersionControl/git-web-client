@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * Project controller.
@@ -215,8 +216,8 @@ class ProjectSyncController extends BaseProjectController
                 //Remote Server choice 
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         $remoteChoices = array();
-        foreach($gitRemoteVersions as $remoteVersion){
-            $remoteChoices[$remoteVersion[0]] = $remoteVersion[0].'('.$remoteVersion[1].')'; 
+        foreach($gitRemoteVersions as $remoteVersion){ 
+            $remoteChoices[$remoteVersion[0].'('.$remoteVersion[1].')'] = $remoteVersion[0]; 
         }
         
         //Local Branch choice
@@ -229,29 +230,30 @@ class ProjectSyncController extends BaseProjectController
         //Current branch
         $currentBranch = $this->gitCommands->command('branch')->getCurrentBranch();
         
-        reset($remoteChoices);
-        $firstOrigin = key($remoteChoices);
-        
+        $firstOrigin = reset($remoteChoices);
+
         $defaultData = array('branch' => $currentBranch);
         $form = $this->createFormBuilder($defaultData, array(
                 'action' => $this->generateUrl($formAction, array('id' => $project->getId())),
                 'method' => 'POST',
             ))
-            ->add('remote', 'choice', array(
+            ->add('remote', ChoiceType::class, array(
                 'label' => 'Remote Server'
                 ,'choices'  => $remoteChoices
                 ,'data' => $firstOrigin
                 ,'required' => false
+                ,'choices_as_values' => true
                 ,'constraints' => array(
                     new NotBlank()
                 ))
             )   
-            ->add('branch', 'choice', array(
+            ->add('branch', ChoiceType::class, array(
                 'label' => 'Branch'
                 ,'choices'  => $branchChoices
                 ,'preferred_choices' => array($currentBranch)
                 ,'data' => trim($currentBranch)
                 ,'required' => false
+                ,'choices_as_values' => true
                 ,'constraints' => array(
                     new NotBlank()
                 ))

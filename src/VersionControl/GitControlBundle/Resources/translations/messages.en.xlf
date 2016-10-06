@@ -8,7 +8,7 @@
             </trans-unit>
             <trans-unit id="validate.constraint.SshDetails.FileDoesNotExist">
                 <source>validate.constraint.SshDetails.FileDoesNotExist</source>
-                <target>This directory does not exist. Please check that you have entered the correct path</target>
+                <target>This directory (%gitPath%) does not exist. Please check that you have entered the correct path in %projectEnviromentTitle%</target>
             </trans-unit>
             
             <trans-unit id="validate.constraint.GitFolderExists.error">

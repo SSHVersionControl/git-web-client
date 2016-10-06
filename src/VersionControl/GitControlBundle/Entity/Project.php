@@ -30,7 +30,7 @@ class Project
     /**
      * @var string
      * @ORM\Column(name="title", type="string", length=80, nullable=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(groups={"New,Edit"})
      */
     private $title;
 

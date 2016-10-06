@@ -21,8 +21,12 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 /**
  * Project controller.
  *
@@ -128,7 +132,7 @@ class ProjectBranchController extends BaseProjectController {
         $gitRemoteBranches = $this->gitCommands->command('branch')->getBranchRemoteListing();
 
         $form = $this->createNewBranchForm($this->project, array(), 'project_branch_remote_checkout');
-        $form->add('remotename', 'hidden', array(
+        $form->add('remotename', HiddenType::class, array(
             'label' => 'Remote Branch Name'
             , 'required' => true
             , 'constraints' => array(
@@ -157,7 +161,7 @@ class ProjectBranchController extends BaseProjectController {
         $gitRemoteBranches = $this->gitCommands->command('branch')->getBranchRemoteListing();
 
         $form = $this->createNewBranchForm($this->project, array(), 'project_branch_remote_checkout');
-        $form->add('remotename', 'hidden', array(
+        $form->add('remotename', HiddenType::class, array(
             'label' => 'Remote Branch Name'
             , 'required' => true
             , 'constraints' => array(
@@ -243,14 +247,14 @@ class ProjectBranchController extends BaseProjectController {
                     'action' => $this->generateUrl($formAction, array('id' => $project->getId())),
                     'method' => 'POST',
                 ))
-                ->add('name', 'text', array(
+                ->add('name', TextType::class, array(
                     'label' => 'Branch Name'
                     , 'required' => true
                     , 'constraints' => array(
                         new NotBlank()
                     ))
                 )
-                ->add('switch', 'checkbox', array(
+                ->add('switch', CheckboxType::class, array(
                     'label' => 'Switch to branch on creation'
                     , 'required' => false
                         )
@@ -308,7 +312,7 @@ class ProjectBranchController extends BaseProjectController {
                     'action' => $this->generateUrl($formAction, array('id' => $project->getId())),
                     'method' => 'POST',
                 ))
-                ->add('branch', 'choice', array(
+                ->add('branch', ChoiceType::class, array(
                     'choices' => $branches
                     , 'label' => 'Branch Name'
                     , 'required' => true

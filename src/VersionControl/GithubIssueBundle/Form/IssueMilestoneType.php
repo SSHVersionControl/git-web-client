@@ -13,6 +13,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+
 class IssueMilestoneType extends AbstractType
 {
     /**
@@ -23,7 +25,7 @@ class IssueMilestoneType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description')
+            ->add('description',TextareaType::class)
             //->add('dueOn')
             ->add('dueOn', 'datetime', array('date_widget' => "single_text", 'time_widget' => "single_text" ,'required' => false,))
 
@@ -33,7 +35,7 @@ class IssueMilestoneType extends AbstractType
     /**
      * @param OptionsResolverInterface $resolver
      */
-    public function configureOptions(OptionsResolver  $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone'
@@ -44,7 +46,7 @@ class IssueMilestoneType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'versioncontrol_gitcontrolbundle_issuemilestone';
     }

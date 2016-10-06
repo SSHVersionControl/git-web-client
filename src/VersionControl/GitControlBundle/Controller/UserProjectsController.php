@@ -22,6 +22,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 /**
  * UserProjects controller.
@@ -144,7 +145,7 @@ class UserProjectsController extends Controller
        $form = $this->createFormBuilder(array(), array(
                 'method' => 'POST',
            ))
-                ->add('roles','choice', array(
+                ->add('roles',ChoiceType::class, array(
                     'label' => 'User Role'
                     ,'choices'  => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master')
                     ,'required' => false

@@ -19,7 +19,7 @@ use VersionControl\GitCommandBundle\GitCommands\GitEnvironmentInterface;
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="VersionControl\GitControlBundle\Repository\ProjectEnvironmentRepository")
  * @ORM\Table(name="project_environment")
- * @VersionControlAssert\SshDetails
+ * @VersionControlAssert\SshDetails()
  * @VersionControlAssert\GitFolderExists(groups={"ExistingGit"})
  * @VersionControlAssert\GitFolderNotExists(groups={"CloneGit","NewGit"})  
  */

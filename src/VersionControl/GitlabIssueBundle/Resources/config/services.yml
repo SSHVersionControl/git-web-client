@@ -13,20 +13,30 @@ services:
         class:  VersionControl\GitlabIssueBundle\Form\IssueType
         arguments:
             - @version_control.issue_repository_manager
+        tags:
+            - {name: 'form.type'}
             
     version_control.issue_form_edit_type.gitlab:
         class:  VersionControl\GitlabIssueBundle\Form\IssueEditType
         arguments:
             - @version_control.issue_repository_manager
+        tags:
+            - {name: 'form.type'}
             
     version_control.issue_label_form_type.gitlab:
         class:  VersionControl\GitlabIssueBundle\Form\IssueLabelType
+        tags:
+            - {name: 'form.type'}
     
     version_control.issue_comment_form_type.gitlab:
         class:  VersionControl\GitlabIssueBundle\Form\IssueCommentType
+        tags:
+            - {name: 'form.type'}
         
     version_control.issue_milestone_form_type.gitlab:
         class:  VersionControl\GitlabIssueBundle\Form\IssueMilestoneType
+        tags:
+            - {name: 'form.type'}
         
    
     version_control.form.field.gitlab_project_choice:

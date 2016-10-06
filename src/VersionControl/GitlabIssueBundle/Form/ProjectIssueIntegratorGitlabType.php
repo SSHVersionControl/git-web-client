@@ -11,7 +11,7 @@ namespace VersionControl\GitlabIssueBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use VersionControl\GitlabIssueBundle\Form\EventListener\AddProjectNameFieldSubscriber;
 
 class ProjectIssueIntegratorGitlabType extends AbstractType
@@ -34,7 +34,7 @@ class ProjectIssueIntegratorGitlabType extends AbstractType
     /**
      * @param OptionsResolverInterface $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitlabIssueBundle\Entity\ProjectIssueIntegratorGitlab'
@@ -45,7 +45,7 @@ class ProjectIssueIntegratorGitlabType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'versioncontrol_gitcontrolbundle_projectissueintegrator';
     }

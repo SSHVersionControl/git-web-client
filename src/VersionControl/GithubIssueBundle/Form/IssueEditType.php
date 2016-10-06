@@ -11,7 +11,10 @@ namespace VersionControl\GithubIssueBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class IssueEditType extends AbstractType
 {
@@ -30,13 +33,13 @@ class IssueEditType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('description')
-            ->add('status','choice',array('label' => 'State'
+            ->add('description',TextareaType::class)
+            ->add('status',ChoiceType::class,array('label' => 'State'
                     ,'choices'  => array('open' => 'Open', 'closed' => 'Close')
                     ,'required' => false
                     ,'empty_value' => 'Please select a State')
                     )
-            ->add('issueMilestone','choice',array(
+            ->add('issueMilestone',ChoiceType::class,array(
                     'choices' => $this->getIssueMilestoneChoices(),
                     'multiple' => false,   // Multiple selection allowed
                     //'expanded' => true,   // Render as checkboxes
@@ -62,7 +65,7 @@ class IssueEditType extends AbstractType
                             ->orderBy('a.id', 'ASC');
                     },*/
                 ))
-            ->add('issueLabel','choice',array(
+            ->add('issueLabel',ChoiceType::class,array(
                     'choices' => $this->getIssueLabelChoices(),
                     'multiple' => true,   // Multiple selection allowed
                     'expanded' => true,   // Render as checkboxes
@@ -105,7 +108,7 @@ class IssueEditType extends AbstractType
     /**
      * @param OptionsResolverInterface $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitControlBundle\Entity\Issue'
@@ -115,7 +118,7 @@ class IssueEditType extends AbstractType
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'versioncontrol_gitcontrolbundle_issue';
     }

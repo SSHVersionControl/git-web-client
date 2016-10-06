@@ -93,7 +93,7 @@ class ProjectEnvironmentFilePermType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitControlBundle\Entity\ProjectEnvironmentFilePerm'
-            ,'cascade_validation' => true
+            //,'cascade_validation' => true
         ));
     }
 

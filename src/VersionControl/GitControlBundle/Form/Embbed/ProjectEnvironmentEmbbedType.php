@@ -36,7 +36,7 @@ class ProjectEnvironmentEmbbedType extends AbstractType{
         $resolver->setDefaults(array(
              //'data_class' => 'Lre\MetadataBundle\Entity\Curriculum\ResourceCurriculum',
             //'data_class' => NULL,
-            'cascade_validation' => true,
+            //'cascade_validation' => true,
         ));
     }
 
