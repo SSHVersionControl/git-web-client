@@ -3,13 +3,13 @@ services:
     lrotherfield.form.type.hidden_entity:
         class: Lrotherfield\Component\Form\Type\HiddenEntityType
         arguments:
-            - @doctrine.orm.entity_manager
+            - '@doctrine.orm.entity_manager'
         tags:
             - { name: form.type, alias: hidden_entity }
             
     salavert.twig.time_ago:
         class: Salavert\Twig\Extension\TimeAgoExtension
-        arguments: [@translator]
+        arguments: ['@translator']
         tags:
         - { name: twig.extension }
            

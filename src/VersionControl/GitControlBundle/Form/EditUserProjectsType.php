@@ -15,7 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-
+use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
 class EditUserProjectsType extends AbstractType
 {
@@ -34,9 +34,9 @@ class EditUserProjectsType extends AbstractType
                     'label' => 'User Role'
                     ,'choices'  => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master')
                     ,'required' => false
-                    ,'empty_value' => 'Please select a role'
+                    ,'placeholder' => 'Please select a role'
                 ))
-            ->add('project', 'hidden_entity',array(
+            ->add('project', HiddenEntityType::class,array(
                     'class' => 'VersionControl\GitControlBundle\Entity\Project'
                 ))
         ;

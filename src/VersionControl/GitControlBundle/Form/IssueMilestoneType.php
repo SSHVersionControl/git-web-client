@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
 class IssueMilestoneType extends AbstractType
 {
@@ -30,7 +31,7 @@ class IssueMilestoneType extends AbstractType
             //->add('dueOn')
             ->add('dueOn', DateTimeType::class, array('date_widget' => "single_text", 'time_widget' => "single_text" ,'required' => false,))
 
-            ->add('project', 'hidden_entity',array(
+            ->add('project', HiddenEntityType::class,array(
                     'class' => 'VersionControl\GitControlBundle\Entity\Project'
                 ))
         ;

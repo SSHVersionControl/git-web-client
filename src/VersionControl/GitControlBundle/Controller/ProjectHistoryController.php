@@ -164,7 +164,7 @@ class ProjectHistoryController extends BaseProjectController
 
         $difffile = urldecode($filePath);
         
-        $previousCommitHash = $gitDiffCommand->getPreviousCommitHash($commitHash);
+        $previousCommitHash = $gitDiffCommand->getPreviousCommitHash($commitHash,$difffile);
         
         $gitDiffs = $gitDiffCommand->getDiffFileBetweenCommits($difffile,$previousCommitHash,$commitHash);
    

@@ -14,18 +14,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EntityType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
 class UserProjectsType extends AbstractType
 {
     
-    /**
-     * Project Id. Used in query to select all user not apart of this project already
-     * 
-     * @var integer 
-     */
-    protected $projectId;
     
     /**
      * @param FormBuilderInterface $builder
@@ -33,18 +28,20 @@ class UserProjectsType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $projectId = $this->getProjectId();
+        $projectId = $options['projectId'];
+
         $builder
             ->add('roles',ChoiceType::class, array(
                     'label' => 'User Role'
                     ,'choices'  => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master')
                     ,'required' => false
-                    ,'empty_value' => 'Please select a role'
+                    ,'placeholder' => 'Please select a role'
+                    ,'choices_as_values' => true
                 ))
             ->add('user',EntityType::class, array(
                     'class' => 'VersionControl\GitControlBundle\Entity\User\User',
                     'choice_label' => 'username',
-                    'empty_value' => 'Please select a user',
+                    'placeholder' => 'Please select a user',
                     'query_builder' => function(EntityRepository $er) use($projectId) {
                         $qb = $er->createQueryBuilder('a');
 
@@ -60,7 +57,7 @@ class UserProjectsType extends AbstractType
                             ->orderBy('u.username', 'ASC');
                     },
                 ))
-            ->add('project', 'hidden_entity',array(
+            ->add('project', HiddenEntityType::class,array(
                     'class' => 'VersionControl\GitControlBundle\Entity\Project'
                 ))
         ;
@@ -72,7 +69,8 @@ class UserProjectsType extends AbstractType
     public function configureOptions(OptionsResolver  $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GitControlBundle\Entity\UserProjects'
+            'data_class' => 'VersionControl\GitControlBundle\Entity\UserProjects',
+            'projectId' => null
         ));
     }
 
@@ -84,23 +82,6 @@ class UserProjectsType extends AbstractType
         return 'versioncontrol_gitcontrolbundle_userprojects';
     }
     
-    /**
-     * Gets the project Id
-     * @return integer
-     */
-    public function getProjectId() {
-        return $this->projectId;
-    }
-
-    /**
-     * Sets the project Id
-     * @param integer $projectId
-     * @return \VersionControl\GitControlBundle\Form\UserProjectsType
-     */
-    public function setProjectId($projectId) {
-        $this->projectId = $projectId;
-        return $this;
-    }
 
 
 }

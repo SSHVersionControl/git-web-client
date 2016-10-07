@@ -70,9 +70,13 @@ class GitDiffCommand extends AbstractGitCommand {
          return $files;
     }
     
-    public function getPreviousCommitHash($commitHash = 'HEAD'){
+    public function getPreviousCommitHash($commitHash = 'HEAD',$fileName = false){
         $previousCommitHash = '';
-        $response = $this->command->runCommand(" git log --pretty=format:'%h' -n 2 ".escapeshellarg($commitHash)."");
+        $command = " git log --pretty=format:'%h' -n 2 ".escapeshellarg($commitHash)."";
+        if($fileName !== false){
+            $command .= " ".escapeshellarg($fileName);
+        }
+        $response = $this->command->runCommand($command);
         $responseLines = $this->splitOnNewLine($response);
         if(count($responseLines) == 2){
             $previousCommitHash = trim($responseLines['1']);

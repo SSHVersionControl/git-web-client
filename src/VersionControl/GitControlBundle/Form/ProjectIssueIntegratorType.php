@@ -13,8 +13,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EntityType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
 class ProjectIssueIntegratorType extends AbstractType
 {
@@ -38,7 +39,7 @@ class ProjectIssueIntegratorType extends AbstractType
             ->add('ownerName')
             ->add('apiToken')
             ->add('url')
-            ->add('project', 'hidden_entity',array(
+            ->add('project', HiddenEntityType::class,array(
                     'class' => 'VersionControl\GitControlBundle\Entity\Project'
                 ))
         ;

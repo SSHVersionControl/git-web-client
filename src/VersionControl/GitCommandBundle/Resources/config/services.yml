@@ -26,13 +26,13 @@ services:
                 #priority: 300
         public: false
         arguments:
-            - @version_control.logger          
+            - '@version_control.logger'         
             
         
     version_control.logger:  
         class: VersionControl\GitCommandBundle\Logger\GitCommandLogger
         arguments:
-            - @logger
+            - '@logger'
             - %kernel.debug%
         tags:
             - { name: monolog.logger, channel: 'gitcommand' }  
@@ -42,5 +42,5 @@ services:
         tags:
             - { name: twig.extension }
         arguments:
-            - @version_control.git_commands
+            - '@version_control.git_commands'
        

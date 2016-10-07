@@ -12,6 +12,7 @@ namespace VersionControl\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
 class IssueLabelType extends AbstractType
 {
@@ -24,7 +25,7 @@ class IssueLabelType extends AbstractType
         $builder
             ->add('title')
             ->add('hexColor')
-            ->add('project', 'hidden_entity',array(
+            ->add('project', HiddenEntityType::class,array(
                     'class' => 'VersionControl\GitControlBundle\Entity\Project'
                 ))
         ;

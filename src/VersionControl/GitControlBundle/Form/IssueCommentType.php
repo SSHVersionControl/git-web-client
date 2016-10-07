@@ -12,6 +12,7 @@ namespace VersionControl\GitControlBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
 class IssueCommentType extends AbstractType
 {
@@ -23,7 +24,7 @@ class IssueCommentType extends AbstractType
     {
         $builder
             ->add('comment')
-            ->add('issue', 'hidden_entity',array(
+            ->add('issue', HiddenEntityType::class,array(
                     'class' => 'VersionControl\GitControlBundle\Entity\Issue'
                 ))
 

@@ -14,7 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EntityType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 
 class IssueEditType extends AbstractType
@@ -31,7 +31,7 @@ class IssueEditType extends AbstractType
             ->add('status',ChoiceType::class,array('label' => 'State'
                     ,'choices'  => array('open' => 'Open', 'closed' => 'Close')
                     ,'required' => false
-                    ,'empty_value' => 'Please select a State')
+                    ,'placeholder' => 'Please select a State')
                     )
             ->add('issueMilestone',EntityType::class,array(
                     'multiple' => false,   // Multiple selection allowed

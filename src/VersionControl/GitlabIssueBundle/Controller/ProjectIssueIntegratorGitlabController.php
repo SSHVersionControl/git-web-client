@@ -155,7 +155,7 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
     */
     private function createEditForm(ProjectIssueIntegrator $issueIntegrator)
     {
-        $form = $this->createForm(new ProjectIssueIntegratorGitlabType(), $issueIntegrator, array(
+        $form = $this->createForm(ProjectIssueIntegratorGitlabType::class, $issueIntegrator, array(
             'action' => $this->generateUrl('project_issue_integrator_gitlab_update', array('integratorId' => $issueIntegrator->getId(),'id' => $this->project->getId())),
             'method' => 'PUT',
         ));

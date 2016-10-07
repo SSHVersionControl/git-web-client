@@ -12,14 +12,14 @@ services:
     version_control.issue_form_type.github:
         class:  VersionControl\GithubIssueBundle\Form\IssueType
         arguments:
-            - @version_control.issue_repository_manager
+            - '@version_control.issue_repository_manager'
         tags:
             - {name: 'form.type'}
             
     version_control.issue_form_edit_type.github:
         class:  VersionControl\GithubIssueBundle\Form\IssueEditType
         arguments:
-            - @version_control.issue_repository_manager
+            - '@version_control.issue_repository_manager'
         tags:
             - {name: 'form.type'}
             

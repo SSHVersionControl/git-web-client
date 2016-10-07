@@ -119,10 +119,11 @@ class UserProjectsController extends Controller
      */
     private function createCreateForm(UserProjects $entity,$project)
     {
-        $userProjectsType = new UserProjectsType;
-        $form = $this->createForm($userProjectsType->setProjectId($project->getId()), $entity, array(
+
+        $form = $this->createForm(UserProjectsType::class, $entity, array(
             'action' => $this->generateUrl('userprojects_create', array('id' => $project->getId())),
             'method' => 'POST',
+            'projectId' => $project->getId()
         ));
 
         $form->add('submit', SubmitType::class, array('label' => 'Add'));
@@ -149,7 +150,8 @@ class UserProjectsController extends Controller
                     'label' => 'User Role'
                     ,'choices'  => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master')
                     ,'required' => false
-                    ,'empty_value' => 'Please select a role'
+                    ,'placeholder' => 'Please select a role'
+                    ,'choices_as_values' => true
                     ,'constraints' => array(
                         new NotBlank()
                     )

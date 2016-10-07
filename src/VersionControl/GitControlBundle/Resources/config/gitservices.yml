@@ -22,13 +22,13 @@ services:
                 #priority: 300
         public: false
         arguments:
-            - @version_control.logger          
+            - '@version_control.logger'         
             
         
     version_control.logger:  
         class: VersionControl\GitControlBundle\Logger\GitCommandLogger
         arguments:
-            - @logger
+            - '@logger'
             - %kernel.debug%
         tags:
             - { name: monolog.logger, channel: 'gitcommand' }  
@@ -36,7 +36,7 @@ services:
     version_control.issue_repository_manager:
         class:  VersionControl\GitControlBundle\Repository\Issues\IssueRepositoryManager
         arguments:
-            - @security.token_storage
-            - @doctrine.orm.entity_manager
-            - @service_container
+            - '@security.token_storage'
+            - '@doctrine.orm.entity_manager'
+            - '@service_container'
         

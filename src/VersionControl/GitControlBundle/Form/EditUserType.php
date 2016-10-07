@@ -14,6 +14,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use FOS\UserBundle\Form\Type\ProfileFormType;
 
 
 class EditUserType extends AbstractType
@@ -30,7 +31,7 @@ class EditUserType extends AbstractType
 
     public function getParent()
     {
-        return 'fos_user_profile';
+        return ProfileFormType::class;
     }
 
     public function getBlockPrefix()

@@ -21,7 +21,8 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\EntityType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
 class IssueType extends AbstractType
 {
@@ -54,7 +55,7 @@ class IssueType extends AbstractType
                             ->orderBy('a.id', 'ASC');
                     },
                 ))
-            ->add('project', 'hidden_entity',array(
+            ->add('project', HiddenEntityType::class,array(
                     'class' => 'VersionControl\GitControlBundle\Entity\Project'
                 ))
             //->add('verUser')

@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 use VersionControl\GitlabIssueBundle\Form\DataTransformer\IdToGitlabProjectTransformer;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class GitlabProjectType extends AbstractType
 {
@@ -41,7 +42,7 @@ class GitlabProjectType extends AbstractType
     
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
     }
     
     public function getBlockPrefix()

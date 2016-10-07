@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use VersionControl\GitlabIssueBundle\DataTransformer\GitlabProjectToEntityTransformer;
+use VersionControl\GitlabIssueBundle\Form\Field\GitlabProjectType;
 
 
 class AddProjectNameFieldSubscriber implements EventSubscriberInterface
@@ -34,7 +35,7 @@ class AddProjectNameFieldSubscriber implements EventSubscriberInterface
         
         if ($projectIssueIntegratorGitlab && $projectIssueIntegratorGitlab instanceof \VersionControl\GitlabIssueBundle\Entity\ProjectIssueIntegratorGitlab) {
 
-           $form->add('projectName','gitlab_project_choice',array(
+           $form->add('projectName',GitlabProjectType::class,array(
                     'choices' => $this->getProjectChoices($projectIssueIntegratorGitlab),
                     'multiple' => false,   // Multiple selection allowed
                     'placeholder' => 'Choose a projecton Gitlab',
