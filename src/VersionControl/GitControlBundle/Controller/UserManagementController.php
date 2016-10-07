@@ -109,7 +109,7 @@ class UserManagementController extends Controller
      */
     private function createCreateForm(User $user)
     {
-        $form = $this->createForm(new RegistrationType(), $user, array(
+        $form = $this->createForm(RegistrationType::class, $user, array(
             'action' => $this->generateUrl('usermanagement_create'),
             'method' => 'POST',
         ));
@@ -157,7 +157,7 @@ class UserManagementController extends Controller
     */
     private function createEditForm(User $entity)
     {
-        $form = $this->createForm(new EditUserType(), $entity, array(
+        $form = $this->createForm(EditUserType::class, $entity, array(
             'action' => $this->generateUrl('usermanagement_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));

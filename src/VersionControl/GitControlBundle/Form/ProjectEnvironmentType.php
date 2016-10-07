@@ -45,7 +45,7 @@ class ProjectEnvironmentType extends AbstractType
             ->add('password',PasswordType::class,array('required' => false))
             ->add('privateKey',TextareaType::class,array('required' => false))
             ->add('privateKeyPassword',PasswordType::class,array('required' => false))
-            ->add('projectEnvironmentFilePerm',  new ProjectEnvironmentFilePermType(), array('required'  => false));
+            ->add('projectEnvironmentFilePerm',  ProjectEnvironmentFilePermType::class, array('required'  => false));
         
         if($this->useCloneLocation === true){
             $builder->add('gitCloneLocation',TextType::class,array('required' => false)) ; 

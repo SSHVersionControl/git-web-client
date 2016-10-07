@@ -94,10 +94,6 @@ class Project
      * 
      * @ORM\OneToMany(targetEntity="VersionControl\GitControlBundle\Entity\ProjectEnvironment", mappedBy="project", cascade={"persist"}, orphanRemoval=true )
      * @Assert\Valid 
-     * @Assert\Count( 
-     *   min = "1", 
-     *   minMessage = "validate.resourceCurriculum.min",
-     *   groups={"publish"})
      */
     private $projectEnvironment;
     

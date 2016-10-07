@@ -244,7 +244,7 @@ class ProjectEnvironmentController extends BaseProjectController
     */
     private function createEditForm(ProjectEnvironment $entity)
     {
-        $form = $this->createForm(new ProjectEnvironmentType(), $entity, array(
+        $form = $this->createForm(ProjectEnvironmentType::class, $entity, array(
             'action' => $this->generateUrl('projectenvironment_update', array('projectEnvironmentId' => $entity->getId())),
             'method' => 'PUT',
         ));

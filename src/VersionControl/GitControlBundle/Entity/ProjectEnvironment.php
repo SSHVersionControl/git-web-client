@@ -108,6 +108,7 @@ class ProjectEnvironment implements GitEnvironmentInterface
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="project_environment_file_perm_id", referencedColumnName="id")
      * })
+     * @Assert\Valid 
      */
     private $projectEnvironmentFilePerm;
     

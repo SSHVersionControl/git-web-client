@@ -84,7 +84,7 @@ class IssueLabelAdminController extends Controller
      */
     private function createCreateForm(IssueLabel $issue)
     {
-        $form = $this->createForm(new IssueLabelType(), $issue, array(
+        $form = $this->createForm(IssueLabelType::class, $issue, array(
             'action' => $this->generateUrl('admin_issuelabel_create'),
             'method' => 'POST',
         ));
@@ -152,7 +152,7 @@ class IssueLabelAdminController extends Controller
     */
     private function createEditForm(IssueLabel $issue)
     {
-        $form = $this->createForm(new IssueLabelType(), $issue, array(
+        $form = $this->createForm(IssueLabelType::class, $issue, array(
             'action' => $this->generateUrl('admin_issuelabel_update', array('id' => $issue->getId())),
             'method' => 'PUT',
         ));
