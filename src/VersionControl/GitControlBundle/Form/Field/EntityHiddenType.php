@@ -15,6 +15,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\Common\Persistence\ObjectManager;
 
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
 class EntityHiddenType extends AbstractType
 {
     /**
@@ -48,7 +50,7 @@ class EntityHiddenType extends AbstractType
     
     public function getParent()
     {
-        return 'hidden';
+        return HiddenType::class;
     }
     
     public function getBlockPrefix()

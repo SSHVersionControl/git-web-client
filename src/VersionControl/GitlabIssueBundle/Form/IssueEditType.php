@@ -35,9 +35,10 @@ class IssueEditType extends AbstractType
             ->add('title')
             ->add('description',TextareaType::class)
             ->add('status',ChoiceType::class,array('label' => 'State'
-                    ,'choices'  => array('open' => 'Open', 'closed' => 'Close')
+                    ,'choices'  => array('Open' => 'open', 'Closed' => 'close')
                     ,'required' => false
-                    ,'empty_value' => 'Please select a State')
+                    ,'choices_as_values' => true
+                    ,'placeholder' => 'Please select a State')
                     )
             ->add('issueMilestone',ChoiceType::class,array(
                     'choices' => $this->getIssueMilestoneChoices(),

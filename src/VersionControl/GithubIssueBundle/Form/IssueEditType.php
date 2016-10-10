@@ -37,7 +37,7 @@ class IssueEditType extends AbstractType
             ->add('status',ChoiceType::class,array('label' => 'State'
                     ,'choices'  => array('open' => 'Open', 'closed' => 'Close')
                     ,'required' => false
-                    ,'empty_value' => 'Please select a State')
+                    ,'placeholder' => 'Please select a State')
                     )
             ->add('issueMilestone',ChoiceType::class,array(
                     'choices' => $this->getIssueMilestoneChoices(),

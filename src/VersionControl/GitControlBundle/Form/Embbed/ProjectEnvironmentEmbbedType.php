@@ -12,6 +12,8 @@ namespace VersionControl\GitControlBundle\Form\Embbed;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+
 /**
  * Description of ProjectEnvironmentEmbbedType
  *
@@ -25,7 +27,7 @@ class ProjectEnvironmentEmbbedType extends AbstractType{
     }
     
     public function getParent(){
-        return 'collection';
+        return CollectionType::class;
     }
     
     /**

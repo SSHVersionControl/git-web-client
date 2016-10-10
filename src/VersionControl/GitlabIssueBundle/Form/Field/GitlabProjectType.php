@@ -33,7 +33,6 @@ class GitlabProjectType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            //->setRequired(array('class'))
             ->setDefaults(array(
                 'invalid_message' => 'The entity does not exist.',
             ))

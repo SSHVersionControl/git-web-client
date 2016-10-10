@@ -60,11 +60,6 @@
                      {{ form_errors(form.plainPassword.second) }}
                      {{ form_widget(form.plainPassword.second,{ 'attr': { 'class': 'form-control', 'placeholder':'Please repeat password'}}) }}
                  </div>
-                 <div class="form-group">
-                     <label class="">Is this user an administrator?</label>
-                     {{ form_errors(form.admin) }}
-                     {{ form_widget(form.admin) }}
-                 </div>
                  <div class="text-right">
                      <a href="{{ path('usermanagement') }}" class="btn btn-default">
                          Cancel
