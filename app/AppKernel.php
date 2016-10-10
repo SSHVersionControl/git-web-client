@@ -21,7 +21,6 @@ class AppKernel extends Kernel
             new Knp\Bundle\MarkdownBundle\KnpMarkdownBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
-            //new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
             new VersionControl\GithubIssueBundle\VersionControlGithubIssueBundle(),
             new VersionControl\GitlabIssueBundle\VersionControlGitlabIssueBundle(),
             new VersionControl\GitCommandBundle\VersionControlGitCommandBundle(),
