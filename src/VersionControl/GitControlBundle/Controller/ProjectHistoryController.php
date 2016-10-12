@@ -152,24 +152,46 @@ class ProjectHistoryController extends BaseProjectController
     /**
      * Show Git commit diff
      *
-     * @Route("/commitfile/{commitHash}/{filePath}", name="project_commitfilediff")
+     * @Route("/commitfile/{commitHash}/{filePath}/{diffCommitHash}", name="project_commitfilediff" , defaults={"diffCommitHash" = 0})
      * @Method("GET")
      * @Template()
      * @ProjectAccess(grantType="VIEW")
      */
-    public function fileDiffAction($id,$commitHash,$filePath){
+    public function fileDiffAction($id,$commitHash,$filePath,$diffCommitHash){
         
         
         $gitDiffCommand = $this->gitCommands->command('diff');
 
         $difffile = urldecode($filePath);
         
-        $previousCommitHash = $gitDiffCommand->getPreviousCommitHash($commitHash,$difffile);
-        
+        if($diffCommitHash){
+            $previousCommitHash = $diffCommitHash;
+        }else{
+            $previousCommitHash = $gitDiffCommand->getPreviousCommitHash($commitHash,$difffile);
+        }
+        if(!$previousCommitHash){
+            $previousCommitHash = 'HEAD';
+        }
+
         $gitDiffs = $gitDiffCommand->getDiffFileBetweenCommits($difffile,$previousCommitHash,$commitHash);
-   
+        
+        $this->gitLogCommand
+                ->setLogCount(60)
+                ->setCommitHash($commitHash)
+                ->setPath($difffile)
+                ->setLimit(60);
+                
+        $gitPreviousLogs= $this->gitLogCommand->execute()->getResults();
+        
+        //First element is current commit so need to remove first element
+        array_shift($gitPreviousLogs);
+        
         return array_merge($this->viewVariables, array(
             'diffs' => $gitDiffs,
+            'previousLogs' => $gitPreviousLogs,
+            'commitHash' => $commitHash,
+            'diffCommitHash' => $previousCommitHash,
+            'filePath' => $difffile
         ));
     }
     

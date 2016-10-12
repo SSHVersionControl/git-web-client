@@ -38,7 +38,7 @@ class GitDiffCommand extends AbstractGitCommand {
      * @return array()
      */
     public function getDiffFile($filename){
-         $diffString = $this->command->runCommand("git --no-pager diff  --oneline ".escapeshellarg($filename)." 2>&1");
+         $diffString = $this->command->runCommand("git --no-pager diff  --oneline ".escapeshellarg($filename)."");
          $diffParser = new GitDiffParser($diffString);
          $diffs = $diffParser->parse(); 
          return $diffs;
@@ -49,7 +49,7 @@ class GitDiffCommand extends AbstractGitCommand {
      * @return array()
      */
     public function getDiffFileBetweenCommits($filename,$previousCommitHash,$commitHash){
-         $diffString = $this->command->runCommand("git --no-pager diff  --oneline ".escapeshellarg($previousCommitHash)." ".escapeshellarg($commitHash)." ".escapeshellarg($filename)." 2>&1");
+         $diffString = $this->command->runCommand("git --no-pager diff  --oneline ".escapeshellarg($previousCommitHash)." ".escapeshellarg($commitHash)." -- ".escapeshellarg($filename)."");
          $diffParser = new GitDiffParser($diffString);
          $diffs = $diffParser->parse(); 
          return $diffs;
@@ -73,6 +73,22 @@ class GitDiffCommand extends AbstractGitCommand {
     public function getPreviousCommitHash($commitHash = 'HEAD',$fileName = false){
         $previousCommitHash = '';
         $command = " git log --pretty=format:'%h' -n 2 ".escapeshellarg($commitHash)."";
+        if($fileName !== false){
+            $command .= " ".escapeshellarg($fileName);
+        }
+        $response = $this->command->runCommand($command);
+        $responseLines = $this->splitOnNewLine($response);
+        if(count($responseLines) == 2){
+            $previousCommitHash = trim($responseLines['1']);
+        }
+        
+        return $previousCommitHash;
+        
+    }
+    
+    public function getAllPreviousCommitHash($commitHash = 'HEAD',$fileName = false){
+        $previousCommitHash = '';
+        $command = " git log --pretty=format:'%h' -n 60 ".escapeshellarg($commitHash)."";
         if($fileName !== false){
             $command .= " ".escapeshellarg($fileName);
         }

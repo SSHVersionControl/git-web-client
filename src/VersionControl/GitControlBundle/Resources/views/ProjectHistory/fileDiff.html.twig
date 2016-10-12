@@ -4,8 +4,16 @@
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
              <h4 class="modal-title">{{diff.getFileName}} ({{diff.status}})</h4>
         </div>
-        <div class="modal-body">
-                    <table class="table diff table-condensed">
+        <div class="modal-body" >
+                    <p>Difference between <i class="fa fa-code-fork"></i><select class="commmit-list">
+                                            {% for log in previousLogs%}
+                                                <option value="{{log.abbrHash}}" {% if(log.abbrHash == diffCommitHash) %}selected{% endif %}>
+                                                     {{log.abbrHash}}|{{log.subject}} 
+                                                </option>
+                                            {% endfor %}
+                                        </select> 
+                        and <i class="fa fa-code-fork"></i><span class="diff">{{commitHash}}</span></p>
+                    <table class="table diff table-condensed" id="diff-content">
                     {% for diffLine in diff.diffLines %}
                         <tr class="diff-type-{{diffLine.type}}">
                             <td class="diff-number">
@@ -36,3 +44,11 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
     </div>
 {% endif %}
+
+<script>
+    var path = "{{ path('project_commitfilediff', { 'id': project.id, 'commitHash': commitHash, 'filePath':filePath|url_encode }) }}";
+    $('.commmit-list').select2().on('change',function(){
+        $('.modal-content').load(path+'/'+$(this).val());
+    });
+    //,);
+</script>

@@ -74,6 +74,12 @@ class GitLogCommand extends AbstractGitCommand {
     protected $branch;
     
     /**
+     * Filter log by path. File name should include the path relative to git folder. Only returns commits that effect this file
+     * @var string 
+     */
+    protected $path;
+    
+    /**
      * Enables the --not --remotes flags. Returns commits that have not been
      * pushed to a remote server.
      * 
@@ -198,14 +204,21 @@ class GitLogCommand extends AbstractGitCommand {
         }
         
         if($this->branch){
-            //Need to append -- do tell git that its a branch and not a file
-            $this->logCommand .= ' '.escapeshellarg(trim($this->branch)).' --';
+            $this->logCommand .= ' '.escapeshellarg(trim($this->branch));
         }elseif(!$this->commitHash){
             $this->logCommand .= ' --all';
         }
         
         if($this->notRemote){
             $this->logCommand .= ' --not --remotes';
+        }
+        
+        //To prevent confusion with options and branch names, paths may need to be prefixed with "-- " to separate them from options or refnames.
+        $this->logCommand .= ' --';
+              
+        //Show only commits that affect any of the specified paths.       
+        if($this->path){
+            $this->logCommand .= ' '.escapeshellarg(trim($this->path));
         }
 
         return $this->logCommand;
@@ -426,6 +439,18 @@ class GitLogCommand extends AbstractGitCommand {
         $this->filterByContent = $filterByContent;
         return $this;
     }
+
+    public function getPath() {
+        return $this->path;
+    }
+
+    public function setPath($path) {
+        $this->path = $path;
+        return $this;
+    }
+
+
+
 
 
     
