@@ -488,3 +488,36 @@ a.environment-info-btn.active>.fa-angle-left {
     transform: rotate(-90deg);
 }
 
+.error-box{
+    width: 700px;
+    margin: 3% auto;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 5px 5px 10px #888888;
+}
+
+.error-box-body {
+    background: #fff;
+    border-top: 0;
+    color: #666;
+}
+
+.error-box-body .headline{
+    margin: 0;
+    padding: 0;
+    float: left;
+    font-size: 100px;
+    font-weight: 300;
+    line-height: 70px;
+}
+.error-box-body>.error-content {
+    margin-left: 190px;
+    display: block;
+}
+
+.error-box-body>.error-content>h3 {
+    font-weight: 300;
+    font-size: 25px;
+    margin-top: 0;
+}
+
