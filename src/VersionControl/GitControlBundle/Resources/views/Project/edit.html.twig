@@ -1,4 +1,4 @@
-{% form_theme edit_form 'VersionControlGitControlBundle::FormTheme/_editproject-prototype.html.twig' %}
+{% form_theme edit_form 'VersionControlGitControlBundle::Project/FormTheme/edit-project-prototype.html.twig' %}
 {% extends "VersionControlGitControlBundle::admin.layout.html.twig" %}
 
 
@@ -51,91 +51,32 @@
                          {{ form_widget(edit_form.description,{ 'attr': { 'class': 'form-control', 'placeholder':'Please provide a description of the project'}}) }}
                      </div>
                      
-                     <div class="text-right">
+                    {% if(project.projectEnvironment|length > 0) %}
+                        <div class="pull-right">
+                            <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary prevent-default">Add Project Environment</button>
+                        </div>
+                    {% endif %} 
+                    <h3>Project Environments</h3>
+                    
+                    <div class="form-group">
+                        {{ form_errors(edit_form.projectEnvironment) }} 
+                        {{ form_widget(edit_form.projectEnvironment,{ 'attr': { 'class': 'panel-group ui-sortable'}}) }}
+
+                        {% if(project.projectEnvironment|length == 0) %}
+                            <div class="alert alert-info text-center" role="alert">
+                                   <p>There are no Project Environments yet for this project. So what are you waiting for, go create one</p>
+                                   <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary">Add a Project Environment</button>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="text-right">
                          <a href="{{ path('project_log',{ 'id': project.id }) }}" class="btn btn-default">
                              Cancel
                          </a>
                          {{ form_widget(edit_form.submit, { 'attr': {'class': 'btn btn-success'} }) }}
                      </div>
                  {{ form_end(edit_form) }}
-                 <h3>Project Environments</h3>
-                 <div class="form-group">
-                     {% if(project.projectEnvironment|length > 0) %}
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        {% for projectEnvironment in project.projectEnvironment  %}
-                            <div class="panel panel-default">
-                               <div class="panel-heading" role="tab" id="heading{{projectEnvironment.id}}">
-                                 <h4 class="panel-title">
-                                   <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{projectEnvironment.id}}" aria-expanded="true" aria-controls="collapse{{projectEnvironment.id}}">
-                                     {{projectEnvironment.title}}
-                                   </a>
-                                 </h4>
-                               </div>
-                               <div id="collapse{{projectEnvironment.id}}" class="panel-collapse collapse {%if(loop.index == 1)%}in{% endif %}" role="tabpanel" aria-labelledby="heading{{projectEnvironment.id}}">
-                                 <div class="panel-body">
-                                     <p>{{projectEnvironment.description}}</p>
-                                     <div class="row">
-                                        <div class="col-md-6">
-                                           <ul class="list-group">
-                                              <li class="list-group-item"><strong>Path:</strong> {{projectEnvironment.path}}</li>
-                                              <li class="list-group-item"><strong>Uses SSH:</strong> {{ ('boolean.' ~ projectEnvironment.ssh) | trans }}</li>
-                                              <li class="list-group-item"><strong>SSH Host:</strong> {{projectEnvironment.host}}</li>
-                                           </ul>
-                                        </div>
-                                           <div class="col-md-6">
-                                                {% if(projectEnvironment.projectEnvironmentFilePerm) %}
-                                                   <ul class="list-group">
-                                                       <li class="list-group-item"><strong>Uses File Permissions:</strong> {{ ('boolean.' ~ projectEnvironment.projectEnvironmentFilePerm.enableFilePermissions) | trans }}</li>
-                                                      <li class="list-group-item"><strong>File Owner:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileOwner}}</li>
-                                                      <li class="list-group-item"><strong>File Group:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileGroup}}</li>
-                                                      <li class="list-group-item"><strong>Permissions:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileMode}}</li>
-                                                   </ul>
-                                                {% endif %}
-                                           </div>
-                                     </div>
-                                    <a href="{{ path('projectenvironment_edit', { 'id': project.id, 'projectEnvironmentId': projectEnvironment.id }) }}">Edit</a>
-                                 </div>
-                               </div>
-                             </div>
-                        {% endfor %}
-                     </div>
-                     <div class="text-right">
-                      <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary">Add Project Environment</button>
-                     </div>
-                     {% else %}
-                         <div class="alert alert-info text-center" role="alert">
-                                <p>There are no Project Environments yet for this project. So what are you waiting for, go create one</p>
-                                <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary">Add a Project Environment</button>
-                         </div>
-                     {% endif %}
-                 </div>
              </div>
-             
-                 {#
-                {% set user = app.security.getToken().getUser() %}
-                {% if(user.githubId) %}
-                    <div class="panel panel-default">
-                       <div class="panel-heading">
-                           <h4>Connect</h4>
-                       </div>
-                       <div class="panel-body"> 
-                          <p>You are already connected to a Github Account</p>
-                       </div>
-                   </div>
-                {% else %}
-                   <div class="panel panel-default">
-                       <div class="panel-heading">
-                           <h4>Connect</h4>
-                       </div>
-                       <div class="panel-body"> 
-                          <p>Connect to other accounts for issue tracking</p>
-                          {% for owner in hwi_oauth_resource_owners() %}
-                              <a href="{{ hwi_oauth_login_url(owner) }}" class="btn btn-success small">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
-                          {% endfor %}
-                       </div>
-                   </div>
-                {% endif %}
-                 #}
              </div>
         </div>
     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4">

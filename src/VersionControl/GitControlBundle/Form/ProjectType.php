@@ -10,10 +10,11 @@
 namespace VersionControl\GitControlBundle\Form;
 
 use VersionControl\GitControlBundle\Form\Embbed\ProjectEnvironmentEmbbedType;
-use VersionControl\GitControlBundle\Form\ProjectEnvironmentType;
+use VersionControl\GitControlBundle\Form\Embbed\ProjectEnvironmentPositionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class ProjectType extends AbstractType
 {
@@ -26,13 +27,13 @@ class ProjectType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            /*->add('projectEnvironment', new ProjectEnvironmentEmbbedType, array(
-                                'type' => new ProjectEnvironmentType(),
-                                'allow_add'    => true,
-                                //'prototype' => true,
+            ->add('projectEnvironment', CollectionType::class, array(
+                                'type' => new ProjectEnvironmentPositionType(),
+                                'allow_add'    => false,
+                                'prototype' => false,
                                 'by_reference' => false,
-                                'allow_delete' => true,
-                                ))*/
+                                'allow_delete' => false,
+                                ))
         ;
     }
     

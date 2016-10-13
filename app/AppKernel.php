@@ -26,6 +26,7 @@ class AppKernel extends Kernel
             new VersionControl\GitCommandBundle\VersionControlGitCommandBundle(),
             new VersionControl\DoctrineEncryptBundle\VersionControlDoctrineEncryptBundle(),
             new Doctrine\Bundle\DoctrineCacheBundle\DoctrineCacheBundle(),
+            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

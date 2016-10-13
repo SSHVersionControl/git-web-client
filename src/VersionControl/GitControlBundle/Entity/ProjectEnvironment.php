@@ -14,6 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use VersionControl\GitControlBundle\Validator\Constraints as VersionControlAssert;
 
 use VersionControl\GitCommandBundle\GitCommands\GitEnvironmentInterface;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
@@ -80,6 +81,7 @@ class ProjectEnvironment implements GitEnvironmentInterface
     /**
      * @var \VersionControl\GitControlBundle\Entity\Project
      *
+     * @Gedmo\SortableGroup
      * @ORM\ManyToOne(targetEntity="VersionControl\GitControlBundle\Entity\Project", inversedBy="projectEnvironment")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="project_id", referencedColumnName="id")
@@ -117,6 +119,13 @@ class ProjectEnvironment implements GitEnvironmentInterface
      * @var string 
      */
     private $gitCloneLocation;
+    
+    /**
+     * @Gedmo\SortablePosition
+     *
+     * @ORM\Column(name="position", type="integer")
+     */
+    private $position;
     
 
     public function __construct()
@@ -368,7 +377,28 @@ class ProjectEnvironment implements GitEnvironmentInterface
         return 22;
     }
 
+    /**
+     * Set position
+     *
+     * @param integer $position
+     * @return ThreadPage
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    
+        return $this;
+    }
 
+    /**
+     * Get position
+     *
+     * @return integer 
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
     
 
 }

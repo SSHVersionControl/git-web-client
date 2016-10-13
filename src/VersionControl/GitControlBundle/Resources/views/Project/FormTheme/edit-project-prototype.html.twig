@@ -1,0 +1,89 @@
+{% block collection_widget %}
+{% spaceless %}
+    <div class="wrapper-collection">
+        {% if prototype is defined %}
+
+            {% set attr = attr|merge({'data-prototype': block('collection_item_widget') }) %}
+        {% endif %}
+        <div {{ block('widget_container_attributes') }} role="tablist" aria-multiselectable="true">
+            {{ form_errors(form) }}
+            {% set rowNum = 0 %}
+            {% for rows in form %}
+                <div class="panel panel-default item" data-index="{{ rowNum }}" id="media-item-{{rows.vars.value.id}}">
+                    {% for row in rows %}
+                        {{ form_widget(row) }}
+                    {% endfor %}
+                    {% set projectEnvironment = rows.vars.value%}
+                    <div class="panel-heading" role="tab" id="heading{{projectEnvironment.id}}">
+                      <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{{projectEnvironment.id}}" aria-expanded="true" aria-controls="collapse{{projectEnvironment.id}}">
+                          {{projectEnvironment.title}}
+                        </a>
+                      </h4>
+                    </div>
+                    <div id="collapse{{projectEnvironment.id}}" class="panel-collapse collapse {%if(loop.index == 1)%}in{% endif %}" role="tabpanel" aria-labelledby="heading{{projectEnvironment.id}}">
+                      <div class="panel-body">
+                          <p>{{projectEnvironment.description}}</p>
+                          <div class="row">
+                             <div class="col-md-6">
+                                <ul class="list-group">
+                                   <li class="list-group-item"><strong>Path:</strong> {{projectEnvironment.path}}</li>
+                                   <li class="list-group-item"><strong>Uses SSH:</strong> {{ ('boolean.' ~ projectEnvironment.ssh) | trans }}</li>
+                                   <li class="list-group-item"><strong>SSH Host:</strong> {{projectEnvironment.host}}</li>
+                                </ul>
+                             </div>
+                                <div class="col-md-6">
+                                     {% if(projectEnvironment.projectEnvironmentFilePerm) %}
+                                        <ul class="list-group">
+                                            <li class="list-group-item"><strong>Uses File Permissions:</strong> {{ ('boolean.' ~ projectEnvironment.projectEnvironmentFilePerm.enableFilePermissions) | trans }}</li>
+                                           <li class="list-group-item"><strong>File Owner:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileOwner}}</li>
+                                           <li class="list-group-item"><strong>File Group:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileGroup}}</li>
+                                           <li class="list-group-item"><strong>Permissions:</strong> {{projectEnvironment.projectEnvironmentFilePerm.fileMode}}</li>
+                                        </ul>
+                                     {% endif %}
+                                </div>
+                          </div>
+                         <a href="{{ path('projectenvironment_edit', { 'id': projectEnvironment.project.id, 'projectEnvironmentId': projectEnvironment.id }) }}">Edit</a>
+                      </div>
+                    </div>
+                </div>
+                {#<li class="list-group-item item" data-index="{{ rowNum }}" id="media-item-{{rows.vars.value.id}}" data-field-prototype="scoilnet_threadbundle_threadstory[threadPages][{index}][position]"> 
+                    {% for row in rows %}
+                        {{ form_widget(row) }}
+                    {% endfor %}
+                        <a href="{{path('threadpage_edit',{'id':rows.vars.value.id,'storyId':rows.vars.value.threadStory.id})}}" class="btn-u btn-u-xs btn-u-blue pull-right margin-left-5">
+                            <i class="fa fa-edit"></i>edit
+                        </a>
+                        <a href="" class="btn-u btn-u-xs btn-u-red pull-right remove">
+                            <i class="fa fa-remove"></i>remove
+                        </a>
+                        <span class="icon-media icon-media-xs icon-media-fw icon-media-{{rows.vars.value.templateType}}-{{rows.vars.value.layoutType}}"></span>
+                        <a href="{{path('threadpage_edit',{'id':rows.vars.value.id,'storyId':rows.vars.value.threadStory.id})}}" class="list-title"> {{rows.vars.value.title}}</a> 
+                        
+                </li>#}
+                {% set rowNum = rowNum + 1 %}
+            {% endfor %}
+            
+            {{ form_rest(form) }}
+            
+        </div>
+    </div>
+{% endspaceless %}
+{% endblock collection_widget %}
+
+{% block collection_item_widget %}
+{% spaceless %}
+    <div>
+    {% set fieldNum = 1 %}
+    {% for row in prototype %}
+        <div class="field{{ fieldNum }}">
+        {{ form_label(row) }}
+        {{ form_widget(row) }}
+        </div>
+        {% set fieldNum = fieldNum + 1 %}
+    {% endfor %}
+       
+        <div class="clear"></div>
+    </div>
+{% endspaceless %}
+{% endblock collection_item_widget %}

@@ -226,5 +226,26 @@ $(function(){
         $('#form_filter').val(filter);
     })
     
+    /** Prevent default actions on any element with class prevent-default**/
+    $('body').on('click','.prevent-default',function(e){
+        e.preventDefault();
+    });
+    
+    //initSortable: function (formId) {
+        $(".ui-sortable").sortable({
+            items: ".item:not(.non-sortable)"
+            , stop: function (event, ui) {
+
+                //Update field values
+                $('.ui-sortable .item').each(function (index) {
+                    var $input = $(this).find('input');
+                    if ($input.val() != index) {
+                        $input.val(index);
+                    }
+                });
+            }
+        });
+    //}
+    
     
 });

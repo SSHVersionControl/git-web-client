@@ -104,3 +104,11 @@ doctrine_cache:
             type: array
             aliases:
                 - array_cache
+
+stof_doctrine_extensions:
+  default_locale: "%locale%"
+  translation_fallback: true
+  orm:
+    default:
+      translatable: true
+      sortable: true

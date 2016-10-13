@@ -94,6 +94,7 @@ class Project
      * 
      * @ORM\OneToMany(targetEntity="VersionControl\GitControlBundle\Entity\ProjectEnvironment", mappedBy="project", cascade={"persist"}, orphanRemoval=true )
      * @Assert\Valid 
+     * @ORM\OrderBy({"position" = "ASC"})
      */
     private $projectEnvironment;
     
