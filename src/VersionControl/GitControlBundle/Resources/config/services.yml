@@ -160,5 +160,6 @@ services:
             - '@filesystem'
             - %kernel.cache_dir%
             - %kernel.environment%
+            - '@fos_user.user_manager'
         tags:
             - { name: console.command }

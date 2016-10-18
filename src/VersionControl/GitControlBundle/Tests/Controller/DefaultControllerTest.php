@@ -7,7 +7,7 @@ use VersionControl\GitControlBundle\Tests\Controller\BaseControllerTestCase;
 class DefaultControllerTest extends BaseControllerTestCase
 {
     
-    public function testIndex()
+    public function testList()
     {
         $this->createAuthorizedClient();
 

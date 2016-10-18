@@ -2,54 +2,63 @@
 
 namespace VersionControl\GitControlBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ProjectControllerTest extends WebTestCase
+
+class ProjectControllerTest extends BaseControllerTestCase
 {
-    /*
+  
     public function testCompleteScenario()
     {
+        $user = $this->createAuthorizedClient();
         // Create a new client to browse the application
-        $client = static::createClient();
+        
+        // List Issue labels
+        $projectCreateURL = $this->client->getContainer()->get('router')->generate('project_new');
+        
 
         // Create a new entry in the database
-        $crawler = $client->request('GET', '/project/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /project/");
-        $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
-
+        $crawler = $this->client->request('GET', $projectCreateURL);
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET ".$projectCreateURL);
+        
+        
         // Fill in the form and submit it
         $form = $crawler->selectButton('Create')->form(array(
-            'versioncontrol_gitcontrolbundle_project[field_name]'  => 'Test',
-            // ... other fields to fill
+            'versioncontrol_gitcontrolbundle_project[title]'  => 'Test New Project',
+            'versioncontrol_gitcontrolbundle_project[description]'  => 'Test the creation of a new project',
         ));
 
-        $client->submit($form);
-        $crawler = $client->followRedirect();
+        $this->client->submit($form);
+        
+        //Redirects to Edit project page
+        $crawler = $this->client->followRedirect();
+        
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for edit project redirect");
 
-        // Check data in the show view
-        $this->assertGreaterThan(0, $crawler->filter('td:contains("Test")')->count(), 'Missing element td:contains("Test")');
-
-        // Edit the entity
-        $crawler = $client->click($crawler->selectLink('Edit')->link());
+        // Check title
+        $this->assertGreaterThan(0, $crawler->filter('h1:contains("Test New Project")')->count(), 'Missing element a:contains("Test New Project")');
 
         $form = $crawler->selectButton('Update')->form(array(
-            'versioncontrol_gitcontrolbundle_project[field_name]'  => 'Foo',
-            // ... other fields to fill
+            'versioncontrol_gitcontrolbundle_project[title]'  => 'Test Edit Project',
+            'versioncontrol_gitcontrolbundle_project[description]'  => 'Test Edit project description',
         ));
 
-        $client->submit($form);
-        $crawler = $client->followRedirect();
+        $this->client->submit($form);
+        $crawler = $this->client->followRedirect();
+        
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for Edit project form submit ");
+
 
         // Check the element contains an attribute with value equals "Foo"
-        $this->assertGreaterThan(0, $crawler->filter('[value="Foo"]')->count(), 'Missing element [value="Foo"]');
-
+        $this->assertInputValue($crawler,'versioncontrol_gitcontrolbundle_project[title]','Test Edit Project');
+        $this->assertInputValue($crawler,'versioncontrol_gitcontrolbundle_project[description]','Test Edit project description');
+        
+        
         // Delete the entity
-        $client->submit($crawler->selectButton('Delete')->form());
-        $crawler = $client->followRedirect();
+        /*$this->client->submit($crawler->selectButton('Delete')->form());
+        $crawler = $this->client->followRedirect();
 
         // Check the entity has been delete on the list
-        $this->assertNotRegExp('/Foo/', $client->getResponse()->getContent());
+        $this->assertNotRegExp('/Foo/', $this->client->getResponse()->getContent());*/
     }
 
-    */
 }

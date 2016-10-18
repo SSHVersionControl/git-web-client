@@ -2,54 +2,94 @@
 
 namespace VersionControl\GitControlBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class IssueMilestoneControllerTest extends WebTestCase
+class IssueMilestoneControllerTest extends BaseControllerTestCase
 {
-    /*
-    public function testCompleteScenario()
+    
+     public function testCompleteScenario()
     {
+        $user = $this->createAuthorizedClient();
         // Create a new client to browse the application
-        $client = static::createClient();
+        
+        $project = $this->getProject($user);
 
-        // Create a new entry in the database
-        $crawler = $client->request('GET', '/issuemilestone/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /issuemilestone/");
-        $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
+        // List Issue milestones
+        $listMilestoneURL = $this->client->getContainer()->get('router')->generate('issuemilestones', array('id'=>$project->getId()));
+        $crawler = $this->client->request('GET', $listMilestoneURL,array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET ".$listMilestoneURL);
+        
+        //Click New Issue Milestone Link
+        $newIssueMilestoneLink = $crawler->filter('a:contains("New Milestone")')->link();
+        $crawler = $this->client->request($newIssueMilestoneLink->getMethod(), $newIssueMilestoneLink->getUri(),array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
 
-        // Fill in the form and submit it
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET ".$newIssueMilestoneLink->getUri());
+        
+        // Fill in the new issue milestone form and submit it
         $form = $crawler->selectButton('Create')->form(array(
-            'versioncontrol_gitcontrolbundle_issuemilestone[field_name]'  => 'Test',
-            // ... other fields to fill
+            'versioncontrol_gitcontrolbundle_issuemilestone[title]'  => 'Test Milestone',
+            'versioncontrol_gitcontrolbundle_issuemilestone[description]'  => 'Test Milestone Description',
+            'versioncontrol_gitcontrolbundle_issuemilestone[dueOn][date]'  => '2016-10-06',
+            'versioncontrol_gitcontrolbundle_issuemilestone[dueOn][time]'  => '00:00',
         ));
-
-        $client->submit($form);
-        $crawler = $client->followRedirect();
-
+        $this->client->submit($form);
+        $crawler = $this->client->followRedirect();
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for creating new issue milestone");
+        
         // Check data in the show view
-        $this->assertGreaterThan(0, $crawler->filter('td:contains("Test")')->count(), 'Missing element td:contains("Test")');
-
-        // Edit the entity
-        $crawler = $client->click($crawler->selectLink('Edit')->link());
-
-        $form = $crawler->selectButton('Update')->form(array(
-            'versioncontrol_gitcontrolbundle_issuemilestone[field_name]'  => 'Foo',
-            // ... other fields to fill
+        $this->assertGreaterThan(0, $crawler->filter('h1:contains("Test Milestone")')->count(), 'Missing element h1:contains("Test Milestone")');
+        $showUrl = $this->client->getRequest()->getUri();
+       
+         // Edit the issue milestone
+        $issueMilestoneEditLink = $crawler->filter('a:contains("Edit")')->link();
+        $crawler = $this->client->request($issueMilestoneEditLink->getMethod(), $issueMilestoneEditLink->getUri(),array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for edit issue milestone");
 
-        $client->submit($form);
-        $crawler = $client->followRedirect();
+        //Submit Edit form
+        $form = $crawler->selectButton('Update')->form(array(
+            'versioncontrol_gitcontrolbundle_issuemilestone[title]'  => 'Test Milestone Edit',
+            'versioncontrol_gitcontrolbundle_issuemilestone[description]'  => 'Edit Test Milestone Description',
+            'versioncontrol_gitcontrolbundle_issuemilestone[dueOn][date]'  => '2016-10-06',
+            'versioncontrol_gitcontrolbundle_issuemilestone[dueOn][time]'  => '00:00',
+        ));
+        $this->client->submit($form);
+        $crawler = $this->client->followRedirect();
+        $this->assertGreaterThan(0, $crawler->filter('h1:contains("Test Milestone Edit")')->count(), 'Missing element h1:contains("Test Milestone Edit")');
 
-        // Check the element contains an attribute with value equals "Foo"
-        $this->assertGreaterThan(0, $crawler->filter('[value="Foo"]')->count(), 'Missing element [value="Foo"]');
-
-        // Delete the entity
-        $client->submit($crawler->selectButton('Delete')->form());
-        $crawler = $client->followRedirect();
-
-        // Check the entity has been delete on the list
-        $this->assertNotRegExp('/Foo/', $client->getResponse()->getContent());
+        //Close Milestone
+        $issueMilestoneCloseLink = $crawler->filter('a:contains("Close")')->link();
+        $crawler = $this->client->request($issueMilestoneCloseLink->getMethod(), $issueMilestoneCloseLink->getUri(),array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+        $crawler = $this->client->followRedirect();
+        $this->assertNotRegExp('/Test Milestone Edit/', $this->client->getResponse()->getContent());
+        
+        //Open Show Issue milestone again
+        $crawler = $this->client->request('GET', $showUrl,array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for edit issue milestone");
+        
+        //Re-open Milestone
+        $issueMilestoneReOpenLink = $crawler->filter('a:contains("Re-open")')->link();
+        $crawler = $this->client->request($issueMilestoneReOpenLink->getMethod(), $issueMilestoneReOpenLink->getUri(),array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+        $crawler = $this->client->followRedirect();
+        $this->assertGreaterThan(0, $crawler->filter('.alert:contains("has been opened")')->count(), 'Missing element .alert:contains("successfully updated")');
+        
+        //Close Milestone Again
+        $issueMilestoneCloseLink = $crawler->filter('a:contains("Close")')->link();
+        $crawler = $this->client->request($issueMilestoneCloseLink->getMethod(), $issueMilestoneCloseLink->getUri(),array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+        $crawler = $this->client->followRedirect();
+        $this->assertNotRegExp('/Test Milestone Edit/', $this->client->getResponse()->getContent());
+        
     }
-
-    */
 }

@@ -13,5 +13,8 @@ before_script:
   - git config --global user.email "test@travis-ci.org"
   - git config --global user.name "Travis"
   - git --version
+  - php app/console doctrine:database:create --env=test
+  - php app/console version:install --env=test
+  - php app/console doctrine:fixtures:load --append --env=test
 
 script: phpunit -c app

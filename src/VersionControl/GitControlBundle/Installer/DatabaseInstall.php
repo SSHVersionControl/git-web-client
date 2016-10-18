@@ -68,5 +68,14 @@ class DatabaseInstall
             'src/VersionControl/GitControlBundle/Installer/dbscript/data.sql'
         );
     }
+    
+    public function importTestData()
+    {
+        $this->runQueriesFromFile(
+            'src/VersionControl/GitControlBundle/Installer/dbscript/testData.sql'
+        );
+    }
+    
+    
 }
 

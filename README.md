@@ -179,3 +179,14 @@ Congratulations! You're now ready to use the Version Control System.
 #### Windows Install:
 If you install this onto a windows machine using WAMP you will have issues with connection to remote
 repositories using a ssh key. To resolve this check out [/Documentation/WindowsGit.md](Documentation/WindowsGit.md) 
+
+### Testing:
+To run phpunit test you will need a test database. Run the following command:
+
+    $ php app/console doctrine:database:create --env=test
+    
+To install the schema and inital data run the following command:
+
+    $ php app/console version:install --env=test
+
+    $ php app/console doctrine:fixtures:load --env=test

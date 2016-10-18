@@ -255,6 +255,7 @@ CREATE TABLE IF NOT EXISTS project_environment (
   project_environment_file_perm_id int(11) DEFAULT NULL,
   private_key longtext,
   private_key_password longtext,
+  position INT(11) DEFAULT NULL,
   PRIMARY KEY (id),
   KEY fk_project_environment_project1_idx (project_id),
   KEY fk_project_environment_project_environment_file_perm1_idx (project_environment_file_perm_id)

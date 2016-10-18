@@ -339,11 +339,11 @@ class IssueController extends BaseProjectController
      /**
      * Displays a form to edit an existing Issue entity.
      *
-     * @Route("/open", name="issue_open")
+     * @Route("/open/{issueId}", name="issue_open")
      * @Method("GET")
       * @ProjectAccess(grantType="EDIT")
      */
-    public function openAction($id)
+    public function openAction($id,$issueId)
     {
         $issueEntity = $this->issueRepository->reOpenIssue($issueId);
         
@@ -352,7 +352,7 @@ class IssueController extends BaseProjectController
         }
 
         $this->get('session')->getFlashBag()->add('notice'
-                ,"Issue #".$issueEntity->getId()." has been closed");
+                ,"Issue #".$issueEntity->getId()." has been re-opened");
         
         
         return $this->redirect($this->generateUrl('issue_show', array('id'=>$this->project->getId(),'issueId' => $issueEntity->getId())));

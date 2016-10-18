@@ -9,10 +9,13 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 class BaseControllerTestCase extends WebTestCase
 {
     protected $client = null;
+    
+    public $entityManager;
 
     public function setUp()
     {
         $this->client = static::createClient();
+        $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
     }
     
     
@@ -33,7 +36,7 @@ class BaseControllerTestCase extends WebTestCase
         //$firewallName = $container->getParameter('fos_user.main');
         $firewallName = 'main';
 
-        $user = $userManager->findUserBy(array('username' => 'bobfloats'));
+        $user = $userManager->findUserBy(array('username' => 'test'));
         $loginManager->loginUser($firewallName, $user);
 
         // save the login token into the session and put it in a cookie
@@ -42,6 +45,7 @@ class BaseControllerTestCase extends WebTestCase
         $container->get('session')->save();
         $this->client->getCookieJar()->set(new Cookie($session->getName(), $session->getId()));
 
+        return $user;
     }
     
     protected function doLogin($username, $password) {
@@ -56,4 +60,46 @@ class BaseControllerTestCase extends WebTestCase
 
         $crawler = $this->client->followRedirect();
      }
+     
+     protected function createDatabase($username, $password) {
+        $crawler = $this->client->request('GET', '/login');
+        $form = $crawler->selectButton('_submit')->form(array(
+            '_username'  => $username,
+            '_password'  => $password,
+            ));     
+        $this->client->submit($form);
+
+        $this->assertTrue($this->client->getResponse()->isRedirect());
+
+        $crawler = $this->client->followRedirect();
+     }
+     
+     public function getProject($user){
+         $firstUserProject = $this->entityManager->getRepository('VersionControlGitControlBundle:UserProjects')->findOneBy(array('user' => $user));
+         return $firstUserProject->getProject();
+     }
+     
+     protected function assertInputValue($crawler, $key, $val)
+    {
+        $input = $crawler->filter('input[name="'.$key.'"]');
+        $this->assertEquals(
+            $val, $input->attr('value'), $key.' failed'
+        );
+    }
+
+    protected function assertSelectValue($crawler, $key, $val)
+    {
+        $input = $crawler->filter('select[name="'.$key.'"]');
+        $selected_option = $input->filter('option[selected="selected"]');
+        $this->assertEquals($val, $selected_option->attr('value'), $key.' failed');
+    }
+
+    protected function assertTextAreaValue($crawler, $key, $val)
+    {
+        $input = $crawler->filter('textarea[name="'.$key.'"]');
+        $this->assertEquals(
+            $val, $input->text(), $key.' failed'
+        );
+    }
+     
 }

@@ -9,7 +9,7 @@
  */
 namespace VersionControl\GitControlBundle\Entity;
 
-use VersionControl\GitControlBundle\Entity\Issues\IssueLabel as BaseIssueLabel;
+use VersionControl\GitControlBundle\Entity\Issues\IssueLabelInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="issue_label")
  * @ORM\Entity(repositoryClass="VersionControl\GitControlBundle\Repository\IssueLabelRepository")
  */
-class IssueLabel extends BaseIssueLabel
+class IssueLabel implements IssueLabelInterface
 {
     /**
      * @var string
@@ -164,6 +164,16 @@ class IssueLabel extends BaseIssueLabel
      * @return \Doctrine\Common\Collections\Collection
      */
     public function getIssue()
+    {
+        return $this->issue;
+    }
+    
+    /**
+     * Get issue
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getIssues()
     {
         return $this->issue;
     }

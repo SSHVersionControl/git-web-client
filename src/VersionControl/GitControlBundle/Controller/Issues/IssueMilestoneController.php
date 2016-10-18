@@ -95,7 +95,7 @@ class IssueMilestoneController extends BaseProjectController
             
             $this->get('session')->getFlashBag()->add('notice', 'New Milestone:'.$issueMilestone->getTitle());
 
-            return $this->redirect($this->generateUrl('issuemilestone_show', array('id' => $issueMilestone->getId())));
+            return $this->redirect($this->generateUrl('issuemilestone_show', array('milestoneId' => $issueMilestone->getId())));
         }
 
         return array_merge($this->viewVariables, array(
@@ -155,8 +155,7 @@ class IssueMilestoneController extends BaseProjectController
      */
     public function showAction($id,$milestoneId)
     {
-        
-        
+
         $issueMilestone = $this->issueMilestoneRepository->findMilestoneById($milestoneId);
 
         if (!$issueMilestone) {
@@ -251,7 +250,7 @@ class IssueMilestoneController extends BaseProjectController
         if ($editForm->isValid()) {
             $this->issueMilestoneRepository->updateMilestone($issueMilestone);
             $this->get('session')->getFlashBag()->add('notice', 'Updated Milestone:'.$issueMilestone->getTitle());
-            return $this->redirect($this->generateUrl('issuemilestone_edit', array('id' => $id, 'milestoneId' => $milestoneId)));
+            return $this->redirect($this->generateUrl('issuemilestone_show', array('id' => $id, 'milestoneId' => $milestoneId)));
         }
 
         return array_merge($this->viewVariables, array(
@@ -343,7 +342,7 @@ class IssueMilestoneController extends BaseProjectController
         $this->get('session')->getFlashBag()->add('notice'
                 ,"Milestone #".$issueMilestone->getId()." has been opened");
         
-        return $this->redirect($this->generateUrl('issuemilestone_show', array('id'=>$this->project, 'milestoneId' => $issueMilestone->getId())));
+        return $this->redirect($this->generateUrl('issuemilestone_show', array('id'=>$this->project->getId(), 'milestoneId' => $issueMilestone->getId())));
 
     }
     
@@ -355,7 +354,17 @@ class IssueMilestoneController extends BaseProjectController
      */
     public function milestonesIssuesAction(Request $request,$id,$issueMilestone,$filter = 'open',$pageParameterName='page',$keywordParamaterName='keyword')
     {
+        $em = $this->getDoctrine()->getManager();
+
+        $this->project= $em->getRepository('VersionControlGitControlBundle:Project')->find($id);
+
+        if (!$this->project) {
+            throw $this->createNotFoundException('Unable to find Project entity.');
+        }
         
+        $this->initIssueMilestoneRepository($this->project);
+            
+
         $parentRequest =  $request->createFromGlobals();
         $keyword = $parentRequest->query->get($keywordParamaterName, false);
         
@@ -376,8 +385,8 @@ class IssueMilestoneController extends BaseProjectController
             'pagination' => $pagination,
             'status' => $filter,
             'keywordParamaterName' => $keywordParamaterName,
-            'keyword' => $keyword
-             
+            'keyword' => $keyword,
+            'project' => $this->project
             
         ));
     }
@@ -404,5 +413,19 @@ class IssueMilestoneController extends BaseProjectController
         }
         $this->issueMilestoneRepository = $this->issueManager->getIssueMilestoneRepository();
         
+    }
+    
+    protected function initIssueMilestoneRepository($project){
+        $em = $this->getDoctrine()->getManager();
+        
+        $issueIntegrator= $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->findOneByProject($project);
+        
+        $this->issueManager = $this->get('version_control.issue_repository_manager');
+        if($issueIntegrator){
+            $this->issueManager->setIssueIntegrator($issueIntegrator);
+        }else{
+            $this->issueManager->setProject($project);
+        }
+        $this->issueMilestoneRepository = $this->issueManager->getIssueMilestoneRepository();
     }
 }

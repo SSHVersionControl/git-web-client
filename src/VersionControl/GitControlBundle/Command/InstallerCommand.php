@@ -47,6 +47,12 @@ class InstallerCommand extends Command
 
     /** @var string */
     private $environment;
+    
+    /**
+     * FOS User Manager
+     * @var type 
+     */
+    private $userManager;
 
 
     const EXIT_DATABASE_NOT_FOUND_ERROR = 3;
@@ -60,7 +66,8 @@ class InstallerCommand extends Command
         CacheClearerInterface $cacheClearer,
         Filesystem $filesystem,
         $cacheDir,
-        $environment
+        $environment,
+        $userManager
     ) {
         $this->db = $db;
         $this->installer = $installer;
@@ -68,6 +75,7 @@ class InstallerCommand extends Command
         $this->filesystem = $filesystem;
         $this->cacheDir = $cacheDir;
         $this->environment = $environment;
+        $this->userManager = $userManager;
         parent::__construct();
     }
 
@@ -88,7 +96,14 @@ class InstallerCommand extends Command
         
 
         $this->installer->importSchema();
-        $this->installer->importData();
+        
+        if($this->environment == 'test'){
+            $this->installer->importTestData();
+            
+        }else{
+           $this->installer->importData();
+        }
+        
         
         $this->cacheClear($output);
     }
@@ -168,6 +183,31 @@ class InstallerCommand extends Command
 
         $this->filesystem->rename($this->cacheDir, $oldCacheDir);
         $this->filesystem->remove($oldCacheDir);
+    }
+    
+    /**
+     * Creates a new admin user.
+     * 
+     * @param string $username
+     * @param string $password
+     * @param string $email
+     * @param string $name
+     * @return \FOS\UserBundle\Model\UserInterface
+     */
+    protected function createUser($username, $password, $email, $name){
+
+        $user = $this->userManager->createUser();
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setPlainPassword($password);
+        $user->setName($name);
+        
+        $user->setEnabled((Boolean) true);
+        $user->addRole('ROLE_ADMIN');
+        //$user->setSuperAdmin((Boolean) true);
+        
+        $this->userManager->updateUser($user);
+        return $user;
     }
 
 }

@@ -4,52 +4,68 @@ namespace VersionControl\GitControlBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class IssueLabelControllerTest extends WebTestCase
+class IssueLabelControllerTest extends BaseControllerTestCase
 {
-    /*
     public function testCompleteScenario()
     {
+        $user = $this->createAuthorizedClient();
         // Create a new client to browse the application
-        $client = static::createClient();
+        
+        $project = $this->getProject($user);
 
-        // Create a new entry in the database
-        $crawler = $client->request('GET', '/issuelabel/');
-        $this->assertEquals(200, $client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET /issuelabel/");
-        $crawler = $client->click($crawler->selectLink('Create a new entry')->link());
-
-        // Fill in the form and submit it
-        $form = $crawler->selectButton('Create')->form(array(
-            'versioncontrol_gitcontrolbundle_issuelabel[field_name]'  => 'Test',
-            // ... other fields to fill
+        // List Issue labels
+        $listLabelURL = $this->client->getContainer()->get('router')->generate('issuelabels', array('id'=>$project->getId()));
+        $crawler = $this->client->request('GET', $listLabelURL,array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET ".$listLabelURL);
+        
+        //Click New Issue Label Link
+        $newIssueLabelLink = $crawler->filter('a:contains("New Label")')->link();
+        $crawler = $this->client->request($newIssueLabelLink->getMethod(), $newIssueLabelLink->getUri(),array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ));
 
-        $client->submit($form);
-        $crawler = $client->followRedirect();
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for GET ".$newIssueLabelLink->getUri());
+        
+        // Fill in the new issue label form and submit it
+        $form = $crawler->selectButton('Create')->form(array(
+            'versioncontrol_gitcontrolbundle_issuelabel[title]'  => 'Test Label',
+            'versioncontrol_gitcontrolbundle_issuelabel[hexColor]'  => 'f2f2f2',
+        ));
 
+        $this->client->submit($form);
+        $crawler = $this->client->followRedirect();
+
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode(), "Unexpected HTTP status code for creating new issue label");
         // Check data in the show view
-        $this->assertGreaterThan(0, $crawler->filter('td:contains("Test")')->count(), 'Missing element td:contains("Test")');
-
-        // Edit the entity
-        $crawler = $client->click($crawler->selectLink('Edit')->link());
+        $this->assertGreaterThan(0, $crawler->filter('a:contains("Test Label")')->count(), 'Missing element a:contains("Test Label")');
+       
+         // Edit the issue label
+        $issueLabelEditLink = $crawler->filter('a:contains("Test Label")')->link();
+        $crawler = $this->client->request($issueLabelEditLink->getMethod(), $issueLabelEditLink->getUri(),array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+        
+        $this->assertGreaterThan(0, $crawler->filter('h1:contains("Test Label")')->count(), 'Missing element h1:contains("Test Label") on Issue label show page');
 
         $form = $crawler->selectButton('Update')->form(array(
-            'versioncontrol_gitcontrolbundle_issuelabel[field_name]'  => 'Foo',
-            // ... other fields to fill
+            'versioncontrol_gitcontrolbundle_issuelabel[title]'  => 'Test Label Edit',
+            'versioncontrol_gitcontrolbundle_issuelabel[hexColor]'  => 'f2ece4',
         ));
 
-        $client->submit($form);
-        $crawler = $client->followRedirect();
+        $this->client->submit($form);
+        $crawler = $this->client->followRedirect();
+        
+        $this->assertGreaterThan(0, $crawler->filter('a:contains("Test Label Edit")')->count(), 'Missing element a:contains("Test Label Edit")');
 
-        // Check the element contains an attribute with value equals "Foo"
-        $this->assertGreaterThan(0, $crawler->filter('[value="Foo"]')->count(), 'Missing element [value="Foo"]');
-
-        // Delete the entity
-        $client->submit($crawler->selectButton('Delete')->form());
-        $crawler = $client->followRedirect();
-
-        // Check the entity has been delete on the list
-        $this->assertNotRegExp('/Foo/', $client->getResponse()->getContent());
+        //Click Delete link
+        $issueLabelDeleteLink = $crawler->filter('a:contains("Delete")')->link();
+        $crawler = $this->client->request($issueLabelDeleteLink->getMethod(), $issueLabelDeleteLink->getUri(),array(), array(), array(
+             'HTTP_X-Requested-With' => 'XMLHttpRequest',
+        ));
+        $crawler = $this->client->followRedirect();
+        $this->assertNotRegExp('/Test Label Edit/', $this->client->getResponse()->getContent());
+        
     }
-
-    */
 }

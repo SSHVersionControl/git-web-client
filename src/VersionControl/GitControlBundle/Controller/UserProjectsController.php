@@ -67,7 +67,7 @@ class UserProjectsController extends Controller
     }
     
     /**
-     * Creates a new UserProjects entity.
+     * Adds a user to the project
      *
      * @Route("/{id}", name="userprojects_create")
      * @Method("POST")

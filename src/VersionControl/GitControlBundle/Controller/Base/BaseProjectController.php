@@ -109,11 +109,10 @@ abstract class BaseProjectController extends Controller{
         
         //Redirect is not ajax
         $request  = $this->container->get('request_stack')->getCurrentRequest();
-        //$request  = $this->getRequest();
-        if( $this->ajaxOnly == true && !$request->isXmlHttpRequest()){
-
-             //print_r($request->getRequestUri());
-             return $this->generateUrl('project',array('section'=> urlencode($request->getRequestUri())));
+        
+        //Do not redirect if in test mode
+        if( $this->ajaxOnly == true && !$request->isXmlHttpRequest() && $this->container->getParameter('kernel.environment') != 'test'){
+                return $this->generateUrl('project',array('section'=> urlencode($request->getRequestUri())));
         }
         
         $this->checkProjectAuthorization($this->project,$grantType);

@@ -47,7 +47,11 @@
             </h3>
 
              <div class="box-tools">
-                 <a href="{{ path('issuemilestone_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
+                {% if(entity.closed)%}
+                    <a href="{{ path('issuemilestone_open',{ 'id': project.id,'milestoneId': entity.id  }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Re-open</a>
+                {% else %}
+                    <a href="{{ path('issuemilestone_close',{ 'id': project.id,'milestoneId': entity.id  }) }}" class="btn btn-default btn-sm"><i class="fa fa-check fa-fw"></i>Close</a>
+                {% endif %}
                  <a href="{{ path('issuemilestone_edit',{ 'id': project.id,'milestoneId': entity.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-edit fa-fw"></i>Edit</a>
                  <a href="{{ path('issuemilestone_new',{ 'id': project.id }) }}" class="btn btn-default btn-sm"><i class="fa fa-plus fa-fw"></i>New Milestone</a>
              </div>
