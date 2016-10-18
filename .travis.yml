@@ -15,6 +15,6 @@ before_script:
   - git --version
   - php app/console doctrine:database:create --env=test
   - php app/console version:install --env=test
-  - php app/console doctrine:fixtures:load --append --env=test
+  - php app/console doctrine:fixtures:load --no-interaction --env=test
 
 script: phpunit -c app
