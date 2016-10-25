@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitlabIssueBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -15,13 +16,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\ProjectIssueIntegrator;
-
-
 use VersionControl\GitlabIssueBundle\Entity\ProjectIssueIntegratorGitlab;
 use VersionControl\GitlabIssueBundle\Form\ProjectIssueIntegratorGitlabType;
 use VersionControl\GitlabIssueBundle\Form\ProjectIssueIntegratorGitlabNewType;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
-
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
@@ -29,15 +27,16 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
  *
  * @Route("/project/{id}/issue-integrator/gitlab")
  */
-class ProjectIssueIntegratorGitlabController extends BaseProjectController{
-    
-   /**
-     * Allow access by ajax only request
-     * @var boolean 
+class ProjectIssueIntegratorGitlabController extends BaseProjectController
+{
+    /**
+     * Allow access by ajax only request.
+     *
+     * @var bool
      */
     protected $ajaxOnly = false;
-    
-   /**
+
+    /**
      * Creates a new ProjectIssueIntegrator entity.
      *
      * @Route("/", name="project_issue_integrator_gitlab_create")
@@ -45,30 +44,28 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
      * @Template("VersionControlGitlabIssueBundle:ProjectIssueIntegrator:new.html.twig")
      * @ProjectAccess(grantType="OWNER")
      */
-    public function createAction(Request $request,$id)
+    public function createAction(Request $request, $id)
     {
-        
         $issueIntegrator = new ProjectIssueIntegratorGitlab();
         $form = $this->createCreateForm($issueIntegrator);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            
             $issueIntegrator->setRepoType('Gitlab');
             $issueIntegrator->setProject($this->project);
-            
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($issueIntegrator);
             $em->flush();
-            
+
             $this->get('session')->getFlashBag()->add('notice', 'Issue Integrator Record has been created');
 
-            return $this->redirect($this->generateUrl('project_issue_integrator_gitlab_edit', array('id' => $this->project->getId(), 'integratorId'=> $issueIntegrator->getId())));
+            return $this->redirect($this->generateUrl('project_issue_integrator_gitlab_edit', array('id' => $this->project->getId(), 'integratorId' => $issueIntegrator->getId())));
         }
 
         return array_merge($this->viewVariables, array(
             'entity' => $issueIntegrator,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -101,19 +98,15 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
      */
     public function newAction($id)
     {
-        
-        
         $issueIntegrator = new ProjectIssueIntegratorGitlab();
         $issueIntegrator->setProject($this->project);
-        $form   = $this->createCreateForm($issueIntegrator);
+        $form = $this->createCreateForm($issueIntegrator);
 
         return array_merge($this->viewVariables, array(
             'entity' => $issueIntegrator,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
-
-    
 
     /**
      * Displays a form to edit an existing ProjectIssueIntegrator entity.
@@ -123,10 +116,8 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
      * @Template()
      * @ProjectAccess(grantType="OWNER")
      */
-    public function editAction($id,$integratorId)
+    public function editAction($id, $integratorId)
     {
-        
-        
         $em = $this->getDoctrine()->getManager();
 
         $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
@@ -139,24 +130,24 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
         $deleteForm = $this->createDeleteForm($integratorId);
 
         return array_merge($this->viewVariables, array(
-            'entity'      => $issueIntegrator,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $issueIntegrator,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-            
+
         ));
     }
 
     /**
-    * Creates a form to edit a ProjectIssueIntegrator entity.
-    *
-    * @param ProjectIssueIntegrator $issueIntegrator The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a ProjectIssueIntegrator entity.
+     *
+     * @param ProjectIssueIntegrator $issueIntegrator The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(ProjectIssueIntegrator $issueIntegrator)
     {
         $form = $this->createForm(ProjectIssueIntegratorGitlabType::class, $issueIntegrator, array(
-            'action' => $this->generateUrl('project_issue_integrator_gitlab_update', array('integratorId' => $issueIntegrator->getId(),'id' => $this->project->getId())),
+            'action' => $this->generateUrl('project_issue_integrator_gitlab_update', array('integratorId' => $issueIntegrator->getId(), 'id' => $this->project->getId())),
             'method' => 'PUT',
         ));
 
@@ -172,10 +163,8 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
      * @Template("VersionControlGitlabIssueBundle:ProjectIssueIntegrator:edit.html.twig")
      * @ProjectAccess(grantType="OWNER")
      */
-    public function updateAction(Request $request,$integratorId, $id)
+    public function updateAction(Request $request, $integratorId, $id)
     {
-        
-        
         $em = $this->getDoctrine()->getManager();
 
         $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
@@ -183,9 +172,9 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
         if (!$issueIntegrator) {
             throw $this->createNotFoundException('Unable to find ProjectIssueIntegrator entity.');
         }
-        
+
         $project = $issueIntegrator->getProject();
-        $this->checkProjectAuthorization($project,'OWNER');
+        $this->checkProjectAuthorization($project, 'OWNER');
 
         $deleteForm = $this->createDeleteForm($integratorId);
         $editForm = $this->createEditForm($issueIntegrator);
@@ -193,19 +182,19 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
 
         if ($editForm->isValid()) {
             $em->flush();
-            
+
             $this->get('session')->getFlashBag()->add('notice', 'Issue Integrator Record has been update');
 
-            return $this->redirect($this->generateUrl('project_issue_integrator_gitlab_edit', array('id' => $id,'integratorId' => $integratorId)));
+            return $this->redirect($this->generateUrl('project_issue_integrator_gitlab_edit', array('id' => $id, 'integratorId' => $integratorId)));
         }
 
         return array_merge($this->viewVariables, array(
-            'entity'      => $issueIntegrator,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $issueIntegrator,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
-    
+
     /**
      * Creates a form to delete a ProjectIssueIntegrator entity by id.
      *
@@ -222,5 +211,4 @@ class ProjectIssueIntegratorGitlabController extends BaseProjectController{
             ->getForm()
         ;
     }
-    
 }

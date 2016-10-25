@@ -7,66 +7,63 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitlabIssueBundle\Entity\Issues;
 
 use VersionControl\GitControlBundle\Entity\Issues\IssueLabelInterface;
+
 /**
- * IssueLabel
- *
+ * IssueLabel.
  */
 class IssueLabel implements IssueLabelInterface
 {
     /**
      * @var string
-     *
      */
     private $title;
 
     /**
      * @var string
-     *
      */
     private $hexColor;
 
     /**
-     * @var integer
-     *
+     * @var int
      */
     private $id;
 
     /**
      * @var array
-     *
      */
     private $issues;
-    
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
         $this->issues = [];
     }
-    
-     public function setId($id) {
+
+    public function setId($id)
+    {
         $this->id = $id;
+
         return $this;
     }
-    
+
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
 
-
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -80,7 +77,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -90,7 +87,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Set hexColor
+     * Set hexColor.
      *
      * @param string $hexColor
      *
@@ -104,7 +101,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Get hexColor
+     * Get hexColor.
      *
      * @return string
      */
@@ -113,11 +110,8 @@ class IssueLabel implements IssueLabelInterface
         return $this->hexColor;
     }
 
-    
-
-
     /**
-     * Get issue
+     * Get issue.
      *
      * @return array
      */
@@ -125,8 +119,4 @@ class IssueLabel implements IssueLabelInterface
     {
         return $this->issues;
     }
-
-    
-
-
 }
