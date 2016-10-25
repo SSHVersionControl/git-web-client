@@ -7,20 +7,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\DataTransformer;
 
-use VersionControl\GithubIssueBundle\DataTransformer\DataTransformerInterface;
 use VersionControl\GithubIssueBundle\Entity\Issues\Issue;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
 class IssueToEntityTransformer implements DataTransformerInterface
 {
     private $issueLabelTransformer;
-    
+
     private $issueMilestoneTransformer;
-    
+
     private $issueCommentTransformer;
-    
+
     private $userTransformer;
 
     public function __construct()
@@ -34,7 +34,8 @@ class IssueToEntityTransformer implements DataTransformerInterface
     /**
      * Transforms an issue array into an issue Entity object.
      *
-     * @param  Issue|null $issue
+     * @param Issue|null $issue
+     *
      * @return string
      */
     public function transform($issue)
@@ -42,7 +43,7 @@ class IssueToEntityTransformer implements DataTransformerInterface
         if (null === $issue) {
             return null;
         }
-        
+
         $issueEntity = new Issue();
         $issueEntity->setId($issue['number']);
         $issueEntity->setTitle($issue['title']);
@@ -51,20 +52,20 @@ class IssueToEntityTransformer implements DataTransformerInterface
         $issueEntity->setCreatedAt($this->formatDate($issue['created_at']));
         $issueEntity->setClosedAt($this->formatDate($issue['closed_at']));
         $issueEntity->setUpdatedAt($this->formatDate($issue['updated_at']));
-        
+
         //Map Issue labels
-        if(isset($issue['labels']) && is_array($issue['labels'])){
-            foreach($issue['labels'] as $label){
+        if (isset($issue['labels']) && is_array($issue['labels'])) {
+            foreach ($issue['labels'] as $label) {
                 $issueLabelEntity = $this->issueLabelTransformer->transform($label);
                 $issueEntity->addIssueLabel($issueLabelEntity);
             }
         }
-        
-        if(isset($issue['user']) && is_array($issue['user'])){
+
+        if (isset($issue['user']) && is_array($issue['user'])) {
             $user = $this->userTransformer->transform($issue['user']);
             $issueEntity->setUser($user);
         }
-        if(isset($issue['milestone']) && is_array($issue['milestone'])){
+        if (isset($issue['milestone']) && is_array($issue['milestone'])) {
             $issueMilestoneEntity = $this->issueMilestoneTransformer->transform($issue['milestone']);
             $issueEntity->setIssueMilestone($issueMilestoneEntity);
         }
@@ -75,9 +76,11 @@ class IssueToEntityTransformer implements DataTransformerInterface
     /**
      * Transforms an issue entity into a git api captiable issue array.
      *
-     * @param  \VersionControl\GithubIssueBundle\Entity\Issues $issueEntity
+     * @param \VersionControl\GithubIssueBundle\Entity\Issues $issueEntity
+     *
      * @return array|null
-     * @throws TransformationFailedException if object (issue) is not found.
+     *
+     * @throws TransformationFailedException if object (issue) is not found
      */
     public function reverseTransform($issueEntity)
     {
@@ -85,32 +88,31 @@ class IssueToEntityTransformer implements DataTransformerInterface
             // causes a validation error
             throw new TransformationFailedException('IssueEntity is null');
         }
-        
+
         $issue = array(
-            'title' =>  $issueEntity->getTitle()
-            ,'body' =>  $issueEntity->getDescription()
-            ,'state' =>  $issueEntity->getStatus()
-            ,'title' =>  $issueEntity->getTitle()
+            'title' => $issueEntity->getTitle(), 'body' => $issueEntity->getDescription(), 'state' => $issueEntity->getStatus(), 'title' => $issueEntity->getTitle(),
             //,'milestone' =>  0
         );
-        if($issueEntity->getIssueMilestone()){
-           $issue['milestone'] =  $issueEntity->getIssueMilestone()->getId();
+        if ($issueEntity->getIssueMilestone()) {
+            $issue['milestone'] = $issueEntity->getIssueMilestone()->getId();
         }
         $labels = array();
-        foreach($issueEntity->getIssueLabel() as $issueLabel){
+        foreach ($issueEntity->getIssueLabel() as $issueLabel) {
             $labels[] = $issueLabel->getId();
         }
         $issue['labels'] = $labels;
 
         return $issue;
     }
-    
-    protected function formatDate($date){
+
+    protected function formatDate($date)
+    {
         try {
             $dateTime = new \DateTime($date);
         } catch (Exception $e) {
             echo $e->getMessage();
         }
+
         return $dateTime;
     }
 }

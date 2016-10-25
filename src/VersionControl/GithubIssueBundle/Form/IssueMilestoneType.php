@@ -7,41 +7,40 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class IssueMilestoneType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('title')
-            ->add('description',TextareaType::class)
+            ->add('description', TextareaType::class)
             //->add('dueOn')
-            ->add('dueOn', 'datetime', array('date_widget' => "single_text", 'time_widget' => "single_text" ,'required' => false,))
+            ->add('dueOn', 'datetime', array('date_widget' => 'single_text', 'time_widget' => 'single_text', 'required' => false))
 
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone'
+            'data_class' => 'VersionControl\GithubIssueBundle\Entity\Issues\IssueMilestone',
         ));
     }
-
 
     /**
      * @return string

@@ -4,16 +4,14 @@ namespace VersionControl\GitCommandBundle\Tests;
 
 use VersionControl\GitCommandBundle\GitCommands\GitCommand;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
-
 
 /**
- * Description of GitCommandTestCase
+ * Description of GitCommandTestCase.
  *
  * @author fr_user
  */
-class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
-
+class GitCommandTestCase extends \PHPUnit_Framework_TestCase
+{
     /**
      * @var GitCommands
      */
@@ -23,7 +21,7 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
      * @var string
      */
     protected $path;
-    
+
     /**
      * @var SimpleGitEnvironment
      */
@@ -38,17 +36,12 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
      * @param null $name
      *
      *  - [setSecurityContext, ["@security.token_storage"]]
-      - [setDispatcher, ["@event_dispatcher"]]
-      - [setLogger, ["@version_control.logger"]]
-      - [setSshProcess, ["@version_control.ssh_process"]]
-      - [setSftpProcess, ["@version_control.sftp_process"]]
-      - [setCache, ["@array_cache"]]
-     * 
-     * @return 
+     *
+     * @return
      */
-    protected function getGitCommands() {
+    protected function getGitCommands()
+    {
         if ($this->gitCommands == null) {
-
             $this->gitCommands = new GitCommand();
             $this->assertInstanceOf('VersionControl\GitCommandBundle\GitCommands\GitCommand', $this->gitCommands);
 
@@ -61,13 +54,12 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
                     ->disableOriginalConstructor()
                     ->getMock();
             $this->gitCommands->setCache($arrayCache);
-            
+
             $dispatch = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
                     ->disableOriginalConstructor()
                     ->getMock();
-            
+
             $this->gitCommands->setDispatcher($dispatch);
-            
         }
 
         return $this->gitCommands;
@@ -76,10 +68,9 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
     /**
      * @param null|string $name  the folder name
      * @param int         $index the repository index (for getting them back)
-     *
-     * @return void
      */
-    protected function initGitCommandsLocal() {
+    protected function initGitCommandsLocal()
+    {
         $tempDir = realpath(sys_get_temp_dir());
         $tempFullPathName = tempnam($tempDir, 'versioncontrol');
         $this->path = $tempFullPathName;
@@ -91,30 +82,30 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
         $this->gitEnvironment->setId(1);
         $this->gitEnvironment->setPath($this->path);
         $this->gitEnvironment->setSsh(false);
-        
+
         $this->getGitCommands();
         $this->gitCommands->setGitEnvironment($this->gitEnvironment);
     }
 
-    protected function tearDown() {
+    protected function tearDown()
+    {
         $fs = new Filesystem();
         $fs->remove($this->path);
         //m::close();
     }
 
     /**
-     * @param string      $name       file name
-     * @param string|null $folder     folder name
-     * @param null        $content    content
-     *
-     * @return void
+     * @param string      $name    file name
+     * @param string|null $folder  folder name
+     * @param null        $content content
      */
-    protected function addFile($name, $folder = null, $content = null) {
+    protected function addFile($name, $folder = null, $content = null)
+    {
         $path = $this->path;
-        
+
         $filename = $folder == null ?
-                $path . DIRECTORY_SEPARATOR . $name :
-                $path . DIRECTORY_SEPARATOR . $folder . DIRECTORY_SEPARATOR . $name;
+                $path.DIRECTORY_SEPARATOR.$name :
+                $path.DIRECTORY_SEPARATOR.$folder.DIRECTORY_SEPARATOR.$name;
         $handle = fopen($filename, 'w');
         $fileContent = $content == null ? 'test content' : $content;
         $this->assertTrue(false !== fwrite($handle, $fileContent), sprintf('unable to write the file %s', $name));
@@ -122,60 +113,61 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * remove file from repo
+     * remove file from repo.
      *
      * @param string $name
      */
-    protected function removeFile($name) {
-        $filename = $this->path . DIRECTORY_SEPARATOR . $name;
+    protected function removeFile($name)
+    {
+        $filename = $this->path.DIRECTORY_SEPARATOR.$name;
         $this->assertTrue(unlink($filename));
     }
 
     /**
-     * update a file in the repository
+     * update a file in the repository.
      *
      * @param string $name    file name
      * @param string $content content
      */
-    protected function updateFile($name, $content) {
-        $filename = $this->path . DIRECTORY_SEPARATOR . $name;
+    protected function updateFile($name, $content)
+    {
+        $filename = $this->path.DIRECTORY_SEPARATOR.$name;
         $this->assertTrue(false !== file_put_contents($filename, $content));
     }
 
     /**
-     * rename a file in the repository
+     * rename a file in the repository.
      *
      * @param string $originName file name
      * @param string $targetName new file name
      */
-    protected function renameFile($originName, $targetName) {
-        
-        $origin = $this->path . DIRECTORY_SEPARATOR . $originName;
-        $target = $this->path . DIRECTORY_SEPARATOR . $targetName;
+    protected function renameFile($originName, $targetName)
+    {
+        $origin = $this->path.DIRECTORY_SEPARATOR.$originName;
+        $target = $this->path.DIRECTORY_SEPARATOR.$targetName;
         $fs = new Filesystem();
         $fs->rename($origin, $target);
     }
 
     /**
      * @param string $name name
-     *
-     * @return void
      */
-    protected function addFolder($name) {
+    protected function addFolder($name)
+    {
         $fs = new Filesystem();
-        $fs->mkdir($this->path . DIRECTORY_SEPARATOR . $name);
+        $fs->mkdir($this->path.DIRECTORY_SEPARATOR.$name);
     }
 
-    
     /**
-     * mock the caller
+     * mock the caller.
      *
      * @param string $command command
      * @param string $output  output
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getMockCaller($command, $output) {
+    protected function getMockCaller($command, $output)
+    {
         $mock = $this->getMock('GitElephant\Command\Caller\CallerInterface');
         $mock
                 ->expects($this->any())
@@ -185,14 +177,17 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
                 ->expects($this->any())
                 ->method('getOutputLines')
                 ->will($this->returnValue($output));
+
         return $mock;
     }
 
-    protected function getMockContainer() {
+    protected function getMockContainer()
+    {
         return $this->getMock('GitElephant\Command\CommandContainer');
     }
 
-    protected function addCommandToMockContainer(\PHPUnit_Framework_MockObject_MockObject $container, $commandName) {
+    protected function addCommandToMockContainer(\PHPUnit_Framework_MockObject_MockObject $container, $commandName)
+    {
         $container
                 ->expects($this->any())
                 ->method('get')
@@ -200,23 +195,24 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
                 ->will($this->returnValue($this->getMockCommand()));
     }
 
-    protected function addOutputToMockRepo(\PHPUnit_Framework_MockObject_MockObject $repo, $output) {
+    protected function addOutputToMockRepo(\PHPUnit_Framework_MockObject_MockObject $repo, $output)
+    {
         $repo
                 ->expects($this->any())
                 ->method('getCaller')
                 ->will($this->returnValue($this->getMockCaller('', $output)));
     }
 
-    protected function getMockCommand() {
+    protected function getMockCommand()
+    {
         $command = $this->getMock('Command', array('showCommit'));
         $command
                 ->expects($this->any())
                 ->method('showCommit')
                 ->will($this->returnValue(''));
+
         return $command;
     }
-
-
 
     protected function doCommitTest(
     Commit $commit, $sha, $tree, $author, $committer, $emailAuthor, $emailCommitter, $datetimeAuthor, $datetimeCommitter, $message
@@ -236,5 +232,4 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($datetimeCommitter, $commit->getDatetimeCommitter()->format('U'));
         $this->assertEquals($message, $commit->getMessage()->getShortMessage());
     }
-
 }

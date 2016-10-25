@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -15,20 +16,20 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class ProjectEnvironmentType extends AbstractType
 {
     protected $useCloneLocation;
-    
-    public function __construct($useCloneLocation = false) {
+
+    public function __construct($useCloneLocation = false)
+    {
         $this->useCloneLocation = $useCloneLocation;
     }
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -36,23 +37,22 @@ class ProjectEnvironmentType extends AbstractType
             ->add('title')
             ->add('description')
             ->add('path')
-            ->add('ssh',CheckboxType::class, array(
-                'label'    => 'Use SSH?',
+            ->add('ssh', CheckboxType::class, array(
+                'label' => 'Use SSH?',
                 'required' => false,
                 ))
             ->add('host')
             ->add('username')
-            ->add('password',PasswordType::class,array('required' => false))
-            ->add('privateKey',TextareaType::class,array('required' => false))
-            ->add('privateKeyPassword',PasswordType::class,array('required' => false))
-            ->add('projectEnvironmentFilePerm',  ProjectEnvironmentFilePermType::class, array('required'  => false));
-        
-        if($this->useCloneLocation === true){
-            $builder->add('gitCloneLocation',TextType::class,array('required' => false)) ; 
+            ->add('password', PasswordType::class, array('required' => false))
+            ->add('privateKey', TextareaType::class, array('required' => false))
+            ->add('privateKeyPassword', PasswordType::class, array('required' => false))
+            ->add('projectEnvironmentFilePerm',  ProjectEnvironmentFilePermType::class, array('required' => false));
+
+        if ($this->useCloneLocation === true) {
+            $builder->add('gitCloneLocation', TextType::class, array('required' => false));
         }
-        
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
@@ -61,16 +61,15 @@ class ProjectEnvironmentType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'VersionControl\GitControlBundle\Entity\ProjectEnvironment'
             //,'cascade_validation' => true
-            ,'validation_groups' => function (FormInterface $form) {
-                
-                if($form->has('gitaction')){
-                    $gitAction =  $form->get('gitaction')->getData();
-                    
+, 'validation_groups' => function (FormInterface $form) {
+                if ($form->has('gitaction')) {
+                    $gitAction = $form->get('gitaction')->getData();
+
                     if ($gitAction == 'new') {
                         return array('Default', 'NewGit');
-                    }elseif ($gitAction == 'clone') {
+                    } elseif ($gitAction == 'clone') {
                         return array('Default', 'CloneGit');
-                    }elseif ($gitAction == 'existing') {
+                    } elseif ($gitAction == 'existing') {
                         return array('Default', 'ExistingGit');
                     }
                 }

@@ -7,24 +7,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Twig\Extension;
 
 /**
- * Twig extension to get the parent directory in the File listing
+ * Twig extension to get the parent directory in the File listing.
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-class ParentDirectoryExtension extends \Twig_Extension {
-    
+class ParentDirectoryExtension extends \Twig_Extension
+{
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function getName() {
-            return 'versioncontrol_parentdirectory';
+    public function getName()
+    {
+        return 'versioncontrol_parentdirectory';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFilters()
     {
@@ -34,18 +36,17 @@ class ParentDirectoryExtension extends \Twig_Extension {
     }
 
     /**
-     * 
      * @param string $dir
+     *
      * @return string
      */
-    public function parentDirectory($dir) {
-
+    public function parentDirectory($dir)
+    {
         $parentDir = dirname($dir);
-        if($parentDir !== '.'){
+        if ($parentDir !== '.') {
             return dirname($dir);
         }
-        return '';
 
+        return '';
     }
-     
 }

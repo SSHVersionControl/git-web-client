@@ -7,20 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
 use VersionControl\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
 
 /**
- * IssueMilestone
- *
- * 
+ * IssueMilestone.
  */
 class IssueMilestone implements IssueMilestoneInterface
 {
     /**
      * @var string
-     *
      */
     private $title;
 
@@ -31,67 +29,59 @@ class IssueMilestone implements IssueMilestoneInterface
 
     /**
      * @var string
-     *
      */
     private $state;
 
     /**
      * @var \DateTime
-     *
      */
     private $dueOn;
 
     /**
      * @var \DateTime
-     *
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
      */
     private $updatedAt;
 
     /**
      * @var \DateTime
-     *
      */
     private $closedAt;
 
     /**
-     * @var integer
-     *
+     * @var int
      */
     private $id;
 
     /**
-     *
      * @var \VersionControl\GithubIssueBundle\Entity\User
      */
     private $user;
-    
 
     /**
-     * 
-     * @param integer $id
+     * @param int $id
      */
-    public function setId($id){
+    public function setId($id)
+    {
         $this->id = $id;
     }
-    
+
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
-    
+
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -105,7 +95,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -115,7 +105,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -129,7 +119,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -139,7 +129,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set state
+     * Set state.
      *
      * @param string $state
      *
@@ -153,7 +143,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get state
+     * Get state.
      *
      * @return string
      */
@@ -163,7 +153,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set dueOn
+     * Set dueOn.
      *
      * @param \DateTime $dueOn
      *
@@ -177,7 +167,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get dueOn
+     * Get dueOn.
      *
      * @return \DateTime
      */
@@ -187,7 +177,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -201,7 +191,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -211,7 +201,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param \DateTime $updatedAt
      *
@@ -225,7 +215,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -235,7 +225,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set closedAt
+     * Set closedAt.
      *
      * @param \DateTime $closedAt
      *
@@ -249,7 +239,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get closedAt
+     * Get closedAt.
      *
      * @return \DateTime
      */
@@ -258,9 +248,8 @@ class IssueMilestone implements IssueMilestoneInterface
         return $this->closedAt;
     }
 
-
     /**
-     * Get verUser
+     * Get verUser.
      *
      * @return \VersionControl\GithubIssueBundle\Entity\User
      */
@@ -268,19 +257,17 @@ class IssueMilestone implements IssueMilestoneInterface
     {
         return $this->user;
     }
-    
+
     /**
-     * Get verUser
-     *
+     * Get verUser.
      */
     public function setUser(\VersionControl\GithubIssueBundle\Entity\User $user)
     {
         $this->user = $user;
     }
-    
-    
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -292,9 +279,9 @@ class IssueMilestone implements IssueMilestoneInterface
 
         return $this;
     }
-    
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -306,8 +293,9 @@ class IssueMilestone implements IssueMilestoneInterface
 
         return $this;
     }
-    
-    public function isClosed(){
-        return ($this->state === 'closed')?true:false;
+
+    public function isClosed()
+    {
+        return ($this->state === 'closed') ? true : false;
     }
 }

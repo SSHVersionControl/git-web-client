@@ -8,14 +8,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use FOS\UserBundle\Form\Type\ProfileFormType;
-
 
 class EditUserType extends AbstractType
 {
@@ -24,7 +23,7 @@ class EditUserType extends AbstractType
         $builder->add('name')
 
                 ->add('admin', CheckboxType::class, array(
-                'label'    => 'Admin',
+                'label' => 'Admin',
                 'required' => false,
                 ));
     }

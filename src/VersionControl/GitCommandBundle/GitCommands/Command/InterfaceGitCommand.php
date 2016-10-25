@@ -16,6 +16,6 @@ namespace VersionControl\GitCommandBundle\GitCommands\Command;
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-interface InterfaceGitCommand {
-    
+interface InterfaceGitCommand
+{
 }

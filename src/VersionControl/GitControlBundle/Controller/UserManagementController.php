@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -17,24 +18,19 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
 use VersionControl\GitControlBundle\Form\RegistrationType;
 use VersionControl\GitControlBundle\Form\EditUserType;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use VersionControl\GitControlBundle\Entity\User\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
  * Project controller.
+ *
  * @Method("GET")
  * @Route("/user-managerment")
  * @Security("has_role('ROLE_ADMIN')")
  */
 class UserManagementController extends Controller
 {
-    
     /**
      * @Route("/", name="usermanagement")
      * @Template()
@@ -43,12 +39,12 @@ class UserManagementController extends Controller
     {
         $userManager = $this->get('fos_user.user_manager');
         $users = $userManager->findUsers();
-        
-         return array(
+
+        return array(
             'users' => $users,
         );
     }
-    
+
     /**
      * Creates a new Project entity.
      *
@@ -58,10 +54,9 @@ class UserManagementController extends Controller
      */
     public function createAction(Request $request)
     {
-
         $userManager = $this->get('fos_user.user_manager');
         $user = $userManager->createUser();
-        
+
         $form = $this->createCreateForm($user);
         $form->handleRequest($request);
 
@@ -70,16 +65,16 @@ class UserManagementController extends Controller
             $userManager->updateUser($user);
 
             $this->get('session')->getFlashBag()->add('notice', 'A new user has been created');
-            
+
             return $this->redirect($this->generateUrl('usermanagement'));
         }
 
         return array(
             'user' => $user,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
-        
+
     /**
      * Displays a form to create a new user entity.
      *
@@ -91,14 +86,13 @@ class UserManagementController extends Controller
     {
         $userManager = $this->get('fos_user.user_manager');
         $user = $userManager->createUser();
-        $form   = $this->createCreateForm($user);
+        $form = $this->createCreateForm($user);
 
         return array(
             'user' => $user,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
-
 
     /**
      * Creates a form to create a User entity.
@@ -118,7 +112,7 @@ class UserManagementController extends Controller
 
         return $form;
     }
-    
+
     /**
      * Displays a form to edit an existing Project entity.
      *
@@ -129,7 +123,7 @@ class UserManagementController extends Controller
     public function editAction($id)
     {
         $userManager = $this->get('fos_user.user_manager');
-        
+
         //$em = $this->getDoctrine()->getManager();
         //$user = $em->getRepository('VersionControlGitControlBundle:User/User')->find($id);
 
@@ -143,18 +137,18 @@ class UserManagementController extends Controller
         $editForm = $this->createEditForm($user);
 
         return array(
-            'user'      => $user,
-            'edit_form'   => $editForm->createView(),
+            'user' => $user,
+            'edit_form' => $editForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Project entity.
-    *
-    * @param Project $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Project entity.
+     *
+     * @param Project $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(User $entity)
     {
         $form = $this->createForm(EditUserType::class, $entity, array(
@@ -182,7 +176,7 @@ class UserManagementController extends Controller
         if (!$user) {
             throw $this->createNotFoundException('Unable to find user entity.');
         }
-        
+
         $editForm = $this->createEditForm($user);
         $editForm->handleRequest($request);
 
@@ -190,13 +184,13 @@ class UserManagementController extends Controller
             $userManager->updateUser($user);
 
             $this->get('session')->getFlashBag()->add('notice', 'User has been updated');
-            
+
             return $this->redirect($this->generateUrl('usermanagement'));
         }
 
         return array(
-            'user'      => $user,
-            'edit_form'   => $editForm->createView(),
+            'user' => $user,
+            'edit_form' => $editForm->createView(),
         );
     }
 }

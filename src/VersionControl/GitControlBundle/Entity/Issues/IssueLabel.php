@@ -7,57 +7,51 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity\Issues;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * IssueLabel
- *
+ * IssueLabel.
  */
 class IssueLabel
 {
     /**
      * @var string
-     *
      */
     private $title;
 
     /**
      * @var string
-     *
      */
     private $hexColor;
 
     /**
-     * @var integer
-     *
+     * @var int
      */
     private $id;
 
     /**
      * @var array
-     *
      */
     private $issue;
-    
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
         $this->issue = [];
     }
-    
-     public function setId($id) {
+
+    public function setId($id)
+    {
         $this->id = $id;
+
         return $this;
     }
 
-
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -71,7 +65,7 @@ class IssueLabel
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -81,7 +75,7 @@ class IssueLabel
     }
 
     /**
-     * Set hexColor
+     * Set hexColor.
      *
      * @param string $hexColor
      *
@@ -95,7 +89,7 @@ class IssueLabel
     }
 
     /**
-     * Get hexColor
+     * Get hexColor.
      *
      * @return string
      */
@@ -105,9 +99,9 @@ class IssueLabel
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -115,7 +109,7 @@ class IssueLabel
     }
 
     /**
-     * Add issue
+     * Add issue.
      *
      * @param \VersionControl\GitControlBundle\Entity\Issue $issue
      *
@@ -129,7 +123,7 @@ class IssueLabel
     }
 
     /**
-     * Remove issue
+     * Remove issue.
      *
      * @param \VersionControl\GitControlBundle\Entity\Issue $issue
      */
@@ -139,7 +133,7 @@ class IssueLabel
     }
 
     /**
-     * Get issue
+     * Get issue.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -147,8 +141,4 @@ class IssueLabel
     {
         return $this->issue;
     }
-
-    
-
-
 }

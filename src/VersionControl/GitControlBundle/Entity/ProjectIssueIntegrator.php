@@ -7,18 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Project Issue Integrator Entity
- * 
+ * Project Issue Integrator Entity.
+ *
  *
  * @ORM\Table(name="project_issue_integrator", indexes={@ORM\Index(name="fk_project_issue_integrator_project1", columns={"project_id"})})
  * @ORM\Entity(repositoryClass="VersionControl\GitControlBundle\Repository\ProjectIssueIntegratorRepository")
  * @ORM\HasLifecycleCallbacks
- * 
+ *
  * @ORM\InheritanceType("JOINED")
  * @ORM\DiscriminatorColumn(name="class_name", type="string")
  * @ORM\DiscriminatorMap({
@@ -26,25 +27,24 @@ use Doctrine\ORM\Mapping as ORM;
  *   "Gitlab" = "VersionControl\GitlabIssueBundle\Entity\ProjectIssueIntegratorGitlab"
  * })
  */
-abstract class ProjectIssueIntegrator {
-    
+abstract class ProjectIssueIntegrator
+{
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="repo_type", type="string", length=80, nullable=true)
      */
     private $repoType;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\Project
      *
@@ -54,55 +54,55 @@ abstract class ProjectIssueIntegrator {
      * })
      */
     private $project;
-    
+
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
     }
-    
-        /**
-     * Get id
+
+    /**
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
-    
 
     /**
-     * Type of repo eg github,gitlab,gitbucket(JIRA)
+     * Type of repo eg github,gitlab,gitbucket(JIRA).
+     *
      * @return string
      */
-    public function getRepoType() {
+    public function getRepoType()
+    {
         return $this->repoType;
     }
 
     /**
-     * Project
+     * Project.
+     *
      * @return \VersionControl\GitControlBundle\Entity\Project
      */
-    public function getProject() {
+    public function getProject()
+    {
         return $this->project;
     }
 
-
-    public function setRepoType($repoType) {
+    public function setRepoType($repoType)
+    {
         $this->repoType = $repoType;
+
         return $this;
     }
 
-    public function setProject(\VersionControl\GitControlBundle\Entity\Project $project) {
+    public function setProject(\VersionControl\GitControlBundle\Entity\Project $project)
+    {
         $this->project = $project;
+
         return $this;
     }
-    
-
-
-
-    
-
 }

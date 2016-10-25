@@ -7,47 +7,39 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity\Issues;
 
-
 /**
- * IssueLabel
- *
+ * IssueLabel.
  */
 interface IssueLabelInterface
 {
-
-
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
     public function getTitle();
 
     /**
-     * Get hexColor
+     * Get hexColor.
      *
      * @return string
      */
     public function getHexColor();
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId();
 
-
     /**
-     * Get issue
+     * Get issue.
      *
      * @return array
      */
     public function getIssues();
-
-    
-
-
 }

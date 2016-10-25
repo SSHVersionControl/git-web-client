@@ -7,7 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -21,16 +23,17 @@ class UserProjects
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer
+     *
+     * @var int
      */
     private $id;
-    
+
     /**
      * @var string
      * @ORM\Column(name="roles", type="string", length=225, nullable=true)
      */
     private $roles;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\Project
      *
@@ -40,7 +43,7 @@ class UserProjects
      * })
      */
     private $project;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\User\User
      *
@@ -50,44 +53,50 @@ class UserProjects
      * })
      */
     private $user;
-    
+
     /**
-     * Entity Id
+     * Entity Id.
+     *
      * @return type
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
-    public function getRoles() {
+    public function getRoles()
+    {
         return $this->roles;
     }
 
-    public function setRoles($roles) {
+    public function setRoles($roles)
+    {
         $this->roles = $roles;
+
         return $this;
     }
-    
-    public function getProject() {
+
+    public function getProject()
+    {
         return $this->project;
     }
 
-    public function setProject(\VersionControl\GitControlBundle\Entity\Project $project) {
+    public function setProject(\VersionControl\GitControlBundle\Entity\Project $project)
+    {
         $this->project = $project;
+
         return $this;
     }
-    
-     public function getUser() {
+
+    public function getUser()
+    {
         return $this->user;
     }
 
-    public function setUser(\VersionControl\GitControlBundle\Entity\User\User $user) {
+    public function setUser(\VersionControl\GitControlBundle\Entity\User\User $user)
+    {
         $this->user = $user;
+
         return $this;
     }
-
-
-    
-    
 }
-

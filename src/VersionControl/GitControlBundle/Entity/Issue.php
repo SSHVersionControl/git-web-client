@@ -7,12 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use VersionControl\GitControlBundle\Entity\Issues\IssueInterface;
+
 /**
- * Issue
+ * Issue.
  *
  * @ORM\Table(name="issue", indexes={@ORM\Index(name="fk_issue_ver_user1_idx", columns={"ver_user_id"}), @ORM\Index(name="fk_issue_project1_idx", columns={"project_id"}), @ORM\Index(name="fk_issue_issue_milestone1_idx", columns={"issue_milestone_id"})})
  * @ORM\Entity(repositoryClass="VersionControl\GitControlBundle\Repository\IssueRepository")
@@ -63,14 +65,14 @@ class Issue implements IssueInterface
     private $updatedAt;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="github_number", type="integer", nullable=true)
      */
     private $githubNumber;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -122,17 +124,18 @@ class Issue implements IssueInterface
      * )
      */
     private $issueLabel;
-    
+
     /**
-     * Issue comments
+     * Issue comments.
+     *
      * @var \Doctrine\Common\Collections\Collection
-     * 
-     * @ORM\OneToMany(targetEntity="VersionControl\GitControlBundle\Entity\IssueComment", mappedBy="issue", fetch="EXTRA_LAZY") 
+     *
+     * @ORM\OneToMany(targetEntity="VersionControl\GitControlBundle\Entity\IssueComment", mappedBy="issue", fetch="EXTRA_LAZY")
      */
     private $issueComments;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -142,9 +145,8 @@ class Issue implements IssueInterface
         $this->setStatus('open');
     }
 
-
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -158,7 +160,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -168,7 +170,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -177,11 +179,12 @@ class Issue implements IssueInterface
     public function setDescription($description)
     {
         $this->description = $description;
+
         return $this;
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -191,7 +194,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -205,7 +208,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get status
+     * Get status.
      *
      * @return string
      */
@@ -215,7 +218,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set closedAt
+     * Set closedAt.
      *
      * @param \DateTime $closedAt
      *
@@ -229,7 +232,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get closedAt
+     * Get closedAt.
      *
      * @return \DateTime
      */
@@ -239,7 +242,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -253,7 +256,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -263,7 +266,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param \DateTime $updatedAt
      *
@@ -277,7 +280,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -287,9 +290,9 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set githubNumber
+     * Set githubNumber.
      *
-     * @param integer $githubNumber
+     * @param int $githubNumber
      *
      * @return Issue
      */
@@ -301,9 +304,9 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get githubNumber
+     * Get githubNumber.
      *
-     * @return integer
+     * @return int
      */
     public function getGithubNumber()
     {
@@ -311,9 +314,9 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -321,7 +324,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set issueMilestone
+     * Set issueMilestone.
      *
      * @param \VersionControl\GitControlBundle\Entity\IssueMilestone $issueMilestone
      *
@@ -335,7 +338,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get issueMilestone
+     * Get issueMilestone.
      *
      * @return \VersionControl\GitControlBundle\Entity\IssueMilestone
      */
@@ -345,7 +348,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set project
+     * Set project.
      *
      * @param \VersionControl\GitControlBundle\Entity\Project $project
      *
@@ -359,7 +362,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get project
+     * Get project.
      *
      * @return \VersionControl\GitControlBundle\Entity\Project
      */
@@ -369,7 +372,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Set verUser
+     * Set verUser.
      *
      * @param \VersionControl\GitControlBundle\Entity\User\User $verUser
      *
@@ -381,9 +384,9 @@ class Issue implements IssueInterface
 
         return $this;
     }
-    
+
     /**
-     * Get User
+     * Get User.
      *
      * @return \VersionControl\GitControlBundle\Entity\Issues\IssueUserInterface
      */
@@ -393,7 +396,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get verUser
+     * Get verUser.
      *
      * @return \VersionControl\GitControlBundle\Entity\User\User
      */
@@ -403,7 +406,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Add issueLabel
+     * Add issueLabel.
      *
      * @param \VersionControl\GitControlBundle\Entity\IssueLabel $issueLabel
      *
@@ -417,7 +420,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Remove issueLabel
+     * Remove issueLabel.
      *
      * @param \VersionControl\GitControlBundle\Entity\IssueLabel $issueLabel
      */
@@ -427,7 +430,7 @@ class Issue implements IssueInterface
     }
 
     /**
-     * Get issueLabel
+     * Get issueLabel.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -435,41 +438,47 @@ class Issue implements IssueInterface
     {
         return $this->issueLabel;
     }
-    
+
     /**
-     * Get Issue Comments
+     * Get Issue Comments.
+     *
      * @return \Doctrine\Common\Collections\Collection of \VersionControl\GitControlBundle\Entity\IssueComment
      */
-    public function getIssueComments() {
+    public function getIssueComments()
+    {
         return $this->issueComments;
     }
 
     /**
-     * Set Issue Comments
+     * Set Issue Comments.
+     *
      * @param \Doctrine\Common\Collections\Collection $issueComments
+     *
      * @return \VersionControl\GitControlBundle\Entity\Issue
      */
-    public function setIssueComments(array $issueComments) {
+    public function setIssueComments(array $issueComments)
+    {
         $this->issueComments = $issueComments;
+
         return $this;
     }
 
-        
     /**
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function updateModifiedDatetime() {
+    public function updateModifiedDatetime()
+    {
         // update the modified time
         //$this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
-        if($this->getStatus() === 'closed'){
+        if ($this->getStatus() === 'closed') {
             $this->setClosedAt(new \DateTime());
         }
     }
-    
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -481,9 +490,9 @@ class Issue implements IssueInterface
 
         return $this;
     }
-    
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -495,9 +504,9 @@ class Issue implements IssueInterface
 
         return $this;
     }
-    
-    public function isClosed(){
-        return ($this->status === 'closed')?true:false;
-    }
 
+    public function isClosed()
+    {
+        return ($this->status === 'closed') ? true : false;
+    }
 }

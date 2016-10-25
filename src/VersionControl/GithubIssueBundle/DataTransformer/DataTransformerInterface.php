@@ -7,12 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\DataTransformer;
 
-interface DataTransformerInterface{
-    
-     public function transform($array);
-     
-     public function reverseTransform($entiy);
-     
+interface DataTransformerInterface
+{
+    public function transform($array);
+
+    public function reverseTransform($entiy);
 }

@@ -7,29 +7,28 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Command;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\ConnectionException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
-
 use VersionControl\GitControlBundle\Installer\DatabaseInstall;
 
 /**
- * Command line based installer, Use to install and set up the application
- * 
+ * Command line based installer, Use to install and set up the application.
+ *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
 class InstallerCommand extends Command
 {
     /** @var \Doctrine\DBAL\Connection */
     private $db;
-    
+
     /** @var \VersionControl\GitControlBundle\Installer\DatabaseInstall */
     private $installer;
 
@@ -47,13 +46,13 @@ class InstallerCommand extends Command
 
     /** @var string */
     private $environment;
-    
+
     /**
-     * FOS User Manager
-     * @var type 
+     * FOS User Manager.
+     *
+     * @var type
      */
     private $userManager;
-
 
     const EXIT_DATABASE_NOT_FOUND_ERROR = 3;
     const EXIT_GENERAL_DATABASE_ERROR = 4;
@@ -88,23 +87,19 @@ class InstallerCommand extends Command
     {
         $this->output = $output;
         $this->installer->setOutput($output);
-        
+
         $this->checkPermissions();
         $this->checkParameters();
         $this->checkDatabase();
 
-        
-
         $this->installer->importSchema();
-        
-        if($this->environment == 'test'){
+
+        if ($this->environment == 'test') {
             $this->installer->importTestData();
-            
-        }else{
-           $this->installer->importData();
+        } else {
+            $this->installer->importData();
         }
-        
-        
+
         $this->cacheClear($output);
     }
 
@@ -125,8 +120,6 @@ class InstallerCommand extends Command
         }
     }
 
-    
-
     private function checkDatabase()
     {
         try {
@@ -137,7 +130,7 @@ class InstallerCommand extends Command
                         $this->db->getDatabase()
                     )
                 );
-                
+
                 exit(self::EXIT_DATABASE_NOT_FOUND_ERROR);
             }
         } catch (ConnectionException $e) {
@@ -147,7 +140,7 @@ class InstallerCommand extends Command
             exit(self::EXIT_GENERAL_DATABASE_ERROR);
         }
     }
-    
+
     /**
      * @throws \Exception if an unexpected database error occurs
      */
@@ -173,7 +166,7 @@ class InstallerCommand extends Command
         }
 
         $output->writeln(sprintf('Clearing cache for directory <info>%s</info>', $this->cacheDir));
-        $oldCacheDir = $this->cacheDir . '_old';
+        $oldCacheDir = $this->cacheDir.'_old';
 
         if ($this->filesystem->exists($oldCacheDir)) {
             $this->filesystem->remove($oldCacheDir);
@@ -184,30 +177,31 @@ class InstallerCommand extends Command
         $this->filesystem->rename($this->cacheDir, $oldCacheDir);
         $this->filesystem->remove($oldCacheDir);
     }
-    
+
     /**
      * Creates a new admin user.
-     * 
+     *
      * @param string $username
      * @param string $password
      * @param string $email
      * @param string $name
+     *
      * @return \FOS\UserBundle\Model\UserInterface
      */
-    protected function createUser($username, $password, $email, $name){
-
+    protected function createUser($username, $password, $email, $name)
+    {
         $user = $this->userManager->createUser();
         $user->setUsername($username);
         $user->setEmail($email);
         $user->setPlainPassword($password);
         $user->setName($name);
-        
-        $user->setEnabled((Boolean) true);
+
+        $user->setEnabled((bool) true);
         $user->addRole('ROLE_ADMIN');
         //$user->setSuperAdmin((Boolean) true);
-        
+
         $this->userManager->updateUser($user);
+
         return $user;
     }
-
 }

@@ -8,10 +8,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Installer;
 
 use Doctrine\DBAL\Connection;
-use Symfony\Component\Filesystem\Filesystem;
 
 class DatabaseInstall
 {
@@ -34,7 +34,6 @@ class DatabaseInstall
         $this->output = $output;
     }
 
-
     protected function runQueriesFromFile($file)
     {
         $queries = array_filter(preg_split('(;\\s*$)m', file_get_contents($file)));
@@ -54,7 +53,7 @@ class DatabaseInstall
             $this->db->exec($query);
         }
     }
-    
+
     public function importSchema()
     {
         $this->runQueriesFromFile(
@@ -68,14 +67,11 @@ class DatabaseInstall
             'src/VersionControl/GitControlBundle/Installer/dbscript/data.sql'
         );
     }
-    
+
     public function importTestData()
     {
         $this->runQueriesFromFile(
             'src/VersionControl/GitControlBundle/Installer/dbscript/testData.sql'
         );
     }
-    
-    
 }
-

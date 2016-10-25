@@ -9,6 +9,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
@@ -19,19 +20,16 @@ use Symfony\Component\Validator\Constraint;
 class SshDetails extends Constraint
 {
     public $message = 'validate.constraint.SshDetails';
-    
+
     public $messageFileDoesNotExist = 'This directory (%gitPath%) does not exist. Please check that you have entered the correct path in %projectEnviromentTitle%';
-    
+
     public function validatedBy()
     {
         return 'ssh_details_validator';
     }
-    
+
     public function getTargets()
     {
         return self::CLASS_CONSTRAINT;
     }
-
 }
-
-?>

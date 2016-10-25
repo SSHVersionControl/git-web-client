@@ -5,35 +5,40 @@ namespace VersionControl\GitControlBundle\Encryptors;
 use VersionControl\DoctrineEncryptBundle\Encryptors\EncryptorInterface;
 
 /**
- * Class for AES256 encryption
- * 
+ * Class for AES256 encryption.
+ *
  * @author Paul Schweppe
  * @author Victor Melnik <melnikvictorl@gmail.com>
  */
-class AES256Encryptor implements EncryptorInterface {
-
+class AES256Encryptor implements EncryptorInterface
+{
     /**
-     * Secret key for aes algorythm
+     * Secret key for aes algorythm.
+     *
      * @var string
      */
     private $secretKey;
 
     /**
-     * Initialization of encryptor
-     * @param string $key 
+     * Initialization of encryptor.
+     *
+     * @param string $key
      */
-    public function __construct($key) {
+    public function __construct($key)
+    {
         $this->secretKey = $key;
     }
 
     /**
-     * Implementation of EncryptorInterface encrypt method
+     * Implementation of EncryptorInterface encrypt method.
+     *
      * @param string $data
+     *
      * @return string
      */
-    public function encrypt($data) {
-        
-        if(is_null($data) || trim($data) == ''){
+    public function encrypt($data)
+    {
+        if (is_null($data) || trim($data) == '') {
             return $data;
         }
 
@@ -43,14 +48,18 @@ class AES256Encryptor implements EncryptorInterface {
     }
 
     /**
-     * Implementation of EncryptorInterface decrypt method
+     * Implementation of EncryptorInterface decrypt method.
+     *
      * @param string $data
-     * @return string 
+     *
+     * @return string
      */
-    function decrypt($data) {
-        if(is_null($data) || trim($data) == ''){
+    public function decrypt($data)
+    {
+        if (is_null($data) || trim($data) == '') {
             return $data;
         }
+
         return trim(mcrypt_decrypt(
                                 MCRYPT_RIJNDAEL_256, $this->secretKey, base64_decode($data), MCRYPT_MODE_ECB, mcrypt_create_iv(
                                         mcrypt_get_iv_size(
@@ -58,5 +67,4 @@ class AES256Encryptor implements EncryptorInterface {
                                         ), MCRYPT_RAND
                                 )));
     }
-
 }

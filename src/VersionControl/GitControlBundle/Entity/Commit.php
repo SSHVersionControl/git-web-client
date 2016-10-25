@@ -8,151 +8,163 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use VersionControl\GitControlBundle\Validator\Constraints as VersionAssert;
-use VersionControl\GitControlBundle\Entity\Project;
 
 /**
- * A commit entity used to create a from with validation
+ * A commit entity used to create a from with validation.
  *
  * @author paul schweppe
  * @VersionAssert\StatusHash
  */
-class Commit {
+class Commit
+{
+    /**
+     * @var string
+     * @Assert\NotBlank
+     */
+    private $comment;
 
     /**
-     *
-     * @var string 
-     * @Assert\NotBlank
-     */
-    private  $comment;
-    
-    /**
-     *
      * @var string
-     * @Assert\NotBlank 
+     * @Assert\NotBlank
      */
     private $statusHash;
-    
+
     /**
-     *
-     * @var array 
+     * @var array
      * @Assert\NotBlank
-     * 
      */
     private $files;
-    
+
     /**
-     *
-     * @var Project 
+     * @var Project
      */
     private $project;
-    
+
     /**
-     *
-     * @var integer 
+     * @var int
      */
     private $issue;
-    
+
     /**
-     *
-     * @var integer 
+     * @var int
      */
     private $issueAction;
-    
+
     /**
-     * Flag to state if the system should push after commit
-     * 
-     * @var boolean
+     * Flag to state if the system should push after commit.
+     *
+     * @var bool
      */
     private $pushOnCommit;
-    
+
     /**
-     *
-     * @var array 
+     * @var array
      */
     private $pushRemote;
-    
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->pushRemote = array();
     }
-    
-    public function getComment() {
+
+    public function getComment()
+    {
         return $this->comment;
     }
 
-    public function getStatusHash() {
+    public function getStatusHash()
+    {
         return $this->statusHash;
     }
 
-    public function getFiles() {
+    public function getFiles()
+    {
         return $this->files;
     }
 
-    public function getProject() {
+    public function getProject()
+    {
         return $this->project;
     }
 
-    public function setComment($comment) {
+    public function setComment($comment)
+    {
         $this->comment = $comment;
+
         return $this;
     }
 
-    public function setStatusHash($statusHash) {
+    public function setStatusHash($statusHash)
+    {
         $this->statusHash = $statusHash;
+
         return $this;
     }
 
-    public function setFiles($files) {
+    public function setFiles($files)
+    {
         $this->files = $files;
+
         return $this;
     }
 
-    public function setProject(Project $project) {
+    public function setProject(Project $project)
+    {
         $this->project = $project;
+
         return $this;
     }
 
-    public function getIssue() {
+    public function getIssue()
+    {
         return $this->issue;
     }
 
-    public function getIssueAction() {
+    public function getIssueAction()
+    {
         return $this->issueAction;
     }
 
-    public function setIssue($issue) {
+    public function setIssue($issue)
+    {
         $this->issue = $issue;
+
         return $this;
     }
 
-    public function setIssueAction($issueAction) {
+    public function setIssueAction($issueAction)
+    {
         $this->issueAction = $issueAction;
+
         return $this;
     }
 
-    public function getPushOnCommit() {
+    public function getPushOnCommit()
+    {
         return $this->pushOnCommit;
     }
 
-    public function setPushOnCommit($pushOnCommit) {
+    public function setPushOnCommit($pushOnCommit)
+    {
         $this->pushOnCommit = $pushOnCommit;
+
         return $this;
     }
 
-    public function getPushRemote() {
+    public function getPushRemote()
+    {
         return $this->pushRemote;
     }
 
-    public function setPushRemote($pushRemote) {
+    public function setPushRemote($pushRemote)
+    {
         $this->pushRemote = $pushRemote;
+
         return $this;
     }
-
-
-    
-    
 }
-    

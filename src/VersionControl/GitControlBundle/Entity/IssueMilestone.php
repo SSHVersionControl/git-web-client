@@ -7,18 +7,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use VersionControl\GitControlBundle\Entity\Issues\IssueMilestoneInterface;
 
 /**
- * IssueMilestone
+ * IssueMilestone.
  *
  * @ORM\Table(name="issue_milestone", indexes={@ORM\Index(name="fk_issue_milestone_ver_user1_idx", columns={"ver_user_id"})})
  * @ORM\Entity(repositoryClass="VersionControl\GitControlBundle\Repository\IssueMilestoneRepository")
  * @ORM\HasLifecycleCallbacks
- * 
  */
 class IssueMilestone implements IssueMilestoneInterface
 {
@@ -72,7 +72,7 @@ class IssueMilestone implements IssueMilestoneInterface
     private $closedAt;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -89,7 +89,7 @@ class IssueMilestone implements IssueMilestoneInterface
      * })
      */
     private $verUser;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\Project
      *
@@ -100,19 +100,17 @@ class IssueMilestone implements IssueMilestoneInterface
      */
     private $project;
 
-
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
         $this->setCreatedAt(new \DateTime());
         $this->setState('open');
     }
-    
 
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -126,7 +124,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -136,7 +134,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -150,7 +148,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -160,7 +158,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set state
+     * Set state.
      *
      * @param string $state
      *
@@ -174,7 +172,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get state
+     * Get state.
      *
      * @return string
      */
@@ -184,7 +182,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set dueOn
+     * Set dueOn.
      *
      * @param \DateTime $dueOn
      *
@@ -198,7 +196,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get dueOn
+     * Get dueOn.
      *
      * @return \DateTime
      */
@@ -208,7 +206,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -222,7 +220,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -232,7 +230,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param \DateTime $updatedAt
      *
@@ -246,7 +244,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -256,7 +254,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set closedAt
+     * Set closedAt.
      *
      * @param \DateTime $closedAt
      *
@@ -270,7 +268,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get closedAt
+     * Get closedAt.
      *
      * @return \DateTime
      */
@@ -280,9 +278,9 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -290,7 +288,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Set verUser
+     * Set verUser.
      *
      * @param \VersionControl\GitControlBundle\Entity\User\User $verUser
      *
@@ -304,7 +302,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get verUser
+     * Get verUser.
      *
      * @return \VersionControl\GitControlBundle\Entity\User\User
      */
@@ -312,17 +310,17 @@ class IssueMilestone implements IssueMilestoneInterface
     {
         return $this->verUser;
     }
-    
+
     /**
-     * 
      * @return \VersionControl\GitControlBundle\Entity\User\User
      */
-    public function getUser(){
+    public function getUser()
+    {
         return $this->verUser;
     }
-    
+
     /**
-     * Set project
+     * Set project.
      *
      * @param \VersionControl\GitControlBundle\Entity\Project $project
      *
@@ -336,7 +334,7 @@ class IssueMilestone implements IssueMilestoneInterface
     }
 
     /**
-     * Get project
+     * Get project.
      *
      * @return \VersionControl\GitControlBundle\Entity\Project
      */
@@ -344,22 +342,23 @@ class IssueMilestone implements IssueMilestoneInterface
     {
         return $this->project;
     }
-    
+
     /**
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function updateModifiedDatetime() {
+    public function updateModifiedDatetime()
+    {
         // update the modified time
         //$this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
-        if($this->getState() === 'closed'){
+        if ($this->getState() === 'closed') {
             $this->setClosedAt(new \DateTime());
         }
     }
-    
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -371,9 +370,9 @@ class IssueMilestone implements IssueMilestoneInterface
 
         return $this;
     }
-    
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -385,8 +384,9 @@ class IssueMilestone implements IssueMilestoneInterface
 
         return $this;
     }
-    
-    public function isClosed(){
-        return ($this->state === 'closed')?true:false;
+
+    public function isClosed()
+    {
+        return ($this->state === 'closed') ? true : false;
     }
 }

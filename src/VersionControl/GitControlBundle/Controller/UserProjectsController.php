@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -17,10 +18,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\UserProjects;
 use VersionControl\GitControlBundle\Entity\Project;
 use VersionControl\GitControlBundle\Form\UserProjectsType;
-use VersionControl\GitControlBundle\Form\EditUserProjectsType;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\Constraints\NotBlank;
-
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
@@ -31,7 +30,6 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
  */
 class UserProjectsController extends Controller
 {
-
     /**
      * Lists all UserProjects entities.
      *
@@ -48,65 +46,65 @@ class UserProjectsController extends Controller
         if (!$project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        
+
         $this->checkProjectAuthorization($project);
-       
+
         $userProjects = $em->getRepository('VersionControlGitControlBundle:UserProjects')->findByProject($project);
 
         $userProject = new UserProjects();
         $userProject->setProject($project);
-        $form   = $this->createCreateForm($userProject,$project);
+        $form = $this->createCreateForm($userProject, $project);
         $editForm = $this->createEditForm();
-        
+
         return array(
             'userProjects' => $userProjects,
             'project' => $project,
             'form' => $form->createView(),
-            'edit_form' => $editForm->createView()
+            'edit_form' => $editForm->createView(),
         );
     }
-    
+
     /**
-     * Adds a user to the project
+     * Adds a user to the project.
      *
      * @Route("/{id}", name="userprojects_create")
      * @Method("POST")
      * @Template("VersionControlGitControlBundle:UserProjects:membersList.html.twig")
      */
-    public function createAction(Request $request,$id)
+    public function createAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
-        
+
         $project = $em->getRepository('VersionControlGitControlBundle:Project')->find($id);
         if (!$project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        
+
         $this->checkProjectAuthorization($project);
-        
+
         $newUserProject = new UserProjects();
-        $form = $this->createCreateForm($newUserProject,$project);
+        $form = $this->createCreateForm($newUserProject, $project);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
             $em->persist($newUserProject);
             $em->flush();
-            
+
             //$this->createACLSettings($newUserProject);
-            
+
             $this->get('session')->getFlashBag()->add('notice', 'New user has been added to the project');
 
             return $this->redirect($this->generateUrl('members_list', array('id' => $project->getId())));
-        }else{
+        } else {
             $this->get('session')->getFlashBag()->add('notice', 'Error in adding user to this form');
         }
 
         $userProjects = $em->getRepository('VersionControlGitControlBundle:UserProjects')->findByProject($project);
-         
+
         return array(
             'userProjects' => $userProjects,
             'project' => $project,
-            'form' => $form->createView()
+            'form' => $form->createView(),
         );
     }
 
@@ -117,13 +115,12 @@ class UserProjectsController extends Controller
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(UserProjects $entity,$project)
+    private function createCreateForm(UserProjects $entity, $project)
     {
-
         $form = $this->createForm(UserProjectsType::class, $entity, array(
             'action' => $this->generateUrl('userprojects_create', array('id' => $project->getId())),
             'method' => 'POST',
-            'projectId' => $project->getId()
+            'projectId' => $project->getId(),
         ));
 
         $form->add('submit', SubmitType::class, array('label' => 'Add'));
@@ -131,36 +128,28 @@ class UserProjectsController extends Controller
         return $form;
     }
 
-
-
     /**
-    * Creates a form to edit a UserProjects entity.
-    *
-    * @param UserProjects $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a UserProjects entity.
+     *
+     * @param UserProjects $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm()
     {
-
-       $form = $this->createFormBuilder(array(), array(
+        $form = $this->createFormBuilder(array(), array(
                 'method' => 'POST',
            ))
-                ->add('roles',ChoiceType::class, array(
-                    'label' => 'User Role'
-                    ,'choices'  => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master')
-                    ,'required' => false
-                    ,'placeholder' => 'Please select a role'
-                    ,'choices_as_values' => true
-                    ,'constraints' => array(
-                        new NotBlank()
-                    )
+                ->add('roles', ChoiceType::class, array(
+                    'label' => 'User Role', 'choices' => array('Reporter' => 'Reporter', 'Developer' => 'Developer', 'Master' => 'Master'), 'required' => false, 'placeholder' => 'Please select a role', 'choices_as_values' => true, 'constraints' => array(
+                        new NotBlank(),
+                    ),
                 ))
             ->getForm();
 
         $form->add('submit', SubmitType::class, array('label' => 'Update'));
+
         return $form;
-        
     }
     /**
      * Edits an existing UserProjects entity.
@@ -171,7 +160,6 @@ class UserProjectsController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
-
         $em = $this->getDoctrine()->getManager();
 
         $userProject = $em->getRepository('VersionControlGitControlBundle:UserProjects')->find($id);
@@ -179,7 +167,7 @@ class UserProjectsController extends Controller
         if (!$userProject) {
             throw $this->createNotFoundException('Unable to find UserProjects entity.');
         }
-        
+
         $project = $userProject->getProject();
         $this->checkProjectAuthorization($project);
 
@@ -188,15 +176,14 @@ class UserProjectsController extends Controller
         if ($roles) {
             $userProject->setRoles($roles);
             $em->flush();
-             $this->get('session')->getFlashBag()->add('notice', 'Users role has been updated');
-        }else{
+            $this->get('session')->getFlashBag()->add('notice', 'Users role has been updated');
+        } else {
             $this->get('session')->getFlashBag()->add('error', 'Error in adding user to this project');
         }
-        
+
         return $this->redirect($this->generateUrl('members_list', array('id' => $project->getId())));
-        
     }
-    
+
     /**
      * Deletes a UserProjects entity.
      *
@@ -210,28 +197,27 @@ class UserProjectsController extends Controller
             throw $this->createNotFoundException('Unable to find UserProjects entity.');
         }
         $project = $userProject->getProject();
-        
+
         $this->checkProjectAuthorization($project);
         $user = $userProject->getUser();
-        
-        if($project->getCreator()->getId() === $user->getId()){
-            throw new \Exception("You cannot delete a user how is the owner of this project");
+
+        if ($project->getCreator()->getId() === $user->getId()) {
+            throw new \Exception('You cannot delete a user how is the owner of this project');
         }
 
         $em->remove($userProject);
         $em->flush();
-        
 
-        return $this->redirect($this->generateUrl('members_list',array('id'=>$project->getId())));
+        return $this->redirect($this->generateUrl('members_list', array('id' => $project->getId())));
     }
 
-    
     /**
-     * 
      * @param VersionControl\GitControlBundle\Entity\Project $project
+     *
      * @throws AccessDeniedException
      */
-    protected function checkProjectAuthorization(\VersionControl\GitControlBundle\Entity\Project $project){
+    protected function checkProjectAuthorization(\VersionControl\GitControlBundle\Entity\Project $project)
+    {
         $authorizationChecker = $this->get('security.authorization_checker');
 
         // check for edit access
@@ -239,5 +225,4 @@ class UserProjectsController extends Controller
             throw new AccessDeniedException();
         }
     }
-
 }

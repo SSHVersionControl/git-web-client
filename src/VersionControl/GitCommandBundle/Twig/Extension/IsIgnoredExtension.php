@@ -7,35 +7,37 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitCommandBundle\Twig\Extension;
 
 use VersionControl\GitCommandBundle\GitCommands\GitCommand;
 
 /**
- * Twig extension providing filter to get current project environment for project
+ * Twig extension providing filter to get current project environment for project.
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-class IsIgnoredExtension extends \Twig_Extension {
-    
-     /**
+class IsIgnoredExtension extends \Twig_Extension
+{
+    /**
      * @var GitCommand
      */
     protected $gitCommand;
-    
+
     public function __construct(GitCommand $gitCommand)
     {
-        $this->gitCommand = $gitCommand;     
+        $this->gitCommand = $gitCommand;
     }
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function getName() {
-            return 'versioncommand_isignored';
+    public function getName()
+    {
+        return 'versioncommand_isignored';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getTests()
     {
@@ -45,12 +47,12 @@ class IsIgnoredExtension extends \Twig_Extension {
     }
 
     /**
-     * 
      * @param string $colorHex
+     *
      * @return string
      */
-    public function isFileIgnored($filePath) {
+    public function isFileIgnored($filePath)
+    {
         return $this->gitCommand->command('files')->isFileIgnored($filePath);
     }
-     
 }

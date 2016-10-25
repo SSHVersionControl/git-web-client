@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -17,7 +18,7 @@ class IssueLabelType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,14 +30,14 @@ class IssueLabelType extends AbstractType
             //    ))
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel'
+            'data_class' => 'VersionControl\GithubIssueBundle\Entity\Issues\IssueLabel',
         ));
     }
 

@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller;
 
 use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
@@ -16,16 +17,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
 use VersionControl\GitControlBundle\Entity\ProjectEnvironment;
-
 use VersionControl\GitControlBundle\Form\ProjectEnvironmentType;
-
-use VersionControl\GitControlBundle\Entity\UserProjects;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 /**
  * Project controller.
  *
@@ -33,8 +28,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
  */
 class ProjectEnvironmentController extends BaseProjectController
 {
-
-
     /**
      * Creates a new Project entity.
      *
@@ -43,32 +36,30 @@ class ProjectEnvironmentController extends BaseProjectController
      * @Template("VersionControlGitControlBundle:ProjectEnvironment:new.html.twig")
      * @ProjectAccess(grantType="OWNER")
      */
-    public function createAction(Request $request,$gitAction = '')
+    public function createAction(Request $request, $gitAction = '')
     {
-         
         $projectEnvironment = new ProjectEnvironment();
-        $form = $this->createCreateForm($projectEnvironment,$this->project,$gitAction);
+        $form = $this->createCreateForm($projectEnvironment, $this->project, $gitAction);
         //$form   = $this->createCreateForm($projectEnvironment,$project,'clone');
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            
-            $gitAction =  $form->get('gitaction')->getData();
-            
+            $gitAction = $form->get('gitaction')->getData();
+
             $em = $this->getDoctrine()->getManager();
-            
+
             //Set Project
             $projectEnvironment->setProject($this->project);
-           
-            if($gitAction === 'new'){
+
+            if ($gitAction === 'new') {
                 //Create git repo
                 $this->createEmptyGitRepository($projectEnvironment);
-            }else if($gitAction === 'clone'){
+            } elseif ($gitAction === 'clone') {
                 //Create Git Clone
-                
+
                 $this->cloneGitRepository($projectEnvironment);
             }
-            
+
             $em->persist($projectEnvironment);
             $em->flush();
 
@@ -77,10 +68,9 @@ class ProjectEnvironmentController extends BaseProjectController
 
         return  array_merge($this->viewVariables, array(
             'projectEnvironment' => $projectEnvironment,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
-
 
     /**
      * Creates a form to create a Project entity.
@@ -89,23 +79,23 @@ class ProjectEnvironmentController extends BaseProjectController
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(ProjectEnvironment $entity,$project,$gitaction = '')
+    private function createCreateForm(ProjectEnvironment $entity, $project, $gitaction = '')
     {
-        if($gitaction == 'clone'){
+        if ($gitaction == 'clone') {
             $projectEnvironmentType = new ProjectEnvironmentType(true);
-        }else{
+        } else {
             $projectEnvironmentType = new ProjectEnvironmentType(false);
         }
         $form = $this->createForm($projectEnvironmentType, $entity, array(
-            'action' => $this->generateUrl('projectenvironment_create',array('gitAction'=>$gitaction)),
+            'action' => $this->generateUrl('projectenvironment_create', array('gitAction' => $gitaction)),
             'method' => 'POST',
         ));
-        
+
         $form->add('gitaction', 'hidden', array(
             'mapped' => false,
             'empty_data' => false,
             'required' => 'required',
-            'data'=>$gitaction
+            'data' => $gitaction,
         ));
 
         $form->add('submit', SubmitType::class, array('label' => 'Create'));
@@ -123,18 +113,15 @@ class ProjectEnvironmentController extends BaseProjectController
      */
     public function newAction()
     {
-         
         $projectEnvironment = new ProjectEnvironment();
-        $form   = $this->createCreateForm($projectEnvironment,$this->project,'new');
-        
-        
+        $form = $this->createCreateForm($projectEnvironment, $this->project, 'new');
 
         return  array_merge($this->viewVariables, array(
             'projectEnvironment' => $projectEnvironment,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
-    
+
     /**
      * Displays a form to create a new Project entity.
      *
@@ -145,16 +132,15 @@ class ProjectEnvironmentController extends BaseProjectController
      */
     public function cloneAction()
     {
-         
         $projectEnvironment = new ProjectEnvironment();
-        $form   = $this->createCreateForm($projectEnvironment,$this->project,'clone');
+        $form = $this->createCreateForm($projectEnvironment, $this->project, 'clone');
 
         return  array_merge($this->viewVariables, array(
             'projectEnvironment' => $projectEnvironment,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
-    
+
     /**
      * Displays a form to create a new Project entity.
      *
@@ -165,18 +151,15 @@ class ProjectEnvironmentController extends BaseProjectController
      */
     public function existingAction()
     {
-         
         $projectEnvironment = new ProjectEnvironment();
-        $form   = $this->createCreateForm($projectEnvironment,$this->project);
+        $form = $this->createCreateForm($projectEnvironment, $this->project);
 
         return array_merge($this->viewVariables, array(
             'projectEnvironment' => $projectEnvironment,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
-
-    
     /**
      * Displays a form to edit an existing Project entity.
      *
@@ -197,22 +180,21 @@ class ProjectEnvironmentController extends BaseProjectController
 
         $editForm = $this->createEditForm($projectEnvironment);
         $deleteForm = $this->createDeleteForm($projectEnvironmentId);
-        
-        
+
         return array_merge($this->viewVariables, array(
-            'projectEnvironment'     => $projectEnvironment,
-            'form'   => $editForm->createView(),
+            'projectEnvironment' => $projectEnvironment,
+            'form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a Project entity.
-    *
-    * @param Project $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Project entity.
+     *
+     * @param Project $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(ProjectEnvironment $entity)
     {
         $form = $this->createForm(ProjectEnvironmentType::class, $entity, array(
@@ -248,15 +230,15 @@ class ProjectEnvironmentController extends BaseProjectController
 
         if ($editForm->isValid()) {
             $em->flush();
-            
-            $this->get('session')->getFlashBag()->add('success',"Project Environment record updated");
+
+            $this->get('session')->getFlashBag()->add('success', 'Project Environment record updated');
 
             return $this->redirect($this->generateUrl('projectenvironment_edit', array('projectEnvironmentId' => $projectEnvironmentId)));
         }
 
         return array_merge($this->viewVariables, array(
-            'projectEnvironment'      => $projectEnvironment,
-            'form'   => $editForm->createView(),
+            'projectEnvironment' => $projectEnvironment,
+            'form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
@@ -275,11 +257,10 @@ class ProjectEnvironmentController extends BaseProjectController
         if (!$projectEnvironment) {
             throw $this->createNotFoundException('Unable to find Project Environment entity.');
         }
-    
+
         $form = $this->createDeleteForm($projectEnvironmentId);
         $form->handleRequest($request);
-        
-        
+
         if ($form->isValid()) {
             $em->remove($projectEnvironment);
             $em->flush();
@@ -304,69 +285,66 @@ class ProjectEnvironmentController extends BaseProjectController
             ->getForm()
         ;
     }
-    
-    protected function createEmptyGitRepository($projectEnvironment){
+
+    protected function createEmptyGitRepository($projectEnvironment)
+    {
         $gitCommands = $this->gitCommands->command('init')->overRideGitEnvironment($projectEnvironment);
-        
+
         $response = $gitCommands->initRepository();
-            
+
         $this->get('session')->getFlashBag()->add('notice', $response);
     }
-    
-    protected function cloneGitRepository($projectEnvironment){
+
+    protected function cloneGitRepository($projectEnvironment)
+    {
         //$projectEnvironment->getGitCloneLocation();
         $gitCommands = $this->gitCommands->command('init')->overRideGitEnvironment($projectEnvironment);
-        try{
+        try {
             $response = $gitCommands->cloneRepository($projectEnvironment->getGitCloneLocation());
             $this->get('session')->getFlashBag()->add('notice', $response);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             $this->get('session')->getFlashBag()->add('error', $e->getMessage());
         }
-            
-        
-        
     }
-    
+
     /**
-     * 
-     * @param integer $id
+     * @param int $id
      */
-    public function initAction($id,$grantType = 'VIEW'){
- 
+    public function initAction($id, $grantType = 'VIEW')
+    {
         $em = $this->getDoctrine()->getManager();
 
-        $this->project= $em->getRepository('VersionControlGitControlBundle:Project')->find($id);
+        $this->project = $em->getRepository('VersionControlGitControlBundle:Project')->find($id);
 
         if (!$this->project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        $this->checkProjectAuthorization($this->project,$grantType);
-        
+        $this->checkProjectAuthorization($this->project, $grantType);
+
         $projectEnvironment = $this->getProjectEnvironment();
-         
-        if($projectEnvironment){
+
+        if ($projectEnvironment) {
             $this->gitCommands = $this->get('version_control.git_commands')->setGitEnvironment($projectEnvironment);
-        }else{
+        } else {
             $this->gitCommands = $this->get('version_control.git_commands');
         }
         $this->gitCommands = $this->get('version_control.git_commands');
         //$this->gitBranchCommands = $this->get('version_control.git_branch')->setProject($this->project);
-        
+
         //$this->branchName = $this->gitCommands->command('branch')->getCurrentBranch();
         $this->viewVariables = array_merge($this->viewVariables, array(
-            'project'      => $this->project,
+            'project' => $this->project,
             'branchName' => $this->branchName,
             ));
     }
-    
+
     /**
-     * Gets the project Environment for the Project Environment Storage
+     * Gets the project Environment for the Project Environment Storage.
      */
-    public function getProjectEnvironment() {
+    public function getProjectEnvironment()
+    {
         $projectEnvironmentStorage = $this->get('version_control.project_environmnent_storage');
+
         return $projectEnvironmentStorage->getProjectEnviromment($this->project);
     }
-    
-
-
 }

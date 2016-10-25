@@ -7,12 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 use VersionControl\DoctrineEncryptBundle\Configuration\Encrypted;
 use Symfony\Component\Validator\Constraints as Assert;
 use VersionControl\GitControlBundle\Validator\Constraints as VersionControlAssert;
-
 use VersionControl\GitCommandBundle\GitCommands\GitEnvironmentInterface;
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -22,18 +23,19 @@ use Gedmo\Mapping\Annotation as Gedmo;
  * @ORM\Table(name="project_environment")
  * @VersionControlAssert\SshDetails()
  * @VersionControlAssert\GitFolderExists(groups={"ExistingGit"})
- * @VersionControlAssert\GitFolderNotExists(groups={"CloneGit","NewGit"})  
+ * @VersionControlAssert\GitFolderNotExists(groups={"CloneGit","NewGit"})
  */
-class ProjectEnvironment implements GitEnvironmentInterface 
+class ProjectEnvironment implements GitEnvironmentInterface
 {
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer
+     *
+     * @var int
      */
     private $id;
-    
+
     /**
      * @var string
      * @ORM\Column(name="title", type="string", length=80, nullable=true)
@@ -58,26 +60,26 @@ class ProjectEnvironment implements GitEnvironmentInterface
      * @ORM\Column(name="ssh", type="boolean",nullable=true)
      */
     private $ssh;
-    
+
     /**
      * @var string
      * @ORM\Column(name="host", type="string", length=225, nullable=true)
      */
     private $host;
-    
+
     /**
      * @var string
      * @ORM\Column(name="username", type="string", length=225, nullable=true)
      */
     private $username;
-    
+
     /**
      * @var string
      * @ORM\Column(name="password", type="string", nullable=true)
      * @Encrypted
      */
     private $password;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\Project
      *
@@ -88,21 +90,21 @@ class ProjectEnvironment implements GitEnvironmentInterface
      * })
      */
     private $project;
-    
+
     /**
      * @var string
      * @ORM\Column(name="private_key", type="string", nullable=true)
      * @Encrypted
      */
     private $privateKey = null;
-    
+
     /**
      * @var string
      * @ORM\Column(name="private_key_password", type="string", nullable=true)
      * @Encrypted
      */
     private $privateKeyPassword = null;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\ProjectEnvironmentFilePerm
      *
@@ -110,31 +112,30 @@ class ProjectEnvironment implements GitEnvironmentInterface
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="project_environment_file_perm_id", referencedColumnName="id")
      * })
-     * @Assert\Valid 
+     * @Assert\Valid
      */
     private $projectEnvironmentFilePerm;
-    
+
     /**
      * @Assert\NotNull(groups={"CloneGit"}))
-     * @var string 
+     *
+     * @var string
      */
     private $gitCloneLocation;
-    
+
     /**
      * @Gedmo\SortablePosition
      *
      * @ORM\Column(name="position", type="integer")
      */
     private $position;
-    
 
     public function __construct()
     {
-
     }
-    
+
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -148,7 +149,7 @@ class ProjectEnvironment implements GitEnvironmentInterface
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -158,7 +159,7 @@ class ProjectEnvironment implements GitEnvironmentInterface
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -172,7 +173,7 @@ class ProjectEnvironment implements GitEnvironmentInterface
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -182,7 +183,7 @@ class ProjectEnvironment implements GitEnvironmentInterface
     }
 
     /**
-     * Set path
+     * Set path.
      *
      * @param string $path
      *
@@ -196,7 +197,7 @@ class ProjectEnvironment implements GitEnvironmentInterface
     }
 
     /**
-     * Get path
+     * Get path.
      *
      * @return string
      */
@@ -206,83 +207,99 @@ class ProjectEnvironment implements GitEnvironmentInterface
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
-    
+
     /**
-     * Get SSH value
-     * @return boolean
+     * Get SSH value.
+     *
+     * @return bool
      */
-    public function getSsh() {
+    public function getSsh()
+    {
         return $this->ssh;
     }
-    
+
     /**
-     * Set to use SSH
-     * @param boolean $ssh
+     * Set to use SSH.
+     *
+     * @param bool $ssh
      */
-    public function setSsh($ssh) {
+    public function setSsh($ssh)
+    {
         $this->ssh = $ssh;
     }
 
     /**
-     * Get SSH host
+     * Get SSH host.
+     *
      * @return string
      */
-    public function getHost() {
+    public function getHost()
+    {
         return $this->host;
     }
-    
+
     /**
-     * Set SSH host
+     * Set SSH host.
+     *
      * @param string $host
      */
-    public function setHost($host) {
+    public function setHost($host)
+    {
         $this->host = $host;
     }
 
     /**
-     * Get SSH username
+     * Get SSH username.
+     *
      * @return string
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
-    
+
     /**
-     * set SSH username
+     * set SSH username.
+     *
      * @param type $username
      */
-    public function setUsername($username) {
+    public function setUsername($username)
+    {
         $this->username = $username;
     }
 
     /**
-     * Get SSH password
+     * Get SSH password.
+     *
      * @return string
      */
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
     /**
-     * Set SSH password
+     * Set SSH password.
+     *
      * @param string $password
      */
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         if (!is_null($password)) {
             $this->password = $password;
         }
     }
-    
+
     /**
-     * Set project
+     * Set project.
      *
      * @param \VersionControl\GitControlBundle\Entity\Project $project
      *
@@ -296,7 +313,7 @@ class ProjectEnvironment implements GitEnvironmentInterface
     }
 
     /**
-     * Get project
+     * Get project.
      *
      * @return \VersionControl\GitControlBundle\Entity\Project
      */
@@ -304,102 +321,121 @@ class ProjectEnvironment implements GitEnvironmentInterface
     {
         return $this->project;
     }
-    
-    public function getProjectEnvironmentFilePerm() {
+
+    public function getProjectEnvironmentFilePerm()
+    {
         return $this->projectEnvironmentFilePerm;
     }
 
-    public function setProjectEnvironmentFilePerm(\VersionControl\GitControlBundle\Entity\ProjectEnvironmentFilePerm $projectEnvironmentFilePerm) {
+    public function setProjectEnvironmentFilePerm(\VersionControl\GitControlBundle\Entity\ProjectEnvironmentFilePerm $projectEnvironmentFilePerm)
+    {
         $this->projectEnvironmentFilePerm = $projectEnvironmentFilePerm;
+
         return $this;
     }
 
     /**
-     * Sets Git Clone Location
+     * Sets Git Clone Location.
+     *
      * @return string
      */
-    public function getGitCloneLocation() {
+    public function getGitCloneLocation()
+    {
         return $this->gitCloneLocation;
     }
 
     /**
-     * Gets Git Clone Location
+     * Gets Git Clone Location.
+     *
      * @param string $gitCloneLocation
+     *
      * @return \VersionControl\GitControlBundle\Entity\ProjectEnvironment
      */
-    public function setGitCloneLocation($gitCloneLocation) {
+    public function setGitCloneLocation($gitCloneLocation)
+    {
         $this->gitCloneLocation = $gitCloneLocation;
+
         return $this;
     }
 
     /**
-     * Get Private Key
+     * Get Private Key.
+     *
      * @return string
      */
-    public function getPrivateKey() {
+    public function getPrivateKey()
+    {
         return $this->privateKey;
     }
 
     /**
-     * Get Private Key Password
+     * Get Private Key Password.
+     *
      * @return string
      */
-    public function getPrivateKeyPassword() {
+    public function getPrivateKeyPassword()
+    {
         return $this->privateKeyPassword;
     }
 
     /**
-     * Set Private Key
+     * Set Private Key.
+     *
      * @param string $privateKey
+     *
      * @return \VersionControl\GitControlBundle\Entity\ProjectEnvironment
      */
-    public function setPrivateKey($privateKey) {
-
+    public function setPrivateKey($privateKey)
+    {
         if (!is_null($privateKey)) {
             $this->privateKey = $privateKey;
         }
+
         return $this;
     }
 
     /**
-     * Set Private Key Password
+     * Set Private Key Password.
+     *
      * @param type $privateKeyPassword
+     *
      * @return \VersionControl\GitControlBundle\Entity\ProjectEnvironment
      */
-    public function setPrivateKeyPassword($privateKeyPassword) {
+    public function setPrivateKeyPassword($privateKeyPassword)
+    {
         if (!is_null($privateKeyPassword)) {
             $this->privateKeyPassword = $privateKeyPassword;
         }
+
         return $this;
     }
-    
-    public function getPort() {
+
+    public function getPort()
+    {
         return 22;
     }
 
     /**
-     * Set position
+     * Set position.
      *
-     * @param integer $position
+     * @param int $position
+     *
      * @return ThreadPage
      */
     public function setPosition($position)
     {
         $this->position = $position;
-    
+
         return $this;
     }
 
     /**
-     * Get position
+     * Get position.
      *
-     * @return integer 
+     * @return int
      */
     public function getPosition()
     {
         return $this->position;
     }
-    
-
 }
-

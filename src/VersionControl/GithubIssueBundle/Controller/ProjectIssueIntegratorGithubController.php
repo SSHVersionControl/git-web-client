@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -16,29 +17,26 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
 use VersionControl\GitControlBundle\Entity\ProjectIssueIntegrator;
-use VersionControl\GitControlBundle\Form\ProjectIssueIntegratorType;
-
 use VersionControl\GithubIssueBundle\Entity\ProjectIssueIntegratorGithub;
 use VersionControl\GithubIssueBundle\Form\ProjectIssueIntegratorGithubType;
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
-
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+
 /**
  * Project controller.
  *
  * @Route("/project/{id}/issue-integrator/github")
  */
-class ProjectIssueIntegratorGithubController extends BaseProjectController{
-    
-   /**
-     * Allow access by ajax only request
-     * @var boolean 
+class ProjectIssueIntegratorGithubController extends BaseProjectController
+{
+    /**
+     * Allow access by ajax only request.
+     *
+     * @var bool
      */
     protected $ajaxOnly = false;
-    
-   /**
+
+    /**
      * Creates a new ProjectIssueIntegrator entity.
      *
      * @Route("/", name="project_issue_integrator_github_create")
@@ -46,22 +44,20 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
      * @Template("VersionControlGithubIssueBundle:ProjectIssueIntegrator:new.html.twig")
      * @ProjectAccess(grantType="OWNER")
      */
-    public function createAction(Request $request,$id)
+    public function createAction(Request $request, $id)
     {
-        
         $issueIntegrator = new ProjectIssueIntegratorGithub();
         $form = $this->createCreateForm($issueIntegrator);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            
             $issueIntegrator->setRepoType('Github');
             $issueIntegrator->setProject($this->project);
-            
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($issueIntegrator);
             $em->flush();
-            
+
             $this->get('session')->getFlashBag()->add('notice', 'Issue Integrator Record has been created');
 
             return $this->redirect($this->generateUrl('project_issue_integrator', array('id' => $this->project->getId())));
@@ -69,7 +65,7 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
 
         return array_merge($this->viewVariables, array(
             'entity' => $issueIntegrator,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -102,19 +98,15 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
      */
     public function newAction($id)
     {
-        
-        
         $issueIntegrator = new ProjectIssueIntegratorGithub();
         $issueIntegrator->setProject($this->project);
-        $form   = $this->createCreateForm($issueIntegrator);
+        $form = $this->createCreateForm($issueIntegrator);
 
         return array_merge($this->viewVariables, array(
             'entity' => $issueIntegrator,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
-
-    
 
     /**
      * Displays a form to edit an existing ProjectIssueIntegrator entity.
@@ -124,10 +116,8 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
      * @Template()
      * @ProjectAccess(grantType="OWNER")
      */
-    public function editAction($id,$integratorId)
+    public function editAction($id, $integratorId)
     {
-        
-        
         $em = $this->getDoctrine()->getManager();
 
         $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
@@ -140,24 +130,24 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
         $deleteForm = $this->createDeleteForm($integratorId);
 
         return array_merge($this->viewVariables, array(
-            'entity'      => $issueIntegrator,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $issueIntegrator,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
-            
+
         ));
     }
 
     /**
-    * Creates a form to edit a ProjectIssueIntegrator entity.
-    *
-    * @param ProjectIssueIntegrator $issueIntegrator The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a ProjectIssueIntegrator entity.
+     *
+     * @param ProjectIssueIntegrator $issueIntegrator The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(ProjectIssueIntegrator $issueIntegrator)
     {
         $form = $this->createForm(new ProjectIssueIntegratorGithubType(), $issueIntegrator, array(
-            'action' => $this->generateUrl('project_issue_integrator_github_update', array('integratorId' => $issueIntegrator->getId(),'id' => $this->project->getId())),
+            'action' => $this->generateUrl('project_issue_integrator_github_update', array('integratorId' => $issueIntegrator->getId(), 'id' => $this->project->getId())),
             'method' => 'PUT',
         ));
 
@@ -173,10 +163,8 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
      * @Template("VersionControlGithubIssueBundle:ProjectIssueIntegrator:edit.html.twig")
      * @ProjectAccess(grantType="OWNER")
      */
-    public function updateAction(Request $request,$integratorId, $id)
+    public function updateAction(Request $request, $integratorId, $id)
     {
-        
-        
         $em = $this->getDoctrine()->getManager();
 
         $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->find($integratorId);
@@ -184,9 +172,9 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
         if (!$issueIntegrator) {
             throw $this->createNotFoundException('Unable to find ProjectIssueIntegrator entity.');
         }
-        
+
         $project = $issueIntegrator->getProject();
-        $this->checkProjectAuthorization($project,'OWNER');
+        $this->checkProjectAuthorization($project, 'OWNER');
 
         $deleteForm = $this->createDeleteForm($integratorId);
         $editForm = $this->createEditForm($issueIntegrator);
@@ -194,19 +182,19 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
 
         if ($editForm->isValid()) {
             $em->flush();
-            
+
             $this->get('session')->getFlashBag()->add('notice', 'Issue Integrator Record has been update');
 
-            return $this->redirect($this->generateUrl('project_issue_integrator_github_edit', array('id' => $id,'integratorId' => $integratorId)));
+            return $this->redirect($this->generateUrl('project_issue_integrator_github_edit', array('id' => $id, 'integratorId' => $integratorId)));
         }
 
         return array_merge($this->viewVariables, array(
-            'entity'      => $issueIntegrator,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $issueIntegrator,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         ));
     }
-    
+
     /**
      * Creates a form to delete a ProjectIssueIntegrator entity by id.
      *
@@ -223,6 +211,4 @@ class ProjectIssueIntegratorGithubController extends BaseProjectController{
             ->getForm()
         ;
     }
-    
- 
 }

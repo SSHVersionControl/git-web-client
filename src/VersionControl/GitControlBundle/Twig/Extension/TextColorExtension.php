@@ -7,24 +7,26 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Twig\Extension;
 
 /**
- * Twig extension providing filters for hex color selection
+ * Twig extension providing filters for hex color selection.
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-class TextColorExtension extends \Twig_Extension {
-    
+class TextColorExtension extends \Twig_Extension
+{
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function getName() {
-            return 'versioncontrol_textcolor';
+    public function getName()
+    {
+        return 'versioncontrol_textcolor';
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFilters()
     {
@@ -34,16 +36,17 @@ class TextColorExtension extends \Twig_Extension {
     }
 
     /**
-     * 
      * @param string $colorHex
+     *
      * @return string
      */
-    public function textColor($colorHex) {
+    public function textColor($colorHex)
+    {
 
         //break up the color in its RGB components
-        $r = hexdec(substr($colorHex,0,2));
-        $g = hexdec(substr($colorHex,2,2));
-        $b = hexdec(substr($colorHex,4,2));
+        $r = hexdec(substr($colorHex, 0, 2));
+        $g = hexdec(substr($colorHex, 2, 2));
+        $b = hexdec(substr($colorHex, 4, 2));
 
         $contrast = sqrt(
             $r * $r * .241 +
@@ -51,13 +54,12 @@ class TextColorExtension extends \Twig_Extension {
             $b * $b * .068
         );
 
-        if($contrast > 130){
+        if ($contrast > 130) {
             $color = '000000';
-        }else{
+        } else {
             $color = 'FFFFFF';
         }
 
         return $color;
     }
-     
 }

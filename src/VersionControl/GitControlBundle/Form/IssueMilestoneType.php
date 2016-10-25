@@ -7,13 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
@@ -21,7 +20,7 @@ class IssueMilestoneType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,24 +28,23 @@ class IssueMilestoneType extends AbstractType
             ->add('title')
             ->add('description')
             //->add('dueOn')
-            ->add('dueOn', DateTimeType::class, array('date_widget' => "single_text", 'time_widget' => "single_text" ,'required' => false,))
+            ->add('dueOn', DateTimeType::class, array('date_widget' => 'single_text', 'time_widget' => 'single_text', 'required' => false))
 
-            ->add('project', HiddenEntityType::class,array(
-                    'class' => 'VersionControl\GitControlBundle\Entity\Project'
+            ->add('project', HiddenEntityType::class, array(
+                    'class' => 'VersionControl\GitControlBundle\Entity\Project',
                 ))
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function configureOptions(OptionsResolver  $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GitControlBundle\Entity\IssueMilestone'
+            'data_class' => 'VersionControl\GitControlBundle\Entity\IssueMilestone',
         ));
     }
-
 
     /**
      * @return string

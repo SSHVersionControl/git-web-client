@@ -7,81 +7,72 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace VersionControl\GitControlBundle\Entity\Issues;
 
+namespace VersionControl\GitControlBundle\Entity\Issues;
 
 abstract class Issue
 {
     /**
      * @var string
-     *
      */
     private $title;
 
     /**
      * @var string
-     *
      */
     private $description;
 
     /**
-     * State of issue
-     * @var string
+     * State of issue.
      *
+     * @var string
      */
     private $status;
 
     /**
      * @var \DateTime
-     *
      */
     private $closedAt;
 
     /**
      * @var \DateTime
-     *
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
      */
     private $updatedAt;
 
     /**
-     * @var integer
-     *
+     * @var int
      */
     private $id;
 
     /**
      * @var \VersionControl\GitControlBundle\Entity\IssueMilestone
-     *
      */
     private $issueMilestone;
 
     /**
      * @var \VersionControl\GitControlBundle\Entity\Project
-     *
      */
     private $project;
 
     /**
      * @var array
-     *
      */
     private $issueLabel;
-    
+
     /**
-     * Issue comments
+     * Issue comments.
+     *
      * @var array
-     * 
      */
     private $issueComments;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
@@ -91,13 +82,15 @@ abstract class Issue
         $this->setStatus('open');
     }
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->id = $id;
+
         return $this;
     }
 
-        /**
-     * Set title
+    /**
+     * Set title.
      *
      * @param string $title
      *
@@ -111,7 +104,7 @@ abstract class Issue
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -121,7 +114,7 @@ abstract class Issue
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -135,7 +128,7 @@ abstract class Issue
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -145,7 +138,7 @@ abstract class Issue
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -159,7 +152,7 @@ abstract class Issue
     }
 
     /**
-     * Get status
+     * Get status.
      *
      * @return string
      */
@@ -169,7 +162,7 @@ abstract class Issue
     }
 
     /**
-     * Set closedAt
+     * Set closedAt.
      *
      * @param \DateTime $closedAt
      *
@@ -183,7 +176,7 @@ abstract class Issue
     }
 
     /**
-     * Get closedAt
+     * Get closedAt.
      *
      * @return \DateTime
      */
@@ -193,7 +186,7 @@ abstract class Issue
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -207,7 +200,7 @@ abstract class Issue
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -217,7 +210,7 @@ abstract class Issue
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param \DateTime $updatedAt
      *
@@ -231,7 +224,7 @@ abstract class Issue
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -241,9 +234,9 @@ abstract class Issue
     }
 
     /**
-     * Set githubNumber
+     * Set githubNumber.
      *
-     * @param integer $githubNumber
+     * @param int $githubNumber
      *
      * @return Issue
      */
@@ -255,9 +248,9 @@ abstract class Issue
     }
 
     /**
-     * Get githubNumber
+     * Get githubNumber.
      *
-     * @return integer
+     * @return int
      */
     public function getGithubNumber()
     {
@@ -265,9 +258,9 @@ abstract class Issue
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -275,7 +268,7 @@ abstract class Issue
     }
 
     /**
-     * Set issueMilestone
+     * Set issueMilestone.
      *
      * @param \VersionControl\GitControlBundle\Entity\IssueMilestone $issueMilestone
      *
@@ -289,7 +282,7 @@ abstract class Issue
     }
 
     /**
-     * Get issueMilestone
+     * Get issueMilestone.
      *
      * @return \VersionControl\GitControlBundle\Entity\IssueMilestone
      */
@@ -299,7 +292,7 @@ abstract class Issue
     }
 
     /**
-     * Set project
+     * Set project.
      *
      * @param \VersionControl\GitControlBundle\Entity\Project $project
      *
@@ -313,7 +306,7 @@ abstract class Issue
     }
 
     /**
-     * Get project
+     * Get project.
      *
      * @return \VersionControl\GitControlBundle\Entity\Project
      */
@@ -322,9 +315,8 @@ abstract class Issue
         return $this->project;
     }
 
-
     /**
-     * Get User
+     * Get User.
      *
      * @return \VersionControl\GitControlBundle\Entity\Issues\IssueUserInterface
      */
@@ -334,7 +326,7 @@ abstract class Issue
     }
 
     /**
-     * Add issueLabel
+     * Add issueLabel.
      *
      * @param \VersionControl\GitControlBundle\Entity\Issues\IssueLabel $issueLabel
      *
@@ -348,7 +340,7 @@ abstract class Issue
     }
 
     /**
-     * Remove issueLabel
+     * Remove issueLabel.
      *
      * @param \VersionControl\GitControlBundle\Entity\Issues\IssueLabel $issueLabel
      */
@@ -358,7 +350,7 @@ abstract class Issue
     }
 
     /**
-     * Get issueLabel
+     * Get issueLabel.
      *
      * @return array
      */
@@ -366,27 +358,33 @@ abstract class Issue
     {
         return $this->issueLabel;
     }
-    
+
     /**
-     * Get Issue Comments
+     * Get Issue Comments.
+     *
      * @return array of \VersionControl\GitControlBundle\Entity\Issue\IssueCommentInteface
      */
-    public function getIssueComments() {
+    public function getIssueComments()
+    {
         return $this->issueComments;
     }
 
     /**
-     * Set Issue Comments
+     * Set Issue Comments.
+     *
      * @param array $issueComments
+     *
      * @return \VersionControl\GitControlBundle\Entity\Issue
      */
-    public function setIssueComments(array $issueComments) {
+    public function setIssueComments(array $issueComments)
+    {
         $this->issueComments = $issueComments;
+
         return $this;
     }
 
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -395,11 +393,12 @@ abstract class Issue
     public function setClosed()
     {
         $this->status = 'closed';
+
         return $this;
     }
-    
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
@@ -408,13 +407,12 @@ abstract class Issue
     public function setOpen()
     {
         $this->status = 'open';
+
         return $this;
     }
-    
-    public function isClosed(){
-        return ($this->status === 'closed')?true:false;
+
+    public function isClosed()
+    {
+        return ($this->status === 'closed') ? true : false;
     }
-
 }
-
-

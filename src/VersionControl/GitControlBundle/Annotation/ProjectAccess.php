@@ -7,13 +7,13 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Annotation;
 
 /**
-* @Annotation
-*/
-class ProjectAccess{
-    
+ * @Annotation
+ */
+class ProjectAccess
+{
     public $grantType;
-
 }

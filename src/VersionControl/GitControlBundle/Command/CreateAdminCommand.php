@@ -8,18 +8,18 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
 /**
- * Command to create a new admin user for the version control application
- * 
+ * Command to create a new admin user for the version control application.
+ *
  * @author Paul Schweppe<paulschweppe@gmail.com>
  */
 class CreateAdminCommand extends ContainerAwareCommand
@@ -36,9 +36,9 @@ class CreateAdminCommand extends ContainerAwareCommand
                 new InputArgument('username', InputArgument::REQUIRED, 'The username'),
                 new InputArgument('email', InputArgument::REQUIRED, 'The email'),
                 new InputArgument('password', InputArgument::REQUIRED, 'The password'),
-                new InputArgument('name', InputArgument::REQUIRED, 'The display name')
+                new InputArgument('name', InputArgument::REQUIRED, 'The display name'),
             ))
-            ->setHelp(<<<EOT
+            ->setHelp(<<<'EOT'
 The <info>version:admin:create</info> command creates an administrator user:
 
   <info>php app/console version:admin:create adminname</info>
@@ -55,11 +55,10 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $username   = $input->getArgument('username');
-        $email      = $input->getArgument('email');
-        $password   = $input->getArgument('password');
-        $name   = $input->getArgument('name');
-
+        $username = $input->getArgument('username');
+        $email = $input->getArgument('email');
+        $password = $input->getArgument('password');
+        $name = $input->getArgument('name');
 
         $this->createuser($username, $password, $email, $name);
 
@@ -81,7 +80,7 @@ EOT
 
         if (!$input->getArgument('username')) {
             $question = new Question('Please choose a username:');
-            $question->setValidator(function($username) {
+            $question->setValidator(function ($username) {
                 if (empty($username)) {
                     throw new \Exception('Username can not be empty');
                 }
@@ -93,7 +92,7 @@ EOT
 
         if (!$input->getArgument('email')) {
             $question = new Question('Please choose an email:');
-            $question->setValidator(function($email) {
+            $question->setValidator(function ($email) {
                 if (empty($email)) {
                     throw new \Exception('Email can not be empty');
                 }
@@ -102,12 +101,10 @@ EOT
             });
             $questions['email'] = $question;
         }
-        
-        
 
         if (!$input->getArgument('password')) {
             $question = new Question('Please choose a password:');
-            $question->setValidator(function($password) {
+            $question->setValidator(function ($password) {
                 if (empty($password)) {
                     throw new \Exception('Password can not be empty');
                 }
@@ -117,10 +114,10 @@ EOT
             $question->setHidden(true);
             $questions['password'] = $question;
         }
-        
+
         if (!$input->getArgument('name')) {
             $question = new Question('Please choose a display name:');
-            $question->setValidator(function($name) {
+            $question->setValidator(function ($name) {
                 if (empty($name)) {
                     throw new \Exception('Display name can not be empty');
                 }
@@ -138,27 +135,30 @@ EOT
 
     /**
      * Creates a new admin user.
-     * 
+     *
      * @param string $username
      * @param string $password
      * @param string $email
      * @param string $name
+     *
      * @return \FOS\UserBundle\Model\UserInterface
      */
-    protected function createUser($username, $password, $email, $name){
+    protected function createUser($username, $password, $email, $name)
+    {
         $userManager = $this->getContainer()->get('fos_user.user_manager');
-        
+
         $user = $userManager->createUser();
         $user->setUsername($username);
         $user->setEmail($email);
         $user->setPlainPassword($password);
         $user->setName($name);
-        
-        $user->setEnabled((Boolean) true);
+
+        $user->setEnabled((bool) true);
         $user->addRole('ROLE_ADMIN');
         //$user->setSuperAdmin((Boolean) true);
-        
+
         $userManager->updateUser($user);
+
         return $user;
     }
 }

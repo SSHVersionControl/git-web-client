@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller;
 
 use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
@@ -14,16 +15,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
-use VersionControl\GitControlBundle\Form\ProjectType;
-
 use Symfony\Component\Validator\Constraints\NotBlank;
-use VersionControl\GitControlBundle\Entity\UserProjects;
 use VersionControl\GitCommandBundle\GitCommands\GitCommand;
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
-
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
@@ -34,19 +29,16 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
  */
 class ProjectSyncController extends BaseProjectController
 {
-   
     /**
-     *
-     * @var GitCommand 
+     * @var GitCommand
      */
     protected $gitCommands;
-    
+
     /**
-     *
-     * @var GitCommand 
+     * @var GitCommand
      */
     protected $gitSyncCommands;
-    
+
     /**
      * Finds and displays a Project entity.
      *
@@ -58,18 +50,18 @@ class ProjectSyncController extends BaseProjectController
     public function pushAction()
     {
 
-        //Remote Server choice 
+        //Remote Server choice
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
-        
+
         $pushForm = $this->createPushPullForm($this->project);
         $pushForm->add('push', SubmitType::class, array('label' => 'Push'));
 
         return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
-            'push_form' => $pushForm->createView()
+            'push_form' => $pushForm->createView(),
             ));
     }
-    
+
     /**
      * Finds and displays a Project entity.
      *
@@ -78,12 +70,10 @@ class ProjectSyncController extends BaseProjectController
      * @Template("VersionControlGitControlBundle:ProjectSync:push.html.twig")
      * @ProjectAccess(grantType="MASTER")
      */
-    public function pushToRemoteAction(Request $request,$id)
+    public function pushToRemoteAction(Request $request, $id)
     {
-        
- 
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
-        
+
         $pushForm = $this->createPushPullForm($this->project);
         $pushForm->add('push', SubmitType::class, array('label' => 'Push'));
         $pushForm->handleRequest($request);
@@ -92,29 +82,27 @@ class ProjectSyncController extends BaseProjectController
             $data = $pushForm->getData();
             $remote = $data['remote'];
             $branch = $data['branch'];
-            try{
-                $response = $this->gitSyncCommands->push($remote,$branch);
+            try {
+                $response = $this->gitSyncCommands->push($remote, $branch);
 
                 $this->get('session')->getFlashBag()->add('notice', $response);
-                $this->get('session')->getFlashBag()->add('status-refresh','true');
-            }catch (\Exception $e) {
+                $this->get('session')->getFlashBag()->add('status-refresh', 'true');
+            } catch (\Exception $e) {
                 $this->get('session')->getFlashBag()->add('error', $e->getMessage());
             }
-            
+
             return $this->redirect($this->generateUrl('project_push', array('id' => $id)));
         }
 
         return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
-            'push_form' => $pushForm->createView()
+            'push_form' => $pushForm->createView(),
             ));
-        
     }
 
-    
     /**
      * Form to choose which brabch and remote a user will pull.
-     * This is just the form. Also see pullToLocal() 
+     * This is just the form. Also see pullToLocal().
      *
      * @Route("pull/", name="project_pull")
      * @Method("GET")
@@ -123,23 +111,21 @@ class ProjectSyncController extends BaseProjectController
      */
     public function pullAction()
     {
-        
-        
-        //Remote Server choice 
+
+        //Remote Server choice
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
 
-        $pullForm = $this->createPushPullForm($this->project,"project_pulllocal");
+        $pullForm = $this->createPushPullForm($this->project, 'project_pulllocal');
         $pullForm->add('pull', SubmitType::class, array('label' => 'Pull'));
         $pullForm->add('viewDiff', SubmitType::class, array('label' => 'View Diff'));
-        
-         return array_merge($this->viewVariables, array(
+
+        return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
             'pull_form' => $pullForm->createView(),
-            'diffs' => array()
+            'diffs' => array(),
             ));
-        
     }
-    
+
     /**
      * Pulls git repository from remote to local.
      *
@@ -148,13 +134,13 @@ class ProjectSyncController extends BaseProjectController
      * @Template("VersionControlGitControlBundle:ProjectSync:pull.html.twig")
      * @ProjectAccess(grantType="MASTER")
      */
-    public function pullToLocalAction(Request $request,$id)
+    public function pullToLocalAction(Request $request, $id)
     {
         $diffs = array();
 
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
-        
-        $pullForm = $this->createPushPullForm($this->project,"project_pulllocal");
+
+        $pullForm = $this->createPushPullForm($this->project, 'project_pulllocal');
         $pullForm->add('pull', SubmitType::class, array('label' => 'Pull'));
         $pullForm->add('viewDiff', SubmitType::class, array('label' => 'View Diff'));
         $pullForm->handleRequest($request);
@@ -164,72 +150,65 @@ class ProjectSyncController extends BaseProjectController
             $remote = $data['remote'];
             $branch = $data['branch'];
              //die('form valid');
-            if($pullForm->get('viewDiff')->isClicked()){
-                $response = $this->gitSyncCommands->fetch($remote,$branch);
+            if ($pullForm->get('viewDiff')->isClicked()) {
+                $response = $this->gitSyncCommands->fetch($remote, $branch);
                 $this->get('session')->getFlashBag()->add('notice', $response);
-                $diffs = $this->gitCommands->getDiffRemoteBranch($remote,$branch);
-                
-            }else{
-                try{
-                    $response = $this->gitSyncCommands->pull($remote,$branch);
+                $diffs = $this->gitCommands->getDiffRemoteBranch($remote, $branch);
+            } else {
+                try {
+                    $response = $this->gitSyncCommands->pull($remote, $branch);
                     $this->get('session')->getFlashBag()->add('notice', $response);
-                    $this->get('session')->getFlashBag()->add('status-refresh','true');
-                }catch (\Exception $e) {
+                    $this->get('session')->getFlashBag()->add('status-refresh', 'true');
+                } catch (\Exception $e) {
                     $this->get('session')->getFlashBag()->add('error', $e->getMessage());
                 }
+
                 return $this->redirect($this->generateUrl('project_pull', array('id' => $id)));
             }
-
         }
 
         return array_merge($this->viewVariables, array(
             'remoteVersions' => $gitRemoteVersions,
             'pull_form' => $pullForm->createView(),
-            'diffs' => $diffs
+            'diffs' => $diffs,
             ));
-        
     }
-    
 
-    
-    /**
-     * 
-     * 
-     */
-    public function initAction($id, $grantType = 'VIEW'){
-        $redirectUrl = parent::initAction($id,$grantType);
-        if($redirectUrl){
+    public function initAction($id, $grantType = 'VIEW')
+    {
+        $redirectUrl = parent::initAction($id, $grantType);
+        if ($redirectUrl) {
             return $redirectUrl;
         }
         $this->gitSyncCommands = $this->gitCommands->command('sync');
     }
-    
+
     /**
-    * Creates a form to edit a Project entity.
-    *
-    * @param Project $project The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createPushPullForm($project,$formAction = 'project_pushremote')
+     * Creates a form to edit a Project entity.
+     *
+     * @param Project $project The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createPushPullForm($project, $formAction = 'project_pushremote')
     {
-                //Remote Server choice 
+        //Remote Server choice
         $gitRemoteVersions = $this->gitSyncCommands->getRemoteVersions();
         $remoteChoices = array();
-        foreach($gitRemoteVersions as $remoteVersion){ 
-            $remoteChoices[$remoteVersion[0].'('.$remoteVersion[1].')'] = $remoteVersion[0]; 
+        foreach ($gitRemoteVersions as $remoteVersion) {
+            $remoteChoices[$remoteVersion[0].'('.$remoteVersion[1].')'] = $remoteVersion[0];
         }
-        
+
         //Local Branch choice
         $branches = $this->gitCommands->command('branch')->getBranches(true);
         $branchChoices = array();
-        foreach($branches as $branchName){
+        foreach ($branches as $branchName) {
             $branchChoices[$branchName] = $branchName;
         }
-               
+
         //Current branch
         $currentBranch = $this->gitCommands->command('branch')->getCurrentBranch();
-        
+
         $firstOrigin = reset($remoteChoices);
 
         $defaultData = array('branch' => $currentBranch);
@@ -238,30 +217,18 @@ class ProjectSyncController extends BaseProjectController
                 'method' => 'POST',
             ))
             ->add('remote', ChoiceType::class, array(
-                'label' => 'Remote Server'
-                ,'choices'  => $remoteChoices
-                ,'data' => $firstOrigin
-                ,'required' => false
-                ,'choices_as_values' => true
-                ,'constraints' => array(
-                    new NotBlank()
-                ))
-            )   
+                'label' => 'Remote Server', 'choices' => $remoteChoices, 'data' => $firstOrigin, 'required' => false, 'choices_as_values' => true, 'constraints' => array(
+                    new NotBlank(),
+                ), )
+            )
             ->add('branch', ChoiceType::class, array(
-                'label' => 'Branch'
-                ,'choices'  => $branchChoices
-                ,'preferred_choices' => array($currentBranch)
-                ,'data' => trim($currentBranch)
-                ,'required' => false
-                ,'choices_as_values' => true
-                ,'constraints' => array(
-                    new NotBlank()
-                ))
-            )   
+                'label' => 'Branch', 'choices' => $branchChoices, 'preferred_choices' => array($currentBranch), 'data' => trim($currentBranch), 'required' => false, 'choices_as_values' => true, 'constraints' => array(
+                    new NotBlank(),
+                ), )
+            )
             ->getForm();
 
         //$form->add('submitMain', SubmitType::class, array('label' => 'Push'));
         return $form;
     }
-
 }

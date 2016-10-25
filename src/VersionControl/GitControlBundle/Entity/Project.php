@@ -7,7 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 use VersionControl\DoctrineEncryptBundle\Configuration\Encrypted;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -23,10 +25,11 @@ class Project
      * @ORM\Id
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @var integer
+     *
+     * @var int
      */
     private $id;
-    
+
     /**
      * @var string
      * @ORM\Column(name="title", type="string", length=80, nullable=true)
@@ -51,26 +54,26 @@ class Project
      * @ORM\Column(name="ssh", type="boolean",nullable=true)
      */
     private $ssh;
-    
+
     /**
      * @var string
      * @ORM\Column(name="host", type="string", length=225, nullable=true)
      */
     private $host;
-    
+
     /**
      * @var string
      * @ORM\Column(name="username", type="string", length=225, nullable=true)
      */
     private $username;
-    
+
     /**
      * @var string
      * @ORM\Column(name="password", type="string", nullable=true)
      * @Encrypted
      */
     private $password;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\User\User
      *
@@ -80,35 +83,30 @@ class Project
      * })
      */
     private $creator;
-    
+
     /**
      * @var \Doctrine\Common\Collections\Collection
-     * 
+     *
      * @ORM\OneToMany(targetEntity="VersionControl\GitControlBundle\Entity\UserProjects", mappedBy="project", cascade={"persist"}, orphanRemoval=true )
-     * 
      */
     private $userProjects;
-    
+
     /**
      * @var \Doctrine\Common\Collections\Collection
-     * 
+     *
      * @ORM\OneToMany(targetEntity="VersionControl\GitControlBundle\Entity\ProjectEnvironment", mappedBy="project", cascade={"persist"}, orphanRemoval=true )
-     * @Assert\Valid 
+     * @Assert\Valid
      * @ORM\OrderBy({"position" = "ASC"})
      */
     private $projectEnvironment;
-    
 
-
-
-     public function __construct()
+    public function __construct()
     {
-
         $this->userProjects = new \Doctrine\Common\Collections\ArrayCollection();
         $this->projectEnvironment = new \Doctrine\Common\Collections\ArrayCollection();
     }
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -122,7 +120,7 @@ class Project
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -132,7 +130,7 @@ class Project
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
      *
@@ -146,7 +144,7 @@ class Project
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
@@ -156,7 +154,7 @@ class Project
     }
 
     /**
-     * Set path
+     * Set path.
      *
      * @param string $path
      *
@@ -170,7 +168,7 @@ class Project
     }
 
     /**
-     * Get path
+     * Get path.
      *
      * @return string
      */
@@ -180,95 +178,112 @@ class Project
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
-    
+
     /**
-     * Get SSH value
-     * @return boolean
+     * Get SSH value.
+     *
+     * @return bool
      */
-    public function getSsh() {
+    public function getSsh()
+    {
         return $this->ssh;
     }
-    
+
     /**
-     * Set to use SSH
-     * @param boolean $ssh
+     * Set to use SSH.
+     *
+     * @param bool $ssh
      */
-    public function setSsh($ssh) {
+    public function setSsh($ssh)
+    {
         $this->ssh = $ssh;
     }
 
     /**
-     * Get SSH host
+     * Get SSH host.
+     *
      * @return string
      */
-    public function getHost() {
+    public function getHost()
+    {
         return $this->host;
     }
-    
+
     /**
-     * Set SSH host
+     * Set SSH host.
+     *
      * @param string $host
      */
-    public function setHost($host) {
+    public function setHost($host)
+    {
         $this->host = $host;
     }
 
     /**
-     * Get SSH username
+     * Get SSH username.
+     *
      * @return string
      */
-    public function getUsername() {
+    public function getUsername()
+    {
         return $this->username;
     }
-    
+
     /**
-     * set SSH username
+     * set SSH username.
+     *
      * @param type $username
      */
-    public function setUsername($username) {
+    public function setUsername($username)
+    {
         $this->username = $username;
     }
 
     /**
-     * Get SSH password
+     * Get SSH password.
+     *
      * @return string
      */
-    public function getPassword() {
+    public function getPassword()
+    {
         return $this->password;
     }
 
     /**
-     * Set SSH password
+     * Set SSH password.
+     *
      * @param string $password
      */
-    public function setPassword($password) {
+    public function setPassword($password)
+    {
         $this->password = $password;
     }
-    
+
     /**
-     * Add user access to project
+     * Add user access to project.
      *
      * @param \VersionControl\GitControlBundle\Entity\UserProjects $userProject
-     * @return Resource
+     *
+     * @return resource
      */
     public function addUserProjects(\VersionControl\GitControlBundle\Entity\UserProjects $userProject)
     {
         $userProject->setProject($this);
         $this->userProjects[] = $userProject;
-    
+
         return $this;
     }
 
     /**
-     * Remove user access to project
+     * Remove user access to project.
      *
      * @param \VersionControl\GitControlBundle\Entity\UserProjects $userProject
      */
@@ -276,77 +291,92 @@ class Project
     {
         $this->userProjects->removeElement($userProject);
     }
-    
+
     /**
-     * The creator of the project
-     * @return \VersionControl\GitControlBundle\Entity\User\User 
+     * The creator of the project.
+     *
+     * @return \VersionControl\GitControlBundle\Entity\User\User
      */
-    public function getCreator() {
+    public function getCreator()
+    {
         return $this->creator;
     }
 
     /**
-     * Sets the creator of the project
+     * Sets the creator of the project.
+     *
      * @param \VersionControl\GitControlBundle\Entity\User\User $creator
+     *
      * @return \VersionControl\GitControlBundle\Entity\Project
      */
-    public function setCreator(\VersionControl\GitControlBundle\Entity\User\User $creator) {
+    public function setCreator(\VersionControl\GitControlBundle\Entity\User\User $creator)
+    {
         $this->creator = $creator;
+
         return $this;
     }
 
-    
-    
     /**
-     * Get all user access to project
+     * Get all user access to project.
+     *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getUserProjects() {
+    public function getUserProjects()
+    {
         return $this->userProjects;
     }
 
     /**
-     * Set all user access to projects
+     * Set all user access to projects.
+     *
      * @param \Doctrine\Common\Collections\Collection $userProjects
      */
-    public function setUserProjects(\Doctrine\Common\Collections\Collection $userProjects) {
+    public function setUserProjects(\Doctrine\Common\Collections\Collection $userProjects)
+    {
         $this->userProjects = $userProjects;
     }
-    
+
     /**
-     * Get array of project enviroments
+     * Get array of project enviroments.
+     *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getProjectEnvironment() {
+    public function getProjectEnvironment()
+    {
         return $this->projectEnvironment;
     }
 
     /**
-     * Set array of project enviroments
+     * Set array of project enviroments.
+     *
      * @param \Doctrine\Common\Collections\Collection $projectEnvironment
+     *
      * @return \VersionControl\GitControlBundle\Entity\Project
      */
-    public function setProjectEnvironment(\Doctrine\Common\Collections\Collection $projectEnvironment) {
+    public function setProjectEnvironment(\Doctrine\Common\Collections\Collection $projectEnvironment)
+    {
         $this->projectEnvironment = $projectEnvironment;
+
         return $this;
     }
-    
+
     /**
-     * Add project environment
+     * Add project environment.
      *
      * @param \VersionControl\GitControlBundle\Entity\ProjectEnvironment $projectEnvironment
-     * @return Resource
+     *
+     * @return resource
      */
     public function addProjectEnvironment(\VersionControl\GitControlBundle\Entity\ProjectEnvironment $projectEnvironment)
     {
         $projectEnvironment->setProject($this);
         $this->projectEnvironment[] = $projectEnvironment;
-    
+
         return $this;
     }
 
     /**
-     * Remove project environment
+     * Remove project environment.
      *
      * @param \VersionControl\GitControlBundle\Entity\ProjectEnvironment $projectEnvironment
      */
@@ -354,9 +384,4 @@ class Project
     {
         $this->projectEnvironment->removeElement($projectEnvironment);
     }
-
-
-
-
 }
-

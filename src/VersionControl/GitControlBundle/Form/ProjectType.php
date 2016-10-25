@@ -7,9 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Form;
 
-use VersionControl\GitControlBundle\Form\Embbed\ProjectEnvironmentEmbbedType;
 use VersionControl\GitControlBundle\Form\Embbed\ProjectEnvironmentPositionType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,7 +20,7 @@ class ProjectType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,21 +29,21 @@ class ProjectType extends AbstractType
             ->add('description')
             ->add('projectEnvironment', CollectionType::class, array(
                                 'type' => new ProjectEnvironmentPositionType(),
-                                'allow_add'    => false,
+                                'allow_add' => false,
                                 'prototype' => false,
                                 'by_reference' => false,
                                 'allow_delete' => false,
                                 ))
         ;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function configureOptions(OptionsResolver  $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GitControlBundle\Entity\Project'
+            'data_class' => 'VersionControl\GitControlBundle\Entity\Project',
         ));
     }
 

@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
@@ -15,117 +16,128 @@ use VersionControl\GitControlBundle\Entity\IssueLabel;
 
 class IssueLabelRepository extends EntityRepository implements IssueLabelRepositoryInterface
 {
-    
     /**
-     *
      * @var VersionControl\GitControlBundle\Entity\Project
      */
     protected $project;
-    
+
     /**
      * @var VersionControl\GitControlBundle\Entity\User\User
      */
     protected $currentUser;
-     
+
     /**
-     * Get Project
+     * Get Project.
      */
-    public function getProject() {
+    public function getProject()
+    {
         return $this->project;
     }
-    
+
     /**
-     * Set Project 
+     * Set Project.
      */
-    public function setProject($project) {
+    public function setProject($project)
+    {
         $this->project = $project;
+
         return $this;
     }
-    
+
     /**
-     * Get Current User
+     * Get Current User.
      */
-    public function getCurrentUser() {
+    public function getCurrentUser()
+    {
         return $this->currentUser;
     }
 
     /**
-     * Set Current User
+     * Set Current User.
      */
-    public function setCurrentUser($currentUser) {
+    public function setCurrentUser($currentUser)
+    {
         $this->currentUser = $currentUser;
+
         return $this;
     }
-    
+
     /**
-     * Get all labels for project
-     * 
+     * Get all labels for project.
+     *
      * @return array of issueLabels
      */
-    public function listLabels(){
+    public function listLabels()
+    {
         return $this->findByProject($this->project);
     }
-     
+
     /**
-     * Get label by id
-     * @param integer $id
+     * Get label by id.
+     *
+     * @param int $id
      */
-    public function findLabelById($id){
+    public function findLabelById($id)
+    {
         return $this->find($id);
     }
-    
+
     /**
-     * Gets a new Label entity
+     * Gets a new Label entity.
+     *
      * @param type $issue
+     *
      * @return VersionControl\GitControlBundle\Entity\Labels\Label
      */
-    public function newLabel(){
+    public function newLabel()
+    {
         $issueEntity = new IssueLabel();
         $issueEntity->setProject($this->project);
+
         return $issueEntity;
     }
-    
+
     /**
-     * Create a new label
+     * Create a new label.
+     *
      * @param type $issueLabel
      */
-    public function createLabel($issueLabel){
-        $em=$this->getEntityManager();
-        
+    public function createLabel($issueLabel)
+    {
+        $em = $this->getEntityManager();
+
         $em->persist($issueLabel);
         $em->flush();
-         
+
         return $issueLabel;
     }
 
-    
     /**
-     * Update label
-     * @param integer $issue
+     * Update label.
+     *
+     * @param int $issue
      */
-    public function updateLabel($issueLabel){
-        $em=$this->getEntityManager();
+    public function updateLabel($issueLabel)
+    {
+        $em = $this->getEntityManager();
 
         $em->flush();
-         
+
         return $issueLabel;
     }
-    
+
     /**
-     * Delete Label
-     * @param integer $issueLabelId
+     * Delete Label.
+     *
+     * @param int $issueLabelId
      */
-    public function deleteLabel($issueLabelId){
-        $em=$this->getEntityManager();
+    public function deleteLabel($issueLabelId)
+    {
+        $em = $this->getEntityManager();
         $issueLabel = $this->find($issueLabelId);
-        if($issueLabel){
+        if ($issueLabel) {
             $em->remove($issueLabel);
             $em->flush();
         }
     }
-    
-    
-
-  
 }
-?>

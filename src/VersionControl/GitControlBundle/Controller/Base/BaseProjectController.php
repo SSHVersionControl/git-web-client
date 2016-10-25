@@ -7,66 +7,66 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller\Base;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
-use VersionControl\GitControlBundle\Form\ProjectType;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use VersionControl\GitControlBundle\Entity\UserProjects;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Base Project controller.
+ *
  * @abstract
  */
-abstract class BaseProjectController extends Controller{
-    
+abstract class BaseProjectController extends Controller
+{
     /**
-     * The current Project Entity
-     * @var Project 
+     * The current Project Entity.
+     *
+     * @var Project
      */
     protected $project;
-    
+
     /**
-     * Array of variables the will be past to the twig templating engine
-     * @var array 
+     * Array of variables the will be past to the twig templating engine.
+     *
+     * @var array
      */
     protected $viewVariables = array();
-    
+
     /**
-     * The current branch name
-     * @var string 
+     * The current branch name.
+     *
+     * @var string
      */
     protected $branchName;
-    
+
     /**
-     *
-     * @var GitCommand 
+     * @var GitCommand
      */
     protected $gitCommands;
-    
+
     protected $projectGrantType = 'VIEW';
-    
+
     /**
-     * Allow access by ajax only request
-     * @var boolean 
+     * Allow access by ajax only request.
+     *
+     * @var bool
      */
     protected $ajaxOnly = true;
-    
+
     /**
-     * 
      * @param VersionControl\GitControlBundle\Entity\Project $project
+     *
      * @throws AccessDeniedException
      */
-    protected function checkProjectAuthorization(\VersionControl\GitControlBundle\Entity\Project $project,$grantType='MASTER'){
+    protected function checkProjectAuthorization(\VersionControl\GitControlBundle\Entity\Project $project, $grantType = 'MASTER')
+    {
         $authorizationChecker = $this->get('security.authorization_checker');
 
         // check for edit access
@@ -74,7 +74,7 @@ abstract class BaseProjectController extends Controller{
             throw new AccessDeniedException();
         }
     }
-    
+
     /**
      * Generates a URL from the given parameters adding project id.
      *
@@ -86,61 +86,62 @@ abstract class BaseProjectController extends Controller{
      *
      * @see UrlGeneratorInterface
      */
-    public function generateUrl($route, $parameters = array(),$referenceType = UrlGeneratorInterface::ABSOLUTE_PATH) {
-        if($this->project){
-            $mergedParameters = array_merge(array('id'=>$this->project->getId()),$parameters);
+    public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    {
+        if ($this->project) {
+            $mergedParameters = array_merge(array('id' => $this->project->getId()), $parameters);
         }
-        return parent::generateUrl($route, $mergedParameters,$referenceType);
+
+        return parent::generateUrl($route, $mergedParameters, $referenceType);
     }
-    
+
     /**
-     * 
-     * @param integer $id
+     * @param int $id
      */
-    public function initAction($id,$grantType = 'VIEW'){
- 
+    public function initAction($id, $grantType = 'VIEW')
+    {
         $em = $this->getDoctrine()->getManager();
 
-        $this->project= $em->getRepository('VersionControlGitControlBundle:Project')->find($id);
+        $this->project = $em->getRepository('VersionControlGitControlBundle:Project')->find($id);
 
         if (!$this->project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        
+
         //Redirect is not ajax
-        $request  = $this->container->get('request_stack')->getCurrentRequest();
-        
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+
         //Do not redirect if in test mode
-        if( $this->ajaxOnly == true && !$request->isXmlHttpRequest() && $this->container->getParameter('kernel.environment') != 'test'){
-                return $this->generateUrl('project',array('section'=> urlencode($request->getRequestUri())));
+        if ($this->ajaxOnly == true && !$request->isXmlHttpRequest() && $this->container->getParameter('kernel.environment') != 'test') {
+            return $this->generateUrl('project', array('section' => urlencode($request->getRequestUri())));
         }
-        
-        $this->checkProjectAuthorization($this->project,$grantType);
-        
+
+        $this->checkProjectAuthorization($this->project, $grantType);
+
         $projectEnvironment = $this->getProjectEnvironment();
-        
+
         $this->gitCommands = $this->get('version_control.git_commands')->setGitEnvironment($projectEnvironment);
-        
+
         $this->branchName = $this->gitCommands->command('branch')->getCurrentBranch();
-        
+
         $this->viewVariables = array_merge($this->viewVariables, array(
-            'project'      => $this->project,
+            'project' => $this->project,
             'branchName' => $this->branchName,
             ));
-        
-       
-       
     }
-    
+
     /**
-     * Sets the project entity
+     * Sets the project entity.
+     *
      * @param Project $project
      */
-    public function getProjectEnvironment() {
+    public function getProjectEnvironment()
+    {
         $projectEnvironmentStorage = $this->get('version_control.project_environmnent_storage');
+
         return $projectEnvironmentStorage->getProjectEnviromment($this->project);
     }
-    
+
     /**
      * Sets the container.
      *
@@ -156,21 +157,21 @@ abstract class BaseProjectController extends Controller{
             $this->initAction($id,$grantType);
         }
     }*/
-    
-    public function getGrantType(){
-        return $this->projectGrantType;
-    }
-    
-    public function getProjectGrantType() {
+
+    public function getGrantType()
+    {
         return $this->projectGrantType;
     }
 
-    public function setProjectGrantType($projectGrantType) {
+    public function getProjectGrantType()
+    {
+        return $this->projectGrantType;
+    }
+
+    public function setProjectGrantType($projectGrantType)
+    {
         $this->projectGrantType = $projectGrantType;
+
         return $this;
     }
-
-
-    
 }
-

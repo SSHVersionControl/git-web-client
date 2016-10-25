@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -15,12 +16,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use VersionControl\GitControlBundle\Repository\IssueMilestoneRepository;
 //use VersionControl\GitControlBundle\Repository\IssueLabelRepository;
 use Doctrine\ORM\EntityRepository;
-
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Lrotherfield\Component\Form\Type\HiddenEntityType;
 
@@ -28,7 +23,7 @@ class IssueType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -41,7 +36,7 @@ class IssueType extends AbstractType
             //->add('createdAt')
             //->add('updatedAt')
             //->add('githubNumber')
-            ->add('issueMilestone',EntityType::class,array(
+            ->add('issueMilestone', EntityType::class, array(
                     'multiple' => false,   // Multiple selection allowed
                     //'expanded' => true,   // Render as checkboxes
                     'placeholder' => 'Choose a milestone',
@@ -55,11 +50,11 @@ class IssueType extends AbstractType
                             ->orderBy('a.id', 'ASC');
                     },
                 ))
-            ->add('project', HiddenEntityType::class,array(
-                    'class' => 'VersionControl\GitControlBundle\Entity\Project'
+            ->add('project', HiddenEntityType::class, array(
+                    'class' => 'VersionControl\GitControlBundle\Entity\Project',
                 ))
             //->add('verUser')
-            ->add('issueLabel',EntityType::class,array(
+            ->add('issueLabel', EntityType::class, array(
                     'multiple' => true,   // Multiple selection allowed
                     'expanded' => true,   // Render as checkboxes
                     'property' => 'title', // Assuming that the entity has a "name" property
@@ -74,14 +69,14 @@ class IssueType extends AbstractType
                 ))
         ;
     }
-    
+
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GitControlBundle\Entity\Issue'
+            'data_class' => 'VersionControl\GitControlBundle\Entity\Issue',
         ));
     }
 

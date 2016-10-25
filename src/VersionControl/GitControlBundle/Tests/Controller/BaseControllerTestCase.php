@@ -4,15 +4,14 @@ namespace VersionControl\GitControlBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Filesystem\Filesystem;
 
 class BaseControllerTestCase extends WebTestCase
 {
     protected $client = null;
-    
+
     public $entityManager;
-    
+
     protected $paths = null;
 
     public function setUp()
@@ -20,15 +19,12 @@ class BaseControllerTestCase extends WebTestCase
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
     }
-    
-    
-    
+
     /**
-     * Creates an AuthorizedClient
+     * Creates an AuthorizedClient.
      */
     protected function createAuthorizedClient()
     {
-        
         $container = $this->client->getContainer();
 
         $session = $container->get('session');
@@ -43,46 +39,50 @@ class BaseControllerTestCase extends WebTestCase
         $loginManager->loginUser($firewallName, $user);
 
         // save the login token into the session and put it in a cookie
-        $container->get('session')->set('_security_' . $firewallName,
+        $container->get('session')->set('_security_'.$firewallName,
             serialize($container->get('security.context')->getToken()));
         $container->get('session')->save();
         $this->client->getCookieJar()->set(new Cookie($session->getName(), $session->getId()));
 
         return $user;
     }
-    
-    protected function doLogin($username, $password) {
+
+    protected function doLogin($username, $password)
+    {
         $crawler = $this->client->request('GET', '/login');
         $form = $crawler->selectButton('_submit')->form(array(
-            '_username'  => $username,
-            '_password'  => $password,
-            ));     
+            '_username' => $username,
+            '_password' => $password,
+            ));
         $this->client->submit($form);
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
 
         $crawler = $this->client->followRedirect();
-     }
-     
-     protected function createDatabase($username, $password) {
+    }
+
+    protected function createDatabase($username, $password)
+    {
         $crawler = $this->client->request('GET', '/login');
         $form = $crawler->selectButton('_submit')->form(array(
-            '_username'  => $username,
-            '_password'  => $password,
-            ));     
+            '_username' => $username,
+            '_password' => $password,
+            ));
         $this->client->submit($form);
 
         $this->assertTrue($this->client->getResponse()->isRedirect());
 
         $crawler = $this->client->followRedirect();
-     }
-     
-     public function getProject($user){
-         $firstUserProject = $this->entityManager->getRepository('VersionControlGitControlBundle:UserProjects')->findOneBy(array('user' => $user));
-         return $firstUserProject->getProject();
-     }
-     
-     protected function assertInputValue($crawler, $key, $val)
+    }
+
+    public function getProject($user)
+    {
+        $firstUserProject = $this->entityManager->getRepository('VersionControlGitControlBundle:UserProjects')->findOneBy(array('user' => $user));
+
+        return $firstUserProject->getProject();
+    }
+
+    protected function assertInputValue($crawler, $key, $val)
     {
         $input = $crawler->filter('input[name="'.$key.'"]');
         $this->assertEquals(
@@ -104,30 +104,32 @@ class BaseControllerTestCase extends WebTestCase
             $val, $input->text(), $key.' failed'
         );
     }
-    
+
     /**
-     * Creates a temp folder. Use to create folder to test git functions
-     * 
+     * Creates a temp folder. Use to create folder to test git functions.
+     *
      * @param string $folderName
      */
-    protected function createTempFolder($folderName){
+    protected function createTempFolder($folderName)
+    {
         $tempDir = realpath(sys_get_temp_dir());
         $tempFullPathName = tempnam($tempDir, $folderName);
         $this->paths[$folderName] = $tempFullPathName;
         @unlink($this->paths[$folderName]);
         $fs = new Filesystem();
         $fs->mkdir($this->paths[$folderName]);
-        
+
         return $this->paths[$folderName];
     }
-     
+
     /**
-     * Remove any paths created after test
+     * Remove any paths created after test.
      */
-    protected function tearDown() {
-        if(is_array($this->paths)){
+    protected function tearDown()
+    {
+        if (is_array($this->paths)) {
             $fs = new Filesystem();
-            foreach($this->paths as $path){
+            foreach ($this->paths as $path) {
                 $fs->remove($path);
             }
         }

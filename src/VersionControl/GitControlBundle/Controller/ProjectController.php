@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -16,11 +17,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
 use VersionControl\GitControlBundle\Form\ProjectType;
-use VersionControl\GitControlBundle\Utility\GitCommands;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use VersionControl\GitControlBundle\Entity\UserProjects;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -30,7 +28,6 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class ProjectController extends Controller
 {
-
     /**
      * Creates a new Project entity.
      *
@@ -46,19 +43,19 @@ class ProjectController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            
+
             //Get User
             $user = $this->get('security.token_storage')->getToken()->getUser();
-            
+
             //Set Creator
             $project->setCreator($user);
-            
+
             //Set Access and Roles
             $userProjectAccess = new UserProjects();
             $userProjectAccess->setUser($user);
             $userProjectAccess->setRoles('Owner');
             $project->addUserProjects($userProjectAccess);
-            
+
             $em->persist($project);
             $em->flush();
 
@@ -67,10 +64,9 @@ class ProjectController extends Controller
 
         return array(
             'entity' => $project,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
-
 
     /**
      * Creates a form to create a Project entity.
@@ -86,7 +82,7 @@ class ProjectController extends Controller
             'method' => 'POST',
         ));
 
-        $form->add('submit', SubmitType::class, array('label' => 'Create','validation_groups' => 'New'));
+        $form->add('submit', SubmitType::class, array('label' => 'Create', 'validation_groups' => 'New'));
 
         return $form;
     }
@@ -101,16 +97,14 @@ class ProjectController extends Controller
     public function newAction()
     {
         $entity = new Project();
-        $form   = $this->createCreateForm($entity);
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
-
-    
     /**
      * Displays a form to edit an existing Project entity.
      *
@@ -127,26 +121,26 @@ class ProjectController extends Controller
         if (!$project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        
-        $this->checkProjectAuthorization($project,'MASTER');
+
+        $this->checkProjectAuthorization($project, 'MASTER');
 
         $editForm = $this->createEditForm($project);
         $deleteForm = $this->createDeleteForm($id);
-        
+
         return array(
-            'project'      => $project,
-            'edit_form'   => $editForm->createView(),
+            'project' => $project,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Project entity.
-    *
-    * @param Project $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a Project entity.
+     *
+     * @param Project $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(Project $entity)
     {
         $form = $this->createForm(ProjectType::class, $entity, array(
@@ -154,7 +148,7 @@ class ProjectController extends Controller
             'method' => 'PUT',
         ));
 
-        $form->add('submit', SubmitType::class, array('label' => 'Update','validation_groups' => 'Edit'));
+        $form->add('submit', SubmitType::class, array('label' => 'Update', 'validation_groups' => 'Edit'));
 
         return $form;
     }
@@ -174,8 +168,8 @@ class ProjectController extends Controller
         if (!$project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        
-        $this->checkProjectAuthorization($project,'MASTER');
+
+        $this->checkProjectAuthorization($project, 'MASTER');
 
         $deleteForm = $this->createDeleteForm($id);
         $editForm = $this->createEditForm($project);
@@ -183,15 +177,15 @@ class ProjectController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
-            
-            $this->get('session')->getFlashBag()->add('notice',"Project record updated");
+
+            $this->get('session')->getFlashBag()->add('notice', 'Project record updated');
 
             return $this->redirect($this->generateUrl('project_edit', array('id' => $id)));
         }
 
         return array(
-            'project'      => $project,
-            'edit_form'   => $editForm->createView(),
+            'project' => $project,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -209,13 +203,12 @@ class ProjectController extends Controller
         if (!$project) {
             throw $this->createNotFoundException('Unable to find Project entity.');
         }
-        
-        $this->checkProjectAuthorization($project,'MASTER');
-            
+
+        $this->checkProjectAuthorization($project, 'MASTER');
+
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
-        
-        
+
         if ($form->isValid()) {
             $em->remove($project);
             $em->flush();
@@ -240,14 +233,14 @@ class ProjectController extends Controller
             ->getForm()
         ;
     }
-    
-    
+
     /**
-     * 
      * @param VersionControl\GitControlBundle\Entity\Project $project
+     *
      * @throws AccessDeniedException
      */
-    protected function checkProjectAuthorization(\VersionControl\GitControlBundle\Entity\Project $project,$grantType='MASTER'){
+    protected function checkProjectAuthorization(\VersionControl\GitControlBundle\Entity\Project $project, $grantType = 'MASTER')
+    {
         $authorizationChecker = $this->get('security.authorization_checker');
 
         // check for edit access
@@ -255,5 +248,4 @@ class ProjectController extends Controller
             throw new AccessDeniedException();
         }
     }
-
 }

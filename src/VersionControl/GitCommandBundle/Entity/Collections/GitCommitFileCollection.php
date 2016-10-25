@@ -15,53 +15,59 @@ namespace VersionControl\GitCommandBundle\Entity\Collections;
 use VersionControl\GitCommandBundle\Entity\GitCommitFile;
 
 /**
- * Array of committed file with statistics on added, copied, deleted, renamed and modified 
- * 
+ * Array of committed file with statistics on added, copied, deleted, renamed and modified.
+ *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-class GitCommitFileCollection implements \Iterator{
-    
+class GitCommitFileCollection implements \Iterator
+{
     private $gitCommitFiles = [];
-    
+
     private $index = 0;
-    
+
     /**
-     * Added (A) Count
-     * @var integer; 
+     * Added (A) Count.
+     *
+     * @var integer;
      */
     private $addedCount = 0;
-         
+
     /**
-     *  Copied (C), count
-     * @var integer 
+     *  Copied (C), count.
+     *
+     * @var int
      */
     private $copiedCount = 0;
-    
+
     /**
-     * Deleted (D), count
-     * @var integer 
+     * Deleted (D), count.
+     *
+     * @var int
      */
     private $deletedCount = 0;
-    
+
     /**
-     * Modified (M), count
-     * @var integer 
+     * Modified (M), count.
+     *
+     * @var int
      */
     private $modifiedCount = 0;
-    
+
     /**
-     * Renamed (R), count
-     * @var integer 
+     * Renamed (R), count.
+     *
+     * @var int
      */
     private $renamedCount = 0;
-    
+
     /**
      * Stores the count of other file type (i.e. regular file, symlink, submodule, …​) with status
      * changed (T),
-     * Unmerged (U), 
+     * Unmerged (U),
      * Unknown (X),
-     * Broken (B)
-     * @var integer 
+     * Broken (B).
+     *
+     * @var int
      */
     private $otherStatusCount = 0;
 
@@ -72,7 +78,7 @@ class GitCommitFileCollection implements \Iterator{
 
     public function next()
     {
-        $this->index ++;
+        ++$this->index;
     }
 
     public function key()
@@ -95,55 +101,59 @@ class GitCommitFileCollection implements \Iterator{
         $this->gitCommitFiles = array_reverse($this->gitCommitFiles);
         $this->rewind();
     }
-    
-    
-    public function addGitCommitFile(GitCommitFile $gitCommitFile) {
+
+    public function addGitCommitFile(GitCommitFile $gitCommitFile)
+    {
         $this->gitCommitFiles[] = $gitCommitFile;
         $this->processStatusCount($gitCommitFile->getStatusChange());
+
         return $this;
     }
-    
-    protected function processStatusCount($status){
-        if($status === 'A'){
-            $this->addedCount++;
-        }elseif($status === 'C'){
-             $this->copiedCount++;
-        }elseif($status === 'D'){
-             $this->deletedCount++;
-        }elseif($status === 'M'){
-             $this->modifiedCount++;
-        }elseif($status === 'R'){
-             $this->renamedCount++;
-        }else{
-             $this->otherStatusCount++;
+
+    protected function processStatusCount($status)
+    {
+        if ($status === 'A') {
+            ++$this->addedCount;
+        } elseif ($status === 'C') {
+            ++$this->copiedCount;
+        } elseif ($status === 'D') {
+            ++$this->deletedCount;
+        } elseif ($status === 'M') {
+            ++$this->modifiedCount;
+        } elseif ($status === 'R') {
+            ++$this->renamedCount;
+        } else {
+            ++$this->otherStatusCount;
         }
     }
-    
-    public function getAddedCount() {
+
+    public function getAddedCount()
+    {
         return $this->addedCount;
     }
 
-    public function getCopiedCount() {
+    public function getCopiedCount()
+    {
         return $this->copiedCount;
     }
 
-    public function getDeletedCount() {
+    public function getDeletedCount()
+    {
         return $this->deletedCount;
     }
 
-    public function getModifiedCount() {
+    public function getModifiedCount()
+    {
         return $this->modifiedCount;
     }
 
-    public function getRenamedCount() {
+    public function getRenamedCount()
+    {
         return $this->renamedCount;
     }
 
-    public function getOtherStatusCount() {
+    public function getOtherStatusCount()
+    {
         return $this->otherStatusCount;
     }
-
-
-
-
 }

@@ -7,34 +7,35 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class IssueType extends AbstractType
 {
     protected $issueManager;
-    
-    public function __construct($issueManager) {
+
+    public function __construct($issueManager)
+    {
         $this->issueManager = $issueManager;
     }
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        
+
         //$project = $builder->getData()->getProject();
         $builder
             ->add('title')
-            ->add('description',TextareaType::class)
-            ->add('issueMilestone','choice',array(
+            ->add('description', TextareaType::class)
+            ->add('issueMilestone', 'choice', array(
                     'choices' => $this->getIssueMilestoneChoices(),
                     'multiple' => false,   // Multiple selection allowed
                     //'expanded' => true,   // Render as checkboxes
@@ -42,15 +43,19 @@ class IssueType extends AbstractType
                     'required' => false,
                     'choices_as_values' => true,
                     //'property' => 'title', // Assuming that the entity has a "name" property
-                    'choice_label' => function($issueMilestone) {
-                        if($issueMilestone){
+                    'choice_label' => function ($issueMilestone) {
+                        if ($issueMilestone) {
                             return $issueMilestone->getTitle();
-                        }return;
+                        }
+
+                        return;
                     },
-                    'choice_value' => function($issueMilestone) {
-                        if($issueMilestone){
+                    'choice_value' => function ($issueMilestone) {
+                        if ($issueMilestone) {
                             return $issueMilestone->getId();
-                        }return;
+                        }
+
+                        return;
                     },
                     //'class' => 'VersionControl\GitControlBundle\Entity\IssueMilestone',
                     /*'query_builder' => function (IssueMilestoneRepository $er) use ($project) {
@@ -64,7 +69,7 @@ class IssueType extends AbstractType
              //       'class' => 'VersionControl\GitControlBundle\Entity\Project'
              //   ))
             //->add('verUser')
-            ->add('issueLabel',ChoiceType::class,array(
+            ->add('issueLabel', ChoiceType::class, array(
                     'choices' => $this->getIssueLabelChoices(),
                     'multiple' => true,   // Multiple selection allowed
                     'expanded' => true,   // Render as checkboxes
@@ -72,17 +77,20 @@ class IssueType extends AbstractType
                     //'class' => 'VersionControl\GitControlBundle\Entity\IssueLabel',
                     'required' => false,
                     'choices_as_values' => true,
-                    'choice_label' => function($issueLabel) {
-                        if($issueLabel){
+                    'choice_label' => function ($issueLabel) {
+                        if ($issueLabel) {
                             return $issueLabel->getTitle();
                         }
+
                         return;
                     },
-                    'choice_value' => function($issueLabel) {
-                         if($issueLabel){
-                           return $issueLabel->getId();
-                         }return;
-                       },
+                    'choice_value' => function ($issueLabel) {
+                        if ($issueLabel) {
+                            return $issueLabel->getId();
+                        }
+
+                        return;
+                    },
                     /*'query_builder' => function (EntityRepository $er) use ($project) {
                         return $er->createQueryBuilder('a')
                             ->where('a.project = :project OR a.allProjects = 1')
@@ -92,27 +100,28 @@ class IssueType extends AbstractType
                 ))
         ;
     }
-    
-    protected function getIssueMilestoneChoices(){
-        $issueMilestoneRepository = $this->issueManager->getIssueMilestoneRepository();
-        return $issueMilestoneRepository->listMilestones();
-  
-    }
-    
-    protected function getIssueLabelChoices(){
-        $issueLabelRepository = $this->issueManager->getIssueLabelRepository();
-        return $issueLabelRepository->listLabels();
 
+    protected function getIssueMilestoneChoices()
+    {
+        $issueMilestoneRepository = $this->issueManager->getIssueMilestoneRepository();
+
+        return $issueMilestoneRepository->listMilestones();
     }
-   
-    
+
+    protected function getIssueLabelChoices()
+    {
+        $issueLabelRepository = $this->issueManager->getIssueLabelRepository();
+
+        return $issueLabelRepository->listLabels();
+    }
+
     /**
      * @param OptionsResolverInterface $resolver
      */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GitControlBundle\Entity\Issues\Issue'
+            'data_class' => 'VersionControl\GitControlBundle\Entity\Issues\Issue',
         ));
     }
 

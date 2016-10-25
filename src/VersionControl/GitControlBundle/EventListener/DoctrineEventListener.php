@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\EventListener;
 
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
@@ -33,10 +34,10 @@ class DoctrineEventListener
             $class = new \ReflectionClass($metadata->getName());
         }
 
-        if(count($this->mapping) > 0){
+        if (count($this->mapping) > 0) {
             foreach ($this->mapping as $entityName => $map) {
                 if ($class->getName() == $map['entity']) {
-                    $reader = new AnnotationReader;
+                    $reader = new AnnotationReader();
                     $discriminatorMap = array();
 
                     if (null !== $discriminatorMapAnnotation = $reader->getClassAnnotation($class, 'Doctrine\ORM\Mapping\DiscriminatorMap')) {

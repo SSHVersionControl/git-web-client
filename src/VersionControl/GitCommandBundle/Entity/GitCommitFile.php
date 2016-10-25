@@ -12,90 +12,94 @@
 
 namespace VersionControl\GitCommandBundle\Entity;
 
-
 /**
  * Entity containing the file name and status
- * for a commit
+ * for a commit.
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
 class GitCommitFile
 {
     /**
-     * The file Path
+     * The file Path.
+     *
      * @var string
      */
     protected $filePath;
-    
+
     /*
      * Single character repersenting the files status in commit;
      * Possible values are: A|C|D|M|R|T|U|X|B
-     * 
+     *
      * Added (A),
      * Copied (C),
      * Deleted (D),
      * Modified (M),
      * Renamed (R),
-     * have their type (i.e. regular file, symlink, submodule, …​) 
+     * have their type (i.e. regular file, symlink, submodule, …​)
      * changed (T),
-     * Unmerged (U), 
+     * Unmerged (U),
      * Unknown (X),
      * Broken (B)
-     * 
-     * @var string 
+     *
+     * @var string
      */
     protected $statusChange;
-    
+
     /**
-     * The Original line 
-     * @var string 
+     * The Original line.
+     *
+     * @var string
      */
     protected $line;
-    
+
     /**
      * Excepts a line in the format:
-     * Status       File name 
-     * M       typo3conf/ext/fr_mapfeusertoasti/log/log.txt
-     *
+     * Status       File name
+     * M       typo3conf/ext/fr_mapfeusertoasti/log/log.txt.
      */
-    public function __construct($line){
+    public function __construct($line)
+    {
         $this->line = $line;
-        
-        $this->statusChange = substr($line, 0 ,1);
-        
-        $this->filePath = trim(substr($line, 1));
 
+        $this->statusChange = substr($line, 0, 1);
+
+        $this->filePath = trim(substr($line, 1));
     }
 
-    public function getFilePath() {
+    public function getFilePath()
+    {
         return $this->filePath;
     }
 
-    public function getStatusChange() {
+    public function getStatusChange()
+    {
         return $this->statusChange;
     }
 
-    public function getLine() {
+    public function getLine()
+    {
         return $this->line;
     }
 
-    public function setFilePath(type $filePath) {
+    public function setFilePath(type $filePath)
+    {
         $this->filePath = $filePath;
+
         return $this;
     }
 
-    public function setStatusChange($statusChange) {
+    public function setStatusChange($statusChange)
+    {
         $this->statusChange = $statusChange;
+
         return $this;
     }
 
-    public function setLine($line) {
+    public function setLine($line)
+    {
         $this->line = $line;
+
         return $this;
     }
-
-
-    
-    
 }
-

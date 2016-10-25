@@ -14,12 +14,13 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class VersionControlDoctrineEncryptExtension extends Extension {
-
+class VersionControlDoctrineEncryptExtension extends Extension
+{
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container) {
+    public function load(array $configs, ContainerBuilder $container)
+    {
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
         $services = array('orm' => 'orm-services');
@@ -41,7 +42,7 @@ class VersionControlDoctrineEncryptExtension extends Extension {
         $container->setParameter('versioncontrol_doctrine_encrypt.encryptor_class_name', $encryptorFullName);
         $container->setParameter('versioncontrol_doctrine_encrypt.secret_key', $config['secret_key']);
 
-        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load(sprintf('%s.xml', $services[$config['db_driver']]));
     }
 

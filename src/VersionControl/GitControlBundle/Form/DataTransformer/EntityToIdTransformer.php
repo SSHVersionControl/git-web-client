@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Form\DataTransformer;
 
 use Symfony\Component\Form\DataTransformerInterface;
@@ -23,21 +24,22 @@ class EntityToIdTransformer implements DataTransformerInterface
      * @var string
      */
     protected $class;
-    
+
     public function __construct(ObjectManager $objectManager, $class)
     {
         $this->objectManager = $objectManager;
         $this->class = $class;
     }
-    
+
     public function transform($entity)
     {
         if (null === $entity) {
             return;
         }
+
         return $entity->getId();
     }
-    
+
     public function reverseTransform($id)
     {
         if (!$id) {
@@ -49,8 +51,7 @@ class EntityToIdTransformer implements DataTransformerInterface
         if (null === $entity) {
             throw new TransformationFailedException();
         }
+
         return $entity;
     }
-    
 }
-

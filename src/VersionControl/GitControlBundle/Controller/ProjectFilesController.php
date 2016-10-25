@@ -7,21 +7,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller;
 
-use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
-use VersionControl\GitControlBundle\Form\ProjectType;
 use VersionControl\GitControlBundle\Utility\GitCommands;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use VersionControl\GitControlBundle\Entity\UserProjects;
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 
 /**
@@ -29,99 +23,95 @@ use VersionControl\GitControlBundle\Annotation\ProjectAccess;
  *
  * @Route("/project/{id}/file")
  */
-class ProjectFilesController extends BaseProjectController{
-    
+class ProjectFilesController extends BaseProjectController
+{
     /**
-     *
-     * @var GitCommand 
+     * @var GitCommand
      */
     protected $gitFilesCommands;
-    
-    
+
     /**
-     * Show Git commit diff
+     * Show Git commit diff.
      *
      * @Route("s/{currentDir}",defaults={"$currentDir" = ""}, name="project_filelist")
      * @Method("GET")
      * @Template()
      * @ProjectAccess(grantType="VIEW")
      */
-    public function fileListAction($id,$currentDir = ''){
-
+    public function fileListAction($id, $currentDir = '')
+    {
         $dir = '';
-        if($currentDir){
+        if ($currentDir) {
             $dir = trim(urldecode($currentDir));
         }
         $files = $this->gitFilesCommands->listFiles($dir, $this->branchName);
-        
+
         $readme = '';
-        foreach($files as $file){
-            if(strtolower($file->getExtension()) == 'md' || strtolower($file->getExtension()) == 'markdown'){
+        foreach ($files as $file) {
+            if (strtolower($file->getExtension()) == 'md' || strtolower($file->getExtension()) == 'markdown') {
                 $readme = $this->gitFilesCommands->readFile($file);
                 break;
             }
         }
-   
+
         return array_merge($this->viewVariables, array(
             'files' => $files,
             'currentDir' => $dir,
-            'readme' => $readme
+            'readme' => $readme,
         ));
     }
-    
+
     /**
-     * Show Git commit diff
+     * Show Git commit diff.
      *
      * @Route("/{currentFile}",defaults={"$currentFile" = ""}, name="project_viewfile")
      * @Method("GET")
      * @Template()
      * @ProjectAccess(grantType="VIEW")
      */
-    public function viewFileAction($id,$currentFile = ''){
+    public function viewFileAction($id, $currentFile = '')
+    {
         $filePath = '';
         $dir = '';
         $currentDir = '';
-        if($currentFile){
+        if ($currentFile) {
             $filePath = trim(urldecode($currentFile));
 
-            try{
+            try {
                 $file = $this->gitFilesCommands->getFile($filePath, $this->branchName);
                 $fileContents = $this->gitFilesCommands->readFile($file);
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->get('session')->getFlashBag()->add('error', $e->getMessage());
             }
-            
+
             $pathParts = pathinfo($filePath);
             $dir = $pathParts['dirname'];
-            
+
             $pathParts = pathinfo($filePath);
-            $currentDir = ($pathParts['dirname'] !== '.')?$pathParts['dirname']:'';
+            $currentDir = ($pathParts['dirname'] !== '.') ? $pathParts['dirname'] : '';
         }
-        
-         return array_merge($this->viewVariables, array(
+
+        return array_merge($this->viewVariables, array(
             'currentDir' => $currentDir,
             'filePath' => $filePath,
             'fileContents' => $fileContents,
-            'file' => $file
+            'file' => $file,
         ));
     }
-    
-    
+
     /**
-     * 
-     * @param integer $id Project Id
+     * @param int $id Project Id
      */
-    public function initAction($id,$grantType = 'VIEW'){
-        
-        $redirectUrl = parent::initAction($id,$grantType);
-        if($redirectUrl){
+    public function initAction($id, $grantType = 'VIEW')
+    {
+        $redirectUrl = parent::initAction($id, $grantType);
+        if ($redirectUrl) {
             return $redirectUrl;
         }
-        
-        $this->gitFilesCommands = $this->gitCommands->command('files');
 
+        $this->gitFilesCommands = $this->gitCommands->command('files');
     }
-    
+
     /**
      * Adds File to .gitignore and remove file git index.
      *
@@ -130,27 +120,26 @@ class ProjectFilesController extends BaseProjectController{
      * @Template("VersionControlGitControlBundle:ProjectFiles:fileList.html.twig")
      * @ProjectAccess(grantType="MASTER")
      */
-    public function ignoreAction($id,$filePath){
+    public function ignoreAction($id, $filePath)
+    {
         //$this->initAction($id,'MASTER');
         $params = array('id' => $id);
-        
+
         $filePath = trim(urldecode($filePath));
         $pathInfo = pathinfo($filePath);
 
-        if(trim($pathInfo['dirname']) && $pathInfo['dirname'] != '.'){
+        if (trim($pathInfo['dirname']) && $pathInfo['dirname'] != '.') {
             $currentDir = $pathInfo['dirname'];
             $params['currentDir'] = $currentDir.'/';
         }
-        
-        try{
+
+        try {
             $response = $this->gitFilesCommands->ignoreFile($filePath, $this->branchName);
             $this->get('session')->getFlashBag()->add('notice', $response);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->get('session')->getFlashBag()->add('error', $e->getMessage());
         }
-            
+
         return $this->redirect($this->generateUrl('project_filelist', $params));
     }
-      
 }
-

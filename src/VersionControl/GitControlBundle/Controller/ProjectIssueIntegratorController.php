@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -16,15 +17,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Project;
 use VersionControl\GitControlBundle\Entity\ProjectIssueIntegrator;
-use VersionControl\GitControlBundle\Form\ProjectIssueIntegratorType;
-
-use VersionControl\GithubIssueBundle\Entity\ProjectIssueIntegratorGithub;
-use VersionControl\GithubIssueBundle\Form\ProjectIssueIntegratorGithubType;
-
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
-
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
@@ -32,17 +25,19 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
  *
  * @Route("/project/{id}/issue-integrator")
  */
-class ProjectIssueIntegratorController extends BaseProjectController{
+class ProjectIssueIntegratorController extends BaseProjectController
+{
     //put your code here
 
     protected $projectGrantType = 'OWNER';
-    
+
     /**
-     * Allow access by ajax only request
-     * @var boolean 
+     * Allow access by ajax only request.
+     *
+     * @var bool
      */
     protected $ajaxOnly = false;
-    
+
     /**
      * Deletes a ProjectIssueIntegrator entity.
      *
@@ -52,7 +47,6 @@ class ProjectIssueIntegratorController extends BaseProjectController{
      */
     public function deleteAction(Request $request, $id, $integratorId)
     {
-        
         $form = $this->createDeleteForm($integratorId);
         $form->handleRequest($request);
 
@@ -64,15 +58,15 @@ class ProjectIssueIntegratorController extends BaseProjectController{
                 throw $this->createNotFoundException('Unable to find ProjectIssueIntegrator entity.');
             }
             $project = $issueIntegrator->getProject();
-            $this->checkProjectAuthorization($project,'OWNER');
-            
+            $this->checkProjectAuthorization($project, 'OWNER');
+
             $em->remove($issueIntegrator);
             $em->flush();
         }
 
         return $this->redirect($this->generateUrl('project_issue_integrator'));
     }
-    
+
     /**
      * Creates a form to delete a ProjectIssueIntegrator entity by id.
      *
@@ -90,24 +84,21 @@ class ProjectIssueIntegratorController extends BaseProjectController{
         ;
     }
 
-    
     /**
      * @Route("/", name="project_issue_integrator")
      * @Template()
      * @ProjectAccess(grantType="OWNER")
      */
-    public function indexAction($id){
-        
+    public function indexAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
 
         $issues = array();
-        $issueIntegrator= $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
+        $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
 
         return array_merge($this->viewVariables, array(
             'issues' => $issues,
-            'issueIntegrator' => $issueIntegrator
+            'issueIntegrator' => $issueIntegrator,
         ));
-        
     }
-    
 }

@@ -7,17 +7,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Security\Authentication;
 
 use HWI\Bundle\OAuthBundle\OAuth\Response\UserResponseInterface;
 use HWI\Bundle\OAuthBundle\Security\Core\User\FOSUBUserProvider as BaseClass;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-
 class FOSVersionUserProvider extends BaseClass
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function connect(UserInterface $user, UserResponseInterface $response)
     {
@@ -28,7 +28,7 @@ class FOSVersionUserProvider extends BaseClass
         $setter = 'set'.ucfirst($service);
         $setter_id = $setter.'Id';
         $setter_token = $setter.'AccessToken';
-        
+
         //we "disconnect" previously connected users
         if (null !== $previousUser = $this->userManager->findUserBy(array($property => $username))) {
             $previousUser->$setter_id(null);
@@ -65,17 +65,18 @@ class FOSVersionUserProvider extends BaseClass
             $user->setPassword($username);
             $user->setEnabled(true);
             $this->userManager->updateUser($user);
+
             return $user;
         }
-        
+
         //if user exists - go with the HWIOAuth way
         $user = parent::loadUserByOAuthUserResponse($response);
-        
+
         //update access token
         $serviceName = $response->getResourceOwner()->getName();
-        $setter = 'set' . ucfirst($serviceName) . 'AccessToken'; 
+        $setter = 'set'.ucfirst($serviceName).'AccessToken';
         $user->$setter($response->getAccessToken());
-        
+
         return $user;
     }
 }

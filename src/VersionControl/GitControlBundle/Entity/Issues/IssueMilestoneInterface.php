@@ -7,114 +7,94 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity\Issues;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * IssueMilestone
- *
- * 
+ * IssueMilestone.
  */
 interface IssueMilestoneInterface
 {
-    
-    
-
-    
-
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
     public function getTitle();
 
-
-
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
     public function getDescription();
 
-
-
     /**
-     * Get state
+     * Get state.
      *
      * @return string
      */
     public function getState();
 
-
-
     /**
-     * Get dueOn
+     * Get dueOn.
      *
      * @return \DateTime
      */
     public function getDueOn();
 
-
-
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
     public function getCreatedAt();
 
-
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
     public function getUpdatedAt();
 
-
     /**
-     * Get closedAt
+     * Get closedAt.
      *
      * @return \DateTime
      */
     public function getClosedAt();
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId();
 
-
     /**
-     * Get verUser
+     * Get verUser.
      *
      * @return \VersionControl\GitControlBundle\Entity\Issues\IssueUserInterface
      */
     public function getUser();
-   
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
      * @return Issue
      */
     public function setClosed();
-    
+
     /**
-     * Set status
+     * Set status.
      *
      * @param string $status
      *
      * @return Issue
      */
     public function setOpen();
-    
+
     public function isClosed();
-    
 }

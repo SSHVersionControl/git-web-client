@@ -7,12 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use VersionControl\GitControlBundle\Entity\Issues\IssueCommentInteface;
+
 /**
- * IssueComment
+ * IssueComment.
  *
  * @ORM\Table(name="issue_comment", indexes={@ORM\Index(name="fk_issue_comment_ver_user1_idx", columns={"ver_user_id"})})
  * @ORM\Entity
@@ -42,7 +44,7 @@ class IssueComment implements IssueCommentInteface
     private $updatedAt;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -59,7 +61,7 @@ class IssueComment implements IssueCommentInteface
      * })
      */
     private $verUser;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\Issue
      *
@@ -70,14 +72,13 @@ class IssueComment implements IssueCommentInteface
      */
     private $issue;
 
-
-
-    public function __construct() {
+    public function __construct()
+    {
         $this->setCreatedAt(new \DateTime());
     }
 
     /**
-     * Set comment
+     * Set comment.
      *
      * @param string $comment
      *
@@ -91,7 +92,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get comment
+     * Get comment.
      *
      * @return string
      */
@@ -101,7 +102,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -115,7 +116,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -125,7 +126,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param \DateTime $updatedAt
      *
@@ -139,7 +140,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -149,9 +150,9 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -159,7 +160,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Set verUser
+     * Set verUser.
      *
      * @param \VersionControl\GitControlBundle\Entity\User\User $verUser
      *
@@ -173,7 +174,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get verUser
+     * Get verUser.
      *
      * @return \VersionControl\GitControlBundle\Entity\User\User
      */
@@ -181,9 +182,9 @@ class IssueComment implements IssueCommentInteface
     {
         return $this->verUser;
     }
-    
+
     /**
-     * Get User
+     * Get User.
      *
      * @return \VersionControl\GitControlBundle\Entity\Issues\IssueUserInterface
      */
@@ -191,37 +192,39 @@ class IssueComment implements IssueCommentInteface
     {
         return $this->verUser;
     }
-    
+
     /**
-     * Sets issue
+     * Sets issue.
+     *
      * @param \VersionControl\GitControlBundle\Entity\Issue $issue
+     *
      * @return \VersionControl\GitControlBundle\Entity\IssueComment
      */
-    public function setIssue(\VersionControl\GitControlBundle\Entity\Issues\IssueInterface $issue) {
+    public function setIssue(\VersionControl\GitControlBundle\Entity\Issues\IssueInterface $issue)
+    {
         $this->issue = $issue;
+
         return $this;
     }
-    
+
     /**
-     * Gets issue
+     * Gets issue.
+     *
      * @return \VersionControl\GitControlBundle\Entity\Issue
      */
-    public function getIssue() {
+    public function getIssue()
+    {
         return $this->issue;
     }
-    
+
     /**
      * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function updateModifiedDatetime() {
+    public function updateModifiedDatetime()
+    {
         // update the modified time
         //$this->setCreatedAt(new \DateTime());
         $this->setUpdatedAt(new \DateTime());
-
     }
-
-    
-
-
 }

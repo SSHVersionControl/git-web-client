@@ -7,16 +7,15 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Controller\Issues;
 
 use Symfony\Component\HttpFoundation\Request;
 use VersionControl\GitControlBundle\Controller\Base\BaseProjectController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\Issues\IssueLabelInterface;
-use VersionControl\GitControlBundle\Form\IssueLabelType;
 use VersionControl\GitControlBundle\Annotation\ProjectAccess;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
@@ -27,19 +26,16 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
  */
 class IssueLabelController extends BaseProjectController
 {
-
     /**
-     * 
      * @var IssueLabelRepositoryInterface
      */
     protected $issueLabelRepository;
-    
+
     /**
-     *
      * @var \VersionControl\GitControlBundle\Repository\Issues\IssueRepositoryManager;
      */
     protected $issueManager;
-    
+
     /**
      * Lists all IssueLabel entities.
      *
@@ -50,9 +46,8 @@ class IssueLabelController extends BaseProjectController
      */
     public function indexAction($id)
     {
-        
         $issueLabels = $this->issueLabelRepository->listLabels();
-        
+
         return array_merge($this->viewVariables, array(
             'entities' => $issueLabels,
         ));
@@ -65,9 +60,8 @@ class IssueLabelController extends BaseProjectController
      * @Template("VersionControlGitControlBundle:IssueLabel:new.html.twig")
      * @ProjectAccess(grantType="EDIT")
      */
-    public function createAction(Request $request,$id)
+    public function createAction(Request $request, $id)
     {
-        
         $issueLabel = $this->issueLabelRepository->newLabel();
         $form = $this->createCreateForm($issueLabel);
         $form->handleRequest($request);
@@ -75,16 +69,16 @@ class IssueLabelController extends BaseProjectController
         if ($form->isValid()) {
             $issueLabel = $this->issueLabelRepository->createLabel($issueLabel);
 
-            $this->get('session')->getFlashBag()->add('notice', "New Issue label Created ".$issueLabel->getId().".");
-            
-            $this->get('session')->getFlashBag()->add('info', "It may take a minute or two before you can see the new label in the list below");
-            
+            $this->get('session')->getFlashBag()->add('notice', 'New Issue label Created '.$issueLabel->getId().'.');
+
+            $this->get('session')->getFlashBag()->add('info', 'It may take a minute or two before you can see the new label in the list below');
+
             return $this->redirect($this->generateUrl('issuelabels', array('id' => $this->project->getId())));
         }
 
         return array_merge($this->viewVariables, array(
             'entity' => $issueLabel,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
 
@@ -118,17 +112,14 @@ class IssueLabelController extends BaseProjectController
      */
     public function newAction($id)
     {
-         
         $issueLabel = $this->issueLabelRepository->newLabel();
-        $form   = $this->createCreateForm($issueLabel);
+        $form = $this->createCreateForm($issueLabel);
 
         return array_merge($this->viewVariables, array(
             'entity' => $issueLabel,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
     }
-
-    
 
     /**
      * Displays a form to edit an existing IssueLabel entity.
@@ -138,9 +129,8 @@ class IssueLabelController extends BaseProjectController
      * @Template()
      * @ProjectAccess(grantType="EDIT")
      */
-    public function editAction($id,$labelId)
+    public function editAction($id, $labelId)
     {
-       
         $issueLabel = $this->issueLabelRepository->findLabelById($labelId);
 
         if (!$issueLabel) {
@@ -150,23 +140,23 @@ class IssueLabelController extends BaseProjectController
         $editForm = $this->createEditForm($issueLabel);
 
         return array_merge($this->viewVariables, array(
-            'entity'      => $issueLabel,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $issueLabel,
+            'edit_form' => $editForm->createView(),
         ));
     }
 
     /**
-    * Creates a form to edit a IssueLabel entity.
-    *
-    * @param IssueLabel $issue The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a IssueLabel entity.
+     *
+     * @param IssueLabel $issue The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(IssueLabelInterface $issue)
     {
         $issueLabelFormType = $this->issueManager->getIssueLabelFormType();
         $form = $this->createForm($issueLabelFormType, $issue, array(
-            'action' => $this->generateUrl('issuelabel_update', array('labelId' => $issue->getId(),'id' => $this->project->getId())),
+            'action' => $this->generateUrl('issuelabel_update', array('labelId' => $issue->getId(), 'id' => $this->project->getId())),
             'method' => 'PUT',
         ));
 
@@ -184,7 +174,6 @@ class IssueLabelController extends BaseProjectController
      */
     public function updateAction(Request $request, $id, $labelId)
     {
-       
         $issueLabel = $this->issueLabelRepository->findLabelById($labelId);
 
         if (!$issueLabel) {
@@ -195,18 +184,17 @@ class IssueLabelController extends BaseProjectController
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-
             $this->issueLabelRepository->updateLabel($issueLabel);
-            
+
             $this->get('session')->getFlashBag()->add('notice', "Issue label Update '".$issueLabel->getId()."'.");
             //$this->get('session')->getFlashBag()->add('info', "It may take a minute or two before you can see the updated label in the list below");
-            
+
             return $this->redirect($this->generateUrl('issuelabels', array('id' => $this->project->getId())));
         }
 
         return array_merge($this->viewVariables, array(
-            'entity'      => $issueLabel,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $issueLabel,
+            'edit_form' => $editForm->createView(),
         ));
     }
     /**
@@ -217,38 +205,35 @@ class IssueLabelController extends BaseProjectController
      */
     public function deleteAction($id, $labelId)
     {
-
-        if ($labelId){
-            $this->issueLabelRepository->deleteLabel($labelId); 
+        if ($labelId) {
+            $this->issueLabelRepository->deleteLabel($labelId);
         }
-        
+
         $this->get('session')->getFlashBag()->add('notice', "Issue label '".$labelId."' has been deleted");
 
-        return $this->redirect($this->generateUrl('issuelabels',array('id' => $this->project->getId())));
+        return $this->redirect($this->generateUrl('issuelabels', array('id' => $this->project->getId())));
     }
 
-    
     /**
-     * 
-     * @param integer $id
+     * @param int $id
      */
-    public function initAction($id,$grantType='VIEW'){
-        $redirectUrl = parent::initAction($id,$grantType);
-        if($redirectUrl){
+    public function initAction($id, $grantType = 'VIEW')
+    {
+        $redirectUrl = parent::initAction($id, $grantType);
+        if ($redirectUrl) {
             return $redirectUrl;
         }
-        
+
         $em = $this->getDoctrine()->getManager();
 
-        $issueIntegrator= $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
-        
+        $issueIntegrator = $em->getRepository('VersionControlGitControlBundle:ProjectIssueIntegrator')->findOneByProject($this->project);
+
         $this->issueManager = $this->get('version_control.issue_repository_manager');
-        if($issueIntegrator){
+        if ($issueIntegrator) {
             $this->issueManager->setIssueIntegrator($issueIntegrator);
-        }else{
+        } else {
             $this->issueManager->setProject($this->project);
         }
         $this->issueLabelRepository = $this->issueManager->getIssueLabelRepository();
-        
     }
 }

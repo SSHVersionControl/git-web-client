@@ -14,12 +14,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use VersionControl\GitControlBundle\Entity\IssueLabel;
 use VersionControl\GitControlBundle\Form\IssueLabelType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
 /**
@@ -30,7 +28,6 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
  */
 class IssueLabelAdminController extends Controller
 {
-
     /**
      * Lists all IssueLabel entities.
      *
@@ -41,10 +38,10 @@ class IssueLabelAdminController extends Controller
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $entities = $em->getRepository('VersionControlGitControlBundle:IssueLabel')->findBy(array('allProjects'=>1));
-        
+        $entities = $em->getRepository('VersionControlGitControlBundle:IssueLabel')->findBy(array('allProjects' => 1));
+
         return array(
-            'entities' => $entities
+            'entities' => $entities,
         );
     }
     /**
@@ -71,7 +68,7 @@ class IssueLabelAdminController extends Controller
 
         return array(
             'entity' => $issue,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
@@ -105,16 +102,14 @@ class IssueLabelAdminController extends Controller
     {
         $issueLabel = new IssueLabel();
 
-        $form   = $this->createCreateForm($issueLabel);
+        $form = $this->createCreateForm($issueLabel);
 
         return array(
             'entity' => $issueLabel,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
 
         );
     }
-
-    
 
     /**
      * Displays a form to edit an existing IssueLabel entity.
@@ -137,19 +132,19 @@ class IssueLabelAdminController extends Controller
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $issue,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $issue,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a IssueLabel entity.
-    *
-    * @param IssueLabel $issue The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * Creates a form to edit a IssueLabel entity.
+     *
+     * @param IssueLabel $issue The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
     private function createEditForm(IssueLabel $issue)
     {
         $form = $this->createForm(IssueLabelType::class, $issue, array(
@@ -161,7 +156,7 @@ class IssueLabelAdminController extends Controller
 
         return $form;
     }
-    
+
     /**
      * Edits an existing IssueLabel entity.
      *
@@ -190,8 +185,8 @@ class IssueLabelAdminController extends Controller
         }
 
         return array(
-            'entity'      => $issue,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $issue,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
@@ -225,6 +220,7 @@ class IssueLabelAdminController extends Controller
      * Creates a form to delete a IssueLabel entity by id.
      *
      * @param mixed $id The entity id
+     *
      * @return \Symfony\Component\Form\Form The form
      */
     private function createDeleteForm($id)
@@ -236,5 +232,4 @@ class IssueLabelAdminController extends Controller
             ->getForm()
         ;
     }
-    
 }

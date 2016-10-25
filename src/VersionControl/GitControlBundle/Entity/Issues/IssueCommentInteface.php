@@ -7,19 +7,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity\Issues;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
- * IssueComment
- *
+ * IssueComment.
  */
 interface IssueCommentInteface
 {
-    
     /**
-     * Set comment
+     * Set comment.
      *
      * @param string $comment
      *
@@ -28,14 +25,14 @@ interface IssueCommentInteface
     public function setComment($comment);
 
     /**
-     * Get comment
+     * Get comment.
      *
      * @return string
      */
     public function getComment();
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -44,14 +41,14 @@ interface IssueCommentInteface
     public function setCreatedAt($createdAt);
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
     public function getCreatedAt();
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param \DateTime $updatedAt
      *
@@ -60,30 +57,30 @@ interface IssueCommentInteface
     public function setUpdatedAt($updatedAt);
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
     public function getUpdatedAt();
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId();
 
-      
     /**
-     * Gets issue
+     * Gets issue.
+     *
      * @return \VersionControl\GitControlBundle\Entity\Issues\IssueInterface
      */
     public function getIssue();
-    
+
     /**
-     * Gets Createor of comment
+     * Gets Createor of comment.
+     *
      * @return \VersionControl\GitControlBundle\Entity\Issues\IssueUserInterface
      */
     public function getUser();
-
 }

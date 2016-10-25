@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
@@ -17,7 +18,7 @@ class ProjectIssueIntegratorGithubType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -27,16 +28,16 @@ class ProjectIssueIntegratorGithubType extends AbstractType
             ->add('apiToken')
         ;
     }
-    
-    /**
-     * @param OptionsResolverInterface $resolver
-     */
+
+   /**
+    * @param OptionsResolverInterface $resolver
+    */
    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults(array(
-            'data_class' => 'VersionControl\GithubIssueBundle\Entity\ProjectIssueIntegratorGithub'
+   {
+       $resolver->setDefaults(array(
+            'data_class' => 'VersionControl\GithubIssueBundle\Entity\ProjectIssueIntegratorGithub',
         ));
-    }
+   }
 
     /**
      * @return string

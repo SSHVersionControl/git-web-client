@@ -7,13 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitControlBundle\Entity;
 
 use VersionControl\GitControlBundle\Entity\Issues\IssueLabelInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * IssueLabel
+ * IssueLabel.
  *
  * @ORM\Table(name="issue_label")
  * @ORM\Entity(repositoryClass="VersionControl\GitControlBundle\Repository\IssueLabelRepository")
@@ -35,7 +36,7 @@ class IssueLabel implements IssueLabelInterface
     private $hexColor;
 
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
@@ -49,7 +50,7 @@ class IssueLabel implements IssueLabelInterface
      * @ORM\ManyToMany(targetEntity="VersionControl\GitControlBundle\Entity\Issue", mappedBy="issueLabel")
      */
     private $issue;
-    
+
     /**
      * @var \VersionControl\GitControlBundle\Entity\Project
      *
@@ -59,25 +60,25 @@ class IssueLabel implements IssueLabelInterface
      * })
      */
     private $project;
-    
+
     /**
-     * If set to true its available to all Projects
-     * @var boolean
+     * If set to true its available to all Projects.
+     *
+     * @var bool
      * @ORM\Column(name="all_projects", type="boolean", nullable=true)
      */
     private $allProjects = false;
 
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
         $this->issue = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-
     /**
-     * Set title
+     * Set title.
      *
      * @param string $title
      *
@@ -91,7 +92,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Get title
+     * Get title.
      *
      * @return string
      */
@@ -101,7 +102,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Set hexColor
+     * Set hexColor.
      *
      * @param string $hexColor
      *
@@ -115,7 +116,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Get hexColor
+     * Get hexColor.
      *
      * @return string
      */
@@ -125,9 +126,9 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -135,7 +136,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Add issue
+     * Add issue.
      *
      * @param \VersionControl\GitControlBundle\Entity\Issue $issue
      *
@@ -149,7 +150,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Remove issue
+     * Remove issue.
      *
      * @param \VersionControl\GitControlBundle\Entity\Issue $issue
      */
@@ -159,7 +160,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Get issue
+     * Get issue.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -167,9 +168,9 @@ class IssueLabel implements IssueLabelInterface
     {
         return $this->issue;
     }
-    
+
     /**
-     * Get issue
+     * Get issue.
      *
      * @return \Doctrine\Common\Collections\Collection
      */
@@ -177,9 +178,9 @@ class IssueLabel implements IssueLabelInterface
     {
         return $this->issue;
     }
-    
-        /**
-     * Set project
+
+    /**
+     * Set project.
      *
      * @param \VersionControl\GitControlBundle\Entity\Project $project
      *
@@ -193,7 +194,7 @@ class IssueLabel implements IssueLabelInterface
     }
 
     /**
-     * Get project
+     * Get project.
      *
      * @return \VersionControl\GitControlBundle\Entity\Project
      */
@@ -201,24 +202,24 @@ class IssueLabel implements IssueLabelInterface
     {
         return $this->project;
     }
-    
+
     /**
-     * 
-     * @return boolean
+     * @return bool
      */
-    public function getAllProjects() {
+    public function getAllProjects()
+    {
         return $this->allProjects;
     }
 
     /**
-     * 
-     * @param boolean $allProjects
+     * @param bool $allProjects
+     *
      * @return \VersionControl\GitControlBundle\Entity\IssueLabel
      */
-    public function setAllProjects($allProjects) {
+    public function setAllProjects($allProjects)
+    {
         $this->allProjects = $allProjects;
+
         return $this;
     }
-
-
 }

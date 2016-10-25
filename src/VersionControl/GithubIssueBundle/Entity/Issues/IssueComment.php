@@ -7,60 +7,55 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GithubIssueBundle\Entity\Issues;
 
 use VersionControl\GitControlBundle\Entity\Issues\IssueCommentInteface;
 
 /**
- * IssueComment
- *
+ * IssueComment.
  */
 class IssueComment implements IssueCommentInteface
 {
     /**
      * @var string
-     *
      */
     private $comment;
 
     /**
      * @var \DateTime
-     *
      */
     private $createdAt;
 
     /**
      * @var \DateTime
-     *
      */
     private $updatedAt;
 
     /**
-     * @var integer
-     *
+     * @var int
      */
     private $id;
 
-    
     /**
      * @var \VersionControl\GithubIssueBundle\Entity\Issues\Issue
-     *
      */
     private $issue;
 
     /**
-     * Github User
-     * @var VersionControl\GithubIssueBundle\Entity\User 
+     * Github User.
+     *
+     * @var VersionControl\GithubIssueBundle\Entity\User
      */
     private $user;
 
-
-    public function __construct() {
+    public function __construct()
+    {
         $this->setCreatedAt(new \DateTime());
     }
 
     /**
-     * Set comment
+     * Set comment.
      *
      * @param string $comment
      *
@@ -74,7 +69,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get comment
+     * Get comment.
      *
      * @return string
      */
@@ -84,7 +79,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Set createdAt
+     * Set createdAt.
      *
      * @param \DateTime $createdAt
      *
@@ -98,7 +93,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get createdAt
+     * Get createdAt.
      *
      * @return \DateTime
      */
@@ -108,7 +103,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Set updatedAt
+     * Set updatedAt.
      *
      * @param \DateTime $updatedAt
      *
@@ -122,7 +117,7 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get updatedAt
+     * Get updatedAt.
      *
      * @return \DateTime
      */
@@ -132,56 +127,59 @@ class IssueComment implements IssueCommentInteface
     }
 
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function setId($id)
     {
         $this->id = $id;
     }
-    
+
     /**
-     * Get id
+     * Get id.
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
         return $this->id;
     }
 
-
     /**
-     * Sets issue
+     * Sets issue.
+     *
      * @param \VersionControl\GitControlBundle\Entity\Issue $issue
+     *
      * @return \VersionControl\GitControlBundle\Entity\IssueComment
      */
-    public function setIssue(\VersionControl\GithubIssueBundle\Entity\Issues\Issue $issue) {
+    public function setIssue(\VersionControl\GithubIssueBundle\Entity\Issues\Issue $issue)
+    {
         $this->issue = $issue;
+
         return $this;
     }
-    
+
     /**
-     * Gets issue
+     * Gets issue.
+     *
      * @return \VersionControl\GitControlBundle\Entity\Issue
      */
-    public function getIssue() {
+    public function getIssue()
+    {
         return $this->issue;
     }
-    
-    public function setUser($user) {
+
+    public function setUser($user)
+    {
         $this->user = $user;
     }
-    
+
     /**
-     * 
      * @return type
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->user;
     }
-    
-
-
 }

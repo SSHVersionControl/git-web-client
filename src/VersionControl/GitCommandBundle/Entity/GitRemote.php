@@ -9,48 +9,55 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace VersionControl\GitCommandBundle\Entity;
 
-
 /**
- * Git Remote Respository Entity
+ * Git Remote Respository Entity.
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-class GitRemote {
-    
+class GitRemote
+{
     protected $shortName;
-    
+
     protected $longName;
-    
+
     protected $state;
-    
-    public function getShortName() {
+
+    public function getShortName()
+    {
         return $this->shortName;
     }
 
-    public function getLongName() {
+    public function getLongName()
+    {
         return $this->longName;
     }
 
-    public function getState() {
+    public function getState()
+    {
         return $this->state;
     }
 
-    public function setShortName($shortName) {
+    public function setShortName($shortName)
+    {
         $this->shortName = $shortName;
+
         return $this;
     }
 
-    public function setLongName($longName) {
+    public function setLongName($longName)
+    {
         $this->longName = $longName;
+
         return $this;
     }
 
-    public function setState($state) {
+    public function setState($state)
+    {
         $this->state = $state;
+
         return $this;
     }
-
-
 }

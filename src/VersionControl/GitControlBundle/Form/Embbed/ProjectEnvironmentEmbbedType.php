@@ -7,29 +7,31 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace VersionControl\GitControlBundle\Form\Embbed;
 
+namespace VersionControl\GitControlBundle\Form\Embbed;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 /**
- * Description of ProjectEnvironmentEmbbedType
+ * Description of ProjectEnvironmentEmbbedType.
  *
  * @author paul
  */
-class ProjectEnvironmentEmbbedType extends AbstractType{
-
+class ProjectEnvironmentEmbbedType extends AbstractType
+{
     //put your code here
-    public function getBlockPrefix(){
+    public function getBlockPrefix()
+    {
         return 'projectenvironmentembbed';
     }
-    
-    public function getParent(){
+
+    public function getParent()
+    {
         return CollectionType::class;
     }
-    
+
     /**
      * @param OptionsResolverInterface $resolver
      */
@@ -41,5 +43,4 @@ class ProjectEnvironmentEmbbedType extends AbstractType{
             //'cascade_validation' => true,
         ));
     }
-
 }
