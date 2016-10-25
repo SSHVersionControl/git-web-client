@@ -5,12 +5,15 @@ namespace VersionControl\GitControlBundle\Tests\Controller;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use Symfony\Component\Filesystem\Filesystem;
 
 class BaseControllerTestCase extends WebTestCase
 {
     protected $client = null;
     
     public $entityManager;
+    
+    protected $paths = null;
 
     public function setUp()
     {
@@ -101,5 +104,32 @@ class BaseControllerTestCase extends WebTestCase
             $val, $input->text(), $key.' failed'
         );
     }
+    
+    /**
+     * Creates a temp folder. Use to create folder to test git functions
+     * 
+     * @param string $folderName
+     */
+    protected function createTempFolder($folderName){
+        $tempDir = realpath(sys_get_temp_dir());
+        $tempFullPathName = tempnam($tempDir, $folderName);
+        $this->paths[$folderName] = $tempFullPathName;
+        @unlink($this->paths[$folderName]);
+        $fs = new Filesystem();
+        $fs->mkdir($this->paths[$folderName]);
+        
+        return $this->paths[$folderName];
+    }
      
+    /**
+     * Remove any paths created after test
+     */
+    protected function tearDown() {
+        if(is_array($this->paths)){
+            $fs = new Filesystem();
+            foreach($this->paths as $path){
+                $fs->remove($path);
+            }
+        }
+    }
 }

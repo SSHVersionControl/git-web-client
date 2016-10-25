@@ -34,35 +34,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class ProjectEnvironmentController extends BaseProjectController
 {
 
-    /**
-     * Lists all Project entities.
-     *
-     * @Route("s/", name="projectenvironment")
-     * @Method("GET")
-     * @Template()
-     * @ProjectAccess(grantType="OWNER")
-     */
-    public function indexAction(Request $request)
-    {
-        
-        $em = $this->getDoctrine()->getManager();
 
-        $keyword = $request->query->get('keyword', false);
-        
-        $query = $em->getRepository('VersionControlGitControlBundle:ProjectEnvironment')->findByProjectAndKeyword($keyword,true)->getQuery();
-        $paginator  = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $query,
-            $request->query->getInt('page', 1)/*page number*/,
-            15/*limit per page*/
-        );
-
-        return array(
-            'pagination' => $pagination,
-        );
-    }
-    
-    
     /**
      * Creates a new Project entity.
      *
@@ -145,7 +117,6 @@ class ProjectEnvironmentController extends BaseProjectController
      * Displays a form to create a new Project entity.
      *
      * @Route("/new/", name="projectenvironment_new")
-     * @ParamConverter("project", class="VersionControlGitControlBundle:Project")
      * @Method("GET")
      * @Template("VersionControlGitControlBundle:ProjectEnvironment:new.html.twig")
      * @ProjectAccess(grantType="OWNER")

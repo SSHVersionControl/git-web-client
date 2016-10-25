@@ -131,7 +131,7 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: git_folder_not_exists_validator }
         arguments: 
-            - '@version_control.ssh_process'
+            - '@version_control.sftp_process'
             
 
     version_control.listener.doctrine_event_listener:

@@ -65,7 +65,7 @@
                         {% if(project.projectEnvironment|length == 0) %}
                             <div class="alert alert-info text-center" role="alert">
                                    <p>There are no Project Environments yet for this project. So what are you waiting for, go create one</p>
-                                   <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary">Add a Project Environment</button>
+                                   <button data-toggle="modal" data-target="#newProjectEnvironment" class="btn btn-primary prevent-default">Add a Project Environment</button>
                             </div>
                         {% endif %}
                     </div>

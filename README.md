@@ -1,4 +1,4 @@
-Web GIT Version Control System [![Build Status](https://travis-ci.org/SSHVersionControl/git-web-client.svg?branch=master)](https://travis-ci.org/SSHVersionControl/git-web-client)
+Web GIT Version Control System [![Build Status](https://travis-ci.org/SSHVersionControl/git-web-client.svg?branch=master)](https://travis-ci.org/SSHVersionControl/git-web-client) [![Coverage Status](https://coveralls.io/repos/github/SSHVersionControl/git-web-client/badge.svg?branch=master)](https://coveralls.io/github/SSHVersionControl/git-web-client?branch=master)
 ========================
 
 Welcome to the Web GIT Version Control System. This systems allows you to commit,search history,
