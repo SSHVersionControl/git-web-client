@@ -126,7 +126,6 @@ class ProjectHistoryController extends BaseProjectController
         $gitLog = $this->gitLogCommand->execute()->getFirstResult();
 
         //Get git Diff
-        //$gitDiffs = $gitDiffCommand->getCommitDiff($commitHash);
         $files = $gitDiffCommand->getFilesInCommit($commitHash);
 
         return array_merge($this->viewVariables, array(

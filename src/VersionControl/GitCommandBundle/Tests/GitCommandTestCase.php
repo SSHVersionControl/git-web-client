@@ -91,7 +91,7 @@ class GitCommandTestCase extends \PHPUnit_Framework_TestCase
     {
         $fs = new Filesystem();
         $fs->remove($this->path);
-        //m::close();
+
     }
 
     /**
