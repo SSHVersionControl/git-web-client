@@ -10,7 +10,7 @@ use Symfony\Component\Filesystem\Filesystem;
  *
  * @author fr_user
  */
-class GitCommandTestCase extends \PHPUnit_Framework_TestCase
+class GitCommandTestCase extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var GitCommands
