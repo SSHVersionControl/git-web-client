@@ -43,7 +43,7 @@ class StatusHashValidator extends ConstraintValidator
         $currentStatusHash = $this->gitStatusCommand->getStatusHash();
 
         if ($currentStatusHash !== $statusHash) {
-            $this->context->buildViolation($constraint->getMessage())
+            $this->context->buildViolation($constraint->message)
             ->setParameter('{{statushash}}', $statusHash)
             ->setParameter('{{currentstatushash}}', $currentStatusHash)
             ->atPath('files')

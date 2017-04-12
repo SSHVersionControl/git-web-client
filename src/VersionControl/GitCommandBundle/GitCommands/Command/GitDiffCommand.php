@@ -123,5 +123,16 @@ class GitDiffCommand extends AbstractGitCommand
 
         return $previousCommitHash;
     }
+    
+    /**
+     * Get array of conflict file names
+     * @return array of conflict file names
+     */
+    public function getConflictFileNames(){
+        
+        $command = " git diff --name-only --diff-filter=U";
+        $response = $this->command->runCommand($command);
+        return$this->splitOnNewLine($response);
+    }
 
 }

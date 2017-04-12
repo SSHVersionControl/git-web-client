@@ -1,0 +1,47 @@
+<div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             <h4 class="modal-title">Fix Delete Conflict: {{filePath}}</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="small-box bg-aqua">
+                        <div class="inner">
+                           <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'delete' }) }}" class="non-ajax">
+                                <h3>Delete File</h3>
+                                <p>Lets delete this file. We don't need these changes.</p>
+                           </a>
+                        </div>
+                        <div class="icon">
+                          <i class="fa fa-file"></i>
+                        </div>
+                       
+                        <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'delete' }) }}" class="small-box-footer non-ajax">
+                            <i class="fa fa-file" aria-hidden="true"></i>
+                            Delete file
+                        </a>
+                    </div>
+                </div> 
+                <div class="col-sm-6">
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                           <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'add' }) }}" class="non-ajax">
+                                <h3>Keep File</h3>
+                                <p>Lets keep this file. We want these changes</p>
+                           </a>
+                        </div>
+                        <div class="icon">
+                          <i class="fa fa-file-o"></i>
+                        </div>
+                       
+                        <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'add' }) }}" class="small-box-footer non-ajax">
+                            <i class="fa fa-file-o fa-4" aria-hidden="true"></i>
+                            Keep File
+                        </a>
+                    </div>
+                </div> 
+            </div>  
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>

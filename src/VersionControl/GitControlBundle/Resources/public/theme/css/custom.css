@@ -521,3 +521,17 @@ a.environment-info-btn.active>.fa-angle-left {
     margin-top: 0;
 }
 
+.small-box h3{
+   color: #fff;
+   font-size: 28px;
+   font-weight: normal;
+}
+
+.small-box a p{
+    color: #fff;
+}
+
+.small-box .icon{
+    font-size: 80px;
+}
+

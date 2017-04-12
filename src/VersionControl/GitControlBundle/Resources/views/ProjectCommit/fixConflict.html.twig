@@ -1,0 +1,65 @@
+<div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+             <h4 class="modal-title">Fix Conflict: {{filePath}}</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="small-box bg-aqua">
+                        <div class="inner">
+                           <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'ours' }) }}" class="non-ajax">
+                                <h3>Use Our File</h3>
+                                <p>Use original working branch file</p>
+                           </a>
+                        </div>
+                        <div class="icon">
+                          <i class="fa fa-file"></i>
+                        </div>
+                       
+                        <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'ours' }) }}" class="small-box-footer non-ajax">
+                            <i class="fa fa-file" aria-hidden="true"></i>
+                            Use our file
+                        </a>
+                    </div>
+                </div> 
+                <div class="col-sm-4">
+                    <div class="small-box bg-green">
+                        <div class="inner">
+                           <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'theirs' }) }}" class="non-ajax">
+                                <h3>Use Their File</h3>
+                                <p>Use other branches file</p>
+                           </a>
+                        </div>
+                        <div class="icon">
+                          <i class="fa fa-file-o"></i>
+                        </div>
+                       
+                        <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'theirs' }) }}" class="small-box-footer non-ajax">
+                            <i class="fa fa-file-o fa-4" aria-hidden="true"></i>
+                            Use their file
+                        </a>
+                    </div>
+                </div> 
+                <div class="col-sm-4">
+                    <div class="small-box bg-orange">
+                        <div class="inner">
+                           <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'manual' }) }}" class="non-ajax">
+                                <h3>Manual Fix</h3>
+                                <p>Fixed with IDE</p>
+                           </a>
+                        </div>
+                        <div class="icon">
+                          <i class="fa fa-file-code-o"></i>
+                        </div>
+                       
+                        <a href="{{ path('project_fixed_conflict', { 'id': project.id,'filePath':filePath,'option': 'manual' }) }}" class="small-box-footer non-ajax">
+                            <i class="fa fa-file-code-o " aria-hidden="true"></i>
+                            Manual Fix
+                        </a>
+                    </div>
+                </div> 
+            </div>  
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>

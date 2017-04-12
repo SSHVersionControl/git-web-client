@@ -41,12 +41,12 @@ class GitFolderExistsValidator extends ConstraintValidator
             $this->sftpProcess->setGitEnviroment($projectEnvironment);
             try {
                 if ($this->sftpProcess->fileExists($gitPath.'/.git') === false) {
-                    $this->context->buildViolation($constraint->getMessage())
+                    $this->context->buildViolation($constraint->message)
                          ->atPath('path')
                          ->addViolation();
                 }
             } catch (SshLoginException $sshLoginException) {
-                $this->context->buildViolation($sshLoginException->getMessage())
+                $this->context->buildViolation($sshLoginException->message)
                         ->atPath('path')
                         ->addViolation();
             } catch (\Exception $e) {

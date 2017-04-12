@@ -67,10 +67,86 @@ class GitUndoCommand extends AbstractGitCommand
      *
      * @return string
      */
-    public function checkoutFile($file, $commitHash = 'HEAD')
+    public function checkoutFile($file, $commitHash = 'HEAD', $triggerGitAlterFilesEvent = true)
     {
         $response = $this->command->runCommand(sprintf('git checkout %s %s', escapeshellarg($commitHash), escapeshellarg($file)));
 
+        //Trigger file alter Event
+        if($triggerGitAlterFilesEvent === true){
+            $this->triggerGitAlterFilesEvent();
+        }
+
+        return $response;
+    }
+    
+    /**
+     * Check out a file from merge
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    public function checkoutTheirFile($file)
+    {
+        $this->command->runCommand(sprintf('git checkout --theirs %s', escapeshellarg($file)));
+        $this->command->runCommand(sprintf('git add %s', escapeshellarg($file)));
+        $response = 'Using their merged in file for "'.$file.'"';
+        
+        //Trigger file alter Event
+        $this->triggerGitAlterFilesEvent();
+
+        return $response;
+    }
+    
+    /**
+     * Check out a file from merge conflict
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    public function checkoutOurFile($file)
+    {
+        $this->command->runCommand(sprintf('git checkout --ours %s', escapeshellarg($file)));
+        $this->command->runCommand(sprintf('git add %s', escapeshellarg($file)));
+        $response = 'Using original file from current branch for "'.$file.'"';
+        
+        //Trigger file alter Event
+        $this->triggerGitAlterFilesEvent();
+
+        return $response;
+    }
+    
+    /**
+     * Check out a file from merge conflict
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    public function addFile($file)
+    {
+        $this->command->runCommand(sprintf('git add %s', escapeshellarg($file)));
+        $response = 'Manually fixed file "'.$file.'"';
+        
+        //Trigger file alter Event
+        $this->triggerGitAlterFilesEvent();
+
+        return $response;
+    }
+    
+    /**
+     * Check out a file from merge conflict
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    public function deleteFile($file)
+    {
+        $this->command->runCommand(sprintf('git rm %s', escapeshellarg($file)));
+        $response = 'Delete file "'.$file.'"';
+        
         //Trigger file alter Event
         $this->triggerGitAlterFilesEvent();
 

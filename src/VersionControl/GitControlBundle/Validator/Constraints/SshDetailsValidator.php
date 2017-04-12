@@ -50,11 +50,11 @@ class SshDetailsValidator extends ConstraintValidator
                         ->addViolation();
                 }
             } catch (SshLoginException $sshLoginException) {
-                $this->context->buildViolation($sshLoginException->getMessage())
+                $this->context->buildViolation($sshLoginException->message)
                         ->atPath('title')
                         ->addViolation();
             } catch (\Exception $ex) {
-                $this->context->buildViolation($constraint->getMessage())
+                $this->context->buildViolation($constraint->message)
 
                         ->atPath('title')
                         ->addViolation();
