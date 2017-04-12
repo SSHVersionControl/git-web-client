@@ -47,7 +47,7 @@ class GitFolderNotExistsValidator extends ConstraintValidator
                             ->addViolation();
                 }
             } catch (SshLoginException $sshLoginException) {
-                $this->context->buildViolation($sshLoginException->message)
+                $this->context->buildViolation($sshLoginException->getMessage())
                         ->atPath('path')
                         ->addViolation();
             } catch (Exception $ex) {
