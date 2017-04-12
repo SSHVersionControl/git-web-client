@@ -5,12 +5,16 @@ namespace VersionControl\GitCommandBundle\Tests;
 use VersionControl\GitCommandBundle\GitCommands\GitCommand;
 use Symfony\Component\Filesystem\Filesystem;
 
+if (!class_exists('\PHPUnit_Framework_TestCase') && class_exists('\PHPUnit\Framework\TestCase')) {
+  class_alias('\PHPUnit\Framework\TestCase', '\PHPUnit_Framework_TestCase');
+}
+
 /**
  * Description of GitCommandTestCase.
  *
  * @author fr_user
  */
-class GitCommandTestCase extends \PHPUnit\Framework\TestCase
+class GitCommandTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var GitCommands
