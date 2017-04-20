@@ -94,7 +94,7 @@ class GitTag{
         return $this->name;
     }
 
-    public function getTaggerDate(): \DateTime
+    public function getTaggerDate()
     {
         return $this->taggerDate;
     }
