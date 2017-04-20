@@ -58,12 +58,12 @@ class ProjectTagController extends BaseProjectController
      *
      * @Route("/create/", name="project_tag")
      * @Method("POST")
-     * @Template("VersionControlGitControlBundle:ProjectBranch:branches.html.twig")
+     * @Template("VersionControlGitControlBundle:ProjectTag:tags.html.twig")
      * @ProjectAccess(grantType="EDIT")
      */
     public function createTagAction(Request $request, $id)
     {
-        $form = $this->createNewBranchForm($this->project);
+        $form = $this->createNewTagForm($this->project);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
@@ -75,7 +75,7 @@ class ProjectTagController extends BaseProjectController
                 $response = $this->gitCommands->command('tag')->createAnnotatedTag($tagVersion, $tagMessage, $tagCommit);
                 $this->get('session')->getFlashBag()->add('notice', $response);
 
-                return $this->redirect($this->generateUrl('project_branches', array('id' => $id)));
+                return $this->redirect($this->generateUrl('project_tags', array('id' => $id)));
             } catch (\Exception $e) {
                 $this->get('session')->getFlashBag()->add('error', $e->getMessage());
             }

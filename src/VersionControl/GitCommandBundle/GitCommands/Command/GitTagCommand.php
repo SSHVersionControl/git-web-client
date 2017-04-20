@@ -57,7 +57,7 @@ class GitTagCommand extends AbstractGitCommand
     public function createAnnotatedTag($version, $message, $commitShortCode = false )
     {
         if ($this->validateTagName($version)) {
-            $command = sprintf('git tag -a %s -m "%s"', escapeshellarg($version), escapeshellarg($message));
+            $command = sprintf('git tag -a %s -m %s', escapeshellarg($version), escapeshellarg($message));
             if($commitShortCode){
                  $command .= ' '.escapeshellarg($commitShortCode);
             }
