@@ -1,0 +1,25 @@
+<div class="box-body">
+    {% if(remoteVersions|length == 0)%}
+        <div class="alert alert-warning" role="alert">
+            You do not have any remote servers set up for this repository.
+        </div>
+    {% else %}
+
+        {{ form_start(push_form,{ 'attr': { 'class': 'form ajaxify','data-masklabel': 'Pushing changes to remote repository...'}}) }}
+
+            {{ form_errors(push_form) }} 
+
+            <div class="form-group">
+                 {{ form_label(push_form.remote) }}
+                 {{ form_errors(push_form.remote) }}
+                 {{ form_widget(push_form.remote,{ 'attr': { 'class': 'form-control', 'placeholder':'Please select a remote repository'}}) }}
+            </div>
+
+             <div class="text-right">
+                 <button class="btn btn-default" data-dismiss="modal" >Cancel</button>
+                 {{ form_widget(push_form.push, { 'attr': {'class': 'btn btn-success submit'} }) }}
+             </div>
+         {{ form_end(push_form) }}
+     {% endif %}
+</div><!-- /.box-body -->
+        

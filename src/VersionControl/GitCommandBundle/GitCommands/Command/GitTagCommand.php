@@ -41,7 +41,9 @@ class GitTagCommand extends AbstractGitCommand
         foreach ($lines as $line){
             $tagEntities[] = new GitTag($line); 
         }
-
+        
+        rsort($tagEntities);
+        
         return $tagEntities;
     }
 
@@ -67,6 +69,21 @@ class GitTagCommand extends AbstractGitCommand
         }
 
         return $output;
+    }
+    
+    /**
+     * Push specified tag to the remote repository.
+     *
+     * @param remote $remote The remote server to push to eg origin
+     * @param string $tag The tag to push to the remote server eg v0.1.0
+     *
+     * @return string command response
+     */
+    public function pushTag($remote, $tag)
+    {
+        $command = sprintf('git push %s %s', escapeshellarg(trim($remote)), escapeshellarg(trim($tag)));
+
+        return $this->command->runCommand($command);
     }
 
     

@@ -2,6 +2,8 @@
 
 $(function(){
     
+    GlobalModal.initModal();
+    
     $('body').on('click','#commit-select-all',function(){
         $('.commit-file').prop( "checked", true );
     });

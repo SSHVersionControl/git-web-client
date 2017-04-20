@@ -48,38 +48,39 @@ $(function(){
     
     /* Ajaxify all Forms in container*/
     $contentContainter.on('submit', 'form', function (e) {
-
-        e.preventDefault();
-        var loadingText = 'Submitting Form...';
-        if($(this).data('masklabel')){
-            loadingText = $(this).data('masklabel');
-        }
-        
-        //hide modals if open
-        $(".modal.in").modal('hide');
-
-        $contentContainter.mask({label:loadingText});
-        //loadUrl($(this).attr('action'));
-        console.log(buttonClicked);
-        var formData = $(this).serializeArray();
-        formData.push( {'name':buttonClicked});
-        $.ajax({
-            type: $(this).attr('method'),
-            url: $(this).attr('action'),
-            data: formData,
-            dataType: "html",
-            success: function(data, textStatus, jqXHR) {
-                $contentContainter.html(data);
-                $contentContainter.unmask();
-                 console.log(textStatus);
-                 console.log(jqXHR);
-            },
-            error: function(e) 
-            {
-                $contentContainter.html(e);
-                $contentContainter.unmask();
+        if($(this).hasClass('ajaxify') == false){
+            e.preventDefault();
+            var loadingText = 'Submitting Form...';
+            if($(this).data('masklabel')){
+                loadingText = $(this).data('masklabel');
             }
-        });
+
+            //hide modals if open
+            $(".modal.in").modal('hide');
+
+            $contentContainter.mask({label:loadingText});
+            //loadUrl($(this).attr('action'));
+            console.log(buttonClicked);
+            var formData = $(this).serializeArray();
+            formData.push( {'name':buttonClicked});
+            $.ajax({
+                type: $(this).attr('method'),
+                url: $(this).attr('action'),
+                data: formData,
+                dataType: "html",
+                success: function(data, textStatus, jqXHR) {
+                    $contentContainter.html(data);
+                    $contentContainter.unmask();
+                     console.log(textStatus);
+                     console.log(jqXHR);
+                },
+                error: function(e) 
+                {
+                    $contentContainter.html(e);
+                    $contentContainter.unmask();
+                }
+            });
+        }
     });
     
     /**

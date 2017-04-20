@@ -51,7 +51,7 @@
 
                     <div class="list-group-item">
                         <div class="row">
-                            <div class="col-md-8 col-lg-1">
+                            <div class="col-md-8 col-lg-2">
                                 <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': tag.commitAbbrHash})}}" class="btn btn-link" >
                                     <strong class="str-truncated">
                                         <i class="fa fa-tag"></i> {{tag.name}}
@@ -66,13 +66,28 @@
                             </div>
                             <div class="col-md-8 col-lg-4">
                                 <div class="tag-subject">{{tag.subject}}</div>
-                            </div>   
-                            
-                            
-                            <div class="col-md-4 text-right">
+                            </div>  
+                            <div class="col-md-8 col-lg-1">
                                 <a href="{{ path('project_commitdiff', { 'id': project.id, 'commitHash': tag.commitAbbrHash})}}" class="btn btn-link" >
                                     {{tag.commitAbbrHash}}
                                 </a>
+                            </div> 
+                            
+                            <div class="col-md-4 text-right col-lg-2">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-success">Actions</button>
+                                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+                                      <span class="caret"></span>
+                                      <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                      <li><a href="{{ path('project_push_tag', { 'id': project.id, 'tag': tag.name})}}" data-form-modal="true" data-header="Push {{tag.name}} to remote" class="non-ajax">Push Tag</a></li>
+                                      <li class="divider"></li>
+                                      <li><a href="#">Create Branch here</a></li>
+                                      <li><a href="#">Delete Tag Locally</a></li>
+                                    </ul>
+                                  </div>
+                                
                             </div>
                         </div>
                         <div class="row">
@@ -118,5 +133,5 @@
 {% endblock %}
 
 {% block footerJS %}
-
+    
 {% endblock %} 

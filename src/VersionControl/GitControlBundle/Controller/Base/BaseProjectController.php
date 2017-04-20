@@ -17,6 +17,7 @@ use VersionControl\GitControlBundle\Entity\Project;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Base Project controller.
@@ -173,5 +174,35 @@ abstract class BaseProjectController extends Controller
         $this->projectGrantType = $projectGrantType;
 
         return $this;
+    }
+    
+    /**
+     * Handle response types.
+     *
+     * @param \Symfony\Component\HttpFoundation\Response|string|array $content
+     * @param string                                                  $responseType json|null
+     * @param bool                                                    $success
+     *
+     * @return \FlashCardBundle\Controller\Secure\JsonResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    protected function viewHandler($content, $responseType, $success)
+    {
+        if ($responseType === 'json') {
+            $data = ['success' => $success];
+            if (is_array($content)) {
+                $data = array_merge($data, $content);
+            } elseif ($content instanceof \Symfony\Component\HttpFoundation\Response) {
+                $data['form'] = $content->getContent();
+            } else {
+                $data['form'] = $content;
+            }
+
+            return new JsonResponse(
+                    $data,
+                    ($success ? 200 : 400)
+                );
+        } else {
+            return $content;
+        }
     }
 }
