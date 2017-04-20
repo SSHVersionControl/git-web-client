@@ -391,6 +391,9 @@ class GitCommand
             case 'branch':
                 $command = new Command\GitBranchCommand($this);
                 break;
+            case 'tag':
+                $command = new Command\GitTagCommand($this);
+                break;
             case 'commit':
                  $command = new Command\GitCommitCommand($this);
                  break;

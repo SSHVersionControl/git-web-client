@@ -535,3 +535,20 @@ a.environment-info-btn.active>.fa-angle-left {
     font-size: 80px;
 }
 
+ul.list-info{
+    font-size: 14px;
+    color: #b8c7ce;
+    display: inline-block;
+    padding: 6px 12px;
+    line-height: 1.42857143;
+    margin: 0;
+}
+
+.tag-subject{
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+}
+

@@ -64,6 +64,12 @@
           </li>
         </ul>
     </li>
+    <!-- Tags -->
+    <li class="{% if app.request.attributes.get('_route') in ['project_tags'] %}active{% endif %}">
+        <a href="{{ path('project_tags', { 'id': project.id }) }}">
+            <i class="fa fa-fw fa-tags"></i><span>Tags</span> 
+        </a>
+    </li>
     
     <li class="treeview {% if app.request.attributes.get('_route') in ['issues','issuemilestones','issuelabels'] %}active{% endif %}">
         <a href="#" class="non-ajax">
