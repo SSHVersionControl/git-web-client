@@ -1,4 +1,4 @@
-Web GIT Version Control System [![Build Status](https://travis-ci.org/SSHVersionControl/git-web-client.svg?branch=master)](https://travis-ci.org/SSHVersionControl/git-web-client) [![Coverage Status](https://coveralls.io/repos/github/SSHVersionControl/git-web-client/badge.svg?branch=master)](https://coveralls.io/github/SSHVersionControl/git-web-client?branch=master)
+Web GIT Version Control System [![Build Status](https://travis-ci.org/SSHVersionControl/git-web-client.svg?branch=master)](https://travis-ci.org/SSHVersionControl/git-web-client) [![Coverage Status](https://coveralls.io/repos/github/SSHVersionControl/git-web-client/badge.svg?branch=master)](https://coveralls.io/github/SSHVersionControl/git-web-client?branch=master) [![Latest Version](https://img.shields.io/github/release/SSHVersionControl/git-web-client.svg?style=flat-square)](https://github.com/cleentfaar/slack/releases) [![Total Downloads](https://img.shields.io/packagist/dt/sshversioncontrol/git-web-client.svg?style=flat-square)](https://packagist.org/packages/sshversioncontrol/git-web-client) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/SSHVersionControl/git-web-client/master/LICENSE)
 ========================
 
 Welcome to the Web GIT Version Control System. This systems allows you to commit,search history,
@@ -6,13 +6,6 @@ branch, push, pull, and many other action on git repositories, locate locally an
 SFTP/SSH access. This system has been build using full stack symfony2 framework. It comes with an inbuilt issue tracker, to help organise your bugs, but also integrates with
 Github or Gitlabs, issue tracker for better remote support.
 
-
-### Why Create another GIT Client
-I have been using GIT for a number of years now and love it, using it in IDEs, but mostly from the command line.
-I also use GIT to deploy changes to live servers. While using the command line was 
-fine I found I missed having a nicer visual display of the files. I wanted to be able to switch between the environments(dev, staging, live, etc) 
-and quickly see the different commits. I have not found an adequate git client that allows for SSH access to remote servers,
-and for this reason I start to build my own starting from a simple php script into a full web application.
 
 ### Note:
 **This application is still very much in alpha state, so expect some issues. If you get any issue try viewing the application
