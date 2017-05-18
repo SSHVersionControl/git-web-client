@@ -1,9 +1,9 @@
-Web GIT Version Control System [![Build Status](https://travis-ci.org/SSHVersionControl/git-web-client.svg?branch=master)](https://travis-ci.org/SSHVersionControl/git-web-client) [![Coverage Status](https://coveralls.io/repos/github/SSHVersionControl/git-web-client/badge.svg?branch=master)](https://coveralls.io/github/SSHVersionControl/git-web-client?branch=master) [![Latest Version](https://img.shields.io/github/release/SSHVersionControl/git-web-client.svg?style=flat-square)](https://github.com/SSHVersionControl/git-web-client/releases) [![Total Downloads](https://img.shields.io/packagist/dt/sshversioncontrol/git-web-client.svg?style=flat-square)](https://packagist.org/packages/sshversioncontrol/git-web-client) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/SSHVersionControl/git-web-client/master/LICENSE)
+GIT Web Interface Client [![Build Status](https://travis-ci.org/SSHVersionControl/git-web-client.svg?branch=master)](https://travis-ci.org/SSHVersionControl/git-web-client) [![Coverage Status](https://coveralls.io/repos/github/SSHVersionControl/git-web-client/badge.svg?branch=master)](https://coveralls.io/github/SSHVersionControl/git-web-client?branch=master) [![Latest Version](https://img.shields.io/github/release/SSHVersionControl/git-web-client.svg?style=flat-square)](https://github.com/SSHVersionControl/git-web-client/releases) [![Total Downloads](https://img.shields.io/packagist/dt/sshversioncontrol/git-web-client.svg?style=flat-square)](https://packagist.org/packages/sshversioncontrol/git-web-client) [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/SSHVersionControl/git-web-client/master/LICENSE)
 ========================
 
-Welcome to the Web GIT Version Control System. This systems allows you to commit,search history,
+Welcome to the GIT Web Interface Version Control Client. This systems allows you to commit,search history,
 branch, push, pull, and many other action on git repositories, locate locally and on remote servers with 
-SFTP/SSH access. This system has been build using full stack symfony2 framework. It comes with an inbuilt issue tracker, to help organise your bugs, but also integrates with
+SFTP/SSH access. This system has been build using full stack Symfony2 framework. It comes with an inbuilt issue tracker, to help organise your bugs, but also integrates with
 Github or Gitlabs, issue tracker for better remote support.
 
 
@@ -35,15 +35,24 @@ Create a new folder somewhere under your web server root directory ( eg /var/www
 ```
     $ php -d memory_limit=-1 composer.phar create-project -s dev sshversioncontrol/git-web-client 
 ```
+
+If composer is install globally then just run the command: 
+```
+    $ composer create-project -s dev sshversioncontrol/git-web-client 
+```
+
 Composer will install the project and all its dependencies under the current directory.
 
 ### Download an Archive File
 
-You can also download a zip of the Version Control
-System and unpack it somewhere under your web server root directory. You will still need to run composer to download other dependencies.
+You can also download a zip of the GIT Web Interface Client and unpack it somewhere under your web server root directory. You will still need to run composer to download other dependencies.
 
     $ curl -s http://getcomposer.org/installer | php
     $ php -d memory_limit=-1 composer.phar install
+    
+    or if composer is install globally
+
+    $ composer install
 
 
 You will be prompted to enter in the database configuration.
