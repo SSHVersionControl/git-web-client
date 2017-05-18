@@ -32,6 +32,12 @@
 
 {% block content -%}
 
+    {% if (is_granted('EDIT', project)) %}                  	
+        {% set hasEditAccess = 'true' %}
+    {% else %}	
+        {% set hasEditAccess = null  %}
+    {% endif %}
+    
     <div class="box box-primary">
         <div class="box-header with-border">
           <h3 class="panel-title"><i class="fa fa-clock-o fa-fw"></i> Current Branch: {{branchName|issueLink(project.id)|raw}}</h3>
@@ -99,10 +105,13 @@
                                         <small>Author: {{log.authorName}},  committed: {{log.authorRelative}}</small>
                                     </div>
                                     <div class="col-md-2">
+                                        {% if hasEditAccess is not null %}
                                         <a href="#options{{ loop.index }}" data-toggle="collapse" class="non-ajax">more options...</a>
+                                        {% endif %}
                                     </div>
                                 </div>
                                 <div id="options{{ loop.index }}" class="row collapse">
+                                    {% if hasEditAccess is not null %}
                                      <div class="col-md-offset-6 col-md-6 text-right">
                                         {% if(loop.first) %}
                                             <a href="{{ path('undocommit_soft', { 'id': project.id}) }}" class="btn btn-sm bg-green btn-flat" >
@@ -121,6 +130,7 @@
                                              Show files
                                          </a>
                                      </div>
+                                    {% endif %}
                                 </div>
                             </div>
 

@@ -30,6 +30,12 @@
 {% endblock %} 
 
 {% block content -%}
+     {% if (is_granted('EDIT', project)) %}                  	
+        {% set hasEditAccess = 'true' %}
+    {% else %}	
+        {% set hasEditAccess = null  %}
+    {% endif %}
+
     <div class="box box-primary">
         <div class="box-header with-border">
             <h3 class="box-title">
@@ -74,6 +80,7 @@
                             </div> 
                             
                             <div class="col-md-4 text-right col-lg-2">
+                                {% if hasEditAccess is not null %}
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-success">Actions</button>
                                     <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
@@ -87,7 +94,7 @@
                                       <li><a href="#">Delete Tag Locally</a></li>
                                     </ul>
                                   </div>
-                                
+                                {% endif %}
                             </div>
                         </div>
                         <div class="row">

@@ -29,7 +29,11 @@
         {% if (section) %}
             var defaultPage = "{{ section }}";
         {% else %}
+            {% if (is_granted('EDIT', project)) %}
             var defaultPage = "{{ path('project_commitlist', { 'id': project.id }) }}"; 
+            {% else %}
+                var defaultPage = "{{ path('project_filelist', { 'id': project.id }) }}";
+            {% endif %}   
         {% endif %}
 
      </script>
