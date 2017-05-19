@@ -12,7 +12,7 @@
 namespace VersionControl\GitCommandBundle\GitCommands\Exception;
 
 /**
- * InvalidArgumentException.
+ * InvalidDirectoryException.
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */

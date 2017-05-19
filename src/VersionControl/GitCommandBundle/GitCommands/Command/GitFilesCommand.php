@@ -89,6 +89,7 @@ class GitFilesCommand extends AbstractGitCommand
 
             $fileInfo = $newFileInfo;
         }
+        
 
         return $fileInfo;
     }
