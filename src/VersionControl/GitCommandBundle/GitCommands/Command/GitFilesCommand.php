@@ -65,7 +65,7 @@ class GitFilesCommand extends AbstractGitCommand
         $fileInfo = null;
 
         if ($this->validPathStr($path) === false) {
-            throw new \Exception('Directory path is not valid. Possible security issue.');
+            throw new \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidDirectoryException('Directory path is not valid. Possible security issue.');
         }
 
         $basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
@@ -146,7 +146,7 @@ class GitFilesCommand extends AbstractGitCommand
     public function getFilesInDirectory($dir)
     {
         if ($this->validPathStr($dir) === false) {
-            throw new \Exception('Directory path is not valid. Possible security issue.');
+            throw new \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidDirectoryException('Directory path is not valid. Possible security issue.');
         }
 
         $files = array();
@@ -271,42 +271,15 @@ class GitFilesCommand extends AbstractGitCommand
      */
     public function getLog($count = 20, $branch = 'master', $fileName = false)
     {
-        $logs = array();
-        $logData = '';
-        try {
-            //$logData = $this->command->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -'.intval($count).' '.$branch);
-            $command = 'git --no-pager log -m "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' ';
-            if ($branch && $branch != '(No Branch)') {
-                $command .= escapeshellarg(trim($branch)).' ';
-            } else {
-                $command .= '-- ';
-            }
-            if ($fileName !== false) {
-                $command .= ' -- '.escapeshellarg($fileName);
-            } else {
-                $command .= ' --';
-            }
-            $logData = $this->command->runCommand($command);
-        } catch (RunGitCommandException $e) {
-            if ($this->getObjectCount() == 0) {
-                return $logs;
-            } else {
-                throw new RunGitCommandException('Error in get log Command:'.$e->getMessage());
-                //Throw exception
-            }
-        }
+        
+        $gitLogCommand = $this->command->command('log');
+        
+        $gitLogCommand->setLogCount($count);
+        $gitLogCommand->setBranch($branch);
+        $gitLogCommand->setPath($fileName);
+        
+        return $gitLogCommand->execute()->getResults();
 
-        $lines = $this->splitOnNewLine($logData);
-
-        if (is_array($lines) && count($lines) > 0) {
-            foreach ($lines as $line) {
-                if (trim($line)) {
-                    $logs[] = new GitLog($line);
-                }
-            }
-        }
-
-        return $logs;
     }
 
     /**
