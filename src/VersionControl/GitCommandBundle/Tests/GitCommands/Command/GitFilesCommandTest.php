@@ -87,7 +87,133 @@ class GitFilesCommandTest extends GitCommandTestCase
         //$this->assertContains("Directory path is not valid", trim($errorMessage), 'Invalid Directory error:'.$errorMessage);
     }
     
+    /**
+     * Test Read File
+     */
+    public function testReadFile(){
+        $file = $this->gitCommands->command('files')->getFile('MoreFiles/test2');
+        $fileContent = $this->gitCommands->command('files')->readFile($file);
+        $this->assertContains("Test Of file in MoreFiles folder", trim($fileContent), 'File content did not match:'.$fileContent);
+        
+    }
     
+    /**
+     * Test malicious file paths
+     */
+    public function testValidPathStr(){
+        
+        $filesCommand = $this->gitCommands->command('files');
+        $this->assertTrue($filesCommand->ValidPathStr('MoreFiles/test2'), 'Path "MoreFiles/test2" should be valid');
+        $this->assertFalse($filesCommand->ValidPathStr('/MoreFiles/test2'), 'Path "/MoreFiles/test2" should be valid');
+        $this->assertFalse($filesCommand->ValidPathStr('.git/config'), 'Path ".git/config" should be valid');
+        $this->assertFalse($filesCommand->ValidPathStr('/'), 'Path "/" should be valid');
+        $this->assertFalse($filesCommand->ValidPathStr('/../'), 'Path "/../" should be valid');
+        $this->assertFalse($filesCommand->ValidPathStr('//test'), 'Path "//test" should be valid');
+        $this->assertFalse($filesCommand->ValidPathStr('\test'), 'Path "\test" should be valid');
+        
+        $this->assertTrue($filesCommand->ValidPathStr('test/test/Ссылка (fce).xml'), 'Path "test/test/Ссылка (fce).xml" should be valid');
 
+    }
+    
+    public function testIsFileIgnored()
+    {
+        $filesCommand = $this->gitCommands->command('files');
+        $this->addFile('ignoretest',null,'Git should Ignore');
+        $this->addFile('.gitignore',null,'ignoretest');
+        
+        $this->assertTrue($filesCommand->isFileIgnored('ignoretest'),'File ignoretest should be ignored');
+        
+        $this->updateFile('.gitignore',null,'test');
+        $this->assertFalse($filesCommand->isFileIgnored('test'),'File test is not ignored because it is commited already');
+        
+        $this->assertFalse($filesCommand->isFileIgnored('notest'),'File does not exist');
+        
+        $this->assertFalse($filesCommand->isFileIgnored('MoreFiles/test2'),'File exists and should not be ignored');
+    }
+    
+    public function testIsFileTracked()
+    {
+        $filesCommand = $this->gitCommands->command('files');
+        $this->addFile('ignoretest',null,'Git should Ignore');
+        $this->addFile('.gitignore',null,'ignoretest');
+        
+        $this->assertFalse($filesCommand->isFileTracked('ignoretest'),'File ignoretest should be ignored');
+        
+        $this->updateFile('.gitignore',null,'test');
+        $this->assertTrue($filesCommand->isFileTracked('test'),'File test is not ignored because it is commited already');
+        
+        $this->assertFalse($filesCommand->isFileTracked('notest'),'File does not exist');
+        
+        $this->assertTrue($filesCommand->isFileTracked('MoreFiles/test2'),'File exists and should not be ignored');
+    }
+    
+    public function testIgnoreFile()
+    {
+        $filesCommand = $this->gitCommands->command('files');
+        $this->addFile('ignoretest',null,'Git should Ignore');
+        
+        $response = $filesCommand->ignoreFile('ignoretest');
+        
+        $this->assertEquals('File added to .gitignore',$response);
+        
+        $message = '';
+        try{
+            $filesCommand->ignoreFile('test');
+        }catch(\VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException $e){
+            $message = $e->getMessage();
+        }
+        
+        $this->assertEquals('File path is been tracked. Please untrack file first',$message);
+        
+        try{
+             $filesCommand->ignoreFile('testFileDoesNotExist');
+        }catch(\VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException $e){
+            $message = $e->getMessage();
+        }
+        
+        $this->assertEquals('File path was not valid. Please check that the file exists.',$message);
+    }
+    
+    
+    public function testUnTrackFile()
+    {
+        $filesCommand = $this->gitCommands->command('files');
+        
+        //$this->assertTrue($filesCommand->isFileTracked('test'),'Test that test file is tracked');
+        
+        //Some files are not commits so an exception will be thrown
+        $message = '';
+        try{
+            $filesCommand->unTrackFile('test');
+        }catch(\VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException $e){
+            $message = $e->getMessage();
+        }
+        $this->assertEquals('Please commit all files first',$message);
+        
+        //Commit all files
+        $this->gitCommands->command('commit')->stageAll();
+        $this->gitCommands->command('commit')->commit('second commit', 'Paul Schweppe <paulschweppe@gmail.com>');
+        
+        //Untrack file should now work
+        $response2 = $filesCommand->unTrackFile('test');
+        $this->assertContains('Please commit to complete the removal',$response2);
+        
+        //Add test to .gitignore
+        $this->updateFile('.gitignore',null,'test');
+        
+        //Commit change to untracked file
+        //$this->command->runCommand('git add .');
+        //$this->gitCommands->command('commit')->stageAll();
+        //$this->gitCommands->command('commit')->commit('Remove file from git index', 'Paul Schweppe <paulschweppe@gmail.com>');
+        
+        //Test that file is no longer tracked
+        $this->assertFalse($filesCommand->isFileTracked('test'),'Test that test file is no longer tracked');
+
+        
+        
+        
+    }
+    
+    
 
 }

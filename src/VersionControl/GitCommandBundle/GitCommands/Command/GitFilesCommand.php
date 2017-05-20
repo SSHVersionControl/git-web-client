@@ -192,7 +192,12 @@ class GitFilesCommand extends AbstractGitCommand
         return $files;
     }
 
-    public function readFile($file)
+    /**
+     * Read Git File
+     * @param \VersionControl\GitCommandBundle\Entity\FileInfoInterface $file
+     * @return string file contents
+     */
+    public function readFile(\VersionControl\GitCommandBundle\Entity\FileInfoInterface $file)
     {
         //$basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
         $fileContents = '';
@@ -223,7 +228,8 @@ class GitFilesCommand extends AbstractGitCommand
      */
     public function validPathStr($theFile)
     {
-        if (strpos($theFile, '//') === false && strpos($theFile, '\\') === false && !preg_match('#(?:^\\.\\.|/\\.\\./|[[:cntrl:]])#u', $theFile)) {
+        if (strpos($theFile, '//') === false && strpos($theFile, '\\') === false && strpos($theFile, '/') !== 0 && strpos($theFile, '\\') !== 0 && preg_match('#(?:^\\.\\.|/\\.\\./|.git|[[:cntrl:]])#u', $theFile) === 0) 
+        {
             return true;
         }
 
@@ -326,25 +332,70 @@ class GitFilesCommand extends AbstractGitCommand
     public function isFileTracked($filePath)
     {
         $response = $this->command->runCommand(sprintf('git ls-files %s', escapeshellarg($filePath)));
-
-        return $response ? true : false;
+        
+        return trim($response) === '' ? false : true;
     }
 
+    /**
+     * Ignore a file by adding to gitignore
+     * @param string $filePath
+     * @return string
+     * @throws \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException
+     * @throws \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException
+     */
     public function ignoreFile($filePath)
     {
         $response = '';
         if ($this->fileExists($filePath)) {
-            if ($this->filePathIsIgnored($filePath) === false) {
+            
+            if($this->isFileTracked($filePath)){
+                throw new \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException('File path is been tracked. Please untrack file first');
+            }
+            
+            if($this->isFileIgnored($filePath) === false){
                 $response = $this->addToGitIgnore($filePath);
-            } else {
-                $response = "File in .gitignore already.\n";
+            }else {
+                throw new \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException('File path is already ignored');
             }
 
-            $response .= $this->command->runCommand(sprintf('git rm --cached %s', escapeshellarg($filePath)));
-
-            $response .= "\n Please commit to complete the removal of this file from git index";
         } else {
-            throw new \Exception('File path was not valid. Please check that the file exists.');
+            throw new \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException('File path was not valid. Please check that the file exists.');
+        }
+
+        return $response;
+    }
+    
+    /**
+     * Removes file path from git index
+     * 
+     * Update your .gitignore file – for instance, add a folder you don't want to track to .gitignore .
+     * git rm -r --cached . – Remove all tracked files, including wanted and unwanted. Your code will be safe as long as you have saved locally.
+     * git add . – All files will be added back in, except those in .gitignore .
+     * 
+     * @param string $filePath
+     * @return string
+     * @throws \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException
+     * @throws \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException
+     */
+    public function unTrackFile($filePath)
+    {
+        $response = '';
+        if ($this->fileExists($filePath)) {
+            
+            if($this->isFileTracked($filePath)){
+                $statusCount = $this->command->command('commit')->countStatus();
+                if($statusCount <= 0){
+                    $response .= $this->command->runCommand(sprintf('git rm --cached %s', escapeshellarg($filePath)));
+                    $response .= "\n Please commit to complete the removal of this file from git index";
+                }else{
+                    throw new \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException('Please commit all files first');
+                }
+            }else{
+                throw new \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException('File path is not been tracked');
+            }
+
+        } else {
+            throw new \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException('File path was not valid. Please check that the file exists.');
         }
 
         return $response;
@@ -420,6 +471,6 @@ class GitFilesCommand extends AbstractGitCommand
             //create file
         }
 
-        return "File added to .gitignore\n";
+        return "File added to .gitignore";
     }
 }
