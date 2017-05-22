@@ -64,7 +64,7 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
         ],
         "compile": [
-            "git clone https://github.com/SSHVersionControl/test.git /app/gitdemo/test/"
+            "php app/console version:repo:create /app/gitdemo/"
         ]
         
     },
