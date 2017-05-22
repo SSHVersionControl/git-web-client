@@ -77,7 +77,11 @@ EOT
         $this->addFolder($path,'test');
         
         $path = rtrim($path,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'test';
+        
         $this->runLocalCommand($path, 'git init');
+        $this->runLocalCommand($path, 'git config user.email "paulschweppe@gmail.com"');
+        $this->runLocalCommand($path, 'git config user.name "Paul Schweppe"');
+            
         $this->addFile($path,'testfile.txt',null,'This is a file with content');
         $this->runLocalCommand($path,'git add -A');
         
