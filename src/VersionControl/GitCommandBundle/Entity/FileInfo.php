@@ -12,6 +12,8 @@
 
 namespace VersionControl\GitCommandBundle\Entity;
 
+use VersionControl\GitCommandBundle\Entity\FileInfoInterface;
+
 /**
  * Info on Local file including git log and path.
  *
@@ -19,7 +21,7 @@ namespace VersionControl\GitCommandBundle\Entity;
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-class FileInfo extends \SplFileInfo
+class FileInfo extends \SplFileInfo implements FileInfoInterface
 {
     /**
      * File full path to file.

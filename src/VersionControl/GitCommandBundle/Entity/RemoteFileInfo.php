@@ -12,12 +12,14 @@
 
 namespace VersionControl\GitCommandBundle\Entity;
 
+use VersionControl\GitCommandBundle\Entity\FileInfoInterface;
+
 /**
  * Remote File Info.
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-class RemoteFileInfo
+class RemoteFileInfo implements FileInfoInterface
 {
     /**
      * Absolute path to file.

@@ -65,7 +65,7 @@ class GitFilesCommand extends AbstractGitCommand
         $fileInfo = null;
 
         if ($this->validPathStr($path) === false) {
-            throw new \Exception('Directory path is not valid. Possible security issue.');
+            throw new \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidDirectoryException('Directory path is not valid. Possible security issue.');
         }
 
         $basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
@@ -89,6 +89,7 @@ class GitFilesCommand extends AbstractGitCommand
 
             $fileInfo = $newFileInfo;
         }
+        
 
         return $fileInfo;
     }
@@ -146,7 +147,7 @@ class GitFilesCommand extends AbstractGitCommand
     public function getFilesInDirectory($dir)
     {
         if ($this->validPathStr($dir) === false) {
-            throw new \Exception('Directory path is not valid. Possible security issue.');
+            throw new \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidDirectoryException('Directory path is not valid. Possible security issue.');
         }
 
         $files = array();
@@ -191,7 +192,12 @@ class GitFilesCommand extends AbstractGitCommand
         return $files;
     }
 
-    public function readFile($file)
+    /**
+     * Read Git File
+     * @param \VersionControl\GitCommandBundle\Entity\FileInfoInterface $file
+     * @return string file contents
+     */
+    public function readFile(\VersionControl\GitCommandBundle\Entity\FileInfoInterface $file)
     {
         //$basePath = $this->addEndingSlash($this->command->getGitEnvironment()->getPath());
         $fileContents = '';
@@ -222,7 +228,8 @@ class GitFilesCommand extends AbstractGitCommand
      */
     public function validPathStr($theFile)
     {
-        if (strpos($theFile, '//') === false && strpos($theFile, '\\') === false && !preg_match('#(?:^\\.\\.|/\\.\\./|[[:cntrl:]])#u', $theFile)) {
+        if (strpos($theFile, '//') === false && strpos($theFile, '\\') === false && strpos($theFile, '/') !== 0 && strpos($theFile, '\\') !== 0 && preg_match('#(?:^\\.\\.|/\\.\\./|.git|[[:cntrl:]])#u', $theFile) === 0) 
+        {
             return true;
         }
 
@@ -271,42 +278,15 @@ class GitFilesCommand extends AbstractGitCommand
      */
     public function getLog($count = 20, $branch = 'master', $fileName = false)
     {
-        $logs = array();
-        $logData = '';
-        try {
-            //$logData = $this->command->runCommand('git --no-pager log --pretty=format:"%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s" -'.intval($count).' '.$branch);
-            $command = 'git --no-pager log -m "--pretty=format:\'%H | %h | %T | %t | %P | %p | %an | %ae | %ad | %ar | %cn | %ce | %cd | %cr | %s\'" -'.intval($count).' ';
-            if ($branch && $branch != '(No Branch)') {
-                $command .= escapeshellarg(trim($branch)).' ';
-            } else {
-                $command .= '-- ';
-            }
-            if ($fileName !== false) {
-                $command .= ' -- '.escapeshellarg($fileName);
-            } else {
-                $command .= ' --';
-            }
-            $logData = $this->command->runCommand($command);
-        } catch (RunGitCommandException $e) {
-            if ($this->getObjectCount() == 0) {
-                return $logs;
-            } else {
-                throw new RunGitCommandException('Error in get log Command:'.$e->getMessage());
-                //Throw exception
-            }
-        }
+        
+        $gitLogCommand = $this->command->command('log');
+        
+        $gitLogCommand->setLogCount($count);
+        $gitLogCommand->setBranch($branch);
+        $gitLogCommand->setPath($fileName);
+        
+        return $gitLogCommand->execute()->getResults();
 
-        $lines = $this->splitOnNewLine($logData);
-
-        if (is_array($lines) && count($lines) > 0) {
-            foreach ($lines as $line) {
-                if (trim($line)) {
-                    $logs[] = new GitLog($line);
-                }
-            }
-        }
-
-        return $logs;
     }
 
     /**
@@ -352,25 +332,70 @@ class GitFilesCommand extends AbstractGitCommand
     public function isFileTracked($filePath)
     {
         $response = $this->command->runCommand(sprintf('git ls-files %s', escapeshellarg($filePath)));
-
-        return $response ? true : false;
+        
+        return trim($response) === '' ? false : true;
     }
 
+    /**
+     * Ignore a file by adding to gitignore
+     * @param string $filePath
+     * @return string
+     * @throws \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException
+     * @throws \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException
+     */
     public function ignoreFile($filePath)
     {
         $response = '';
         if ($this->fileExists($filePath)) {
-            if ($this->filePathIsIgnored($filePath) === false) {
+            
+            if($this->isFileTracked($filePath)){
+                throw new \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException('File path is been tracked. Please untrack file first');
+            }
+            
+            if($this->isFileIgnored($filePath) === false){
                 $response = $this->addToGitIgnore($filePath);
-            } else {
-                $response = "File in .gitignore already.\n";
+            }else {
+                throw new \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException('File path is already ignored');
             }
 
-            $response .= $this->command->runCommand(sprintf('git rm --cached %s', escapeshellarg($filePath)));
-
-            $response .= "\n Please commit to complete the removal of this file from git index";
         } else {
-            throw new \Exception('File path was not valid. Please check that the file exists.');
+            throw new \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException('File path was not valid. Please check that the file exists.');
+        }
+
+        return $response;
+    }
+    
+    /**
+     * Removes file path from git index
+     * 
+     * Update your .gitignore file – for instance, add a folder you don't want to track to .gitignore .
+     * git rm -r --cached . – Remove all tracked files, including wanted and unwanted. Your code will be safe as long as you have saved locally.
+     * git add . – All files will be added back in, except those in .gitignore .
+     * 
+     * @param string $filePath
+     * @return string
+     * @throws \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException
+     * @throws \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException
+     */
+    public function unTrackFile($filePath)
+    {
+        $response = '';
+        if ($this->fileExists($filePath)) {
+            
+            if($this->isFileTracked($filePath)){
+                $statusCount = $this->command->command('commit')->countStatus();
+                if($statusCount <= 0){
+                    $response .= $this->command->runCommand(sprintf('git rm --cached %s', escapeshellarg($filePath)));
+                    $response .= "\n Please commit to complete the removal of this file from git index";
+                }else{
+                    throw new \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException('Please commit all files first');
+                }
+            }else{
+                throw new \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException('File path is not been tracked');
+            }
+
+        } else {
+            throw new \VersionControl\GitCommandBundle\GitCommands\Exception\InvalidFilePathException('File path was not valid. Please check that the file exists.');
         }
 
         return $response;
@@ -446,6 +471,6 @@ class GitFilesCommand extends AbstractGitCommand
             //create file
         }
 
-        return "File added to .gitignore\n";
+        return "File added to .gitignore";
     }
 }
