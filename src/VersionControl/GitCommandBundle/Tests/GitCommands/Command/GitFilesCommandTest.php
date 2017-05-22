@@ -174,44 +174,55 @@ class GitFilesCommandTest extends GitCommandTestCase
         $this->assertEquals('File path was not valid. Please check that the file exists.',$message);
     }
     
+    /**
+     * @expectedException \VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException
+     */
+    public function testUnTrackFileExceptionFromRepoNotCommitted()
+    {
+        // make your exception assertions
+        //$this->expectException(\VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException::class);
+        //$this->expectExceptionMessage('Please commit all files first');
+        
+        $filesCommand = $this->gitCommands->command('files');
+        $filesCommand->unTrackFile('test');
+        
+    }
     
     public function testUnTrackFile()
     {
         $filesCommand = $this->gitCommands->command('files');
-        
-        //$this->assertTrue($filesCommand->isFileTracked('test'),'Test that test file is tracked');
-        
-        //Some files are not commits so an exception will be thrown
-        $message = '';
-        try{
-            $filesCommand->unTrackFile('test');
-        }catch(\VersionControl\GitCommandBundle\GitCommands\Exception\FileStatusException $e){
-            $message = $e->getMessage();
-        }
-        $this->assertEquals('Please commit all files first',$message);
         
         //Commit all files
         $this->gitCommands->command('commit')->stageAll();
         $this->gitCommands->command('commit')->commit('second commit', 'Paul Schweppe <paulschweppe@gmail.com>');
         
         //Untrack file should now work
-        $response2 = $filesCommand->unTrackFile('test');
-        $this->assertContains('Please commit to complete the removal',$response2);
+        $response = $filesCommand->unTrackFile('test');
+        $this->assertContains('Please commit to complete the removal',$response);
+
+    }
+    
+    public function testFileNolongerTrackAfterUntrackFile()
+    {
+        $filesCommand = $this->gitCommands->command('files');
         
-        //Add test to .gitignore
-        $this->updateFile('.gitignore',null,'test');
+        //Commit all files
+        $this->gitCommands->command('commit')->stageAll();
+        $this->gitCommands->command('commit')->commit('second commit', 'Paul Schweppe <paulschweppe@gmail.com>');
+        
+        //Untrack file should now work
+        $filesCommand->unTrackFile('test');
+        
+        //Add test to .gitignore. Must happen before commit
+        $this->updateFile('.gitignore','test');
         
         //Commit change to untracked file
-        //$this->command->runCommand('git add .');
-        //$this->gitCommands->command('commit')->stageAll();
-        //$this->gitCommands->command('commit')->commit('Remove file from git index', 'Paul Schweppe <paulschweppe@gmail.com>');
+        $this->gitCommands->command('commit')->stageAll();
+        $this->gitCommands->command('commit')->commit('Remove file from git index', 'Paul Schweppe <paulschweppe@gmail.com>');
         
         //Test that file is no longer tracked
         $this->assertFalse($filesCommand->isFileTracked('test'),'Test that test file is no longer tracked');
 
-        
-        
-        
     }
     
     
