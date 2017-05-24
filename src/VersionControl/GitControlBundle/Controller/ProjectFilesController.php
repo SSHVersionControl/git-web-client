@@ -49,8 +49,13 @@ class ProjectFilesController extends BaseProjectController
         $readme = '';
         foreach ($files as $file) {
             if (strtolower($file->getExtension()) == 'md' || strtolower($file->getExtension()) == 'markdown') {
-                $readme = $this->gitFilesCommands->readFile($file);
-                break;
+                if(strtolower($file->getFilename()) === 'readme' ){
+                    $readme = $this->gitFilesCommands->readFile($file);
+                    break;
+                }else{
+                    //Get last md file
+                     $readme = $this->gitFilesCommands->readFile($file);
+                }
             }
         }
 

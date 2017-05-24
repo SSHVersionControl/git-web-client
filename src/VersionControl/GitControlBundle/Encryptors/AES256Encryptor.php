@@ -43,7 +43,7 @@ class AES256Encryptor implements EncryptorInterface
         }
 
         if (defined('PHP_MAJOR_VERSION') && PHP_MAJOR_VERSION >= 7) {
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES_256_ECB"));
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES-256-ECB"));
         
             return trim(base64_encode(openssl_encrypt ( 
                 $data , 
@@ -72,7 +72,7 @@ class AES256Encryptor implements EncryptorInterface
         }
 
         if (defined('PHP_MAJOR_VERSION') && PHP_MAJOR_VERSION >= 7) {
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES_256_ECB"));
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES-256-ECB"));
             
             return trim(openssl_decrypt ( 
                 base64_decode($data) , 
