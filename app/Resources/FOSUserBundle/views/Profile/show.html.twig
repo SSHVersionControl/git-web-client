@@ -1,5 +1,35 @@
 {% extends "FOSUserBundle::layout.html.twig" %}
 
 {% block fos_user_content %}
-{% include "FOSUserBundle:Profile:show_content.html.twig" %}
+    <div class="login-box">
+                <div class="login-logo">
+                  <b>User</b> Profile
+                </div>
+                <div class="box box-primary">
+                    
+                </div>
+                <!-- /.login-logo -->
+                <div class="login-box-body">
+                  {{ 'Username'|trans }}: {{ user.username }}<br />
+                  {{ 'Email'|trans }}: {{ user.email }}
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a href="{{ path('fos_user_change_password') }}" class="btn btn-info btn-block btn-flat"/>Change Password</a>
+                    </div>
+                    <div class="col-xs-6">
+                        <a href="{{ path('fos_user_profile_edit') }}" class="btn btn-primary btn-block btn-flat"/>Edit Profile</a>
+                    </div>
+                    <div class="col-xs-12">
+                        
+                    </div>
+          
+                    <div class="col-xs-12">
+                        <br/>
+                        <a href="{{ path('home') }}" class="btn btn-default btn-block btn-flat" title="Back to Projects"/>Cancel</a>
+                    </div>
+
+                </div>
+    </div>
+
 {% endblock fos_user_content %}

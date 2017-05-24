@@ -1,5 +1,16 @@
 {% extends "FOSUserBundle::layout.html.twig" %}
 
 {% block fos_user_content %}
-{% include "FOSUserBundle:Profile:edit_content.html.twig" %}
+    <div class="login-box">
+        <div class="login-logo">
+            <b>Edit</b> Profile
+        </div>
+        <div class="box box-primary">
+
+        </div>
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            {% include "FOSUserBundle:Profile:edit_content.html.twig" %}
+        </div>
+    </div>
 {% endblock fos_user_content %}
