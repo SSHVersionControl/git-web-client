@@ -36,7 +36,7 @@ class AES256Encryptor implements EncryptorInterface
     public function encrypt($data)
     {
         if (defined('PHP_MAJOR_VERSION') && PHP_MAJOR_VERSION >= 7) {
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES_256_ECB"));
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES-256-ECB"));
         
             return trim(base64_encode(openssl_encrypt ( 
                 $data , 
@@ -49,7 +49,6 @@ class AES256Encryptor implements EncryptorInterface
                                         MCRYPT_RIJNDAEL_256, $this->secretKey, $data, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND
                                         ))));
         }
-        
     }
 
     /**
@@ -62,7 +61,7 @@ class AES256Encryptor implements EncryptorInterface
     public function decrypt($data)
     {
         if (defined('PHP_MAJOR_VERSION') && PHP_MAJOR_VERSION >= 7) {
-            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES_256_ECB"));
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES-256-ECB"));
             
             return trim(openssl_decrypt ( 
                 base64_decode($data) , 

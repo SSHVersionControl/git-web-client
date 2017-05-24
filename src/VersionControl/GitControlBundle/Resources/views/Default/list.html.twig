@@ -59,7 +59,9 @@
                            <td><span class="label label-success">{{userProject.roles}}</label></td>
                            <td style="width:180px">
                                <a href="{{ path('project', { 'id': userProject.project.id }) }}" class="btn btn-primary btn-flat">Open</a>
-                               <a href="{{ path('project_edit', { 'id': userProject.project.id }) }}" class="btn btn-info btn-flat">Edit</a>
+                               {% if (is_granted('MASTER', userProject.project)) %}
+                                    <a href="{{ path('project_edit', { 'id': userProject.project.id }) }}" class="btn btn-info btn-flat">Edit</a>
+                               {% endif %}
                            </td>
                          </tr>
                        {% endfor %}

@@ -219,7 +219,7 @@ class GitCommand
      */
     protected function setGitPath($gitPath)
     {
-        $this->gitPath = rtrim(trim($gitPath), '/');
+        $this->gitPath = rtrim(trim($gitPath), DIRECTORY_SEPARATOR );
 
         return $this;
     }

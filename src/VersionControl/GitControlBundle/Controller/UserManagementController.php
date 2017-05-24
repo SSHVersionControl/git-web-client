@@ -46,7 +46,7 @@ class UserManagementController extends Controller
     }
 
     /**
-     * Creates a new Project entity.
+     * Creates a new user entity.
      *
      * @Route("/", name="usermanagement_create")
      * @Method("POST")

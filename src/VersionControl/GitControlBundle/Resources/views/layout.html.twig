@@ -149,7 +149,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> {{ app.user.username }} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
+                                <a href="{{ path('fos_user_profile_show') }}"><i class="fa fa-fw fa-user"></i> Profile</a>
                             </li>
                             {% if (is_granted('ROLE_ADMIN')) %} 
                                 <li>
