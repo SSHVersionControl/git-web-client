@@ -42,9 +42,20 @@ class AES256Encryptor implements EncryptorInterface
             return $data;
         }
 
-        return trim(base64_encode(mcrypt_encrypt(
+        if (defined('PHP_MAJOR_VERSION') && PHP_MAJOR_VERSION >= 7) {
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES_256_ECB"));
+        
+            return trim(base64_encode(openssl_encrypt ( 
+                $data , 
+                "AES-256-ECB", 
+                $this->secretKey,
+                0,
+                $iv)));
+        }else{
+            return trim(base64_encode(mcrypt_encrypt(
                                         MCRYPT_RIJNDAEL_256, $this->secretKey, $data, MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND
                                         ))));
+        }
     }
 
     /**
@@ -60,11 +71,22 @@ class AES256Encryptor implements EncryptorInterface
             return $data;
         }
 
-        return trim(mcrypt_decrypt(
+        if (defined('PHP_MAJOR_VERSION') && PHP_MAJOR_VERSION >= 7) {
+            $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length("AES_256_ECB"));
+            
+            return trim(openssl_decrypt ( 
+                base64_decode($data) , 
+                "AES-256-ECB", 
+                $this->secretKey,
+                0,
+                $iv));
+        }else{
+            return trim(mcrypt_decrypt(
                                 MCRYPT_RIJNDAEL_256, $this->secretKey, base64_decode($data), MCRYPT_MODE_ECB, mcrypt_create_iv(
                                         mcrypt_get_iv_size(
                                                 MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB
                                         ), MCRYPT_RAND
                                 )));
+        }
     }
 }
