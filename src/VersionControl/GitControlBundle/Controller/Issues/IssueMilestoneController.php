@@ -72,7 +72,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/", name="issuemilestone_create")
      * @Method("POST")
      * @Template("VersionControlGitControlBundle:Issues/IssueMilestone:new.html.twig")
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function createAction(Request $request, $id)
     {
@@ -120,7 +120,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/new/", name="issuemilestone_new")
      * @Method("GET")
      * @Template()
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function newAction($id)
     {
@@ -170,7 +170,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/edit/{milestoneId}", name="issuemilestone_edit")
      * @Method("GET")
      * @Template()
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function editAction($id, $milestoneId)
     {
@@ -215,7 +215,7 @@ class IssueMilestoneController extends BaseProjectController
      * @Route("/{milestoneId}", name="issuemilestone_update")
      * @Method("PUT")
      * @Template("VersionControlGitControlBundle:Issues/IssueMilestone:edit.html.twig")
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function updateAction(Request $request, $id, $milestoneId)
     {

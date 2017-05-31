@@ -127,7 +127,7 @@ class IssueLabelController extends BaseProjectController
      * @Route("/edit/{labelId}", name="issuelabel_edit")
      * @Method("GET")
      * @Template()
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function editAction($id, $labelId)
     {
@@ -170,7 +170,7 @@ class IssueLabelController extends BaseProjectController
      * @Route("/{labelId}", name="issuelabel_update")
      * @Method("PUT")
      * @Template("VersionControlGitControlBundle:IssueLabel:edit.html.twig")
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function updateAction(Request $request, $id, $labelId)
     {

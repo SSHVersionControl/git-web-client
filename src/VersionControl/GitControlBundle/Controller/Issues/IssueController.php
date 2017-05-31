@@ -110,7 +110,7 @@ class IssueController extends BaseProjectController
      * @Route("/", name="issue_create")
      * @Method("POST")
      * @Template("VersionControlGitControlBundle:Issues/Issue:new.html.twig")
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function createAction(Request $request, $id)
     {
@@ -159,7 +159,7 @@ class IssueController extends BaseProjectController
      * @Route("/new/", name="issue_new")
      * @Method("GET")
      * @Template()
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function newAction($id)
     {
@@ -209,7 +209,7 @@ class IssueController extends BaseProjectController
      * @Route("/edit/{issueId}", name="issue_edit")
      * @Method("GET")
      * @Template()
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function editAction($id, $issueId)
     {
@@ -251,7 +251,7 @@ class IssueController extends BaseProjectController
      * @Route("/{issueId}", name="issue_update")
      * @Method("PUT")
      * @Template("VersionControlGitControlBundle:Issues/Issue:edit.html.twig")
-     * @ProjectAccess(grantType="EDIT")
+     * @ProjectAccess(grantType="VIEW")
      */
     public function updateAction(Request $request, $id, $issueId)
     {
@@ -280,7 +280,7 @@ class IssueController extends BaseProjectController
      *
      * @Route("/", name="issue_delete")
      * @Method("DELETE")
-     * @ProjectAccess(grantType="OWNER")
+     * @ProjectAccess(grantType="EDIT")
      */
     public function deleteAction(Request $request, $id)
     {
