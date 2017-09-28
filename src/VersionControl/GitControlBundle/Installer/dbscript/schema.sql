@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `ver_user` (
   `password_requested_at` DATETIME NULL DEFAULT NULL,
   `roles` LONGTEXT CHARACTER SET 'utf8' NOT NULL,
   `credentials_expired` TINYINT(1) NOT NULL DEFAULT 0,
-  `credentials_expire_at` DATETIME NOT NULL DEFAULT 0,
+  `credentials_expire_at` DATETIME NULL DEFAULT NULL,
   `name` VARCHAR(255) NULL DEFAULT NULL,
   `github_id` VARCHAR(255) NULL,
   `github_access_token` VARCHAR(255) NULL,
