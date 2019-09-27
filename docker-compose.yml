@@ -1,0 +1,39 @@
+version: "3"
+services:
+  web:
+    build:
+      context: docker/nginx/dev
+    ports:
+      - "8082:80"
+    volumes:
+      - ./app/web:/var/www/app/web
+  php:
+    build:
+      context: .
+      dockerfile: docker/php/dev/Dockerfile.php.dev
+    volumes:
+      - ./app:/var/www/app:rw,cached
+    environment:
+      - APP_ENV=prod
+      - APP_SECRET=35b8c671e74bfc34aedbd178cc1faf51
+  mysql:
+      image: mariadb:10.3
+      environment:
+          - MYSQL_USER=vcs
+          - MYSQL_PASSWORD=vcs
+          - MYSQL_ROOT_PASSWORD=root
+          - MYSQL_DATABASE=versioncontrol
+      volumes:
+          - db-data:/var/lib/mysql:rw
+      restart: always
+      ports:
+          - "3308:3306"
+      expose:
+          - 3308
+
+  sshtest:
+      build:
+          context: .
+          dockerfile: docker/ssh-test/Dockerfile
+volumes:
+    db-data: {}

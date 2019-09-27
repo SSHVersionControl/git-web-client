@@ -9,7 +9,8 @@ php:
   - 7.1
 
 before_script: 
-  - cp app/config/parameters.yml.travis app/config/parameters.yml
+  - cp app/app/config/parameters.yml.travis app/app/config/parameters.yml
+  - cd app
   - composer install -n
   - git --version
   - git config --global user.email "test@travis-ci.org"
