@@ -125,7 +125,7 @@ class BaseControllerTestCase extends WebTestCase
     /**
      * Remove any paths created after test.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (is_array($this->paths)) {
             $fs = new Filesystem();

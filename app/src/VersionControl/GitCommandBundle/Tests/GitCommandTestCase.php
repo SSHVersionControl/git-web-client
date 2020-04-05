@@ -91,7 +91,7 @@ class GitCommandTestCase extends TestCase
         $this->gitCommands->setGitEnvironment($this->gitEnvironment);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $fs = new Filesystem();
         $fs->remove($this->path);
