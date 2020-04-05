@@ -1,0 +1,32 @@
+
+services:
+    version_control.ssh_process:
+        class: VersionControl\GitControlBundle\Utility\SshProcess
+
+    version_control.gitcommand_collector:
+        class: VersionControl\GitControlBundle\Profiler\GitCommandCollector
+        tags:
+            -
+                name:     data_collector
+                template: 'VersionControlGitControlBundle:Profiler:GitCommand.html.twig'
+                id:       'version_control.gitcommand_collector'
+                #priority: 300
+        public: false
+        arguments:
+            - '@version_control.logger'
+
+
+    version_control.logger:
+        class: VersionControl\GitControlBundle\Logger\GitCommandLogger
+        arguments:
+            - '@logger'
+            - %kernel.debug%
+        tags:
+            - { name: monolog.logger, channel: 'gitcommand' }
+
+    version_control.issue_repository_manager:
+        class:  VersionControl\GitControlBundle\Repository\Issues\IssueRepositoryManager
+        arguments:
+            - '@security.token_storage'
+            - '@doctrine.orm.entity_manager'
+            - '@service_container'
