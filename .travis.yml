@@ -18,7 +18,7 @@ before_script:
   - php app/console version:install --env=test
   - php app/console doctrine:fixtures:load --no-interaction --env=test
 
-script: phpunit --coverage-clover build/logs/clover.xml -c app/app
+script: phpunit --coverage-clover build/logs/clover.xml -c app
 
 after_script:
  - bin/coveralls -v
