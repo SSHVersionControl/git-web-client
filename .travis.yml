@@ -8,7 +8,7 @@ php:
   - 7.0
   - 7.1
 
-before_script: 
+before_script:
   - cp app/app/config/parameters.yml.travis app/app/config/parameters.yml
   - cd app
   - composer install -n
@@ -20,7 +20,7 @@ before_script:
   - php app/console version:install --env=test
   - php app/console doctrine:fixtures:load --no-interaction --env=test
 
-script: phpunit --coverage-clover build/logs/clover.xml -c app
+script: phpunit --coverage-clover build/logs/clover.xml -c app/app
 
 after_script:
  - bin/coveralls -v
