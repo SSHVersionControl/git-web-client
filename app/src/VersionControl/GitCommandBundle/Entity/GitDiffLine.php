@@ -51,7 +51,7 @@ class GitDiffLine
     {
         $this->line = $line;
 
-        $firstCharacter = $line[0];
+        $firstCharacter = $line[0] ?? '';
 
         if ($firstCharacter !== false) {
             if ($firstCharacter === '+') {
