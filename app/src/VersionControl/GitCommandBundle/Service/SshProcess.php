@@ -12,7 +12,6 @@ namespace VersionControl\GitCommandBundle\Service;
 
 use InvalidArgumentException;
 use RuntimeException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Uses php SSH2 library to run SSH Process.
@@ -21,11 +20,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class SshProcess implements SshProcessInterface
 {
-    /**
-     * @var EventDispatcherInterface
-     */
-    protected $dispatcher;
-
     /**
      * @var array
      */
@@ -44,27 +38,17 @@ class SshProcess implements SshProcessInterface
     /**
      * @var array
      */
-    protected $stdout;
+    protected $stdout = [];
 
     /**
      * @var array
      */
-    protected $stderr;
+    protected $stderr = [];
 
     /**
-     * //EventDispatcherInterface $eventDispatcher,.
-     *
+     * @var array
      */
-    public function __construct()
-    {
-        //$this->dispatcher = $eventDispatcher;
-
-        $this->session = null;
-        $this->shell = null;
-        $this->stdout = array();
-        $this->stdin = array();
-        $this->stderr = array();
-    }
+    private $stdin = [];
 
     /**
      * @param string $glue
@@ -102,34 +86,31 @@ class SshProcess implements SshProcessInterface
      * @param string $username
      * @param int $port
      * @param string $password
-     * @param string $pubkeyFile
-     * @param string $privkeyFile
+     * @param string|null $publicKeyFile
+     * @param string|null $privateKeyFile
      * @param string $passphrase
      *
-     * @return array
-     * @throws RuntimeException
+     * @return void
      */
     public function run(
         array $commands,
-        $host,
-        $username,
-        $port = 22,
-        $password = null,
-        $pubkeyFile = null,
-        $privkeyFile = null,
-        $passphrase = null
-    ) {
+        string $host,
+        string $username,
+        int $port = 22,
+        ?string $password = null,
+        ?string $publicKeyFile = null,
+        ?string $privateKeyFile = null,
+        ?string $passphrase = null
+    ): array {
         $this->reset();
 
         if ($this->shell === null) {
-            $this->connect($host, $username, $port, $password, $pubkeyFile, $privkeyFile, $passphrase);
+            $this->connect($host, $username, $port, $password, $publicKeyFile, $privateKeyFile, $passphrase);
         }
 
         foreach ($commands as $command) {
             $this->execute($command);
         }
-
-        //$this->disconnect();
 
         return $this->stdout;
     }
@@ -137,44 +118,45 @@ class SshProcess implements SshProcessInterface
     /**
      * Resets out puts for next command.
      */
-    protected function reset()
+    protected function reset(): void
     {
-        $this->stdout = array();
-        $this->stdin = array();
-        $this->stderr = array();
+        $this->stdout = [];
+        $this->stdin = [];
+        $this->stderr = [];
     }
 
     /**
-     * @param $host
-     * @param $username
+     * @param string $host
+     * @param string $username
      * @param int $port
-     * @param null $password
-     * @param null $pubkeyFile
-     * @param null $privkeyFile
-     * @param null $passphrase
+     * @param null|string $password
+     * @param null|string $publicKeyFile
+     * @param null|string $privateKeyFile
+     * @param null|string $passphrase
      *
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
     protected function connect(
-        $host,
-        $username,
-        $port = 22,
-        $password = null,
-        $pubkeyFile = null,
-        $privkeyFile = null,
-        $passphrase = null
-    ) {
+        string $host,
+        string $username,
+        int $port = 22,
+        ?string $password = null,
+        ?string $publicKeyFile = null,
+        ?string $privateKeyFile = null,
+        ?string $passphrase = null
+    ): void {
         $this->session = ssh2_connect($host, $port);
 
         if (!$this->session) {
             throw new InvalidArgumentException(sprintf('SSH connection failed on "%s:%s"', $host, $port));
         }
 
-        if (isset($username) && $pubkeyFile != null && $privkeyFile != null) {
-            if (!ssh2_auth_pubkey_file($username, $pubkeyFile, $privkeyFile, $passphrase)) {
-                throw new InvalidArgumentException(sprintf('SSH authentication failed for user "%s" with public key "%s"',
-                    $username, $pubkeyFile));
+        if (isset($username) && $publicKeyFile !== null && $privateKeyFile !== null) {
+            if (!ssh2_auth_pubkey_file($this->session, $username, $publicKeyFile, $privateKeyFile, $passphrase)) {
+                throw new InvalidArgumentException(
+                    sprintf('SSH authentication failed for user "%s" with public key "%s"', $username, $publicKeyFile)
+                );
             }
         } elseif ($username && $password) {
             if (!ssh2_auth_password($this->session, $username, $password)) {
@@ -188,11 +170,11 @@ class SshProcess implements SshProcessInterface
             throw new RuntimeException(sprintf('Failed opening shell'));
         }
 
-        $this->stdout = array();
-        $this->stdin = array();
+        $this->stdout = [];
+        $this->stdin = [];
     }
 
-    public function disconnect()
+    public function disconnect(): void
     {
         if ($this->shell) {
             fclose($this->shell);
@@ -200,15 +182,12 @@ class SshProcess implements SshProcessInterface
     }
 
     /**
-     * @param array $command
+     * @param string $command
      *
      * @throws RuntimeException
      */
-    protected function execute($command)
+    protected function execute(string $command): void
     {
-
-        //$this->dispatcher->dispatch(Events::onDeploymentSshStart, new CommandEvent($command));
-
         $outStream = ssh2_exec($this->session, $command);
         $errStream = ssh2_fetch_stream($outStream, SSH2_STREAM_STDERR);
 
@@ -218,24 +197,20 @@ class SshProcess implements SshProcessInterface
         $stdout = explode("\n", stream_get_contents($outStream));
         $stderr = explode("\n", stream_get_contents($errStream));
 
-        if (count($stdout)) {
-
-            //$this->dispatcher->dispatch(Events::onDeploymentRsyncFeedback, new FeedbackEvent('out', implode("\n", $stdout)));
-        }
-
         if (count($stderr) > 1) {
-            //print_r($stderr);
-            throw new RuntimeException(sprintf("Error in command shell:%s \n Error Response:%s", $command,
-                implode("\n", $stderr)));
-            //$this->dispatcher->dispatch(Events::onDeploymentRsyncFeedback, new FeedbackEvent('err', implode("\n", $stderr)));
+            throw new RuntimeException(
+                sprintf(
+                    "Error in command shell:%s \n Error Response:%s",
+                    $command,
+                    implode("\n", $stderr)
+                )
+            );
         }
 
         $this->stdout = array_merge($this->stdout, $stdout);
 
         if (is_array($stderr)) {
             $this->stderr = array_merge($this->stderr, $stderr);
-        } else {
-            //$this->dispatcher->dispatch(Events::onDeploymentSshSuccess, new CommandEvent($command));
         }
 
         fclose($outStream);
@@ -245,5 +220,14 @@ class SshProcess implements SshProcessInterface
     public function __destruct()
     {
         $this->disconnect();
+    }
+
+    public function getExitStatus()
+    {
+        if (count($this->stderr) > 0) {
+            return 1;
+        }
+
+        return 0;
     }
 }

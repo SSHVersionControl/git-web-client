@@ -35,22 +35,27 @@ interface SshProcessInterface
      * @param string $username
      * @param int $port
      * @param string $password
-     * @param string $pubkeyFile
-     * @param string $privkeyFile
+     * @param string|null $publicKeyFile
+     * @param string|null $privateKeyFile
      * @param string $passphrase
      *
-     * @return type
+     * @return array
      */
     public function run(
         array $commands,
-        $host,
-        $username,
-        $port = 22,
-        $password = null,
-        $pubkeyFile = null,
-        $privkeyFile = null,
-        $passphrase = null
-    );
+        string $host,
+        string $username,
+        int $port = 22,
+        ?string $password = null,
+        ?string $publicKeyFile = null,
+        ?string $privateKeyFile = null,
+        ?string $passphrase = null
+    ): array;
 
     public function disconnect();
+
+    /**
+     * @return false|int
+     */
+    public function getExitStatus();
 }

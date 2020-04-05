@@ -16,7 +16,6 @@ use Symfony\Component\Process\Exception\LogicException;
 use Symfony\Component\Process\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Stopwatch\Stopwatch;
 use VersionControl\GitCommandBundle\GitCommands\Command\GitUserInterface;
 use VersionControl\GitCommandBundle\Service\SshProcessInterface;
@@ -31,6 +30,9 @@ use VersionControl\GitCommandBundle\GitCommands\Exception\RunGitCommandException
  */
 class GitCommand
 {
+    /**
+     * @var string
+     */
     protected $gitPath;
 
     /**
@@ -233,9 +235,9 @@ class GitCommand
     /**
      * Gets the git path.
      *
-     * @return type
+     * @return string
      */
-    public function getGitPath()
+    public function getGitPath(): string
     {
         return $this->gitPath;
     }
@@ -247,7 +249,7 @@ class GitCommand
      *
      * @return GitCommand
      */
-    protected function setGitPath($gitPath)
+    protected function setGitPath(string $gitPath)
     {
         $this->gitPath = rtrim(trim($gitPath), DIRECTORY_SEPARATOR);
 

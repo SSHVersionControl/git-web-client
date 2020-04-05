@@ -50,7 +50,8 @@
     "doctrine/doctrine-cache-bundle": "^1.3",
     "stof/doctrine-extensions-bundle": "^1.2",
     "satooshi/php-coveralls": "^1.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "ext-ssh2": "*"
   },
   "require-dev": {
     "sensio/generator-bundle": "~2.3",

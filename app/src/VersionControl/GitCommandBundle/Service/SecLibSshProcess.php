@@ -37,7 +37,7 @@ class SecLibSshProcess implements SshProcessInterface
     protected $config;
 
     /**
-     * @var resource
+     * @var SSH2|null
      */
     protected $shell;
 
@@ -99,8 +99,8 @@ class SecLibSshProcess implements SshProcessInterface
      * @param string $username
      * @param int $port
      * @param string $password
-     * @param string $pubkeyFile
-     * @param string $privkeyFile
+     * @param string|null $publicKeyFile
+     * @param string|null $privateKeyFile
      * @param string $passphrase
      *
      * @return array
@@ -108,14 +108,14 @@ class SecLibSshProcess implements SshProcessInterface
      */
     public function run(
         array $commands,
-        $host,
-        $username,
-        $port = 22,
-        $password = null,
-        $pubkeyFile = null,
-        $privkeyFile = null,
-        $passphrase = null
-    ) {
+        string $host,
+        string $username,
+        int $port = 22,
+        ?string $password = null,
+        ?string $publicKeyFile = null,
+        ?string $privateKeyFile = null,
+        ?string $passphrase = null
+    ): array {
         $this->reset();
 
         if ($this->shell === null) {
@@ -213,8 +213,14 @@ class SecLibSshProcess implements SshProcessInterface
 
         if ($exitStatus != 0) {
             //print_r($stderr);
-            throw new RunGitCommandException(sprintf("Error in command shell:%s \n Error Response:%s%s", $command,
-                implode("\n", $stderr), $stdOutput));
+            throw new RunGitCommandException(
+                sprintf(
+                    "Error in command shell:%s \n Error Response:%s%s",
+                    $command,
+                    implode("\n", $stderr),
+                    $stdOutput
+                )
+            );
         }
 
         $this->stdout = array_merge($this->stdout, $stdout);
@@ -228,6 +234,10 @@ class SecLibSshProcess implements SshProcessInterface
         }
     }
 
+    /**
+     * Get exit status
+     * @return false|int
+     */
     public function getExitStatus()
     {
         return $this->shell->getExitStatus();

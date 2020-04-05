@@ -11,8 +11,8 @@
 namespace VersionControl\GitCommandBundle\Twig\Extension;
 
 use RuntimeException;
-use Twig_Extension;
-use Twig_SimpleTest;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigTest;
 use VersionControl\GitCommandBundle\GitCommands\Exception\RunGitCommandException;
 use VersionControl\GitCommandBundle\GitCommands\GitCommand;
 
@@ -21,7 +21,7 @@ use VersionControl\GitCommandBundle\GitCommands\GitCommand;
  *
  * @author Paul Schweppe <paulschweppe@gmail.com>
  */
-class IsIgnoredExtension extends Twig_Extension
+class IsIgnoredExtension extends AbstractExtension
 {
     /**
      * @var GitCommand
@@ -46,7 +46,7 @@ class IsIgnoredExtension extends Twig_Extension
     public function getTests()
     {
         return array(
-            new Twig_SimpleTest('isIgnored', array($this, 'isFileIgnored')),
+            new TwigTest('isIgnored', array($this, 'isFileIgnored')),
         );
     }
 
@@ -57,7 +57,7 @@ class IsIgnoredExtension extends Twig_Extension
      * @throws RunGitCommandException
      * @throws RuntimeException
      */
-    public function isFileIgnored($filePath)
+    public function isFileIgnored($filePath): string
     {
         return $this->gitCommand->command('files')->isFileIgnored($filePath);
     }
