@@ -4,9 +4,7 @@ services:
   - mysql
 
 php:
-  - 5.6
-  - 7.0
-  - 7.1
+  - 7.2
 
 before_script:
   - cp app/app/config/parameters.yml.travis app/app/config/parameters.yml
