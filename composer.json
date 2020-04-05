@@ -22,12 +22,12 @@
   ],
   "autoload": {
     "psr-0": {
-      "": "src/",
-      "SymfonyStandard": "app/"
+      "": "app/src/",
+      "SymfonyStandard": "app/app/"
     }
   },
   "require": {
-    "php": ">=5.3.3",
+    "php": "^7.2.0",
     "symfony/symfony": "2.8.51",
     "doctrine/orm": "~2.2,>=2.2.3",
     "doctrine/doctrine-bundle": "~1.2",
@@ -81,14 +81,15 @@
     ]
   },
   "config": {
-    "bin-dir": "bin"
+    "bin-dir": "app/bin",
+    "vendor-dir": "app/vendor"
   },
   "extra": {
-    "symfony-app-dir": "app",
-    "symfony-web-dir": "web",
+    "symfony-app-dir": "app/app",
+    "symfony-web-dir": "app/web",
     "symfony-assets-install": "hard-copy",
     "incenteev-parameters": {
-      "file": "app/config/parameters.yml"
+      "file": "app/app/config/parameters.yml"
     },
     "branch-alias": {
       "dev-master": "2.5-dev"
