@@ -1,12 +1,14 @@
 language: php
 
-php:
-  - 5.6
-  - 7.0
-  - hhvm
+services:
+  - mysql
 
-before_script: 
-  - cp app/config/parameters.yml.travis app/config/parameters.yml
+php:
+  - 7.2
+
+before_script:
+  - cp app/app/config/parameters.yml.travis app/app/config/parameters.yml
+  - cd app
   - composer install -n
   - git --version
   - git config --global user.email "test@travis-ci.org"
@@ -16,7 +18,7 @@ before_script:
   - php app/console version:install --env=test
   - php app/console doctrine:fixtures:load --no-interaction --env=test
 
-script: phpunit --coverage-clover build/logs/clover.xml -c app
+script: bin/phpunit --coverage-clover build/logs/clover.xml -c app
 
 after_script:
  - bin/coveralls -v
