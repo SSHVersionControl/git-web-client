@@ -27,7 +27,7 @@
     }
   },
   "require": {
-    "php": "^7.2.0",
+    "php": "~7.2.0",
     "symfony/symfony": "2.8.51",
     "doctrine/orm": "~2.2,>=2.2.3",
     "doctrine/doctrine-bundle": "~1.2",
