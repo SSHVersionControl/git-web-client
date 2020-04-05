@@ -22,19 +22,11 @@ use VersionControl\GitCommandBundle\Entity\GitDiff;
 class GitDiffParserTest extends GitCommandTestCase
 {
     /**
-     * setUp, called on every method.
-     */
-    public function setUp()
-    {
-        
-    }
-
-    /**
      * Test Getting commit files.
      */
     public function testGetCommitDiff()
     {
-        $diffString = 
+        $diffString =
                 'diff --git a/src/VersionControl/GitControlBundle/Controller/ProjectHistoryController.php b/src/VersionControl/GitControlBundle/Controller/ProjectHistoryController.php
 index b9b5a2a..53b3b2d 100644
 --- a/src/VersionControl/GitControlBundle/Controller/ProjectHistoryController.php
@@ -56,14 +48,14 @@ index b9b5a2a..53b3b2d 100644
              \'filter\' => $filter,
              \'searchForm\' => $searchForm->createView()
          ));';
-        
+
         $diffParser = new GitDiffParser($diffString);
         $diffs = $diffParser->parse();
-        
+
         $this->assertCount(1, $diffs,'Diff count does not equal expected 17. Actual:'.count($diffs).print_r($diffs,true));
         foreach ($diffs as $diff) {
             $this->assertInstanceOf(GitDiff::class, $diff);
         }
-        
+
     }
 }

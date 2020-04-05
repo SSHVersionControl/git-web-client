@@ -24,7 +24,7 @@ class GitDiffCommandTest extends GitCommandTestCase
     /**
      * setUp, called on every method.
      */
-    public function setUp()
+    public function setUp(): void
     {
         $this->initGitCommandsLocal();
         $this->gitCommands->command('init')->initRepository();

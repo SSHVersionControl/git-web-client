@@ -14,7 +14,7 @@ class BaseControllerTestCase extends WebTestCase
 
     protected $paths = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
